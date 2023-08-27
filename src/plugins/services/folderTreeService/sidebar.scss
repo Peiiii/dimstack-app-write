@@ -1,0 +1,12 @@
+.chakra-ui-dark {
+  .sidebar-main {
+    --card-bg: var(--chakra-colors-gray-900) !important
+  }
+
+}
+
+.table-tiny th,
+.table-tiny td {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}

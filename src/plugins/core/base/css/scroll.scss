@@ -1,0 +1,134 @@
+// Tutorial => slug.vercel.app/s/scrollbar
+
+@mixin scroll-style($size: 10px,
+  $thumb: none,
+  $thumb-color: grey,
+  $thumb-radius: 10px,
+  $track-color: transparent,
+  $track-radius: 10px) {
+
+  // Respaldo para Firefox
+  scrollbar-color: $thumb-color $track-color;
+  scrollbar-width: thin;
+
+  // Navegadores basados en webkit
+  &::-webkit-scrollbar {
+    width: $size;
+    height: $size;
+    &-track {
+      background-color: $track-color;
+      border-radius: $track-radius;
+    }
+    &-thumb {
+      background-color: $thumb-color;
+      background-image: $thumb;
+      border-radius: $thumb-radius;
+    }
+  }
+}
+
+// body {
+//   background-color: #18181b;
+// }
+
+.scroll {
+  @include scroll-style(
+      $size: var(--scroll-size, 10px),
+
+      $thumb:  var(--scroll-thumb, none),
+      $thumb-color: var(--scroll-thumb-color, grey),
+      $thumb-radius: var(--scroll-thumb-radius, var(--scroll-radius)),
+    
+      $track-color: var(--scroll-track, transparent),
+      $track-radius: var(--scroll-track-radius, var(--scroll-radius)),
+    );
+  
+  // Ejemplo 1
+  &-1 {
+    --scroll-size: 5px;
+    // --scroll-radius: 5px;
+    // --scroll-track: rgb(0 0 0 / 40%);
+    --scroll-thumb-color: #dfdfdf;
+  }
+
+  &-7{
+    --scroll-size: 5px;
+    --scroll-thumb-color: transparent;
+    &:hover{
+      --scroll-size: 5px;
+    --scroll-thumb-color:#dfdfdf52;
+    }
+  }
+
+  // Ejemplo 2
+  &-2 {
+    --scroll-size: 8px;
+    --scroll-radius: 10px;
+    --scroll-track: rgb(255 255 255 / 10%);
+    --scroll-thumb-color: rgb(0 0 0 / 80%);
+  }
+
+  // Ejemplo 3
+  &-3 {
+    --scroll-size: 5px;
+    --scroll-radius: 10px;
+    --scroll-track: rgb(255 255 255 / 10%);
+    --scroll-thumb-color: #fff;
+  }
+
+  // Ejemplo 4
+  &-4 {
+    $bg-mask: rgb(255 255 255 / 25%);
+    --scroll-size: 12px;
+    --scroll-radius: 20px;
+    --scroll-track: rgb(0 0 0 / 40%);
+    --scroll-thumb: linear-gradient(45deg,
+        #{$bg-mask} 20%, transparent 20%,
+        transparent 40%, #{$bg-mask} 40%,
+        #{$bg-mask} 60%, transparent 60%,
+        transparent 80%, #{$bg-mask} 80%);
+    --scroll-thumb-color: #f97316;
+  }
+  
+  // Ejemplo 5
+  &-5 {
+    --scroll-size: 6px;
+    --scroll-radius: 8px;
+    --scroll-track: rgb(255 255 255 / 10%);
+    --scroll-thumb: linear-gradient(45deg, #00aeff, #a68eff);
+  }
+  
+  // Ejemplo 6
+  &-6 {
+    $bg-mask: rgb(255 255 255 / 30%);
+    --scroll-size: 12px;
+    --scroll-radius: 20px;
+    --scroll-track: rgb(0 0 0 / 40%);
+    --scroll-thumb: linear-gradient(
+        #{$bg-mask} 20%, transparent 20%,
+        transparent 40%, #{$bg-mask} 40%,
+        #{$bg-mask} 60%, transparent 60%,
+        transparent 80%, #{$bg-mask} 80%);
+    --scroll-thumb-color: #10b981;
+  }
+}
+
+// Solo demo
+@for $i from 4 through 8 {
+  .h#{$i}00 {
+    height: #{$i}00px;
+  }
+}
+
+// .demo {
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   min-height: 100vh;
+//   padding-right: 40px;
+//   > * {
+//     height: 280px;
+//     overflow-y: auto;
+//     width: 50px;
+//   }
+// }
