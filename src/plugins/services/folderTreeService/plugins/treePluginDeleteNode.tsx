@@ -1,6 +1,7 @@
+import { FolderTreeNode } from "@/plugins/services/folderTreeService/types";
 import { createTreePlugin } from "@/toolkit/components/tree/treePlugins";
 import { AiFillDelete } from "react-icons/ai";
-export default createTreePlugin({
+export default createTreePlugin<FolderTreeNode>({
   addOptions() {
     return {
       deletable: ({ level }) => {

@@ -46,7 +46,7 @@ export const strategy: SplitChunkStrategy = [
   },
 ];
 export const renderChunksWithStrategy = (deps) => {
-  deps = Object.keys(deps).filter((dep) => dep.startsWith("@types"));
+  deps = Object.keys(deps).filter((dep) => !dep.startsWith("@types"));
   const chunks = {};
   const match = (ptns: string | RegExp | (string | RegExp)[], s: string) => {
     const matchOne = (ptn: string | RegExp, s) => {

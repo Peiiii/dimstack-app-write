@@ -238,5 +238,3 @@ export const createDataStore = <T extends { [k: string]: any }>({
 export type DataStore<T extends Record<string, any>> = ReturnType<
   typeof createDataStore<T>
 >;
-
-export const createDefaultDataStore = <T extends { [k: string]: any }>() => {};

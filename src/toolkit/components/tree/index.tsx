@@ -2,6 +2,7 @@ import { createDataStore, DataStore } from "@/toolkit/common/dataStore";
 import { createEventBus, EventBus } from "@/toolkit/common/eventBus";
 import { createRenderer, Renderer } from "@/toolkit/common/renderer";
 import { TreeDataStore } from "@/toolkit/common/treeDataStore";
+import { SafeAny } from "@/toolkit/common/types";
 import { Box, Flex } from "@chakra-ui/react";
 import { useEffect, useMemo } from "react";
 
@@ -139,11 +140,12 @@ type ViewSystem = ReturnType<typeof createViewSystem>;
 const defaultRenderer = createRenderer();
 
 // Plugin System
-export type WidgetContext<T extends Record<string, any>> = {
-  dataStore: TreeDataStore<T>;
+export type WidgetContext<TreeNodeType extends Record<string, any>> = {
+  dataStore: TreeDataStore<TreeNodeType>;
   // viewStateStore: DataStore<WidgetViewState>;
   eventBus: EventBus;
   viewSystem: ViewSystem;
+  options: Record<string, SafeAny>;
 };
 export type WidgetPlugin<T extends Record<string, any>> = {
   activate: (context: WidgetContext<T>) => void;
@@ -157,6 +159,7 @@ export const Tree = <T extends Record<string, any>>({
   eventBus,
   viewSystem,
   viewStateStore,
+  options = {},
 }: {
   plugins?: WidgetPlugin<T>[];
 } & Partial<Exclude<WidgetContext<T>, "dataStore">> &
@@ -167,7 +170,7 @@ export const Tree = <T extends Record<string, any>>({
   viewSystem = useMemo(
     () =>
       viewSystem ||
-      createViewSystem<Pick<WidgetContext<T>, "dataStore">>({
+      createViewSystem<Pick<WidgetContext<T>, "dataStore" | "options">>({
         viewStateStore:
           viewStateStore ||
           createDataStore<WidgetViewState>({
@@ -175,7 +178,7 @@ export const Tree = <T extends Record<string, any>>({
           })!,
         eventBus: eventBus!,
         renderer: defaultRenderer,
-        context: { dataStore },
+        context: { dataStore, options },
       }),
     [eventBus, viewSystem, dataStore]
   );
@@ -186,12 +189,12 @@ export const Tree = <T extends Record<string, any>>({
         dataStore,
         eventBus: eventBus!,
         viewSystem: viewSystem!,
+        options,
       });
     }
   }, []);
 
   const rootNode = dataStore.useData();
-  console.log("rootNode:", rootNode);
   return (
     <Box className="tree">
       {viewSystem.renderNode({

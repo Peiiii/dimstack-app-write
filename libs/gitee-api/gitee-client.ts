@@ -36,7 +36,7 @@ interface FileResponse {
   download_url: string;
   html_url: string;
   size: number;
-  type: string;
+  type: "file" | "dir";
   [name: string]: any;
 }
 type FileItemResponse = Pick<
@@ -118,7 +118,14 @@ export const getGiteeAccessToken = async ({
   clientId,
   clientSecret,
   redirectUri,
-}) => {
+}): Promise<{
+  access_token: string;
+  created_at: number;
+  expires_in: number;
+  refresh_token: string;
+  scope: string;
+  token_type: string;
+}> => {
   const url = `https://gitee.com/oauth/token?grant_type=authorization_code&code=${code}&client_id=${clientId}&redirect_uri=${redirectUri}&client_secret=${clientSecret}`;
   console.log("url:", url);
   const res = await axios.post(url);

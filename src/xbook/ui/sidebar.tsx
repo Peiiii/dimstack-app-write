@@ -19,7 +19,7 @@ export const createSidebar = () =>
   createDeferredComponentProxy<{
     setView(id: string): void;
     toggleView(id: string): void;
-    addView(view: View): void;
+    addView(view: View, update?: boolean): void;
     showView(id: string): void;
     hideView(id: string): void;
     hide: AnyFunction;
@@ -49,8 +49,18 @@ export const createSidebar = () =>
             if (view.id === id) return view;
           }
         };
-        const addView = (view: View) => {
-          if (findView(view.id)) return;
+        const addView = (view: View, update = false) => {
+          if (findView(view.id)) {
+            if (update) {
+              setViewList((viewList) =>
+                viewList.map((v) => {
+                  if (v.id === view.id) return { ...v, ...view };
+                  else return v;
+                })
+              );
+              return;
+            }
+          }
           viewList.push(view);
           setViewList(viewList.slice());
         };

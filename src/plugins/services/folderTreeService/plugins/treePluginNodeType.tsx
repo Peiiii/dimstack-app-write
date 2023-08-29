@@ -1,24 +1,24 @@
+import { FolderTreeNode } from "@/plugins/services/folderTreeService/types";
 import { createTreePlugin } from "@/toolkit/components/tree/treePlugins";
 import { Text } from "@chakra-ui/react";
 import { FcFolder } from "react-icons/fc";
-const getNodeType = (node) => {
-  // if (node.id === "root" || !/.+\/.+/.test(node.id)) return "folder";
-  if (node.id === "root") return "folder";
-  else return "file";
+const getNodeType = (node: FolderTreeNode) => {
+  // if (node.id === "root" || !/.+\/.+/.test(node.id)) return "dir";
+  if (node.id === "root") return "dir";
+  else return node.type!;
 };
-
-type NodeType = "folder" | "file";
 
 const getNodeFileType = (node: any) => {
-  if (!node.id) return "folder";
-  if (!/.+\/.+/.test(node.id)) "folder";
-  else return "file";
+  // if (!node.id) return "dir";
+  // if (!/.+\/.+/.test(node.id)) "dir";
+  // else return "file";
+  return "file";
 };
-export const treePluginNodeType = createTreePlugin({
+export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
   activate({ viewSystem, eventBus, dataStore }) {
     viewSystem.setDefaultViewStateProvider((node, props) => {
       let expandable;
-      if (getNodeType(node) === "folder") expandable = true;
+      if (getNodeType(node) === "dir") expandable = true;
       else expandable = false;
       return {
         id: node.id,
@@ -31,7 +31,7 @@ export const treePluginNodeType = createTreePlugin({
     viewSystem.renderer.register(
       "icon-node-type",
       ({ node }) => {
-        if (getNodeType(node) === "folder") {
+        if (getNodeType(node) === "dir") {
           return <FcFolder />;
           // return <Text as="h3">{"#"}</Text>;
         } else {

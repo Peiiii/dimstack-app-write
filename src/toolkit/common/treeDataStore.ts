@@ -56,12 +56,15 @@ export const createTreeDataStore = <T extends { [k: string]: any }>({
       init: (state, action) => {
         state.data = action.payload || initialState;
       },
-      update: (state, action) => {
+      update: (
+        state,
+        action: { type: string; payload: { node: Partial<TreeDataNode<T>> } }
+      ) => {
         const { node } = action.payload || {};
         if (!node) return;
         const findAndReplace = (
           parent: TreeDataNode<T>,
-          node: TreeDataNode<T>
+          node: Partial<TreeDataNode<T>>
         ) => {
           if (parent[primaryKey] === node[primaryKey]) {
             Object.assign(parent, node);
@@ -182,7 +185,6 @@ export const createTreeDataStore = <T extends { [k: string]: any }>({
     const [selectedState, setSelectedState] = useState(
       selector(store.getState())
     );
-
     useEffect(() => {
       const unsubscribe = store.subscribe(() => {
         const newSelectedState = selector(store.getState());

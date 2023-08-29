@@ -5,17 +5,21 @@ import { createDataStore } from "@/toolkit/common/dataStore";
 import { createTreeDataStore } from "@/toolkit/common/treeDataStore";
 import { Tree, WidgetViewState } from "@/toolkit/components/tree";
 import {
-  treePluginExpand,
-  treePluginInitView,
+  treePluginExpandTemplate,
+  treePluginInitViewTemplate,
 } from "@/toolkit/components/tree/treePlugins";
 import treePluginConfig from "./plugins/treePluginConfig";
 import treePluginDeleteNode from "./plugins/treePluginDeleteNode";
 import treePluginEditNode from "./plugins/treePluginEditNode";
-import treePluginOpenChannel from "./plugins/treePluginOpenChannel";
+import treePluginClickNode from "./plugins/treePluginClickNode";
 import SideCard from "@/plugins/services/folderTreeService/components/SideCard";
 import treePluginAddNode from "@/plugins/services/folderTreeService/plugins/treePluginAddNode";
 import treePluginMigration from "@/plugins/services/folderTreeService/plugins/treePluginMigration";
 import treePluginNodeType from "@/plugins/services/folderTreeService/plugins/treePluginNodeType";
+import xbook from "xbook/index";
+import { SpaceDef } from "@/toolkit/types/space";
+import { useMemo } from "react";
+import { FolderTreeNode } from "@/plugins/services/folderTreeService/types";
 
 const viewStateStore = createDataStore<WidgetViewState>({
   initialState: [],
@@ -25,21 +29,22 @@ const viewStateStore = createDataStore<WidgetViewState>({
   },
 });
 
-const treeDataStore = createTreeDataStore<{
-  name: string;
-  content: string;
-}>({
-  initialState: {
-    name: "root",
-    content: "内容",
-    id: "root",
-  },
-  persistConfig: {
-    name: "folderTree",
-    type: "LocalStorage",
-  },
-});
-const TreeView = () => {
+const TreeView = ({ space }: { space: SpaceDef }) => {
+  const treeDataStore = useMemo(
+    () =>
+      createTreeDataStore<FolderTreeNode>({
+        initialState: {
+          name: "root",
+          content: "内容",
+          id: "root",
+        },
+        persistConfig: {
+          name: "folderTree",
+          type: "LocalStorage",
+        },
+      }),
+    []
+  );
   console.log("会话");
   return (
     <SideCard title={"会话"} className="channelList">
@@ -49,14 +54,15 @@ const TreeView = () => {
       <Box h="0.1rem" />
       <Box w="100%" className="channel-tree">
         <Tree
+          options={{ space }}
           dataStore={treeDataStore}
           viewStateStore={viewStateStore}
           plugins={[
-            treePluginInitView(),
-            treePluginExpand({
+            treePluginInitViewTemplate<FolderTreeNode>(),
+            treePluginExpandTemplate<FolderTreeNode>({
               defaultExpanded: false,
             }),
-            treePluginOpenChannel(),
+            treePluginClickNode(),
             treePluginEditNode({
               editable: ({ level }) => {
                 return level !== 0;

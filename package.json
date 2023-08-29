@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "git:update": "git add . && git commit -m \" update somthing \" &&  git push",
+    "oss:upload": "ossutil64 cp -r -u dist/ oss://write-dimstack-com/ -c ./.ossutilconfig.local"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.0",

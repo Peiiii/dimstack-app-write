@@ -40,16 +40,17 @@ const getWrapper = (name) => {
 };
 
 type AnyFunc = (...args: any[]) => any;
-
-export const createModalForm = ({
+type ArrayElement<ArrayType extends readonly unknown[]> =
+  ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
+export const createModalForm = <T extends FormDataDefinition>({
   fieldList,
   onFinish,
   onCancel,
   title,
   defaultData = {},
 }: {
-  fieldList: FormDataDefinition;
-  onFinish: (data: any) => void;
+  fieldList: T;
+  onFinish: (data: Record<ArrayElement<T>["name"], any>) => void;
   onCancel?: (e) => void;
   title: string;
   defaultData?: any;

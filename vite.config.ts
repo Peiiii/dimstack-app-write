@@ -4,6 +4,7 @@ import { defineConfig } from "vite";
 import { dependencies } from "./package.json";
 import { renderChunksWithStrategy } from "./splitChunks";
 
+console.log("dependencies", dependencies);
 export default defineConfig({
   base: "/",
   plugins: [react()],
@@ -21,10 +22,14 @@ export default defineConfig({
         find: "xbook",
         replacement: resolve(__dirname, "src/xbook"),
       },
+      {
+        find: "libs",
+        replacement: resolve(__dirname, "libs"),
+      },
     ],
   },
   build: {
-    outDir: "dist/chatgpt/",
+    outDir: "dist/",
     rollupOptions: {
       input: {
         app: "index.html",

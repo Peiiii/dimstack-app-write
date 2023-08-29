@@ -1,7 +1,8 @@
+import { FolderTreeNode } from "@/plugins/services/folderTreeService/types";
 import { createTreePlugin } from "@/toolkit/components/tree/treePlugins";
 import { nanoid } from "@reduxjs/toolkit";
 
-export default createTreePlugin({
+export default createTreePlugin<FolderTreeNode>({
   activate({ dataStore }) {
     const rootNode = dataStore.getData();
     const fixId = (root) => {
@@ -12,6 +13,8 @@ export default createTreePlugin({
       }
       return cloned;
     };
-    dataStore.getActions().init(fixId(rootNode));
+    setTimeout(() => {
+      dataStore.getActions().init(fixId(rootNode));
+    }, 0);
   },
 });

@@ -14,19 +14,40 @@ import {
 import { useEffect, useRef } from "react";
 import { AiOutlineEllipsis } from "react-icons/ai";
 import { WidgetContext } from ".";
-export const createTreePlugin = createPluginSystem<{
-  activate(
-    this: {
-      id?: string;
-      name?: string;
-      description?: string;
-      options: { [k: string]: any };
-    },
-    context: WidgetContext<any>
-  ): any;
-}>().createPlugin;
+import { SafeAny } from "@/toolkit/common/types";
 
-export const treePluginExpand = createTreePlugin({
+const getCreateTreePlugin = <TreeNodeType extends Record<string, SafeAny>>() =>
+  createPluginSystem<{
+    activate(
+      this: {
+        id?: string;
+        name?: string;
+        description?: string;
+        options: { [k: string]: any };
+      },
+      context: WidgetContext<TreeNodeType>
+    ): any;
+  }>().createPlugin;
+export const createTreePlugin = <TreeNodeType extends Record<string, SafeAny>>(
+  ...args: Parameters<ReturnType<typeof getCreateTreePlugin<TreeNodeType>>>
+) => getCreateTreePlugin<TreeNodeType>()(...args);
+
+export const createTreePluginTemplate =
+  <TreeNodeTemplateType extends Record<string, SafeAny>>(
+    outerArgs: Parameters<typeof createTreePlugin<TreeNodeTemplateType>>[0]
+  ) =>
+  <TreeNodeType extends TreeNodeTemplateType>(
+    ...args: Parameters<ReturnType<typeof createTreePlugin<TreeNodeType>>>
+  ) =>
+    createTreePlugin<TreeNodeType>(
+      outerArgs as unknown as Parameters<
+        typeof createTreePlugin<TreeNodeType>
+      >[0]
+    )(...args);
+
+export const treePluginExpandTemplate = createTreePluginTemplate<{
+  id: string;
+}>({
   addOptions() {
     return {
       defaultExpanded: false,
@@ -46,7 +67,9 @@ export const treePluginExpand = createTreePlugin({
   },
 });
 
-export const treePluginEditNode = createTreePlugin({
+export const treePluginEditNodeTemplate = createTreePluginTemplate<{
+  id: string;
+}>({
   activate({ viewSystem, eventBus }) {
     viewSystem.addNodeMenuItems([
       {
@@ -66,7 +89,9 @@ export const treePluginEditNode = createTreePlugin({
   },
 });
 
-export const treePluginInitView = createTreePlugin({
+export const treePluginInitViewTemplate = createTreePluginTemplate<{
+  id: string;
+}>({
   activate({ viewSystem }) {
     // Initial View System
     const IconCollapsed = ChevronRightIcon;
@@ -100,7 +125,9 @@ export const treePluginInitView = createTreePlugin({
       context: WidgetContext<any>;
     }) => {
       const { id } = node;
+      console.log("node:", node, "state:", dataStore.getData());
       const nodeData = dataStore.useNode(id);
+      if (!nodeData) return null;
       const { name, children } = nodeData;
       const viewState =
         viewSystem.viewStateStore.useRecord(id) ||

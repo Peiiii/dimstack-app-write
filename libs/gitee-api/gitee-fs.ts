@@ -28,7 +28,7 @@ const buildGiteeFS = ({
     if (!path.endsWith("/")) path += "/";
     const keepFile = path + ".keep";
     File.add({ owner, repo, path: keepFile, content: "placeholder" })
-      .then((r) => {
+      .then(() => {
         callback(null);
       })
       .catch(callback);
@@ -211,7 +211,12 @@ interface AuthInfo {
   scope: string;
 }
 
-const createGiteeFS = async ({ accessToken, owner, repo, refreshToken }) => {
+export const createGiteeFS = async ({
+  accessToken,
+  owner,
+  repo,
+  refreshToken,
+}) => {
   if (refreshAccessToken) {
     accessToken = await refreshAccessToken({ refreshToken });
   }

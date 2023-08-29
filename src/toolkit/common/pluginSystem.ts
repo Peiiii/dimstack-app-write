@@ -1,3 +1,5 @@
+import { SafeAny } from "@/toolkit/common/types";
+
 export const createPluginSystem = <
   M extends {
     [key: Exclude<string, "id" | "name" | "description" | "addOptions">]: (
@@ -5,7 +7,9 @@ export const createPluginSystem = <
     ) => any;
   } = {}
 >() => {
-  type PluginInitializationConfiguration<O extends {} = {}> = {
+  type PluginInitializationConfiguration<
+    O extends Record<string, SafeAny> = {}
+  > = {
     id?: string;
     name?: string;
     description?: string;
@@ -20,11 +24,13 @@ export const createPluginSystem = <
     configure(partialOptions: Partial<O>): PluginType<O>;
   } & M;
 
-  const createPlugin = (config: PluginInitializationConfiguration) => {
-    const {addOptions=()=>({})}=config;
-    type PluginOptions = ReturnType<typeof addOptions>;
+  const createPlugin = <T extends Record<string, SafeAny>>(
+    config: PluginInitializationConfiguration<T>
+  ) => {
+    // const { addOptions = () => ({}) } = config;
+    // type PluginOptions = ReturnType<typeof addOptions>;
 
-    return (partialOptions:Partial<PluginOptions>={}) => {
+    return (partialOptions: Partial<T> = {}) => {
       const {
         id,
         name,
@@ -33,7 +39,7 @@ export const createPluginSystem = <
         ...lifecycles
       } = config;
       const options = addOptions();
-      const configure = (partialOptions: Partial<PluginOptions>) => {
+      const configure = (partialOptions: Partial<T>) => {
         Object.assign(options, partialOptions);
         return plugin;
       };
@@ -56,7 +62,7 @@ export const createPluginSystem = <
       for (const k in lifecycles) {
         newLifecycles[k as keyof Lifecycles] = lifecycles[k].bind(plugin);
       }
-      return Object.assign(plugin, newLifecycles) as unknown as PluginType<PluginOptions>;
+      return Object.assign(plugin, newLifecycles) as unknown as PluginType<T>;
     };
   };
   return {

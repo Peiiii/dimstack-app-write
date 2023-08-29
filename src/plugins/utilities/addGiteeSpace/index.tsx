@@ -42,12 +42,13 @@ export const addGiteeSpace = createPlugin({
           platform: "gitee",
         },
         onFinish: (data) => {
-          console.log(data);
+          // console.log(data);
           xbook.notificationService.success("成功添加空间");
           const spaceStore = xbook.registry.get(
             "spaceStore"
           ) as DataStore<SpaceDef>;
-          spaceStore.getActions().upsert(data);
+          const id = `${data.platform}:${data.owner}:${data.repo}`;
+          spaceStore.getActions().upsert({ ...data, id });
         },
       });
       modal.open();
