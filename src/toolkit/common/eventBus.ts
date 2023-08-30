@@ -25,7 +25,7 @@ export function createEventBus() {
   }
 
   function emit(eventName: string, ...args: any[]): void {
-    console.log("emit", eventName, ...args);
+    // console.log("emit", eventName, ...args);
     // console.log("listeners", listeners);
     if (!listeners[eventName]) {
       return;

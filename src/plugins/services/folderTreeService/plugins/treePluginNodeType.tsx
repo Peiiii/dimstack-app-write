@@ -8,7 +8,7 @@ const getNodeType = (node: FolderTreeNode) => {
   else return node.type!;
 };
 
-const getNodeFileType = (node: any) => {
+const getNodeFileType = (_) => {
   // if (!node.id) return "dir";
   // if (!/.+\/.+/.test(node.id)) "dir";
   // else return "file";
@@ -16,16 +16,17 @@ const getNodeFileType = (node: any) => {
 };
 export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
   activate({ viewSystem, eventBus, dataStore }) {
-    viewSystem.setDefaultViewStateProvider((node, props) => {
+    viewSystem.setDefaultViewStateProvider(({ id }, props) => {
       let expandable;
+      const node = dataStore.getNode(id)!;
       if (getNodeType(node) === "dir") expandable = true;
       else expandable = false;
       return {
+        ...props,
         id: node.id,
         expanded: false,
         editMode: false,
         expandable,
-        ...props,
       };
     });
     viewSystem.renderer.register(
@@ -75,7 +76,7 @@ export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
       return nodes;
     };
     const focusNode = (node) => {
-      console.log("focusNode: ", node);
+      // console.log("focusNode: ", node);
       if (getNodeType(node) === "file") {
         viewSystem.viewStateStore.getActions().reduce((data) => {
           data = data.map((item) => ({ ...item, highlight: false }));

@@ -125,7 +125,6 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
       context: WidgetContext<any>;
     }) => {
       const { id } = node;
-      console.log("node:", node, "state:", dataStore.getData());
       const nodeData = dataStore.useNode(id);
       if (!nodeData) return null;
       const { name, children } = nodeData;
@@ -191,7 +190,7 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
       if (level === 0) classList.push("tree-root-node");
       if (highlight) classList.push("tree-node-highlight");
       return (
-        <Box w="100%">
+        <Box w="100%" className="tree-node-wrapper">
           {
             <Flex
               direction={"row"}
@@ -200,7 +199,7 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
               align={"center"}
               className={classList.join(" ")}
             >
-              <Box w={level * 4} />
+              <Box w={level * 4} flexShrink={0} />
               <Flex
                 direction={"row"}
                 h="2rem"
@@ -210,7 +209,7 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
                   node,
                   event,
                 }))}
-                className={"hover-action tree-node-header "}
+                className={"hover-action tree-node-header"}
               >
                 <Button
                   variant="link"

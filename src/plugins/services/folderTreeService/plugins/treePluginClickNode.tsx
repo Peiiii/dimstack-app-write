@@ -57,7 +57,7 @@ export default createTreePlugin<FolderTreeNode>({
           //   const children = fs.readdir("/");
           // });
         }
-        console.log("Space:", space);
+        // console.log("Space:", space);
       } else {
         console.log("node clicked:", node);
       }

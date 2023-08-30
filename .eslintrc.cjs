@@ -14,6 +14,10 @@ module.exports = {
       "warn",
       { allowConstantExport: true },
     ],
+    "no-console": [
+      "warn",
+      { allow: ["log", "clear", "info", "error", "dir", "trace"] },
+    ],
   },
   "@typescript-eslint/no-explicit-any": ["warn"],
   "@typescript-eslint/no-unused-vars": ["warn"],

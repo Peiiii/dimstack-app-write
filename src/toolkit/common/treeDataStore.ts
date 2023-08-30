@@ -203,19 +203,30 @@ export const createTreeDataStore = <T extends { [k: string]: any }>({
       (state) => state![name].data as TreeDataNode<T>
     );
   };
+
+  const findNode = (
+    current: TreeDataNode<T>,
+    id: string
+  ): TreeDataNode<T> | undefined => {
+    if (current[primaryKey] === id) return current;
+    if (current.children) {
+      for (const child of current.children) {
+        const found = findNode(child, id);
+        if (found) return found;
+      }
+    }
+    return undefined;
+  };
+  const getNode = (id: string) => {
+    return findNode(
+      (store.getState()[name] as ReturnType<(typeof slice)["getInitialState"]>)
+        .data,
+      id
+    );
+  };
   const useNode = (id: string) => {
     return useSelectedState(store, (state) => {
-      const findNode = (node: TreeDataNode<T>): TreeDataNode<T> | undefined => {
-        if (node[primaryKey] === id) return node;
-        if (node.children) {
-          for (const child of node.children) {
-            const found = findNode(child);
-            if (found) return found;
-          }
-        }
-        return undefined;
-      };
-      return findNode(state[name].data);
+      return findNode(state[name].data, id);
     });
   };
   const useInternalSelector = (selector) => {
@@ -260,10 +271,11 @@ export const createTreeDataStore = <T extends { [k: string]: any }>({
     useNode,
     onChange,
     getActions,
+    getNode,
     getData: () => {
-      return (store.getState() as { [k: string]: { data: TreeDataNode<T> } })[
-        name
-      ].data;
+      return (
+        store.getState()[name] as ReturnType<(typeof slice)["getInitialState"]>
+      ).data;
     },
     id: nanoid(),
     addObserver,
