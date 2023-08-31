@@ -5,7 +5,7 @@ export default createPlugin({
   initilize(xbook) {
     xbook.pipeService.on("spaceStore.spaces", (spaces: SpaceDef[]) => {
       spaces.forEach((space) => {
-        console.log("space:", space);
+        // console.log("space:", space);
         xbook.serviceBus.invoke("folderTreeService.add", space);
       });
     });

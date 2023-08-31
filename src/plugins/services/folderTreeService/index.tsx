@@ -42,7 +42,7 @@ export const folderTreeService = createPlugin({
         xbook.eventBus.on(`activity:${repo}:clicked`, () => {
           xbook.layoutService.sidebar.setView(repo);
         });
-        console.log("compoenents:", xbook.componentService.getComponents());
+        // console.log("compoenents:", xbook.componentService.getComponents());
       },
     });
   },

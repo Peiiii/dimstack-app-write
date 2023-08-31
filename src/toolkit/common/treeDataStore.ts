@@ -161,7 +161,7 @@ export const createTreeDataStore = <T extends { [k: string]: any }>({
     const nextState = store.getState();
     const differences = diff(prevState, nextState);
     if (differences) {
-      console.log("State changed:", differences);
+      // console.log("State changed:", differences);
       // 调用监听函数
       changeMonifierList.forEach((changeMonifier) => {
         changeMonifier(differences);

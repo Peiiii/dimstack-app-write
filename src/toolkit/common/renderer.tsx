@@ -115,7 +115,7 @@ export const createRenderer = (registryName: string = "componentRegistry") => {
     const Component = useComponent(type);
     if (!Component) {
       // requestComponent(type);
-      console.log("components:", store.getState());
+      // console.log("components:", store.getState());
       return (
         <Box>
           <Alert>Unknown component type: {type}</Alert>

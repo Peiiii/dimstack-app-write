@@ -17,11 +17,12 @@ export default createTreePlugin<FolderTreeNode>({
     } = context;
 
     eventBus.on("clickNode", async ({ node }: { node: FolderTreeNode }) => {
+      const spaceId = `${platform}:${owner}:${repo}`;
       if (node.id === "root" || node.type === "dir") {
         const spaceStore = xbook.registry.get(
           "spaceStore"
         ) as DataStore<SpaceDef>;
-        const spaceId = `${platform}:${owner}:${repo}`;
+
         const space = spaceStore.getRecord(spaceId)!;
         if (!space.auth) {
           const modal = modalService.createModal({
@@ -59,7 +60,7 @@ export default createTreePlugin<FolderTreeNode>({
         }
         // console.log("Space:", space);
       } else {
-        console.log("node clicked:", node);
+        xbook.serviceBus.invoke("openerService.open", spaceId, node);
       }
     });
   },

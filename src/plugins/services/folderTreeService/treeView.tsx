@@ -45,7 +45,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
       }),
     []
   );
-  console.log("会话");
+  // console.log("会话");
   return (
     <SideCard title={"会话"} className="channelList">
       {/* <Box m={2}>
