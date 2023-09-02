@@ -17,7 +17,7 @@ export default ({
   const spaceStore = xbook.registry.get("spaceStore") as DataStore<SpaceDef>;
   const space = spaceStore.useRecord(spaceId)!;
   const getFileContent = useCallback(async () => {
-    const { access_token, refresh_token } = space.auth;
+    const { access_token, refresh_token } = space.auth || {};
     const File = createGiteeClient({ accessToken: access_token }).File;
     return (await File.get({ owner: space.owner, repo: space.repo, path })).data
       .content;

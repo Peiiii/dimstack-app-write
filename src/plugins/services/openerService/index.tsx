@@ -2,7 +2,7 @@ import IframeOpener from "@/plugins/services/openerService/IframeOpener";
 import { createPlugin } from "@/toolkit/common/plugin";
 
 export default createPlugin({
-  addComponents(xbook) {
+  addComponents() {
     return {
       IframeOpener,
     };

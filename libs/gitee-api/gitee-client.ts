@@ -113,6 +113,9 @@ export const getLoginUrl = ({ redirectUri, clientId }) => {
   return `https://gitee.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=user_info%20projects`;
 };
 
+const prepareParams=(params:Record<string,any>)=>{
+  return Object.fromEntries(Object.entries(params).filter(([k,v])=>v !== undefined))
+}
 export const getGiteeAccessToken = async ({
   code,
   clientId,
@@ -205,13 +208,13 @@ export const createGiteeClient = ({ accessToken }: { accessToken? }) => {
 
   const User = {
     getInfo: async () => {
-      return axios.get(URLBuilder.getUserInfo(), { params: { access_token } });
+      return axios.get(URLBuilder.getUserInfo(), { params: prepareParams({ access_token }) });
     },
   };
   const Repo = {
     get: async ({ owner, repo }) => {
       return axios.get(URLBuilder.getRepo(owner, repo), {
-        params: { access_token },
+        params: prepareParams({ access_token }),
       });
     },
     add: async ({ repo }) => {
@@ -227,7 +230,7 @@ export const createGiteeClient = ({ accessToken }: { accessToken? }) => {
     },
     getList: async ({ page = 1, per_page = 20 }) => {
       return axios.get(URLBuilder.getRepoList(), {
-        params: { access_token, page, per_page },
+        params: prepareParams({ access_token, page, per_page }),
       });
     },
     delete: async ({ owner, repo }) => {
@@ -244,12 +247,12 @@ export const createGiteeClient = ({ accessToken }: { accessToken? }) => {
   const Branch = {
     get: async ({ owner, repo, branch }) => {
       return axios.get(URLBuilder.getBranch(owner, repo, branch), {
-        params: { access_token, owner, repo, branch },
+        params: prepareParams({ access_token, owner, repo, branch }),
       });
     },
     getList: async ({ owner, repo }) => {
       return axios.get(URLBuilder.getBranchList(owner, repo), {
-        params: { access_token, owner, repo },
+        params: prepareParams({ access_token, owner, repo }),
       });
     },
     add: async ({ owner, repo, branch, refs = "master" }) => {
@@ -265,7 +268,7 @@ export const createGiteeClient = ({ accessToken }: { accessToken? }) => {
 
   const getPathInfo = async ({ owner, repo, path }) => {
     return axios.get(URLBuilder.getPathContents(owner, repo, path), {
-      params: { access_token, owner, repo, path },
+      params: prepareParams({ access_token, owner, repo, path }),
     });
   };
 

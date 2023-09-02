@@ -154,6 +154,8 @@ export const createActivityBar = () =>
               flexFlow={direction}
               justify={device.isMobile() ? "space-around" : "flex-start"}
               minW={"60px"}
+              maxW={"64px"}
+              overflow={"hidden"}
               className="activity-bar"
               align="stretch"
               flexShrink={0}
@@ -177,12 +179,17 @@ export const createActivityBar = () =>
                     {...props}
                     className={className}
                     key={id}
+                    maxW={"100%"}
+                    overflow={"hidden"}
                     m="0 !important"
                     marginInlineStart={"10px"}
                     justify={"center"}
                     align="center"
                   >
                     <VStack
+                      maxW={"100%"}
+                      gap={0}
+                      overflow={"hidden"}
                       onClick={() => {
                         setActiveId(id);
                         eventBus.emit(`activity:${id}:clicked`);
@@ -197,6 +204,11 @@ export const createActivityBar = () =>
                         m="0 !important"
                         fontSize={textFontSize}
                         className="activity-text"
+                        maxW={"100%"}
+                        p="0px 4px"
+                        overflow={"hidden"}
+                        whiteSpace={"nowrap"}
+                        textOverflow={"ellipsis"}
                       >
                         {name}
                       </Text>
@@ -231,8 +243,13 @@ export const createActivityBar = () =>
                         marginInlineStart={"10px"}
                         justify={"center"}
                         align="center"
+                        maxW={"100%"}
+                        overflow={"hidden"}
                       >
                         <VStack
+                          maxW={"100%"}
+                          overflow={"hidden"}
+                          gap={0}
                           onClick={() => {
                             eventBus.emit(`shortcut:${id}:clicked`);
                           }}
@@ -247,6 +264,10 @@ export const createActivityBar = () =>
                             m="0 !important"
                             fontSize={textFontSize}
                             className="shortcut-text"
+                            maxW={"100%"}
+                            overflow={"hidden"}
+                            whiteSpace={"nowrap"}
+                            textOverflow={"ellipsis"}
                           >
                             {name}
                           </Text>

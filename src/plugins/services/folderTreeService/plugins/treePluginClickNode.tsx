@@ -24,15 +24,16 @@ export default createTreePlugin<FolderTreeNode>({
         ) as DataStore<SpaceDef>;
 
         const space = spaceStore.getRecord(spaceId)!;
-        if (!space.auth) {
-          const modal = modalService.createModal({
-            title: `登录 ${space.platform}`,
-            content: <Auth spaceId={spaceId} />,
-            footer: false,
-          });
-          modal.open();
+        if (!space) {
+        // if (!space.auth) {
+          // const modal = modalService.createModal({
+          //   title: `登录 ${space.platform}`,
+          //   content: <Auth spaceId={spaceId} />,
+          //   footer: false,
+          // });
+          // modal.open();
         } else {
-          const { access_token, refresh_token } = space.auth;
+          const { access_token, refresh_token } = space.auth||{};
           const File = createGiteeClient({ accessToken: access_token }).File;
           const info = await File.getInfo({
             owner,

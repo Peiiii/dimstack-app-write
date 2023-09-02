@@ -47,11 +47,11 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
   );
   // console.log("会话");
   return (
-    <SideCard title={"会话"} className="channelList">
+    <SideCard title={"文件"} className="channelList">
       {/* <Box m={2}>
         <Input size="sm" placeholder="搜索" />
       </Box> */}
-      <Box h="0.1rem" />
+      {/* <Box h="0.1rem" /> */}
       <Box w="100%" className="channel-tree">
         <Tree
           options={{ space }}

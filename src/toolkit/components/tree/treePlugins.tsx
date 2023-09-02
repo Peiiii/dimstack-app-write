@@ -212,6 +212,7 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
                 className={"hover-action tree-node-header"}
               >
                 <Button
+                  pl="6px"
                   variant="link"
                   color={"inherit"}
                   leftIcon={

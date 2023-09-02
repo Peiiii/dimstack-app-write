@@ -2,19 +2,19 @@ import { DataStore } from "@/toolkit/common/dataStore";
 import { createPlugin } from "@/toolkit/common/plugin";
 import { createModalForm } from "@/toolkit/components/modalForm";
 import { SpaceDef } from "@/toolkit/types/space";
-import { AiOutlineLogin } from "react-icons/ai";
+import { AiOutlineLogin, AiOutlinePlayCircle, AiOutlinePlus, AiOutlinePlusCircle } from "react-icons/ai";
 
 export const addGiteeSpace = createPlugin({
   initilize(xbook) {
     const id = "addGiteeRepo";
     xbook.layoutService.activityBar.addShortcut({
       id,
-      icon: AiOutlineLogin,
-      name: "登录",
+      icon: AiOutlinePlusCircle,
+      name: "添加",
     });
     xbook.eventBus.on(`shortcut:${id}:clicked`, () => {
       const modal = createModalForm({
-        title: "登录",
+        title: "添加",
         fieldList: [
           {
             name: "platform",
