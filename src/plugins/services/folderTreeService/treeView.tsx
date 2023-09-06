@@ -47,7 +47,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
   );
   // console.log("会话");
   return (
-    <SideCard title={"文件"} className="channelList">
+    <SideCard title={`${space.repo}`} className="channelList">
       {/* <Box m={2}>
         <Input size="sm" placeholder="搜索" />
       </Box> */}

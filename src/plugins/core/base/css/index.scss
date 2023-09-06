@@ -16,18 +16,23 @@ body {
   height: 100%;
 }
 
-.text-alpha-800{
+.text-alpha-800 {
   opacity: 0.8;
 }
 
-.state-highlight-button{
+.state-highlight-button {
   outline: cadetblue !important;
   color: cadetblue !important;
 }
-.hover-action {
 
-  .hover-show {
-    visibility: hidden;
+.hover-action {
+  &:not(:hover) {
+
+    .hover-show {
+      visibility: hidden;
+      display: none;
+    }
+
   }
 
   &:hover {
@@ -45,6 +50,7 @@ body {
     }
 
     .tree-node-header {
+
       // &:hover {
       //   background-color: inherit !important;
       // }
@@ -58,6 +64,7 @@ body {
   .tree-node {
     .tree-node-header {
       border-radius: 0.3rem;
+      font-weight: bold;
     }
 
     &:hover .tree-node-header {
@@ -66,9 +73,10 @@ body {
   }
 
   .tree-node.tree-node-highlight {
-    .hover-show{
+    .hover-show {
       visibility: visible !important;
     }
+
     .tree-node-header {
       background-color: var(--background-color-item-focused);
     }

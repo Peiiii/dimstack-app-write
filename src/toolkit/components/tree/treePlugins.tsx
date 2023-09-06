@@ -10,6 +10,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Text,
 } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
 import { AiOutlineEllipsis } from "react-icons/ai";
@@ -190,71 +191,111 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
       if (level === 0) classList.push("tree-root-node");
       if (highlight) classList.push("tree-node-highlight");
       return (
-        <Box w="100%" className="tree-node-wrapper">
-          {
+        <Flex
+          w="100%"
+          direction={"column"}
+          overflow={"hidden"}
+          className="tree-node-wrapper"
+        >
+          <Flex
+            direction={"row"}
+            h="2rem"
+            w="100%"
+            align={"center"}
+            overflow={"hidden"}
+            className={classList.join(" ")}
+          >
+            <Box className="placeholder" w={level * 4 + 2} flexShrink={0} />
             <Flex
+              minW={0}
+              overflow={"hidden"}
               direction={"row"}
               h="2rem"
-              w="100%"
-              align={"center"}
-              className={classList.join(" ")}
+              flexGrow={1}
+              align="center"
+              onClick={eventBus.connector("clickNode", (event) => ({
+                node,
+                event,
+              }))}
+              className={"hover-action tree-node-header"}
             >
-              <Box w={level * 4} flexShrink={0} />
               <Flex
                 direction={"row"}
-                h="2rem"
-                flexGrow={1}
+                pl="6p"
                 align="center"
-                onClick={eventBus.connector("clickNode", (event) => ({
-                  node,
-                  event,
-                }))}
-                className={"hover-action tree-node-header"}
+                overflow={"hidden"}
+                className="hover-action"
               >
-                <Button
-                  pl="6px"
-                  variant="link"
-                  color={"inherit"}
-                  leftIcon={
-                    expandable ? (
-                      expanded ? (
-                        viewSystem.render("icon-expanded")
-                      ) : (
-                        viewSystem.render("icon-collapsed")
-                      )
+                <Flex pr="0.5rem" alignItems={"center"}>
+                  {expandable ? (
+                    expanded ? (
+                      viewSystem.render("icon-expanded")
                     ) : (
-                      <Box w="0.5rem"></Box>
+                      viewSystem.render("icon-collapsed")
                     )
-                  }
-                >
-                  {viewSystem.render("icon-node-type", { node })}
-                  <Box w="0.5em"></Box>
-                  {editMode ? (
-                    <Input
-                      ref={inputRef}
-                      autoFocus
-                      size={"sm"}
-                      onChange={eventBus.connector("editProgress", (event) => ({
-                        node,
-                        event,
-                      }))}
-                      onBlur={eventBus.connector("editBlur", (event) => ({
-                        node,
-                        event,
-                      }))}
-                      defaultValue={name}
-                    />
                   ) : (
-                    name
+                    <Box visibility={"hidden"}>
+                      {viewSystem.render("icon-collapsed")}
+                    </Box>
                   )}
-                </Button>
-                <Box flexGrow={1} />
-                {actionBar}
+                </Flex>
+                {viewSystem.render("icon-node-type", { node })}
+                <Box w="0.5em"></Box>
+                {editMode ? (
+                  <Input
+                    ref={inputRef}
+                    autoFocus
+                    size={"sm"}
+                    onChange={eventBus.connector("editProgress", (event) => ({
+                      node,
+                      event,
+                    }))}
+                    onBlur={eventBus.connector("editBlur", (event) => ({
+                      node,
+                      event,
+                    }))}
+                    defaultValue={name}
+                  />
+                ) : (
+                  <Text
+                    textOverflow={"ellipsis"}
+                    whiteSpace={"nowrap"}
+                    overflow={"hidden"}
+                  >
+                    {name}
+                  </Text>
+                )}
               </Flex>
-              <Box w="0.5rem" />
+              {/* <Button
+                pl="6px"
+                variant="link"
+                color={"inherit"}
+                leftIcon={
+                  expandable ? (
+                    expanded ? (
+                      viewSystem.render("icon-expanded")
+                    ) : (
+                      viewSystem.render("icon-collapsed")
+                    )
+                  ) : (
+                    <Box w="0.5rem"></Box>
+                  )
+                }
+              >
+              
+              </Button> */}
+              <Box flexGrow={1} />
+              <Box className="hover-show">{actionBar}</Box>
             </Flex>
-          }
-          <Box {...(expanded ? {} : { display: "none" })}>
+            <Box w="0.5rem" flexShrink={0} />
+          </Flex>
+          <Flex
+            w="100%"
+            direction={"column"}
+            overflow={"hidden"}
+            className="tree-node-children-list"
+            {...(expanded ? {} : { display: "none" })}
+          >
             {children &&
               children.map((node) =>
                 viewSystem.renderNode({
@@ -262,8 +303,8 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
                   level: level + 1,
                 })
               )}
-          </Box>
-        </Box>
+          </Flex>
+        </Flex>
       );
     };
     viewSystem.renderer.register("tree-node", TreeNode);

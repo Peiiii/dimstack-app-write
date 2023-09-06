@@ -8,7 +8,13 @@ export default ({ title, children, className = "" }) => {
       overflow={"hidden"}
       flexShrink={0}
     >
-      <HStack w="100%" h="3rem" align={"center"} className="side-card-header">
+      <HStack
+        w="100%"
+        h="3rem"
+        align={"center"}
+        flexShrink={0}
+        className="side-card-header"
+      >
         <Box p="0 1rem">
           <Text as="b">{title}</Text>
         </Box>

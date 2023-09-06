@@ -6,6 +6,8 @@ import { spaceService } from "@/plugins/services/spaceService";
 import { listenGiteeLoginCallback } from "@/plugins/services/listenGiteeLoginCallback";
 import displaySpaces from "@/plugins/core/displaySpaces";
 import openerService from "@/plugins/services/openerService";
+import theme from "@/plugins/utilities/theme";
+import settings from "@/plugins/widgets/settings";
 
 xbook.pluginService.use([
   base,
@@ -15,5 +17,7 @@ xbook.pluginService.use([
   listenGiteeLoginCallback,
   addGiteeSpace,
   openerService,
+  settings,
+  theme,
 ]);
 xbook.layoutService.renderLayout(document.getElementById("root")!);

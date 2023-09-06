@@ -4,8 +4,8 @@ import { AiFillPlusCircle } from "react-icons/ai";
 export default createTreePlugin<FolderTreeNode>({
   addOptions() {
     return {
-      addable: ({ level }) => {
-        return level === 1;
+      addable: ({ node }) => {
+        return node.type==="dir";
       },
       addNodeAt: () => {},
     };

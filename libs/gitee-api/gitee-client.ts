@@ -113,9 +113,11 @@ export const getLoginUrl = ({ redirectUri, clientId }) => {
   return `https://gitee.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=user_info%20projects`;
 };
 
-const prepareParams=(params:Record<string,any>)=>{
-  return Object.fromEntries(Object.entries(params).filter(([k,v])=>v !== undefined))
-}
+const prepareParams = (params: Record<string, any>) => {
+  return Object.fromEntries(
+    Object.entries(params).filter(([, v]) => v !== undefined)
+  );
+};
 export const getGiteeAccessToken = async ({
   code,
   clientId,
@@ -136,7 +138,16 @@ export const getGiteeAccessToken = async ({
   return res.data;
 };
 
-export const refreshAccessToken = async ({ refreshToken }) => {
+export const refreshAccessToken = async ({
+  refreshToken,
+}): Promise<{
+  access_token: string;
+  created_at: number;
+  expires_in: number;
+  refresh_token: string;
+  scope: string;
+  token_type: string;
+}> => {
   const url = `https://gitee.com/oauth/token?grant_type=refresh_token&refresh_token=${refreshToken}`;
   const res = await axios.post(url);
   // store.set("gitee", res.data);
@@ -208,7 +219,9 @@ export const createGiteeClient = ({ accessToken }: { accessToken? }) => {
 
   const User = {
     getInfo: async () => {
-      return axios.get(URLBuilder.getUserInfo(), { params: prepareParams({ access_token }) });
+      return axios.get(URLBuilder.getUserInfo(), {
+        params: prepareParams({ access_token }),
+      });
     },
   };
   const Repo = {

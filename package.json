@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "git:update": "git add . && git commit -m \" update somthing \" &&  git push",
     "deploy": "yarn build && yarn oss:upload",
+    "update": "yarn deploy && yarn git:update",
     "oss:upload": "ossutil64 cp -r -u dist/ oss://write-dimstack-com/ -c ./.ossutilconfig.local"
   },
   "dependencies": {

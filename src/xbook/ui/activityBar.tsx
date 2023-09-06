@@ -274,16 +274,16 @@ export const createActivityBar = () =>
                         </VStack>
                       </Stack>
                     </PopoverTrigger>
-                    {/* <Portal>
+                    <Portal>
                       <PopoverContent maxW={"100vw"}>
                         <PopoverArrow />
                         <PopoverBody>
                           {componentService.render({
-                            type: `/shortcutPages/${id}`,
+                            type: `shortcut:${id}:page`,
                           })}
                         </PopoverBody>
                       </PopoverContent>
-                    </Portal> */}
+                    </Portal>
                   </Popover>
                 );
               })}
