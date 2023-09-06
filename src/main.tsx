@@ -8,6 +8,7 @@ import displaySpaces from "@/plugins/core/displaySpaces";
 import openerService from "@/plugins/services/openerService";
 import theme from "@/plugins/utilities/theme";
 import settings from "@/plugins/widgets/settings";
+import clearLocalCache from "@/plugins/utilities/clearLocalCache";
 
 xbook.pluginService.use([
   base,
@@ -19,5 +20,6 @@ xbook.pluginService.use([
   openerService,
   settings,
   theme,
+  clearLocalCache,
 ]);
 xbook.layoutService.renderLayout(document.getElementById("root")!);
