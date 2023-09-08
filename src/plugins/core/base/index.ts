@@ -73,6 +73,7 @@ const PCLayout: Layout = {
   type: "column",
   props: {
     h: "100%",
+    w: "100%",
   },
   children: [
     {

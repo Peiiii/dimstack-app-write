@@ -9,14 +9,18 @@ import openerService from "@/plugins/services/openerService";
 import theme from "@/plugins/utilities/theme";
 import settings from "@/plugins/widgets/settings";
 import clearLocalCache from "@/plugins/utilities/clearLocalCache";
+import asyncPluginService from "@/plugins/services/asyncPluginService";
+import fileSystemService from "@/plugins/services/fileSystemService";
 
 xbook.pluginService.use([
   base,
+  asyncPluginService,
   folderTreeService,
   spaceService,
   displaySpaces,
   listenGiteeLoginCallback,
   addGiteeSpace,
+  fileSystemService,
   openerService,
   settings,
   theme,
