@@ -116,7 +116,7 @@ export default createPlugin({
   initilize(xbook) {
     (window as any).xbook = xbook;
     if (device.isMobile()) {
-      // xbook.layoutService.pageBox.hideTabBar();
+      xbook.layoutService.pageBox.showTabBar();
       xbook.layoutService.workbench.setLayout(MobileLayout);
       xbook.layoutService.sidebar.hide();
       xbook.layoutService.activityBar.hide();
@@ -137,7 +137,7 @@ export default createPlugin({
         xbook.layoutService.sidebar.setFullwidth(false);
       });
     } else {
-      // xbook.layoutService.pageBox.hideTabBar();
+      xbook.layoutService.pageBox.showTabBar();
       xbook.layoutService.workbench.setLayout(PCLayout);
       xbook.layoutService.sidebar.show();
       xbook.layoutService.sidebar.setFullwidth(false);
