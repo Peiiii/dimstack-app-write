@@ -21,6 +21,7 @@ import { cacheService } from "xbook/services/cacheService";
 import { commandService } from "xbook/services/commandService";
 import { componentService } from "./componentService";
 import { AnyFunction, SafeAny } from "xbook/common/types";
+import { createShell } from "xbook/ui/shell";
 
 type ActivityBarMethods = {
   addActivity(activity: ActivityItem): SafeAny;
@@ -82,6 +83,7 @@ const cache = cacheService.space("activityBar");
 export const createActivityBar = () =>
   createDeferredComponentProxy<ActivityBarMethods>(
     ({ proxy }) => {
+      const shell = createShell(proxy, "activityBar");
       // const isMobile = device.isMobile();
       const isMobile = false;
       const direction = isMobile ? "row" : "column";
@@ -89,10 +91,12 @@ export const createActivityBar = () =>
         "activityBar.activeId",
         ""
       );
-      const visibilityControl = ProxiedControls.useVisibilityControl(
-        proxy,
-        true
-      );
+      const {
+        state: visible,
+        toggleState: toggle,
+        setTrue: show,
+        setFalse: hide,
+      } = shell.useCachedBoolState("visible", true);
       const [activityList, setActivityList] = cache.useCachedState<
         ActivityItem[]
       >("activityList", []);
@@ -130,8 +134,19 @@ export const createActivityBar = () =>
           showActivity,
           addShortcut: shortcutActions.add,
           setHighlightActivity,
+          show,
+          hide,
+          toggle,
         });
-      }, [activityList, shortcutList, setActivityList, setShortcutList]);
+      }, [
+        activityList,
+        shortcutList,
+        setActivityList,
+        setShortcutList,
+        show,
+        hide,
+        toggle,
+      ]);
 
       const crossDirection = (direction: string) => {
         return direction === "row" ? "column" : "row";
@@ -151,7 +166,7 @@ export const createActivityBar = () =>
       const iconFontSize = "1.5rem";
       return (
         <>
-          {visibilityControl.visible && (
+          {visible && (
             <Stack
               flexFlow={direction}
               justify={isMobile ? "space-around" : "flex-start"}

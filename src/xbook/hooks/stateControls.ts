@@ -1,18 +1,10 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyFunction = (...args: any[]) => any;
-const useStateControl = (proxy, initialState) => {
+const useStateControl = (initialState) => {
   const [state, setState] = useState(initialState);
-  useEffect(() => {
-    const getState = () => {
-      return state;
-    };
-    proxy.register({
-      setState,
-      getState,
-    });
-  }, [state, setState]);
-  return [state, setState];
+  const getState = useCallback(() => state, [state]);
+  return { state, setState, getState };
 };
 const useVisibilityControl = (proxy, defaultValue) => {
   const [visible, setVisible] = useState(defaultValue);
@@ -75,7 +67,7 @@ export type VisibilityControl = {
   show: AnyFunction;
   toggle: AnyFunction;
 };
-export const ProxiedControls = {
+export const StateControls = {
   useStateControl,
   useVisibilityControl,
   useBooleanControl,

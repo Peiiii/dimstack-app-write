@@ -46,14 +46,13 @@ export function useDeferredComponentProxy<T extends DeferredProxySpec>(
 }
 
 export function createDeferredComponentProxy<T extends DeferredProxySpec>(
-  createInstance: ({
+  CreateInstance: ({
     proxy,
   }: {
     proxy: DeferredProxy<T>;
   }) => React.ReactElement,
   onRegister?: (name: keyof T, func?: T[keyof T]) => void
 ): DeferredComponentProxy<T> {
-  const CreateInstance = createInstance;
   const proxy = createDeferredProxy<T>((name, func) => {
     if (onRegister) {
       onRegister(name, func);

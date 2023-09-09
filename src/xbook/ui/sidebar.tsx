@@ -8,6 +8,8 @@ import { commandService } from "xbook/services/commandService";
 import { componentService } from "./componentService";
 import { LayoutNode } from "@/toolkit/common/renderer";
 import { AnyFunction } from "@/toolkit/common/types";
+import { DeferredProxy, DeferredProxySpec } from "xbook/common/deferredProxy";
+import { createShell } from "xbook/ui/shell";
 type View = {
   id: string;
   viewData: LayoutNode;
@@ -29,16 +31,26 @@ export const createSidebar = () =>
     setFullwidth: AnyFunction;
   }>(
     ({ proxy }) => {
+      const shell = createShell(proxy, "sidebar");
       // const isMobile=device.isMobile();
+
       const isMobile = false;
+
       const [viewList, setViewList] = cache.useCachedState<View[]>(
         "viewList",
         []
       );
-      const visibilityControl = ProxiedControls.useVisibilityControl(
-        proxy,
-        true
-      );
+
+      const {
+        state: visible,
+        toggleState: toggle,
+        setTrue: show,
+        setFalse: hide,
+      } = shell.useCachedBoolState("visible", true);
+
+      const { getState: getFullwidth, setState: setFullwidth } =
+        shell.useCachedBoolState("fullwidth", true);
+
       const fullwidthControl = ProxiedControls.useBeanControl(
         proxy,
         "fullwidth",
@@ -107,14 +119,20 @@ export const createSidebar = () =>
           addView,
           setView,
           hideView,
+          show,
+          hide,
+          toggle,
+          getFullwidth,
+          setFullwidth,
         });
-      }, [setViewList]);
+      }, [setViewList, show, hide, toggle, getFullwidth, setFullwidth]);
 
       const options = {};
 
       if (isMobile) {
         options["w"] = "100%";
       }
+
       useEffect(() => {
         if (isMobile) {
           if (fullwidthControl.value) {
@@ -133,7 +151,7 @@ export const createSidebar = () =>
               maxH={"100%"}
               w="13em"
               {...options}
-              display={visibilityControl.visible ? "block" : "none"}
+              display={visible ? "block" : "none"}
               flexShrink={0}
               flexGrow={1}
               className="sidebar sidebarV2"
