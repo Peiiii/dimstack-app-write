@@ -2,7 +2,12 @@ import { DataStore } from "@/toolkit/common/dataStore";
 import { createPlugin } from "@/toolkit/common/plugin";
 import { createModalForm } from "@/toolkit/components/modalForm";
 import { SpaceDef } from "@/toolkit/types/space";
-import { AiOutlineLogin, AiOutlinePlayCircle, AiOutlinePlus, AiOutlinePlusCircle } from "react-icons/ai";
+import {
+  AiOutlineLogin,
+  AiOutlinePlayCircle,
+  AiOutlinePlus,
+  AiOutlinePlusCircle,
+} from "react-icons/ai";
 
 export const addGiteeSpace = createPlugin({
   initilize(xbook) {

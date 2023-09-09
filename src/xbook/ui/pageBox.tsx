@@ -23,6 +23,7 @@ type PageBoxMethods = {
   removePage(id: string): void;
   showPage(id: string): void;
   hideTabBar(): void;
+  showTabBar(): void;
 } & VisibilityControl;
 
 const cache = cacheService.space("pageBox", "localStorage");
@@ -77,6 +78,7 @@ export const createPageBox = () =>
           }
         };
         const showPage = (id: string) => {
+          console.log("showPage:", id);
           setPageList((pageList) => {
             for (const p of pageList) {
               if (p.id === id) {
@@ -93,11 +95,15 @@ export const createPageBox = () =>
         const hideTabBar = () => {
           setTabBarVisible(false);
         };
+        const showTabBar = () => {
+          setTabBarVisible(true);
+        };
         proxy.register({
           addPage,
           showPage,
           removePage,
           hideTabBar,
+          showTabBar,
         });
       }, [pageList, setPageList, setTabBarVisible, tabBarVisible, proxy]);
       const tabsView = pageList.map((page) => {
@@ -114,11 +120,18 @@ export const createPageBox = () =>
             pr="5px"
             align={"center"}
             justify="flex-start"
+            overflow={"hidden"}
             onClick={() => {
               proxy.showPage(id);
             }}
           >
-            <Box>{title}</Box>
+            <Box
+              textOverflow={"ellipsis"}
+              overflow={"hidden"}
+              whiteSpace={"nowrap"}
+            >
+              {title}
+            </Box>
             <Icon
               as={VscClose}
               onClick={(e) => {
@@ -142,6 +155,7 @@ export const createPageBox = () =>
             m="0 !important"
             h="100%"
             w="100%"
+            id={id}
             overflow={"auto"}
             display={active ? "block" : "none"}
           >
@@ -149,7 +163,7 @@ export const createPageBox = () =>
           </Box>
         );
       });
-
+      console.log("pageList:", JSON.stringify(pageList));
       return (
         <VStack
           w="100%"
@@ -173,7 +187,8 @@ export const createPageBox = () =>
                   mr="5px"
                   as={AiOutlineMenuFold}
                   onClick={() => {
-                    commandService.executeCommand("sidebar.toggle");
+                    // commandService.executeCommand("sidebar.toggle");
+                    commandService.executeCommand("client:toggleHome");
                   }}
                 ></Icon>
                 {tabsView}

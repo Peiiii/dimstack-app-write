@@ -82,7 +82,9 @@ const cache = cacheService.space("activityBar");
 export const createActivityBar = () =>
   createDeferredComponentProxy<ActivityBarMethods>(
     ({ proxy }) => {
-      const direction = device.isMobile() ? "row" : "column";
+      // const isMobile = device.isMobile();
+      const isMobile = false;
+      const direction = isMobile ? "row" : "column";
       const [activeId, setActiveId] = useLocalStorage(
         "activityBar.activeId",
         ""
@@ -136,7 +138,7 @@ export const createActivityBar = () =>
       };
 
       const options = {};
-      if (device.isMobile()) {
+      if (isMobile) {
         options["w"] = "100%";
         options["minH"] = "48px";
         options["p"] = "0.3rem 0.5rem";
@@ -152,7 +154,7 @@ export const createActivityBar = () =>
           {visibilityControl.visible && (
             <Stack
               flexFlow={direction}
-              justify={device.isMobile() ? "space-around" : "flex-start"}
+              justify={isMobile ? "space-around" : "flex-start"}
               minW={"60px"}
               maxW={"64px"}
               overflow={"hidden"}
@@ -216,7 +218,7 @@ export const createActivityBar = () =>
                   </Stack>
                 );
               })}
-              {!device.isMobile() && <Stack flexGrow={1}></Stack>}
+              {!isMobile && <Stack flexGrow={1}></Stack>}
               {shortcutList.map((shortcut) => {
                 const { icon, name, id } = shortcut;
                 const classList: string[] = ["activity", "shortcut"];
@@ -230,7 +232,7 @@ export const createActivityBar = () =>
                 return (
                   <Popover
                     key={id}
-                    placement={device.isMobile() ? "auto" : "right-end"}
+                    placement={isMobile ? "auto" : "right-end"}
                     isLazy
                   >
                     <PopoverTrigger>

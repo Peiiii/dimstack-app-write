@@ -1,9 +1,9 @@
-import { Button, Spacer } from "@chakra-ui/react";
+import { Box, Button, Spacer } from "@chakra-ui/react";
 import xbook from "xbook/index";
 
 export default ({ spaceId }) => {
   return (
-    <Spacer>
+    <Box p="1rem">
       <Button
         onClick={() => {
           xbook.serviceBus.invoke("redirectAuthPage", spaceId);
@@ -11,6 +11,6 @@ export default ({ spaceId }) => {
       >
         登录Gitee
       </Button>
-    </Spacer>
+    </Box>
   );
 };

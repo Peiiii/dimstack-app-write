@@ -1,10 +1,10 @@
-import { createRenderer } from "@/toolkit/common/renderer";
 import { Box } from "@chakra-ui/react";
 import { createActivityBar } from "./activityBar";
 import { createPageBox } from "./pageBox";
 import { createSidebar } from "./sidebar";
 import { createStatusBar } from "./statusBar";
 import { createTitleBar } from "./titleBar";
+import { createRenderer } from "xbook/common/renderer";
 export const activityBar = createActivityBar();
 export const statusBar = createStatusBar();
 export const titleBar = createTitleBar();
@@ -19,6 +19,7 @@ componentService.register("row", ({ children, ...rest }) => (
     overflow={"hidden"}
     className="row"
     flexDirection="row"
+    w="100%"
     {...rest}
   >
     {children}
@@ -32,6 +33,7 @@ componentService.register("column", ({ children, ...rest }) => (
     overflow={"hidden"}
     className="colomn"
     flexDirection="column"
+    h="100%"
     {...rest}
   >
     {children}

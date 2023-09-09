@@ -13,58 +13,50 @@ const MobileLayout: Layout = {
   type: "column",
   props: {
     h: "100%",
+    w: "100%",
+    className: "layout",
   },
   children: [
     {
       type: "row",
       props: {
+        h: "100%",
         flexGrow: 1,
+        className: "middle-row",
       },
       children: [
         {
           type: "row",
           props: {
-            flexGrow: 1,
+            h: "100%",
+            flexShrink: 0,
+            className: "",
           },
           children: [
             {
-              type: "column",
-              props: {
-                // w:"100%"
-                h: "100%",
-                overflow: "hidden",
-                id: "homeBox",
-              },
-              children: [
-                {
-                  type: "row",
-                  props: {
-                    flexGrow: 1,
-                  },
-                  children: [
-                    {
-                      type: "sidebar",
-                    },
-                  ],
-                },
-                {
-                  type: "row",
-                  props: {
-                    flexShrink: 0,
-                  },
-                  children: [
-                    {
-                      type: "activityBar",
-                    },
-                  ],
-                },
-              ],
+              type: "activityBar",
+            },
+            {
+              type: "sidebar",
             },
             {
               type: "pageBox",
             },
           ],
         },
+
+        // {
+        //   type: "row",
+        //   props: {
+        //     h: "100%",
+        //     flexGrow: 1,
+        //   },
+        //   children: [
+        //     {
+        //       type: "pageBox",
+        //     },
+        //   ],
+        // },
       ],
     },
   ],
@@ -79,26 +71,21 @@ const PCLayout: Layout = {
     {
       type: "row",
       props: {
+        h: "100%",
         flexGrow: 1,
+        className: "middle-row",
       },
       children: [
         {
           type: "row",
           props: {
             flexShrink: 0,
+            h: "100%",
           },
           children: [
             {
               type: "activityBar",
             },
-          ],
-        },
-        {
-          type: "row",
-          props: {
-            flexGrow: 1,
-          },
-          children: [
             {
               type: "sidebar",
             },
@@ -107,14 +94,29 @@ const PCLayout: Layout = {
             },
           ],
         },
+        // {
+        //   type: "row",
+        //   props: {
+        //     flexGrow: 1,
+        //   },
+        //   children: [
+        //     {
+        //       type: "sidebar",
+        //     },
+        //     {
+        //       type: "pageBox",
+        //     },
+        //   ],
+        // },
       ],
     },
   ],
 };
 export default createPlugin({
   initilize(xbook) {
-    xbook.layoutService.pageBox.hideTabBar();
+    (window as any).xbook = xbook;
     if (device.isMobile()) {
+      // xbook.layoutService.pageBox.hideTabBar();
       xbook.layoutService.workbench.setLayout(MobileLayout);
       xbook.layoutService.sidebar.hide();
       xbook.layoutService.activityBar.hide();
@@ -135,6 +137,7 @@ export default createPlugin({
         xbook.layoutService.sidebar.setFullwidth(false);
       });
     } else {
+      // xbook.layoutService.pageBox.hideTabBar();
       xbook.layoutService.workbench.setLayout(PCLayout);
       xbook.layoutService.sidebar.show();
       xbook.layoutService.sidebar.setFullwidth(false);

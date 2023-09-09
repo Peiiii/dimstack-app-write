@@ -1,6 +1,7 @@
 import { FolderTreeNode } from "@/plugins/services/folderTreeService/types";
 import IframeOpener from "@/plugins/services/openerService/IframeOpener";
 import { createPlugin } from "@/toolkit/common/plugin";
+import { device } from "xbook/common/device";
 type Subscriber = (s: string) => void;
 type Unsubscriber = () => void;
 type FileHandler = {
@@ -48,6 +49,8 @@ export default createPlugin({
                 file.path!
               )
             );
+            if (device.isMobile())
+              xbook.commandService.executeCommand("client:toggleHome");
           }
           // if (file.path?.endsWith(".md")) {
           //   xbook.layoutService.pageBox.addPage({

@@ -29,6 +29,8 @@ export const createSidebar = () =>
     setFullwidth: AnyFunction;
   }>(
     ({ proxy }) => {
+      // const isMobile=device.isMobile();
+      const isMobile = false;
       const [viewList, setViewList] = cache.useCachedState<View[]>(
         "viewList",
         []
@@ -110,11 +112,11 @@ export const createSidebar = () =>
 
       const options = {};
 
-      if (device.isMobile()) {
+      if (isMobile) {
         options["w"] = "100%";
       }
       useEffect(() => {
-        if (device.isMobile()) {
+        if (isMobile) {
           if (fullwidthControl.value) {
             document.getElementById("homeBox")!.style.width = "100%";
           } else {

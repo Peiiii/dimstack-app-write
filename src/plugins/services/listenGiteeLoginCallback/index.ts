@@ -2,7 +2,6 @@ import { appInfo } from "@/plugins/services/listenGiteeLoginCallback/appInfo";
 import { DataStore } from "@/toolkit/common/dataStore";
 import { createPlugin } from "@/toolkit/common/plugin";
 import { SpaceDef } from "@/toolkit/types/space";
-import { space } from "@chakra-ui/react";
 import { getLoginUrl } from "libs/gitee-api";
 import giteeClient from "libs/gitee-api/gitee-client";
 import history from "xbook/common/history";

@@ -1,6 +1,7 @@
 export const device = (() => {
   const isMobile = () => {
-    return false;
+    // return true;
+    // return false;
     let check = false;
     (function (a) {
       if (
