@@ -163,7 +163,7 @@ export const createPageBox = () =>
           </Box>
         );
       });
-      console.log("pageList:", JSON.stringify(pageList));
+      // console.log("pageList:", JSON.stringify(pageList));
       return (
         <VStack
           w="100%"

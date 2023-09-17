@@ -11,13 +11,15 @@ export const folderTreeService = createPlugin({
     return {
       folderTree: (props: { space: SpaceDef }) => {
         // console.log("Creating folder tree...:", props);
+        // console.log("props:",props);
         return <TreeView {...props} />;
       },
     };
   },
   initilize(xbook) {
     xbook.serviceBus.exposeAt("folderTreeService", {
-      add: ({ owner, repo, platform }) => {
+      add: (space:SpaceDef) => {
+        const {repo}=space;
         xbook.layoutService.activityBar.addActivity({
           id: repo,
           name: repo,
@@ -29,11 +31,7 @@ export const folderTreeService = createPlugin({
             viewData: {
               type: "folderTree",
               props: {
-                space: {
-                  owner,
-                  repo,
-                  platform,
-                },
+                space,
               },
             },
           },

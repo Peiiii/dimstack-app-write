@@ -1,36 +1,75 @@
 import { SafeAny } from "@/toolkit/common/types";
 
-export const createPluginSystem = <
-  M extends {
-    [key: Exclude<string, "id" | "name" | "description" | "addOptions">]: (
-      ...args: any[]
-    ) => any;
-  } = {}
->() => {
-  type PluginInitializationConfiguration<
-    O extends Record<string, SafeAny> = {}
-  > = {
-    id?: string;
-    name?: string;
-    description?: string;
-    addOptions?: () => O;
-  } & M;
+export type PluginInitializationConfiguration<
+  TypeOptions extends Record<string, SafeAny>,
+  TypeMethodName extends string,
+  TypeContext
+> = {
+  id?: string;
+  name?: string;
+  description?: string;
+  addOptions?: () => TypeOptions;
+} & {
+  [methdName in TypeMethodName]: (
+    this: {
+      id?: string;
+      name?: string;
+      description?: string;
+      options: TypeOptions;
+    },
+    context: TypeContext
+  ) => void;
+};
 
-  type PluginType<O = {}> = {
+export const createPluginSystem = <
+  TypeContext,
+  TypeMethodName extends string
+>() => {
+  // type PluginInitializationConfiguration<
+  //   TypeOptions extends Record<string, SafeAny>,
+  //   M
+  // > = {
+  //   id?: string;
+  //   name?: string;
+  //   description?: string;
+  //   addOptions?: () => TypeOptions;
+  // } & M;
+
+  type PluginType<M, O> = {
     id?: string;
     name?: string;
     description?: string;
     options: O;
-    configure(partialOptions: Partial<O>): PluginType<O>;
+    configure(partialOptions: Partial<O>): PluginType<M, O>;
   } & M;
 
-  const createPlugin = <T extends Record<string, SafeAny>>(
-    config: PluginInitializationConfiguration<T>
+  // const createPlugin = <TypeOptions extends Record<string, SafeAny>>(
+  //   config: PluginInitializationConfiguration<
+  //     {
+  //       [methdName in TypeMethodName]: (
+  //         this: {
+  //           id?: string;
+  //           name?: string;
+  //           description?: string;
+  //           options: TypeOptions;
+  //         },
+  //         context: TypeContext
+  //       ) => void;
+  //     },
+  //     TypeOptions
+  //   >
+  // ) => {
+  const createPlugin = <TypeOptions extends Record<string, SafeAny>>(
+    config: PluginInitializationConfiguration<
+      TypeOptions,
+      TypeMethodName,
+      TypeContext
+    >
   ) => {
     // const { addOptions = () => ({}) } = config;
     // type PluginOptions = ReturnType<typeof addOptions>;
 
-    return (partialOptions: Partial<T> = {}) => {
+    return (partialOptions: Partial<TypeOptions> = {}) => {
       const {
         id,
         name,
@@ -39,7 +78,7 @@ export const createPluginSystem = <
         ...lifecycles
       } = config;
       const options = addOptions();
-      const configure = (partialOptions: Partial<T>) => {
+      const configure = (partialOptions: Partial<TypeOptions>) => {
         Object.assign(options, partialOptions);
         return plugin;
       };
@@ -62,7 +101,20 @@ export const createPluginSystem = <
       for (const k in lifecycles) {
         newLifecycles[k as keyof Lifecycles] = lifecycles[k].bind(plugin);
       }
-      return Object.assign(plugin, newLifecycles) as unknown as PluginType<T>;
+      return Object.assign(plugin, newLifecycles) as unknown as PluginType<
+        {
+          [methdName in TypeMethodName]: (
+            this: {
+              id?: string;
+              name?: string;
+              description?: string;
+              options: TypeOptions;
+            },
+            context: TypeContext
+          ) => void;
+        },
+        TypeOptions
+      >;
     };
   };
   return {

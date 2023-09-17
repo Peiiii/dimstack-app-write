@@ -1,5 +1,8 @@
 import { hotkeys } from "@/toolkit/common/hotkeys";
-import { createPluginSystem } from "@/toolkit/common/pluginSystem";
+import {
+  PluginInitializationConfiguration,
+  createPluginSystem,
+} from "@/toolkit/common/pluginSystem";
 import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import {
   Box,
@@ -13,25 +16,36 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
-import { AiOutlineEllipsis } from "react-icons/ai";
+import { HiOutlineEllipsisVertical } from "react-icons/hi2";
 import { WidgetContext } from ".";
 import { SafeAny } from "@/toolkit/common/types";
 
-const getCreateTreePlugin = <TreeNodeType extends Record<string, SafeAny>>() =>
-  createPluginSystem<{
-    activate(
-      this: {
-        id?: string;
-        name?: string;
-        description?: string;
-        options: { [k: string]: any };
-      },
-      context: WidgetContext<TreeNodeType>
-    ): any;
-  }>().createPlugin;
+export const getCreateTreePlugin = <
+  TreeNodeType extends Record<string, SafeAny>
+>() =>
+  createPluginSystem<WidgetContext<TreeNodeType>, "activate">().createPlugin;
+
 export const createTreePlugin = <TreeNodeType extends Record<string, SafeAny>>(
   ...args: Parameters<ReturnType<typeof getCreateTreePlugin<TreeNodeType>>>
 ) => getCreateTreePlugin<TreeNodeType>()(...args);
+
+export const createTreeHelper = <
+  TreeNodeType extends Record<string, SafeAny>
+>() => {
+  return {
+    createPlugin: <TypeOptions extends Record<string, SafeAny>>(
+      config: PluginInitializationConfiguration<
+        TypeOptions,
+        "activate",
+        WidgetContext<TreeNodeType>
+      >
+    ) =>
+      createPluginSystem<
+        WidgetContext<TreeNodeType>,
+        "activate"
+      >().createPlugin(config),
+  };
+};
 
 export const createTreePluginTemplate =
   <TreeNodeTemplateType extends Record<string, SafeAny>>(
@@ -55,7 +69,11 @@ export const treePluginExpandTemplate = createTreePluginTemplate<{
     };
   },
   activate({ eventBus, viewSystem }) {
-    eventBus.on("clickNode", ({ node }) => {
+    const expandNode = ({ node, event }) => {
+      if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
       const viewState =
         viewSystem.viewStateStore.getRecord(node.id) ||
         viewSystem.getDefaultViewState(node, {
@@ -64,7 +82,9 @@ export const treePluginExpandTemplate = createTreePluginTemplate<{
       viewSystem.viewStateStore
         .getActions()
         .upsert({ ...viewState, expanded: !viewState.expanded });
-    });
+    };
+    eventBus.on("node::click", expandNode);
+    eventBus.on("node::keydown.enter", expandNode);
   },
 });
 
@@ -97,7 +117,7 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
     // Initial View System
     const IconCollapsed = ChevronRightIcon;
     const IconExpanded = ChevronDownIcon;
-    const IconEllipsis = AiOutlineEllipsis;
+    const IconEllipsis = HiOutlineEllipsisVertical;
     viewSystem.renderer.register("icon-expanded", IconExpanded);
     viewSystem.renderer.register("icon-collapsed", IconCollapsed);
     viewSystem.renderer.register("icon-ellipsis", IconEllipsis);
@@ -133,16 +153,7 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
         viewSystem.viewStateStore.useRecord(id) ||
         viewSystem.getDefaultViewState({ id });
       const inputRef = useRef<HTMLInputElement>(null);
-      useEffect(() => {
-        if (inputRef.current) {
-          hotkeys(inputRef.current!, {
-            Enter: eventBus.connector("editKeyEnter", (event) => ({
-              node,
-              event,
-            })),
-          });
-        }
-      }, [inputRef.current]);
+
       const { expanded, editMode, expandable, highlight } = viewState;
       const nodeMenuItems = viewSystem.getNodeMenuItems({ node, level });
       let actionBar;
@@ -151,15 +162,24 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
         actionBar = (
           <Menu>
             <MenuButton
-              className="hover-show"
+              className="hover-visible"
               as={Button}
-              variant="ghost"
+              variant="solid"
               size="xs"
               ml={2}
               aria-label="Options"
-              rightIcon={viewSystem.render("icon-ellipsis")}
-            />
-            <MenuList>
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              {viewSystem.render("icon-ellipsis")}
+            </MenuButton>
+            <MenuList
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            >
               {nodeMenuItems
                 .map((nodeMenuItem) =>
                   viewSystem.renderNodeMenuItem(nodeMenuItem, {
@@ -213,10 +233,16 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
               h="2rem"
               flexGrow={1}
               align="center"
-              onClick={eventBus.connector("clickNode", (event) => ({
+              onClick={eventBus.connector("node::click", (event) => ({
                 node,
                 event,
               }))}
+              tabIndex={-1}
+              onKeyDown={(e) => {
+                if (e.code.toLowerCase() === "enter") {
+                  eventBus.emit("node::keydown.enter", { node, event: e });
+                }
+              }}
               className={"hover-action tree-node-header"}
             >
               <Flex
@@ -254,6 +280,11 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
                       node,
                       event,
                     }))}
+                    onKeyDown={(event) => {
+                      if (event.code.toLocaleLowerCase() === "enter") {
+                        eventBus.emit("editKeyEnter", { node, event });
+                      }
+                    }}
                     defaultValue={name}
                   />
                 ) : (
@@ -285,7 +316,7 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
               
               </Button> */}
               <Box flexGrow={1} />
-              <Box className="hover-show">{actionBar}</Box>
+              <Box>{actionBar}</Box>
             </Flex>
             <Box w="0.5rem" flexShrink={0} />
           </Flex>

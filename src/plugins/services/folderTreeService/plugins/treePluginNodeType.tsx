@@ -1,7 +1,7 @@
 import { FolderTreeNode } from "@/plugins/services/folderTreeService/types";
 import { createTreePlugin } from "@/toolkit/components/tree/treePlugins";
 import { Text } from "@chakra-ui/react";
-import { FcFolder } from "react-icons/fc";
+import { FcFile, FcFolder } from "react-icons/fc";
 const getNodeType = (node: FolderTreeNode) => {
   // if (node.id === "root" || !/.+\/.+/.test(node.id)) return "dir";
   if (node.id === "root") return "dir";
@@ -37,12 +37,12 @@ export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
           // return <Text as="h3">{"#"}</Text>;
         } else {
           if (getNodeFileType(node) === "file")
-            // return <FcFile />;
-            return (
-              <Text as="h3" fontSize={"1.5rem"}>
-                {"#"}
-              </Text>
-            );
+            return <FcFile />;
+            // return (
+            //   <Text as="h3" fontSize={"1.5rem"}>
+            //     {"#"}
+            //   </Text>
+            // );
           else return <Text as="h3"> </Text>;
         }
       },
@@ -111,7 +111,7 @@ export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
         }
       }
     };
-    eventBus.on("clickNode", ({ node }) => {
+    eventBus.on("node::click", ({ node }) => {
       focusNode(node);
     });
   },

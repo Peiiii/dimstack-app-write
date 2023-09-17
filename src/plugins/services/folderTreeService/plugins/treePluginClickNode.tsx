@@ -33,8 +33,8 @@ export default createTreePlugin<FolderTreeNode>({
         modal.open();
       } else {
         const { access_token, refresh_token } = space.auth || {};
-        const File = createGiteeClient({ accessToken: access_token, }).File;
-      
+        const File = createGiteeClient({ accessToken: access_token }).File;
+
         const info = await File.getInfo({
           owner,
           repo,
@@ -49,13 +49,13 @@ export default createTreePlugin<FolderTreeNode>({
             })),
           },
         });
-        if(Math.random()>0.9){
-          console.log(spaceStore.getData()[0])
-          const res=await refreshAccessToken({refreshToken:refresh_token});
-          console.log("res:",res)
-          spaceStore.getActions().update({id:spaceId,auth: res});
-          console.log(spaceStore.getData()[0])
-       }
+        if (Math.random() > 0.9) {
+          console.log(spaceStore.getData()[0]);
+          const res = await refreshAccessToken({ refreshToken: refresh_token });
+          console.log("res:", res);
+          spaceStore.getActions().update({ id: spaceId, auth: res });
+          console.log(spaceStore.getData()[0]);
+        }
         // console.log("info:", info);
         // createGiteeFS({
         //   accessToken: access_token,
@@ -67,7 +67,7 @@ export default createTreePlugin<FolderTreeNode>({
         // });
       }
     };
-    eventBus.on("clickNode", async ({ node }: { node: FolderTreeNode }) => {
+    eventBus.on("node::click", async ({ node }: { node: FolderTreeNode }) => {
       const viewState =
         viewSystem.viewStateStore.getRecord(node.id) ||
         viewSystem.getDefaultViewState(node);

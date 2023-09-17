@@ -27,7 +27,7 @@ export default createTreePlugin<FolderTreeNode>({
       event.preventDefault();
       event.stopPropagation();
       if (confirm("你确定要删除该会话吗？")) {
-        this.options.deleteNode(node.id);
+        this.options.deleteNode(node);
       }
     });
   },

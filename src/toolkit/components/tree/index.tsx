@@ -1,6 +1,8 @@
 import { createDataStore, DataStore } from "@/toolkit/common/dataStore";
 import { createEventBus, EventBus } from "@/toolkit/common/eventBus";
+import { createPipeService } from "@/toolkit/common/pipeService";
 import { createRenderer, Renderer } from "@/toolkit/common/renderer";
+import { createServiceBus } from "@/toolkit/common/serviceBus";
 import { TreeDataStore } from "@/toolkit/common/treeDataStore";
 import { SafeAny } from "@/toolkit/common/types";
 import { Box, Flex } from "@chakra-ui/react";
@@ -22,17 +24,19 @@ type NodeMenuItem = {
   icon?: React.ReactElement;
   validate?: (context: { node: any; level: number }) => boolean;
 };
-const createViewSystem = <T = any,>({
-  renderer,
-  viewStateStore,
-  eventBus,
-  context,
-}: {
-  renderer: Renderer;
-  viewStateStore: DataStore<WidgetViewState>;
-  eventBus: EventBus;
-  context: T;
-}) => {
+
+const createViewSystem = <T,>(
+  {
+    renderer,
+    viewStateStore,
+    eventBus,
+  }: {
+    renderer: Renderer;
+    viewStateStore: DataStore<WidgetViewState>;
+    eventBus: EventBus;
+  },
+  getContext: () => T
+) => {
   const nodeMenuItems: NodeMenuItem[] = [];
   const addNodeMenuItems = (menuItems: NodeMenuItem[]) => {
     for (const menuItem of menuItems) {
@@ -52,14 +56,13 @@ const createViewSystem = <T = any,>({
         <Flex
           key={nodeMenuItem.id}
           title={nodeMenuItem.title || nodeMenuItem.name}
-          onClick={
-            nodeMenuItem.event
-              ? eventBus.connector(nodeMenuItem.event, (event) => ({
-                  node,
-                  event,
-                }))
-              : undefined
-          }
+          onClick={(e) => {
+            if (nodeMenuItem.event) {
+              eventBus.emit(nodeMenuItem.event, { node, event:e });
+              e.stopPropagation();
+              e.preventDefault();
+            }
+          }}
         >
           {nodeMenuItem.icon || nodeMenuItem.name || nodeMenuItem.title}
         </Flex>
@@ -92,11 +95,7 @@ const createViewSystem = <T = any,>({
         props: {
           node,
           level,
-          context: {
-            viewSystem,
-            eventBus,
-            ...context,
-          },
+          context: getContext(),
         },
       },
       node.id
@@ -115,13 +114,15 @@ const createViewSystem = <T = any,>({
   };
   type ViewStateProvider = (node?: any, props?: any) => any;
   let defaultViewStatePrider;
-
   const setDefaultViewStateProvider = (provider: ViewStateProvider) =>
     (defaultViewStatePrider = provider);
   const getDefaultViewState = (node?: any, props?: any) => {
     return defaultViewStatePrider
       ? defaultViewStatePrider(node, props)
       : { ...props };
+  };
+  const getViewStateOrDefaultViewState = (id: string) => {
+    return viewStateStore.getRecord(id) || getDefaultViewState({ id });
   };
   const viewSystem = {
     renderer,
@@ -130,6 +131,7 @@ const createViewSystem = <T = any,>({
     addNodeMenuItems,
     renderNodeMenuItem,
     getDefaultViewState,
+    getViewStateOrDefaultViewState,
     setDefaultViewStateProvider: setDefaultViewStateProvider,
     viewStateStore,
     getNodeMenuItems,
@@ -140,64 +142,88 @@ type ViewSystem = ReturnType<typeof createViewSystem>;
 const defaultRenderer = createRenderer();
 
 // Plugin System
-export type WidgetContext<TreeNodeType extends Record<string, any>> = {
+export type WidgetContext<
+  TreeNodeType extends Record<string, any>,
+  OptionsType extends Record<string, SafeAny> = Record<string, SafeAny>
+> = {
   dataStore: TreeDataStore<TreeNodeType>;
   // viewStateStore: DataStore<WidgetViewState>;
+  // renderer: ReturnType<typeof createRenderer>;
   eventBus: EventBus;
+  pipe: ReturnType<typeof createPipeService>;
+  serviceBus: ReturnType<typeof createServiceBus>;
   viewSystem: ViewSystem;
-  options: Record<string, SafeAny>;
+  options: OptionsType;
 };
-export type WidgetPlugin<T extends Record<string, any>> = {
-  activate: (context: WidgetContext<T>) => void;
+export type WidgetPlugin<
+  T extends Record<string, any>,
+  OptionsType extends Record<string, SafeAny>
+> = {
+  activate: (context: WidgetContext<T, OptionsType>) => void;
 };
 
 // Tree Component
 
-export const Tree = <T extends Record<string, any>>({
+export const Tree = <
+  T extends Record<string, any>,
+  OptionsType extends Record<string, any> = Record<string, any>
+>({
   plugins = [],
   dataStore,
   eventBus,
   viewSystem,
   viewStateStore,
-  options = {},
+  pipe,
+  serviceBus,
+  options = {} as OptionsType,
 }: {
-  plugins?: WidgetPlugin<T>[];
-} & Partial<Exclude<WidgetContext<T>, "dataStore">> &
-  Pick<WidgetContext<T>, "dataStore"> & {
+  plugins?: WidgetPlugin<T, OptionsType>[];
+} & Partial<Exclude<WidgetContext<T, OptionsType>, "dataStore">> &
+  Pick<WidgetContext<T, OptionsType>, "dataStore"> & {
     viewStateStore?: DataStore<WidgetViewState>;
   }) => {
-  eventBus = useMemo(() => eventBus || createEventBus(), [eventBus]);
-  viewSystem = useMemo(
+  const finalEventBus = useMemo(() => eventBus || createEventBus(), [eventBus]);
+  const finalServiceBus = useMemo(
+    () => serviceBus || createServiceBus(),
+    [serviceBus]
+  );
+  const finalPipe = useMemo(() => pipe || createPipeService(), [pipe]);
+  const getContext = (): WidgetContext<T, OptionsType> => ({
+    viewSystem: finalViewSystem,
+    eventBus: finalEventBus,
+    dataStore,
+    options,
+    pipe: finalPipe,
+    serviceBus: finalServiceBus,
+  });
+  const finalViewSystem = useMemo(
     () =>
       viewSystem ||
-      createViewSystem<Pick<WidgetContext<T>, "dataStore" | "options">>({
-        viewStateStore:
-          viewStateStore ||
-          createDataStore<WidgetViewState>({
-            initialState: [],
-          })!,
-        eventBus: eventBus!,
-        renderer: defaultRenderer,
-        context: { dataStore, options },
-      }),
-    [eventBus, viewSystem, dataStore]
+      createViewSystem<WidgetContext<T, OptionsType>>(
+        {
+          viewStateStore:
+            viewStateStore ||
+            createDataStore<WidgetViewState>({
+              initialState: [],
+            })!,
+          eventBus: finalEventBus,
+          renderer: defaultRenderer,
+        },
+        getContext
+      ),
+    [finalEventBus, viewSystem, dataStore]
   );
 
   useEffect(() => {
     for (const plugin of plugins) {
-      plugin.activate({
-        dataStore,
-        eventBus: eventBus!,
-        viewSystem: viewSystem!,
-        options,
-      });
+      plugin.activate(getContext());
     }
   }, []);
 
   const rootNode = dataStore.useData();
   return (
     <Box className="tree">
-      {viewSystem.renderNode({
+      {finalViewSystem.renderNode({
         node: rootNode,
         level: 0,
       })}

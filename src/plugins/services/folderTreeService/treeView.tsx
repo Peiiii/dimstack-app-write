@@ -20,6 +20,8 @@ import xbook from "xbook/index";
 import { SpaceDef } from "@/toolkit/types/space";
 import { useMemo } from "react";
 import { FolderTreeNode } from "@/plugins/services/folderTreeService/types";
+import { fileSystemHelper } from "@/helpers/file-system.helper";
+import {join,dirname} from "path-browserify";
 
 const viewStateStore = createDataStore<WidgetViewState>({
   initialState: [],
@@ -45,6 +47,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
       }),
     []
   );
+  // console.log("space in treeView:", space);
   // console.log("会话");
   return (
     <SideCard title={`${space.repo}`} className="channelList">
@@ -67,11 +70,32 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
               editable: ({ level }) => {
                 return level !== 0;
               },
+              renameNode: async (node, name) => {
+                const newPath=join(dirname(node.path!), name);
+                await fileSystemHelper.service.rename(
+                  fileSystemHelper.generateFileId(space.id, node.path!),
+                  fileSystemHelper.generateFileId(space.id!, newPath),
+                );
+                // console.log("updateNode:", partialNode);
+                treeDataStore.getActions().delete({id:node.id});
+                // console.log("add:",)
+
+                treeDataStore.getActions().add({node:{...node,id:newPath,path:newPath,name},parentId: dirname(node.path!)});
+                // fileSystemHelper.createFile(fileSystemHelper.createFileId(space.id,));
+              },
             }),
             treePluginAddNode(),
             treePluginDeleteNode({
               deletable: ({ level }) => {
                 return level !== 0;
+              },
+              deleteNode: ({ id, path }: FolderTreeNode) => {
+                // console.log("deleteNode:", id);
+                treeDataStore.getActions().delete({id});
+                // console.log("nodes:", treeDataStore.getData());
+                fileSystemHelper.service.delete(
+                  fileSystemHelper.generateFileId(space.id, path!)
+                );
               },
             }),
             treePluginConfig({

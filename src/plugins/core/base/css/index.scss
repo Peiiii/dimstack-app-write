@@ -27,7 +27,6 @@ body {
 
 .hover-action {
   &:not(:hover) {
-
     .hover-show {
       visibility: hidden;
       display: none;
@@ -37,6 +36,20 @@ body {
 
   &:hover {
     .hover-show {
+      visibility: visible !important;
+    }
+
+  }
+
+  &:not(:hover) {
+    .hover-visible {
+      visibility: hidden;
+    }
+
+  }
+
+  &:hover {
+    .hover-visible {
       visibility: visible !important;
     }
 
