@@ -42,7 +42,7 @@ export const rm = async (
 };
 
 export const rename = async (space1: SpaceDef, path1:string,  space2: SpaceDef, path2:string)=>{
-  const content=await getSpaceFileHelper(space1).get({ owner:space1.owner, repo:space1.repo, path:path1 });
+  const content=(await getSpaceFileHelper(space1).get({ owner:space1.owner, repo:space1.repo, path:path1 })).data.content;
   await getSpaceFileHelper(space1).add({owner:space2.owner, repo:space2.repo, path:path2,content});
   await getSpaceFileHelper(space1).delete({owner:space1.owner, repo:space1.repo, path:path1});
 }
