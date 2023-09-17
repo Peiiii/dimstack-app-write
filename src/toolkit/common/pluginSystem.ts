@@ -10,7 +10,7 @@ export type PluginInitializationConfiguration<
   description?: string;
   addOptions?: () => TypeOptions;
 } & {
-  [methdName in TypeMethodName]: (
+  [methdName in TypeMethodName]?: (
     this: {
       id?: string;
       name?: string;
@@ -92,10 +92,10 @@ export const createPluginSystem = <
       configure(partialOptions);
       type RawLifecycles = typeof lifecycles;
       type Lifecycles = {
-        [k in keyof RawLifecycles]: (
+        [k in keyof RawLifecycles]?: (
           this: ReturnType<typeof createPlugin>,
-          ...args: Parameters<RawLifecycles[k]>
-        ) => ReturnType<RawLifecycles[k]>;
+          ...args: Parameters<Exclude<RawLifecycles[k],undefined>>
+        ) => ReturnType<Exclude<RawLifecycles[k],undefined>>;
       };
       const newLifecycles: Lifecycles = {} as Lifecycles;
       for (const k in lifecycles) {
@@ -103,7 +103,7 @@ export const createPluginSystem = <
       }
       return Object.assign(plugin, newLifecycles) as unknown as PluginType<
         {
-          [methdName in TypeMethodName]: (
+          [methdName in TypeMethodName]?: (
             this: {
               id?: string;
               name?: string;

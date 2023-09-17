@@ -159,7 +159,8 @@ export type WidgetPlugin<
   T extends Record<string, any>,
   OptionsType extends Record<string, SafeAny>
 > = {
-  activate: (context: WidgetContext<T, OptionsType>) => void;
+  activate?: (context: WidgetContext<T, OptionsType>) => void;
+  deactivate?: (context: WidgetContext<T, OptionsType>) =>void;
 };
 
 // Tree Component
@@ -216,7 +217,12 @@ export const Tree = <
 
   useEffect(() => {
     for (const plugin of plugins) {
-      plugin.activate(getContext());
+      plugin.activate?.(getContext());
+    }
+    return ()=>{
+      for (const plugin of plugins) {
+        plugin.deactivate?.(getContext());
+      }
     }
   }, []);
 

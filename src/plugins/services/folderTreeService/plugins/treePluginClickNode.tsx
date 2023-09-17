@@ -1,4 +1,4 @@
-import Auth from "@/plugins/services/folderTreeService/components/Auth";
+import Auth from "@/plugins/services/spaceService/Auth";
 import { FolderTreeNode } from "@/plugins/services/folderTreeService/types";
 import { DataStore } from "@/toolkit/common/dataStore";
 import { createTreePlugin } from "@/toolkit/components/tree/treePlugins";
@@ -34,7 +34,6 @@ export default createTreePlugin<FolderTreeNode>({
       } else {
         const { access_token, refresh_token } = space.auth || {};
         const File = createGiteeClient({ accessToken: access_token }).File;
-
         const info = await File.getInfo({
           owner,
           repo,

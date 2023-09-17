@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Alert, Box, Flex, HStack, Link, Spacer, Text } from "@chakra-ui/react";
 import "./sidebar.scss";
 
 import { createDataStore } from "@/toolkit/common/dataStore";
@@ -18,10 +18,12 @@ import treePluginMigration from "@/plugins/services/folderTreeService/plugins/tr
 import treePluginNodeType from "@/plugins/services/folderTreeService/plugins/treePluginNodeType";
 import xbook from "xbook/index";
 import { SpaceDef } from "@/toolkit/types/space";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FolderTreeNode } from "@/plugins/services/folderTreeService/types";
 import { fileSystemHelper } from "@/helpers/file-system.helper";
-import {join,dirname} from "path-browserify";
+import { join, dirname } from "path-browserify";
+import treePluginRefreshSpaceAuth from "@/plugins/services/folderTreeService/plugins/treePluginRefreshSpaceAuth";
+import { AiOutlineLink } from "react-icons/ai";
 
 const viewStateStore = createDataStore<WidgetViewState>({
   initialState: [],
@@ -47,6 +49,10 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
       }),
     []
   );
+  const [isLogin, setIsLogin] = useState(true);
+  useEffect(() => {
+    return xbook.pipeService.on(`space[${space.id}].isLogin`, setIsLogin);
+  }, [space.id]);
   // console.log("space in treeView:", space);
   // console.log("会话");
   return (
@@ -55,6 +61,24 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
         <Input size="sm" placeholder="搜索" />
       </Box> */}
       {/* <Box h="0.1rem" /> */}
+      {!isLogin && (
+        <Alert status="warning" fontSize={"sm"}>
+          您尚未登录，请前往
+          <Link
+            color="blue.300"
+            display={"flex"}
+            onClick={() => {
+              xbook.serviceBus.invoke(
+                "spaceService.redirectAuthPage",
+                space.id
+              );
+            }}
+          >
+            登录
+            <AiOutlineLink />
+          </Link>
+        </Alert>
+      )}
       <Box w="100%" className="channel-tree">
         <Tree
           options={{ space }}
@@ -71,16 +95,19 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
                 return level !== 0;
               },
               renameNode: async (node, name) => {
-                const newPath=join(dirname(node.path!), name);
+                const newPath = join(dirname(node.path!), name);
                 await fileSystemHelper.service.rename(
                   fileSystemHelper.generateFileId(space.id, node.path!),
-                  fileSystemHelper.generateFileId(space.id!, newPath),
+                  fileSystemHelper.generateFileId(space.id!, newPath)
                 );
                 // console.log("updateNode:", partialNode);
-                treeDataStore.getActions().delete({id:node.id});
+                treeDataStore.getActions().delete({ id: node.id });
                 // console.log("add:",)
 
-                treeDataStore.getActions().add({node:{...node,id:newPath,path:newPath,name},parentId: dirname(node.path!)});
+                treeDataStore.getActions().add({
+                  node: { ...node, id: newPath, path: newPath, name },
+                  parentId: dirname(node.path!),
+                });
                 // fileSystemHelper.createFile(fileSystemHelper.createFileId(space.id,));
               },
             }),
@@ -91,7 +118,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
               },
               deleteNode: ({ id, path }: FolderTreeNode) => {
                 // console.log("deleteNode:", id);
-                treeDataStore.getActions().delete({id});
+                treeDataStore.getActions().delete({ id });
                 // console.log("nodes:", treeDataStore.getData());
                 fileSystemHelper.service.delete(
                   fileSystemHelper.generateFileId(space.id, path!)
@@ -103,6 +130,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
             }),
             treePluginNodeType(),
             treePluginMigration(),
+            treePluginRefreshSpaceAuth(),
           ]}
         />
       </Box>

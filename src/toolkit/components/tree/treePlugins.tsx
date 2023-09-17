@@ -1,4 +1,3 @@
-import { hotkeys } from "@/toolkit/common/hotkeys";
 import {
   PluginInitializationConfiguration,
   createPluginSystem,
@@ -23,7 +22,7 @@ import { SafeAny } from "@/toolkit/common/types";
 export const getCreateTreePlugin = <
   TreeNodeType extends Record<string, SafeAny>
 >() =>
-  createPluginSystem<WidgetContext<TreeNodeType>, "activate">().createPlugin;
+  createPluginSystem<WidgetContext<TreeNodeType>, "activate"|"deactivate">().createPlugin;
 
 export const createTreePlugin = <TreeNodeType extends Record<string, SafeAny>>(
   ...args: Parameters<ReturnType<typeof getCreateTreePlugin<TreeNodeType>>>
@@ -36,13 +35,13 @@ export const createTreeHelper = <
     createPlugin: <TypeOptions extends Record<string, SafeAny>>(
       config: PluginInitializationConfiguration<
         TypeOptions,
-        "activate",
+        "activate"|"deactivate",
         WidgetContext<TreeNodeType>
       >
     ) =>
       createPluginSystem<
         WidgetContext<TreeNodeType>,
-        "activate"
+        "activate"|"deactivate"
       >().createPlugin(config),
   };
 };
