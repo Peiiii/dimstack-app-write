@@ -38,9 +38,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
         icon: <AiFillPlusCircle />,
       },
     ]);
-    eventBus.on("addNodeAt", ({ node, event }) => {
-      // event.preventDefault();
-      // event.stopPropagation();
+    eventBus.on("addNodeAt", ({ node }) => {
       const parentId = node.id;
       const parentNode = dataStore.getNode(parentId)!;
       const space = spaceHelper.getStore().getRecord(spaceId)!;
