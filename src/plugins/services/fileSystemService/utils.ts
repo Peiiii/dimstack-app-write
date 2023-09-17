@@ -4,6 +4,7 @@ import { createGiteeClient } from "libs/gitee-api";
 export const getFileContent = async (space: SpaceDef, path: string) => {
   const { access_token, refresh_token } = space.auth || {};
   const File = createGiteeClient({ accessToken: access_token }).File;
+  console.log("[readFile] space:",space)
   return (await File.get({ owner: space.owner, repo: space.repo, path })).data
     .content;
 };
