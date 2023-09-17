@@ -15,12 +15,12 @@ import fileSystemService from "@/plugins/services/fileSystemService";
 xbook.pluginService.use([
   base,
   asyncPluginService,
-  folderTreeService,
   spaceService,
   displaySpaces,
   listenGiteeLoginCallback,
   addGiteeSpace,
   fileSystemService,
+  folderTreeService,
   openerService,
   settings,
   theme,
