@@ -18,7 +18,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
     this.options.interval = setInterval(checkSpace, 1000 * 60 * 10);
     setTimeout(() => {
       checkSpace();
-    }, 0);
+    }, 3000);
   },
   deactivate() {
     clearInterval(this.options.interval);
