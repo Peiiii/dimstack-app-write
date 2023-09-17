@@ -12,6 +12,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Portal,
   Text,
 } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
@@ -22,7 +23,8 @@ import { SafeAny } from "@/toolkit/common/types";
 export const getCreateTreePlugin = <
   TreeNodeType extends Record<string, SafeAny>
 >() =>
-  createPluginSystem<WidgetContext<TreeNodeType>, "activate"|"deactivate">().createPlugin;
+  createPluginSystem<WidgetContext<TreeNodeType>, "activate" | "deactivate">()
+    .createPlugin;
 
 export const createTreePlugin = <TreeNodeType extends Record<string, SafeAny>>(
   ...args: Parameters<ReturnType<typeof getCreateTreePlugin<TreeNodeType>>>
@@ -35,13 +37,13 @@ export const createTreeHelper = <
     createPlugin: <TypeOptions extends Record<string, SafeAny>>(
       config: PluginInitializationConfiguration<
         TypeOptions,
-        "activate"|"deactivate",
+        "activate" | "deactivate",
         WidgetContext<TreeNodeType>
       >
     ) =>
       createPluginSystem<
         WidgetContext<TreeNodeType>,
-        "activate"|"deactivate"
+        "activate" | "deactivate"
       >().createPlugin(config),
   };
 };
@@ -173,22 +175,24 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
             >
               {viewSystem.render("icon-ellipsis")}
             </MenuButton>
-            <MenuList
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}
-            >
-              {nodeMenuItems
-                .map((nodeMenuItem) =>
-                  viewSystem.renderNodeMenuItem(nodeMenuItem, {
-                    node,
-                  })
-                )
-                .map((menuItem, index) => (
-                  <MenuItem key={index}>{menuItem}</MenuItem>
-                ))}
-            </MenuList>
+            <Portal>
+              <MenuList
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+              >
+                {nodeMenuItems
+                  .map((nodeMenuItem) =>
+                    viewSystem.renderNodeMenuItem(nodeMenuItem, {
+                      node,
+                    })
+                  )
+                  .map((menuItem, index) => (
+                    <MenuItem key={index}>{menuItem}</MenuItem>
+                  ))}
+              </MenuList>
+            </Portal>
           </Menu>
         );
       else {
@@ -271,6 +275,7 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
                     ref={inputRef}
                     autoFocus
                     size={"sm"}
+                    flexGrow={0}
                     onChange={eventBus.connector("editProgress", (event) => ({
                       node,
                       event,

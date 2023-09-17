@@ -29,6 +29,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
     ]);
     serviceBus.exposeAt("edit", {
       inputNodeName: (parentId: string, callback: (name: string) => void) => {
+      setTimeout(()=>{
         const childId = nanoid();
         console.log("addNode:", childId,"parentId:",parentId);
         dataStore.getActions().add({
@@ -51,6 +52,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
           if (name.trim()) callback(name.trim());
           unlisten();
         });
+      },0)
       },
     });
     eventBus.on("editNode", ({ node, event }) => {
@@ -63,11 +65,12 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
       });
     });
     eventBus.on("editBlur", ({ node, event }) => {
+      console.log("editing exit:", event.target.value, "node:", node,"event:",event);
+      // return 
       viewSystem.viewStateStore.getActions().upsert({
         ...viewSystem.getViewStateOrDefaultViewState(node.id),
         editMode: false,
       });
-      console.log("editing exit:", event.target.value, "node:", node);
       if (pipe.get("edit.forInput")) {
         pipe.emit("edit.forInput", false);
         eventBus.emit("edit.inputResult", event.target.value);
