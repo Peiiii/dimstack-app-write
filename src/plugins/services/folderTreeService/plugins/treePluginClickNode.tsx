@@ -71,7 +71,7 @@ export default createTreePlugin<FolderTreeNode>({
         viewSystem.viewStateStore.getRecord(node.id) ||
         viewSystem.getDefaultViewState(node);
       const { expandable, expanded } = viewState;
-      console.log("viewState: ", viewState);
+      // console.log("viewState: ", viewState);
       // if (expanded) return;
       if (node.id === "root" || node.type === "dir") {
         return await openDir(node, spaceId);

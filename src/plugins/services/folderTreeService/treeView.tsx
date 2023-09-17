@@ -103,10 +103,14 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
                 // console.log("updateNode:", partialNode);
                 treeDataStore.getActions().delete({ id: node.id });
                 // console.log("add:",)
-
+                const parentPath = dirname(node.path!);
+                const parentId = fileSystemHelper.isRootPath(parentPath)
+                  ? "root"
+                  : parentPath;
+                console.log("parent:", parentId, parentPath);
                 treeDataStore.getActions().add({
                   node: { ...node, id: newPath, path: newPath, name },
-                  parentId: dirname(node.path!),
+                  parentId,
                 });
                 // fileSystemHelper.createFile(fileSystemHelper.createFileId(space.id,));
               },

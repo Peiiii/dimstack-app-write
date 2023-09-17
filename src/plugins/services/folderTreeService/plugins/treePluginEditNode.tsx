@@ -65,7 +65,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
       });
     });
     eventBus.on("editBlur", ({ node, event }) => {
-      console.log("editing exit:", event.target.value, "node:", node,"event:",event);
+      // console.log("editing exit:", event.target.value, "node:", node,"event:",event);
       // return 
       viewSystem.viewStateStore.getActions().upsert({
         ...viewSystem.getViewStateOrDefaultViewState(node.id),
@@ -79,7 +79,6 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
       }
     });
     eventBus.on("editKeyEnter", ({ node, event }) => {
-      console.log("editKeyEnter:", event);
       eventBus.emit("editBlur", { node, event });
     });
   },
