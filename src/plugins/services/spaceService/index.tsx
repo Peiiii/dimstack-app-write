@@ -20,7 +20,7 @@ export const spaceService = createPlugin({
 
     xbook.serviceBus.exposeAt("spaceService",{
       refreshAuth: (spaceId:string)=>{
-       return new Promise((resolve, reject) =>{
+       return new Promise((resolve) =>{
         const space=spaceStore.getRecord(spaceId)!;
         if(!space.auth) return resolve(false);
         refreshAccessToken({ refreshToken: space.auth?.refresh_token }).then(res=>{
