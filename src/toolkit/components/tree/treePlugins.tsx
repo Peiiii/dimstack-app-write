@@ -150,6 +150,10 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
       const nodeData = dataStore.useNode(id);
       if (!nodeData) return null;
       const { name, children } = nodeData;
+      // console.log("children：",children)
+      // if(children){
+      //   console.log([...children].sort(i=>i.type))
+      // }
       const viewState =
         viewSystem.viewStateStore.useRecord(id) ||
         viewSystem.getDefaultViewState({ id });
@@ -332,12 +336,17 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
             {...(expanded ? {} : { display: "none" })}
           >
             {children &&
-              children.map((node) =>
-                viewSystem.renderNode({
-                  node,
-                  level: level + 1,
-                })
-              )}
+              [...children]
+                .sort(
+                  (a, b) =>
+                    (a.type === "file" ? 1 : 0) - (b.type === "file" ? 1 : 0)
+                )
+                .map((node) =>
+                  viewSystem.renderNode({
+                    node,
+                    level: level + 1,
+                  })
+                )}
           </Flex>
         </Flex>
       );

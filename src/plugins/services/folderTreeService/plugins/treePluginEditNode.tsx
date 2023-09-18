@@ -28,31 +28,40 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
       },
     ]);
     serviceBus.exposeAt("edit", {
-      inputNodeName: (parentId: string, callback: (name: string) => void) => {
-      setTimeout(()=>{
-        const childId = nanoid();
-        console.log("addNode:", childId,"parentId:",parentId);
-        dataStore.getActions().add({
-          node: { id: childId, type: "file", name: "" },
-          parentId,
-        });
-        viewSystem.viewStateStore.getActions().upsert({
-          ...viewSystem.getViewStateOrDefaultViewState(parentId),
-          expanded: true,
-        });
-        viewSystem.viewStateStore.getActions().upsert({
-          ...viewSystem.getViewStateOrDefaultViewState(childId),
-          editMode: true,
-        });
-        pipe.emit("edit.forInput", true);
-        let unlisten;
-        unlisten = eventBus.on("edit.inputResult", (name: string) => {
-          console.log("name:", name);
-          dataStore.getActions().delete({id:childId});
-          if (name.trim()) callback(name.trim());
-          unlisten();
-        });
-      },0)
+      inputNodeName: ({
+        parentId,
+        callback,
+        nodeType,
+      }: {
+        parentId: string;
+        callback: (name: string) => void;
+        nodeType: string;
+        validate?: ()=>boolean;
+      }) => {
+        setTimeout(() => {
+          const childId = nanoid();
+          console.log("addNode:", childId, "parentId:", parentId);
+          dataStore.getActions().add({
+            node: { id: childId, type: nodeType, name: "" },
+            parentId,
+          });
+          viewSystem.viewStateStore.getActions().upsert({
+            ...viewSystem.getViewStateOrDefaultViewState(parentId),
+            expanded: true,
+          });
+          viewSystem.viewStateStore.getActions().upsert({
+            ...viewSystem.getViewStateOrDefaultViewState(childId),
+            editMode: true,
+          });
+          pipe.emit("edit.forInput", true);
+          let unlisten;
+          unlisten = eventBus.on("edit.inputResult", (name: string) => {
+            console.log("name:", name);
+            dataStore.getActions().delete({ id: childId });
+            if (name.trim()) callback(name.trim());
+            unlisten();
+          });
+        }, 0);
       },
     });
     eventBus.on("editNode", ({ node, event }) => {
@@ -66,7 +75,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
     });
     eventBus.on("editBlur", ({ node, event }) => {
       // console.log("editing exit:", event.target.value, "node:", node,"event:",event);
-      // return 
+      // return
       viewSystem.viewStateStore.getActions().upsert({
         ...viewSystem.getViewStateOrDefaultViewState(node.id),
         editMode: false,

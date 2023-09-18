@@ -41,6 +41,8 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
           name: "root",
           content: "内容",
           id: "root",
+          type: "dir",
+          path: "/"
         },
         persistConfig: {
           name: "folderTree",
@@ -115,7 +117,11 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
                 // fileSystemHelper.createFile(fileSystemHelper.createFileId(space.id,));
               },
             }),
-            treePluginAddNode(),
+            treePluginAddNode({
+              addable: ({node})=>{
+                return node.id==="root"||node.type==="dir";
+              }
+            }),
             treePluginDeleteNode({
               deletable: ({ level }) => {
                 return level !== 0;

@@ -11,6 +11,9 @@ export default createTreePlugin<FolderTreeNode>({
       if (cloned.children && cloned.children.length) {
         cloned.children = cloned.children.map(fixId);
       }
+      if(root.id==="root"){
+        root.path="/";
+      }
       return cloned;
     };
     setTimeout(() => {

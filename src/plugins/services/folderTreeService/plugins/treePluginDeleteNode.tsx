@@ -5,7 +5,8 @@ export default createTreePlugin<FolderTreeNode>({
   addOptions() {
     return {
       deletable: ({ level }) => {
-        return level === 1;
+        return level >= 1;
+        // return true;
       },
       deleteNode: () => {},
     };
