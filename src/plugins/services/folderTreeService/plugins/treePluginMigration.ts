@@ -11,13 +11,15 @@ export default createTreePlugin<FolderTreeNode>({
       if (cloned.children && cloned.children.length) {
         cloned.children = cloned.children.map(fixId);
       }
-      if(root.id==="root"){
-        root.path="/";
+      if(cloned.id==="root"){
+        cloned.path="/";
+        cloned.type="dir"
       }
       return cloned;
     };
     setTimeout(() => {
       dataStore.getActions().init(fixId(rootNode));
+      console.log("rootNode:",dataStore.getData())
     }, 0);
   },
 });
