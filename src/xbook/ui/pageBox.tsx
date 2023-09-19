@@ -172,6 +172,7 @@ export const createPageBox = () =>
           className="page-box"
           overflow={"hidden"}
           display={visibilityControl.visible ? "flex" : "none"}
+          gap={0}
         >
           <>
             {tabBarVisible && (

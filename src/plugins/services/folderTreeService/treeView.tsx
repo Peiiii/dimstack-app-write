@@ -123,8 +123,8 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
               }
             }),
             treePluginDeleteNode({
-              deletable: ({ level }) => {
-                return level !== 0;
+              deletable: ({  node}) => {
+                return node.type==="file";
               },
               deleteNode: ({ id, path }: FolderTreeNode) => {
                 // console.log("deleteNode:", id);
