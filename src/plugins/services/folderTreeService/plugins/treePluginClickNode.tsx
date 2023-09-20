@@ -39,13 +39,19 @@ export default createTreePlugin<FolderTreeNode>({
           repo,
           path: node.id === "root" ? "/" : node.path!,
         });
+        const oldNode = dataStore.getNode(node.id)!;
         dataStore.getActions().update({
           node: {
             ...node,
-            children: info.data.map((child) => ({
-              ...child,
-              id: child.path,
-            })),
+            children: info.data
+              .map((child) => ({
+                ...oldNode.children?.find((c) => c.path == child.path),
+                ...child,
+              }))
+              .map((child) => ({
+                ...child,
+                id: child.path,
+              })),
           },
         });
         if (Math.random() > 0.9) {
