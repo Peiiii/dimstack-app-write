@@ -103,13 +103,14 @@ export const createSidebar = () =>
         const showView = (id: string) => {
           console.log("showView", id, "views:", viewList);
           existView(id) &&
-            setViewList((viewList) =>
-              viewList.map((view) => {
+            setViewList((viewList) => {
+              const newViewList = viewList.map((view) => {
                 if (view.id === id) view.visible = true;
                 else view.visible = false;
                 return view;
-              })
-            );
+              });
+              return newViewList;
+            });
         };
         const setView = (id: string) => {
           showView(id);
@@ -125,7 +126,7 @@ export const createSidebar = () =>
           getFullwidth,
           setFullwidth,
         });
-      }, [setViewList, show, hide, toggle, getFullwidth, setFullwidth]);
+      }, [setViewList,viewList, show, hide, toggle, getFullwidth, setFullwidth]);
 
       const options = {};
 

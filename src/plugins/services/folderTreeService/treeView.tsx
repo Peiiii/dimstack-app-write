@@ -25,14 +25,6 @@ import { join, dirname } from "path-browserify";
 import treePluginRefreshSpaceAuth from "@/plugins/services/folderTreeService/plugins/treePluginRefreshSpaceAuth";
 import { AiOutlineLink } from "react-icons/ai";
 
-const viewStateStore = createDataStore<WidgetViewState>({
-  initialState: [],
-  persistConfig: {
-    name: "folderTreeViewState",
-    type: "LocalStorage",
-  },
-});
-
 const TreeView = ({ space }: { space: SpaceDef }) => {
   const treeDataStore = useMemo(
     () =>
@@ -42,14 +34,25 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
           content: "内容",
           id: "root",
           type: "dir",
-          path: "/"
+          path: "/",
         },
         persistConfig: {
-          name: "folderTree",
+          name: `folderTree:${space.id}`,
           type: "LocalStorage",
         },
       }),
-    []
+    [space.id]
+  );
+  const viewStateStore = useMemo(
+    () =>
+      createDataStore<WidgetViewState>({
+        initialState: [],
+        persistConfig: {
+          name: `folderTreeViewState:${space.id}`,
+          type: "LocalStorage",
+        },
+      }),
+    [space.id]
   );
   const [isLogin, setIsLogin] = useState(true);
   useEffect(() => {
@@ -118,13 +121,13 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
               },
             }),
             treePluginAddNode({
-              addable: ({node})=>{
-                return node.id==="root"||node.type==="dir";
-              }
+              addable: ({ node }) => {
+                return node.id === "root" || node.type === "dir";
+              },
             }),
             treePluginDeleteNode({
-              deletable: ({  node}) => {
-                return node.type==="file";
+              deletable: ({ node }) => {
+                return node.type === "file";
               },
               deleteNode: ({ id, path }: FolderTreeNode) => {
                 // console.log("deleteNode:", id);
