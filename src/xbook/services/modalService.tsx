@@ -20,6 +20,8 @@ export type ModalSpec = {
   content: React.ReactNode;
   onOk?: AnyFunction;
   onCancel?: AnyFunction;
+  okText?: string;
+  cancelText?: string;
   footer?: boolean;
 };
 
@@ -48,7 +50,9 @@ export const createModalService = () => {
     title,
     onOk,
     onCancel,
-    footer,
+    okText="Confirm",
+    cancelText="Cancel",
+    footer=true,
   }: ModalSpec) => {
     const modal = createDeferredComponentProxy<ModalMethods>(({ proxy }) => {
       const ModalWrapper = ({ content }) => {
@@ -64,7 +68,7 @@ export const createModalService = () => {
             <ModalOverlay />
             <ModalContent>
               {title && <ModalHeader>{title}</ModalHeader>}
-              <ModalCloseButton />
+              <ModalCloseButton  tabIndex={-1} />
               <ModalBody>{content}</ModalBody>
 
               {footer && (
@@ -75,7 +79,7 @@ export const createModalService = () => {
                       onOk?.();
                     }}
                   >
-                    Confirm
+                    {okText}
                   </Button>
                   <Button
                     variant="ghost"
@@ -85,7 +89,7 @@ export const createModalService = () => {
                       onCancel?.();
                     }}
                   >
-                    Close
+                    {cancelText}
                   </Button>
                 </ModalFooter>
               )}

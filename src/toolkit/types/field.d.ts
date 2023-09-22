@@ -1,17 +1,19 @@
-export type Field = {
-  name: string;
+import { SafeAny } from "@/toolkit/common/types";
+
+export type Field<K extends string =string,V=SafeAny> = {
+  name: K;
   title: string;
   type?: any;
   subType?: string;
   required?: boolean;
-  defaultValue?: any;
+  defaultValue?: V;
   searchable?: boolean;
   displayable?: boolean;
   modifiable?: boolean;
   render?: (filed: any, context?: any) => React.ReactNode;
   select?: {
     options: {
-      value: any;
+      value: V;
       label?: string;
       render?: (any, number?) => React.ReactNode;
     }[];
