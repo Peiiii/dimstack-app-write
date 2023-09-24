@@ -1,10 +1,10 @@
-import { addGiteeSpace } from "@/plugins/utilities/addGiteeSpace";
+import { addGiteeSpace } from "@/plugins/space/addSpace";
 import base from "@/plugins/core/base";
 import xbook from "xbook";
-import { folderTreeService } from "@/plugins/services/folderTreeService";
-import { spaceService } from "@/plugins/services/spaceService";
-import { listenGiteeLoginCallback } from "@/plugins/services/listenGiteeLoginCallback";
-import displaySpaces from "@/plugins/core/displaySpaces";
+import { folderTreeService } from "@/plugins/space/folderTreeService";
+import { spaceService } from "@/plugins/space/spaceService";
+import { listenGiteeLoginCallback } from "@/plugins/space/listenGiteeLoginCallback";
+import displaySpaces from "@/plugins/space/displaySpaces";
 import openerService from "@/plugins/services/openerService";
 import theme from "@/plugins/utilities/theme";
 import settings from "@/plugins/widgets/settings";

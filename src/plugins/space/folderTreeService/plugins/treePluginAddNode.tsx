@@ -1,6 +1,6 @@
 import { fileSystemHelper } from "@/helpers/file-system.helper";
 import { spaceHelper } from "@/helpers/space.helper";
-import { FolderTreeNode } from "@/plugins/services/folderTreeService/types";
+import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import {
   createTreeHelper,
   createTreePlugin,

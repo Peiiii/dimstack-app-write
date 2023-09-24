@@ -1,4 +1,4 @@
-import Auth from "@/plugins/services/spaceService/Auth";
+import Auth from "@/plugins/space/spaceService/Auth";
 import { createDataStore } from "@/toolkit/common/dataStore";
 import { createPlugin } from "@/toolkit/common/plugin";
 import { SpaceDef } from "@/toolkit/types/space";

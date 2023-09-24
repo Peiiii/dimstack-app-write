@@ -1,4 +1,4 @@
-import { FolderTreeNode } from "@/plugins/services/folderTreeService/types";
+import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import {
   createTreeHelper,
   createTreePlugin,

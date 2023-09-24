@@ -3,12 +3,12 @@ import "./sidebar.scss";
 
 import { fileSystemHelper } from "@/helpers/file-system.helper";
 import { useStateFromRegistry } from "@/helpers/hooks/user-state-from-registry";
-import SideCard from "@/plugins/services/folderTreeService/components/SideCard";
-import treePluginAddNode from "@/plugins/services/folderTreeService/plugins/treePluginAddNode";
-import treePluginMigration from "@/plugins/services/folderTreeService/plugins/treePluginMigration";
-import treePluginNodeType from "@/plugins/services/folderTreeService/plugins/treePluginNodeType";
-import treePluginRefreshSpaceAuth from "@/plugins/services/folderTreeService/plugins/treePluginRefreshSpaceAuth";
-import { FolderTreeNode } from "@/plugins/services/folderTreeService/types";
+import SideCard from "@/plugins/space/folderTreeService/components/SideCard";
+import treePluginAddNode from "@/plugins/space/folderTreeService/plugins/treePluginAddNode";
+import treePluginMigration from "@/plugins/space/folderTreeService/plugins/treePluginMigration";
+import treePluginNodeType from "@/plugins/space/folderTreeService/plugins/treePluginNodeType";
+import treePluginRefreshSpaceAuth from "@/plugins/space/folderTreeService/plugins/treePluginRefreshSpaceAuth";
+import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createDataStore } from "@/toolkit/common/dataStore";
 import { createTreeDataStore } from "@/toolkit/common/treeDataStore";
 import { Action } from "@/toolkit/common/types";
@@ -27,7 +27,7 @@ import treePluginConfig from "./plugins/treePluginConfig";
 import treePluginDeleteNode from "./plugins/treePluginDeleteNode";
 import treePluginEditNode from "./plugins/treePluginEditNode";
 import ContextProvider from "@/toolkit/components/context";
-import treePluginRefresh from "@/plugins/services/folderTreeService/plugins/treePluginRefresh";
+import treePluginRefresh from "@/plugins/space/folderTreeService/plugins/treePluginRefresh";
 import { createServiceBus } from "@/toolkit/common/serviceBus";
 
 const TreeView = ({ space }: { space: SpaceDef }) => {

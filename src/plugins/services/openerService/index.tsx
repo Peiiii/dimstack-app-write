@@ -1,4 +1,4 @@
-import { FolderTreeNode } from "@/plugins/services/folderTreeService/types";
+import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import IframeOpener from "@/plugins/services/openerService/IframeOpener";
 import { createPlugin } from "@/toolkit/common/plugin";
 import { device } from "xbook/common/device";

@@ -1,4 +1,4 @@
-import { FolderTreeNode } from "@/plugins/services/folderTreeService/types";
+import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreeHelper } from "@/toolkit/components/tree/treePlugins";
 import xbook from "xbook";
 export default createTreeHelper<FolderTreeNode>().createPlugin({

@@ -1,4 +1,4 @@
-import { FolderTreeNode } from "@/plugins/services/folderTreeService/types";
+import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreePlugin } from "@/toolkit/components/tree/treePlugins";
 import { Icon, Text } from "@chakra-ui/react";
 import { FcFile, FcFolder } from "react-icons/fc";

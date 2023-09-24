@@ -39,9 +39,9 @@ interface FileResponse {
   type: "file" | "dir";
   [name: string]: any;
 }
-export type FileItemResponse = Pick<
+type FileItemResponse = Pick<
   FileResponse,
-  "name" | "path" | "download_url" | "html_url" | "type" | "sha"|"data"
+  "name" | "path" | "download_url" | "html_url" | "type" | "sha"
 >;
 interface FileHelper {
   get: ({
@@ -110,7 +110,7 @@ interface FileHelper {
 }
 
 export const getLoginUrl = ({ redirectUri, clientId }) => {
-  return `https://gitee.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=user_info%20projects`;
+  return `https://github.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=user_info%20projects`;
 };
 
 const prepareParams = (params: Record<string, any>) => {
@@ -131,10 +131,10 @@ export const getGiteeAccessToken = async ({
   scope: string;
   token_type: string;
 }> => {
-  const url = `https://gitee.com/oauth/token?grant_type=authorization_code&code=${code}&client_id=${clientId}&redirect_uri=${redirectUri}&client_secret=${clientSecret}`;
+  const url = `https://github.com/oauth/token?grant_type=authorization_code&code=${code}&client_id=${clientId}&redirect_uri=${redirectUri}&client_secret=${clientSecret}`;
   console.log("url:", url);
   const res = await axios.post(url);
-  // store.set("gitee", res.data);
+  // store.set("github", res.data);
   return res.data;
 };
 
@@ -148,9 +148,9 @@ export const refreshAccessToken = async ({
   scope: string;
   token_type: string;
 }> => {
-  const url = `https://gitee.com/oauth/token?grant_type=refresh_token&refresh_token=${refreshToken}`;
+  const url = `https://github.com/oauth/token?grant_type=refresh_token&refresh_token=${refreshToken}`;
   const res = await axios.post(url);
-  // store.set("gitee", res.data);
+  // store.set("github", res.data);
   return res.data;
 };
 export const getUrlParam = (name: string) => {
@@ -159,29 +159,29 @@ export const getUrlParam = (name: string) => {
   return urlParams.get(name);
 };
 const URLBuilder = (() => {
-  const getUserInfo = () => "https://gitee.com/api/v5/user";
+  const getUserInfo = () => "https://api.github.com/user";
   const getBranchList = (owner, repo) =>
-    `https://gitee.com/api/v5/repos/${owner}/${repo}/branches`;
+    `https://api.github.com/repos/${owner}/${repo}/branches`;
   const createBranch = (owner, repo) =>
-    `https://gitee.com/api/v5/repos/${owner}/${repo}/branches`;
+    `https://api.github.com/repos/${owner}/${repo}/branches`;
   const getBranch = (owner, repo, branch) =>
-    `https://gitee.com/api/v5/repos/${owner}/${repo}/branches/${branch}`;
+    `https://api.github.com/repos/${owner}/${repo}/branches/${branch}`;
   const getPathContents = (owner, repo, path) =>
-    `https://gitee.com/api/v5/repos/${owner}/${repo}/contents/${path}`;
+    `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
   const createFile = (owner, repo, path) =>
-    `https://gitee.com/api/v5/repos/${owner}/${repo}/contents/${path}`;
+    `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
   const updateFile = (owner, repo, path) =>
-    `https://gitee.com/api/v5/repos/${owner}/${repo}/contents/${path}`;
+    `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
   const deleteFile = (owner, repo, path) =>
-    `https://gitee.com/api/v5/repos/${owner}/${repo}/contents/${path}`;
+    `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
   const getRepo = (owner, repo) =>
-    `https://gitee.com/api/v5/repos/${owner}/${repo}`;
+    `https://api.github.com/repos/${owner}/${repo}`;
   const deleteRepo = (owner, repo) =>
-    `https://gitee.com/api/v5/repos/${owner}/${repo}`;
+    `https://api.github.com/repos/${owner}/${repo}`;
   const clearRepo = (owner, repo) =>
-    `https://gitee.com/api/v5/repos/${owner}/${repo}/clear`;
-  const createRepo = () => `https://gitee.com/api/v5/user/repos`;
-  const getRepoList = () => `https://gitee.com/api/v5/user/repos`;
+    `https://api.github.com/repos/${owner}/${repo}/clear`;
+  const createRepo = () => `https://api.github.com/user/repos`;
+  const getRepoList = () => `https://api.github.com/user/repos`;
   return {
     getUserInfo,
     createBranch,

@@ -1,4 +1,4 @@
-import { appInfo } from "@/plugins/services/listenGiteeLoginCallback/appInfo";
+import { appInfo } from "@/plugins/space/listenGiteeLoginCallback/appInfo";
 import { DataStore } from "@/toolkit/common/dataStore";
 import { createPlugin } from "@/toolkit/common/plugin";
 import { SpaceDef } from "@/toolkit/types/space";
