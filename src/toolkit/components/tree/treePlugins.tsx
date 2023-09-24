@@ -14,6 +14,7 @@ import {
   MenuList,
   Portal,
   Text,
+  Tooltip,
 } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
 import { HiOutlineEllipsisVertical } from "react-icons/hi2";
@@ -69,8 +70,8 @@ export const treePluginExpandTemplate = createTreePluginTemplate<{
       defaultExpanded: false,
     };
   },
-  activate({ eventBus, viewSystem }) {
-    const expandNode = ({ node, event }) => {
+  activate({ eventBus, viewSystem, serviceBus, dataStore }) {
+    const toggleNode = ({ node, event }: { node: any; event?: any }) => {
       if (event) {
         event.stopPropagation();
         event.preventDefault();
@@ -84,8 +85,25 @@ export const treePluginExpandTemplate = createTreePluginTemplate<{
         .getActions()
         .upsert({ ...viewState, expanded: !viewState.expanded });
     };
-    eventBus.on("node::click", expandNode);
-    eventBus.on("node::keydown.enter", expandNode);
+    const expandNode = ({ node, event }: { node: any; event?: any }) => {
+      if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      const viewState =
+        viewSystem.viewStateStore.getRecord(node.id) ||
+        viewSystem.getDefaultViewState(node, {
+          expanded: this.options.defaultExpanded,
+        });
+      viewSystem.viewStateStore
+        .getActions()
+        .upsert({ ...viewState, expanded: true });
+    };
+    eventBus.on("node::click", toggleNode);
+    eventBus.on("node::keydown.enter", toggleNode);
+    serviceBus.expose("expandNode", (id: string) => {
+      expandNode({ node: dataStore.getNode(id)! });
+    });
   },
 });
 
@@ -296,13 +314,16 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
                     defaultValue={name}
                   />
                 ) : (
+                  // <Tooltip label={name}>
                   <Text
+                    title={name}
                     textOverflow={"ellipsis"}
                     whiteSpace={"nowrap"}
                     overflow={"hidden"}
                   >
                     {name}
                   </Text>
+                  // </Tooltip>
                 )}
               </Flex>
               {/* <Button

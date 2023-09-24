@@ -23,8 +23,14 @@ export const createAtom = <T extends AtomSpec>() => {
     createEventBus<
       T["events"] extends undefined ? {} : NonNullable<T["events"]>
     >();
-  const registry = createRegistry<T["variables"] extends undefined?{}:NonNullable<T["variables"]>>();
-  const serviceBus = createServiceBus<T["services"] extends undefined ?{}:NonNullable<T["services"]>>();
+  const registry =
+    createRegistry<
+      T["variables"] extends undefined ? {} : NonNullable<T["variables"]>
+    >();
+  const serviceBus =
+    createServiceBus<
+      T["services"] extends undefined ? {} : NonNullable<T["services"]>
+    >();
   return {
     emit: eventBus.emit,
     on: eventBus.on,
@@ -33,7 +39,10 @@ export const createAtom = <T extends AtomSpec>() => {
     get: registry.get,
     set: registry.set,
     waitAvailable: registry.waitAvailable,
+    subscribe: registry.subscribe,
   };
 };
 
-export type Atom<T extends AtomSpec=AtomSpec> = ReturnType<typeof createAtom<T>>;
+export type Atom<T extends AtomSpec = AtomSpec> = ReturnType<
+  typeof createAtom<T>
+>;

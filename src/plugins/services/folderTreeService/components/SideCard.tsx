@@ -1,5 +1,30 @@
-import { Button, HStack, VStack, Text, Box } from "@chakra-ui/react";
-export default ({ title, children, className = "" }) => {
+import { Action } from "@/toolkit/common/types";
+import { useGlobalContext } from "@/toolkit/components/context";
+import {
+  Button,
+  HStack,
+  VStack,
+  Text,
+  Box,
+  Flex,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Icon,
+  IconButton,
+  Tooltip,
+} from "@chakra-ui/react";
+import { FC, ReactNode } from "react";
+import { AiOutlineSetting } from "react-icons/ai";
+import xbook from "xbook/index";
+export const SideCard: FC<{
+  title: string;
+  className?: string;
+  actions: Action[];
+  children: ReactNode;
+}> = ({ title, children, className = "", actions }) => {
+  const context = useGlobalContext();
   return (
     <VStack
       className={["side-card", className].join(" ")}
@@ -10,14 +35,55 @@ export default ({ title, children, className = "" }) => {
     >
       <HStack
         w="100%"
-        h="3rem"
+        h="2.5rem"
         align={"center"}
         flexShrink={0}
         className="side-card-header"
       >
-        <Box p="0 1rem">
-          <Text as="b">{title}</Text>
-        </Box>
+        <Flex pl="0.6rem" align={"center"} w="100%">
+          <Tooltip label={title}>
+            <Text
+              as="b"
+              textOverflow={"ellipsis"}
+              whiteSpace={"nowrap"}
+              overflow="hidden"
+            >
+              {title}
+            </Text>
+          </Tooltip>
+
+          <Box flexGrow={1} />
+          <Flex flexGrow={0} flexShrink={0}>
+            <Menu>
+              <MenuButton
+                as={IconButton}
+                icon={<AiOutlineSetting />}
+                bg="inherit"
+              />
+              <MenuList>
+                {actions.map((a) => {
+                  const eventMap = {};
+                  if (a.events && a.id) {
+                    a.events.forEach(
+                      (e) =>
+                        (eventMap[`on${e}`] = (event: Event) =>
+                          xbook.eventBus.emit(`${a.id}::${e}`, {
+                            event: event,
+                            context: context,
+                          }))
+                    );
+                  }
+                  // console.log("eventMap:", eventMap);
+                  return (
+                    <MenuItem key={a.title} icon={a.icon} {...eventMap}>
+                      {a.title}
+                    </MenuItem>
+                  );
+                })}
+              </MenuList>
+            </Menu>
+          </Flex>
+        </Flex>
         {/* <Button  borderRadius={0} className="side-card-header" flexShrink={0}>
         {title}
       </Button> */}
@@ -36,3 +102,5 @@ export default ({ title, children, className = "" }) => {
     </VStack>
   );
 };
+
+export default SideCard;

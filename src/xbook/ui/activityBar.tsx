@@ -26,6 +26,7 @@ import { createShell } from "xbook/ui/shell";
 type ActivityBarMethods = {
   addActivity(activity: ActivityItem): SafeAny;
   showActivity(id: string): SafeAny;
+  removeActivity(id: string): SafeAny;
   setHighlightActivity(id: string): SafeAny;
   toggleActivity(id: string): SafeAny;
   hideActivity(id: string): SafeAny;
@@ -126,7 +127,41 @@ export const createActivityBar = () =>
         const setHighlightActivity = (id) => {
           setActiveId(id);
         };
-        const showActivity = () => {};
+        const showActivity = (id: string) => {
+          // setActivityList((as) =>
+          //   as.map((a) =>
+          //     a.id === id ? { ...a, isActive: true } : { ...a, isActive: false }
+          //   )
+          // );
+          if (activityList.find((a) => a.id === id)) {
+            setActiveId(id);
+            eventBus.emit(`activity:${id}:clicked`);
+          }
+        };
+        const removeActivity = (id: string) => {
+          const existingActivity = activityList.find((a) => a.id === id);
+          const isActive = id === activeId;
+          const isOnly = activityList.length === 1;
+          setActivityList((as) => as.filter((a) => a.id !== id));
+          console.log(
+            "id:",
+            id,
+            "activeId:",
+            activeId,
+            "isActive:",
+            isActive,
+            "existingActivity:",
+            existingActivity
+          );
+          if (existingActivity && isActive && !isOnly) {
+            console.log(
+              "next to show:",
+              activityList.filter((a) => a.id !== id)[0].id
+            );
+            // showActivity(activityList.filter((a) => a.id !== id)[0].id);
+            showActivity(activityList.filter((a) => a.id !== id)[0].id);
+          }
+        };
         const shortcutActions = createCRUDActions(setShortcutList);
 
         proxy.register({
@@ -137,6 +172,7 @@ export const createActivityBar = () =>
           show,
           hide,
           toggle,
+          removeActivity,
         });
       }, [
         activityList,
@@ -151,6 +187,8 @@ export const createActivityBar = () =>
       const crossDirection = (direction: string) => {
         return direction === "row" ? "column" : "row";
       };
+
+      console.log("activeId:", activeId);
 
       const options = {};
       if (isMobile) {
@@ -207,16 +245,12 @@ export const createActivityBar = () =>
                       maxW={"100%"}
                       gap={0}
                       overflow={"hidden"}
+                      title={name}
                       onClick={() => {
-                        setActiveId(id);
-                        eventBus.emit(`activity:${id}:clicked`);
+                        proxy.showActivity(id);
                       }}
                     >
-                      <Icon
-                        as={icon as As}
-                        fontSize={iconFontSize}
-                        title={name}
-                      ></Icon>
+                      <Icon as={icon as As} fontSize={iconFontSize}></Icon>
                       <Text
                         m="0 !important"
                         fontSize={textFontSize}

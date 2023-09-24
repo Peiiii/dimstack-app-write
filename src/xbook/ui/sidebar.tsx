@@ -22,6 +22,7 @@ export const createSidebar = () =>
     setView(id: string): void;
     toggleView(id: string): void;
     addView(view: View, update?: boolean): void;
+    removeView(id: string): void;
     showView(id: string): void;
     hideView(id: string): void;
     hide: AnyFunction;
@@ -115,18 +116,31 @@ export const createSidebar = () =>
         const setView = (id: string) => {
           showView(id);
         };
+        const removeView = (id: string) => {
+          console.log("removeView:", id);
+          setViewList((vs) => vs.filter((v) => v.id !== id));
+        };
         proxy.register({
           toggleView,
           addView,
           setView,
           hideView,
+          removeView,
           show,
           hide,
           toggle,
           getFullwidth,
           setFullwidth,
         });
-      }, [setViewList,viewList, show, hide, toggle, getFullwidth, setFullwidth]);
+      }, [
+        setViewList,
+        viewList,
+        show,
+        hide,
+        toggle,
+        getFullwidth,
+        setFullwidth,
+      ]);
 
       const options = {};
 
@@ -144,6 +158,7 @@ export const createSidebar = () =>
         }
       }, [fullwidthControl.value]);
 
+      console.log("viewList:",viewList)
       return (
         <>
           {

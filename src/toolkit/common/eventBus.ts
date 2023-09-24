@@ -1,3 +1,5 @@
+import { SafeAny } from "@/toolkit/common/types";
+
 type EventHandler<T extends any[]> = (...args: T) => void;
 export type EventMap = Record<string, any[]>;
 
@@ -34,10 +36,10 @@ export function createEventBus<T extends EventMap>() {
 
   const connector = <K extends keyof T>(
     eventName: K,
-    data?: T[K] extends [] ? (e: Event) => T[K] : T[K],
+    data?: (e: Event) => T[K][0] | T[K][0],
     stopBubbling: boolean = false
   ) => {
-    return (e: Event) => {
+    return (e: SafeAny) => {
       if (stopBubbling) {
         e.stopPropagation();
         e.preventDefault();

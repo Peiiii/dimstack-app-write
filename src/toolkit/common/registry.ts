@@ -1,11 +1,11 @@
 type Callback<T> = (value: T) => void;
 type CancelFunction = () => void;
-
 interface Registry<T> {
   has: (key: keyof T) => boolean;
   get: <K extends keyof T>(key: K) => T[K] | undefined;
   set: <K extends keyof T>(key: K, value: T[K]) => void;
-  waitAvailable: <K extends keyof T>(
+  waitAvailable: <K extends keyof T>(key: K, callback: Callback<T[K]>) => void;
+  subscribe: <K extends keyof T>(
     key: K,
     callback: Callback<T[K]>
   ) => CancelFunction;
@@ -14,6 +14,7 @@ interface Registry<T> {
 const Registry = {
   create: <T>(): Registry<T> => {
     const map: Partial<T> = {};
+    const observers: { key: keyof T; callback: Callback<T[keyof T]> }[] = [];
 
     const has = (key: keyof T): boolean => {
       return key in map;
@@ -27,18 +28,45 @@ const Registry = {
       map[key] = value;
     };
 
-    const waitAvailable = <K extends keyof T>(
+    const notifyObservers = <K extends keyof T>(key: K, value: T[K]): void => {
+      const filteredObservers = observers.filter(
+        (observer) => observer.key === key
+      );
+      for (const observer of filteredObservers) {
+        observer.callback(value);
+      }
+    };
+
+    const subscribe = <K extends keyof T>(
       key: K,
       callback: Callback<T[K]>
     ): CancelFunction => {
+      const observer = {
+        key: key as keyof T,
+        callback: callback as Callback<T[keyof T]>,
+      };
+      observers.push(observer);
+
+      return () => {
+        const index = observers.indexOf(observer);
+        if (index >= 0) {
+          observers.splice(index, 1);
+        }
+      };
+    };
+
+    const waitAvailable = <K extends keyof T>(
+      key: K,
+      callback: Callback<T[K]>
+    ): void => {
       if (has(key)) {
-        const value = get<K>(key)!;
-        callback(value);
-        return () => {}; // 返回一个空的取消函数
+        const value = get(key);
+        callback(value!);
       } else {
         const observer = {
-          callback,
-          cleanup: () => {
+          key: key as keyof T,
+          callback: (value: T[keyof T]) => {
+            callback(value as T[K]);
             const index = observers.indexOf(observer);
             if (index >= 0) {
               observers.splice(index, 1);
@@ -46,21 +74,12 @@ const Registry = {
           },
         };
         observers.push(observer);
-
-        return () => {
-          observer.cleanup(); // 取消等待时清理观察者
-        };
       }
     };
 
-    const observers: { callback: Callback<any>; cleanup: () => void }[] = [];
-
     const setWithNotify = <K extends keyof T>(key: K, value: T[K]): void => {
       set(key, value);
-      for (const observer of observers) {
-        observer.callback(value);
-        observer.cleanup();
-      }
+      notifyObservers(key, value);
     };
 
     return {
@@ -68,14 +87,12 @@ const Registry = {
       get,
       set: setWithNotify,
       waitAvailable,
+      subscribe,
     };
   },
 };
 
 export const createRegistry = <T>(): Registry<T> => Registry.create<T>();
-export const registry = <T>(): Registry<T> => Registry.create<T>();
-
-
 // interface Person {
 //   name: string;
 //   age: number;
@@ -102,8 +119,6 @@ export const registry = <T>(): Registry<T> => Registry.create<T>();
 // const cancelAgeCallback = personRegistry.waitAvailable("age", ageCallback); // 注册回调
 // personRegistry.set("age", 30); // 触发回调
 // cancelAgeCallback(); // 取消回调
-
-
 
 // type Callback<T> = (value: T) => void;
 // type CancelFunction = () => void;

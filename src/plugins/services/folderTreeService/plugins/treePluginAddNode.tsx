@@ -53,6 +53,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
         icon: <AiOutlineFolderAdd />,
       },
     ]);
+    
     eventBus.on("addFileAt", ({ node }) => {
       const parentId = node.id;
       const parentNode = dataStore.getNode(parentId)!;

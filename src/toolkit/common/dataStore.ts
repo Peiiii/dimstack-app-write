@@ -88,9 +88,10 @@ export const createDataStore = <T extends { [k: string]: any }>({
         const _record = state.data.find(
           (record) => record[primaryKey] === action.payload
         )!;
-        // console.log("find_record:",action.payload, _record);
+        console.log("state:",[...state.data])
+        console.log("find_record:",action.payload, _record);
         const index = state.data.indexOf(_record);
-        // console.log("deleted:", index);
+        console.log("deleted:", index);
         if (index !== -1) {
           state.data.splice(index, 1);
         }

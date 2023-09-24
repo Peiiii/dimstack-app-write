@@ -73,7 +73,7 @@ const PowerForm = <T extends { [k: string]: SafeAny }>({
   //     console.log();
   //   })
   //   atom?.on("ddd",()=>{})
-  console.log("formData:",formData);
+  console.log("formData:", formData);
   return (
     <>
       {fieldList
@@ -100,7 +100,7 @@ const PowerForm = <T extends { [k: string]: SafeAny }>({
                     setFormData({ ...formData, [name]: value });
                     atom?.emit("valueChange", { ...formData, [name]: value });
                   }}
-                //   defaultValue={defaultIndex || undefined}
+                  //   defaultValue={defaultIndex || undefined}
                 >
                   {options.map(({ value, render, label }, index) => {
                     return (
@@ -126,14 +126,16 @@ const PowerForm = <T extends { [k: string]: SafeAny }>({
                       [name]: e.target.value,
                     });
                   }}
-                //   defaultValue={formData[name] || ""}
+                  //   defaultValue={formData[name] || ""}
                   placeholder={title}
                 />
               </FormControl>
             );
         })
-        .map((c) => (
-          <Flex mb="18px">{c}</Flex>
+        .map((c, index) => (
+          <Flex key={index} mb="18px">
+            {c}
+          </Flex>
         ))}
     </>
   );

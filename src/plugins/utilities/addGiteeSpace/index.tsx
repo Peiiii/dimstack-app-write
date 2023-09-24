@@ -1,26 +1,33 @@
+import { spaceHelper } from "@/helpers/space.helper";
 import { createAtom } from "@/toolkit/common/atom";
 import { DataStore } from "@/toolkit/common/dataStore";
 import { createPlugin } from "@/toolkit/common/plugin";
-import { createModalForm } from "@/toolkit/components/modalForm";
 import PageBox from "@/toolkit/components/page-box";
 import PowerForm, { PowerFormAtom } from "@/toolkit/components/power-form";
 import { SpaceDef } from "@/toolkit/types/space";
 import {
   Button,
   Card,
-  CardFooter,
   Flex,
   Input,
   InputGroup,
   InputRightAddon,
 } from "@chakra-ui/react";
-import {
-  AiOutlineLogin,
-  AiOutlinePlayCircle,
-  AiOutlinePlus,
-  AiOutlinePlusCircle,
-} from "react-icons/ai";
+import { AiOutlinePlusCircle } from "react-icons/ai";
 
+const doAddSpace = (xbook, platform: string, owner: string, repo: string) => {
+  const spaceStore = xbook.registry.get("spaceStore") as DataStore<SpaceDef>;
+  const id = `${platform}:${owner}:${repo}`;
+  spaceStore.getActions().upsert({ platform, owner, repo, id });
+  xbook.notificationService.success("成功添加空间");
+  xbook.serviceBus.invoke(
+    "folderTreeService.focus",
+    spaceHelper.generateSpaceId(platform, owner, repo)
+  );
+  setTimeout(() => {
+    xbook.serviceBus.invoke(`space-${id}.trigger`);
+  }, 100);
+};
 export const addGiteeSpace = createPlugin({
   initilize(xbook) {
     const id = "addGiteeRepo";
@@ -52,6 +59,7 @@ export const addGiteeSpace = createPlugin({
                     <InputGroup>
                       <Input
                         placeholder="请输入链接"
+                        autoFocus
                         onChange={(e) => (url = e.target.value)}
                       />
                       <InputRightAddon
@@ -70,14 +78,7 @@ export const addGiteeSpace = createPlugin({
                               "输入链接格式不符!"
                             );
                           } else {
-                            const spaceStore = xbook.registry.get(
-                              "spaceStore"
-                            ) as DataStore<SpaceDef>;
-                            const id = `${platform}:${owner}:${repo}`;
-                            spaceStore
-                              .getActions()
-                              .upsert({ platform, owner, repo, id });
-                            xbook.notificationService.success("成功添加空间");
+                            doAddSpace(xbook, platform, owner, repo);
                             modal.close();
                           }
                         }}
@@ -134,12 +135,13 @@ export const addGiteeSpace = createPlugin({
                           const data = atom.invoke("getData");
                           // console.log(data);
 
-                          const spaceStore = xbook.registry.get(
-                            "spaceStore"
-                          ) as DataStore<SpaceDef>;
-                          const id = `${data.platform}:${data.owner}:${data.repo}`;
-                          spaceStore.getActions().upsert({ ...data, id });
-                          xbook.notificationService.success("成功添加空间");
+                          doAddSpace(
+                            xbook,
+                            data.platform,
+                            data.owner,
+                            data.repo
+                          );
+                          modal.close();
                         }}
                       >
                         创建
