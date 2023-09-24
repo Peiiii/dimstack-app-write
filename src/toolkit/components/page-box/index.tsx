@@ -144,26 +144,24 @@ const PageBox = ({
             onChange={(e) => onPageChange && onPageChange(e)}
           >
             <TabList>
-              {currentData?.children?.map(
-                ({ title, defaultChildId, id }, index) => {
-                  return (
-                    <Tab
-                      overflowY="auto"
-                      key={index}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        const targetPath = currentPath.endsWith("/")
-                          ? currentPath + id
-                          : currentPath + "/" + id;
-                        focusPath(targetPath);
-                      }}
-                    >
-                      {title}
-                    </Tab>
-                  );
-                }
-              )}
+              {currentData?.children?.map(({ title, id }, index) => {
+                return (
+                  <Tab
+                    overflowY="auto"
+                    key={index}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      const targetPath = currentPath.endsWith("/")
+                        ? currentPath + id
+                        : currentPath + "/" + id;
+                      focusPath(targetPath);
+                    }}
+                  >
+                    {title}
+                  </Tab>
+                );
+              })}
             </TabList>
 
             <TabPanels>
