@@ -31,7 +31,6 @@ export const spaceService = createPlugin({
           console.log("auth error:",err);
           resolve(false);
         });
-
        })
       },
       login: (spaceId:string)=>{
