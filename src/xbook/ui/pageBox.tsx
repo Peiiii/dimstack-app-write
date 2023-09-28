@@ -85,12 +85,12 @@ const Tab: FC<{
       w={width !== undefined ? width : stretch ? "100%" : undefined}
       minW={minWidth}
       maxW={maxWidth}
+      flexGrow={1}
     >
       <Box
         textOverflow={"ellipsis"}
         overflow={"hidden"}
         whiteSpace={"nowrap"}
-        dir="rtl"
         title={title}
       >
         {shortTitle}

@@ -27,6 +27,7 @@
     --background-color-item-focused: #d7d9dc;
     --shadow-inset-bottom: inset -1px 0 1px 1px #eeeeeeee;
     --border-light-gray: 1px solid #80808024;
+    --primary-color: #0d6efd;
 
     .hover-highlight {
         &:hover {
@@ -126,8 +127,9 @@
             .right-list {
                 .tab {
                     &.active {
-                        border-left: 1px solid #2196f3c7;
+                        border-left: 1px solid var(--primary-color);
                         background-color: white;
+                        color: var(--primary-color);
                     }
                 }
             }
@@ -137,8 +139,10 @@
 
                 .tab {
                     &.active {
-                        border-top: 1px solid #2196f3c7;
+                        border-top: 1px solid var(--primary-color);
                         background-color: white;
+                        color: black;
+                        flex-basis: 50%;
                     }
                 }
             }
