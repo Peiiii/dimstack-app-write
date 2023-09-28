@@ -26,6 +26,7 @@
     --content-card-shadow: var(--shadow-base);
     --background-color-item-focused: #d7d9dc;
     --shadow-inset-bottom: inset -1px 0 1px 1px #eeeeeeee;
+    --border-light-gray: 1px solid #80808024;
 
     .hover-highlight {
         &:hover {
@@ -119,7 +120,8 @@
 
         .tab-bar {
             color: gray;
-            box-shadow: var(--shadow-inset-bottom);
+            // box-shadow: var(--shadow-inset-bottom);
+            border-bottom: var(--border-light-gray);
 
             .right-list {
                 .tab {

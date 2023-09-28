@@ -1,15 +1,18 @@
+import { LayoutNode } from "@/toolkit/common/renderer";
 import {
   Box,
+  Button,
+  Flex,
   HStack,
   Icon,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
-  Tooltip,
   VStack,
+  forwardRef,
 } from "@chakra-ui/react";
-import React, {
+import {
   FC,
   MouseEventHandler,
   useEffect,
@@ -27,7 +30,6 @@ import { createDeferredComponentProxy } from "xbook/hooks/useDeferredComponentPr
 import { cacheService } from "xbook/services";
 import { commandService } from "xbook/services/commandService";
 import { componentService } from "./componentService";
-import { LayoutNode } from "@/toolkit/common/renderer";
 type PageDescriptor = {
   id: string;
   title: string;
@@ -63,7 +65,7 @@ const Tab: FC<{
   minWidth,
   maxWidth,
 }) => {
-  const classList: string[] = ["tab","hover-action"];
+  const classList: string[] = ["tab", "hover-action"];
   if (isActive) classList.push("active");
   const shortTitle = useMemo(
     () => title.split("::").splice(-1)[0].split("/").splice(-1)[0],
@@ -95,7 +97,7 @@ const Tab: FC<{
       </Box>
       {(stretch || width || minWidth) && <Box flexGrow={1} />}
       <Icon
-      className="hover-visible"
+        className="hover-visible"
         as={VscClose}
         onClick={(e) => {
           e.stopPropagation();
@@ -106,12 +108,17 @@ const Tab: FC<{
     </HStack>
   );
 };
+
+const TabIconButton = forwardRef((_, ref) => (
+  <Button bg="none" p="0" borderRadius={0} color={"inherit"} {..._} ref={ref} />
+));
 export const createPageBox = () =>
   createDeferredComponentProxy<PageBoxMethods>(
     ({ proxy }) => {
       const tabBarRef = useRef<HTMLDivElement>(null);
       const minTabWidth = 100;
       const maxTabWidth = 800;
+      const maxCacheSize = 5;
       const [tabBarWidth, setTabBarWidth] = useState(1e4);
 
       const resizeObserver = useMemo(
@@ -136,7 +143,11 @@ export const createPageBox = () =>
       const loadPageList = () => {
         const pageList: PageDescriptor[] = cache.get("pageList", []);
 
-        return pageList.filter((page) => page.active);
+        return pageList
+          .filter((page) => page.active)
+          .concat(
+            pageList.filter((page) => !page.active).slice(0, maxCacheSize - 1)
+          );
       };
       const [pageList, setPageList] = useState<PageDescriptor[]>(loadPageList);
       useEffect(() => {
@@ -230,11 +241,15 @@ export const createPageBox = () =>
         tabsView.splice(tabBarCapacity);
         tabBarRight = (
           <>
-            <Box pl="0.5rem" pr="0.5rem" flexShrink={0} flexGrow={0}>
+            <Flex align={"center"} h="100%" flexShrink={0} flexGrow={0}>
               <Menu>
-                <MenuButton>
-                  <Icon as={AiOutlineMenu} />
-                </MenuButton>
+                <MenuButton
+                  as={forwardRef((props, ref) => (
+                    <TabIconButton {...props} ref={ref}>
+                      <Icon fontSize={"lg"} as={AiOutlineMenu} />
+                    </TabIconButton>
+                  ))}
+                ></MenuButton>
                 <MenuList maxW="400px" className="right-list">
                   {pageList
                     .slice(tabBarCapacity)
@@ -252,7 +267,7 @@ export const createPageBox = () =>
                     ))}
                 </MenuList>
               </Menu>
-            </Box>
+            </Flex>
           </>
         );
       }
@@ -297,16 +312,15 @@ export const createPageBox = () =>
                 className="tab-bar"
                 // overflow="auto"
                 w="100%"
+                gap={0}
               >
-                <Icon
-                  ml="5px"
-                  mr="5px"
-                  as={AiOutlineMenuFold}
+                <TabIconButton
                   onClick={() => {
-                    // commandService.executeCommand("sidebar.toggle");
                     commandService.executeCommand("client:toggleHome");
                   }}
-                ></Icon>
+                >
+                  <Icon fontSize={"lg"} as={AiOutlineMenuFold} />
+                </TabIconButton>
                 <HStack
                   className="tab-bar-content"
                   flexGrow={1}
