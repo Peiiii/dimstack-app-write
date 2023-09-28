@@ -326,6 +326,7 @@ export const createPageBox = () =>
                   flexGrow={1}
                   h="100%"
                   overflow={"hidden"}
+                  gap={0}
                 >
                   {tabsView}
                 </HStack>

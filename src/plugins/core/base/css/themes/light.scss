@@ -27,7 +27,7 @@
     --background-color-item-focused: #d7d9dc;
     --shadow-inset-bottom: inset -1px 0 1px 1px #eeeeeeee;
     --border-light-gray: 1px solid #80808024;
-    --primary-color: #0d6efd;
+    --primary-color: #2db6f4;
 
     .hover-highlight {
         &:hover {
@@ -135,15 +135,30 @@
             }
 
             .tab-bar-content {
-               
+
 
                 .tab {
+                    // border-left: var(--border-light-gray);
+                    border-right: var(--border-light-gray);
+                    // box-shadow: var(--shadow-inset-bottom
+                    // transition: width 0.3s ease;
+
+                    &:first-child {
+                        border-left: var(--border-light-gray);
+                    }
+
+                    &:hover {
+                        background-color: white;
+                        color: black;
+                    }
+
                     &.active {
                         border-top: 1px solid var(--primary-color);
                         background-color: white;
                         color: black;
-                        flex-basis: 50%;
+                        flex-basis: min(50%, 300px);
                     }
+
                 }
             }
 

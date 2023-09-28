@@ -6,7 +6,7 @@ import { createServiceBus } from "@/toolkit/common/serviceBus";
 import { TreeDataStore } from "@/toolkit/common/treeDataStore";
 import { SafeAny } from "@/toolkit/common/types";
 import { Box, Flex } from "@chakra-ui/react";
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 
 // View System
 export type WidgetViewState = {
@@ -58,7 +58,7 @@ const createViewSystem = <T,>(
           title={nodeMenuItem.title || nodeMenuItem.name}
           onClick={(e) => {
             if (nodeMenuItem.event) {
-              eventBus.emit(nodeMenuItem.event, { node, event:e });
+              eventBus.emit(nodeMenuItem.event, { node, event: e });
               e.stopPropagation();
               e.preventDefault();
             }
@@ -139,7 +139,6 @@ const createViewSystem = <T,>(
   return viewSystem;
 };
 type ViewSystem = ReturnType<typeof createViewSystem>;
-const defaultRenderer = createRenderer();
 
 // Plugin System
 export type WidgetContext<
@@ -160,7 +159,7 @@ export type WidgetPlugin<
   OptionsType extends Record<string, SafeAny>
 > = {
   activate?: (context: WidgetContext<T, OptionsType>) => void;
-  deactivate?: (context: WidgetContext<T, OptionsType>) =>void;
+  deactivate?: (context: WidgetContext<T, OptionsType>) => void;
 };
 
 // Tree Component
@@ -183,20 +182,24 @@ export const Tree = <
   Pick<WidgetContext<T, OptionsType>, "dataStore"> & {
     viewStateStore?: DataStore<WidgetViewState>;
   }) => {
+  const renderer = useMemo(() => createRenderer(), []);
   const finalEventBus = useMemo(() => eventBus || createEventBus(), [eventBus]);
   const finalServiceBus = useMemo(
     () => serviceBus || createServiceBus(),
     [serviceBus]
   );
   const finalPipe = useMemo(() => pipe || createPipeService(), [pipe]);
-  const getContext = (): WidgetContext<T, OptionsType> => ({
-    viewSystem: finalViewSystem,
-    eventBus: finalEventBus,
-    dataStore,
-    options,
-    pipe: finalPipe,
-    serviceBus: finalServiceBus,
-  });
+  const getContext = useCallback((): WidgetContext<T, OptionsType> => {
+    return {
+      viewSystem: finalViewSystem,
+      eventBus: finalEventBus,
+      dataStore,
+      options,
+      pipe: finalPipe,
+      serviceBus: finalServiceBus,
+    };
+  }, [finalEventBus, dataStore, options, finalPipe, finalServiceBus]);
+
   const finalViewSystem = useMemo(
     () =>
       viewSystem ||
@@ -208,22 +211,26 @@ export const Tree = <
               initialState: [],
             })!,
           eventBus: finalEventBus,
-          renderer: defaultRenderer,
+          renderer,
         },
         getContext
       ),
-    [finalEventBus, viewSystem, dataStore]
+    [finalEventBus, viewSystem, dataStore, renderer, getContext]
   );
 
   useEffect(() => {
+    const context = getContext();
+    console.log(
+      `[${options.space.id}|${context.options.space.id}] plugin activating`
+    );
     for (const plugin of plugins) {
       plugin.activate?.(getContext());
     }
-    return ()=>{
+    return () => {
       for (const plugin of plugins) {
         plugin.deactivate?.(getContext());
       }
-    }
+    };
   }, []);
 
   const rootNode = dataStore.useData();

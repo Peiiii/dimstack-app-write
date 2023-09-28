@@ -1,4 +1,5 @@
 import "./css/index.scss";
+import "./css/theme-base.scss";
 import "./css/scroll.scss";
 import "./css/themes/discord-light.scss";
 import "./css/themes/dark.scss";

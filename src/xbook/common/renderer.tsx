@@ -1,5 +1,5 @@
 import { SafeAny } from "@/toolkit/common/types";
-import { Alert, Box, Button } from "@chakra-ui/react";
+import { Alert, Box, Button, Flex, Spinner } from "@chakra-ui/react";
 import { combineReducers, configureStore, createSlice } from "@reduxjs/toolkit";
 import { ErrorBoundary } from "react-error-boundary";
 import { Provider, useSelector } from "react-redux";
@@ -117,16 +117,29 @@ export const createRenderer = (registryName: string = "componentRegistry") => {
       // requestComponent(type);
       // console.log("components:", store.getState());
       return (
-        <Box>
-          <Alert>Unknown component type: {type}</Alert>
-          <Button
-            onClick={() => {
-              xbook.eventBus.emit("/welcome");
-            }}
-          >
-            返回首页
-          </Button>
-        </Box>
+        // <Box>
+        //   <Alert>Unknown component type: {type}</Alert>
+        //   <Button
+        //     onClick={() => {
+        //       xbook.eventBus.emit("/welcome");
+        //     }}
+        //   >
+        //     返回首页
+        //   </Button>
+        // </Box>
+       <Flex opacity={0.1}>
+        {type}
+         <Spinner
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="blue.500"
+          opacity={0.3}
+        >
+          {type}
+        </Spinner>
+       </Flex>
+
       );
     }
 
