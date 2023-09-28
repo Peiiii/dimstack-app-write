@@ -158,7 +158,7 @@ export const createSidebar = () =>
         }
       }, [fullwidthControl.value]);
 
-      console.log("viewList:",viewList)
+      console.log("viewList:", viewList);
       return (
         <>
           {
@@ -167,10 +167,10 @@ export const createSidebar = () =>
               maxH={"100%"}
               w="13em"
               {...options}
-              display={visible ? "block" : "none"}
+              // display={visible ? "block" : "none"}
               flexShrink={0}
               flexGrow={1}
-              className="sidebar sidebarV2"
+              className={"sidebar sidebarV2 " + (visible ? "" : "width-collapsed")}
             >
               {viewList.map((view) => {
                 const { id, visible, viewData } = view;
@@ -180,6 +180,7 @@ export const createSidebar = () =>
                     h="100%"
                     key={id}
                     m="0 !important"
+                    className="view"
                     display={visible ? "block" : "none"}
                   >
                     {componentService.render(viewData)}

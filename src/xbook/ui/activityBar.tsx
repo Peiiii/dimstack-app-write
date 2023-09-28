@@ -204,14 +204,14 @@ export const createActivityBar = () =>
       const iconFontSize = "1.5rem";
       return (
         <>
-          {visible && (
+          {
             <Stack
               flexFlow={direction}
               justify={isMobile ? "space-around" : "flex-start"}
               minW={"60px"}
               maxW={"64px"}
               overflow={"hidden"}
-              className="activity-bar"
+              className={"activity-bar " + (visible ? "" : "width-collapsed")}
               align="stretch"
               flexShrink={0}
               gap={"0.5rem"}
@@ -339,7 +339,7 @@ export const createActivityBar = () =>
                 );
               })}
             </Stack>
-          )}
+          }
         </>
       );
     },

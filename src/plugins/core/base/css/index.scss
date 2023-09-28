@@ -25,6 +25,20 @@ body {
   color: cadetblue !important;
 }
 
+.width-collapsed {
+  width: 0 !important;
+  min-width: 0!important;
+
+}
+
+.sidebar{
+  transition: width 0.3s ease;
+}
+.activity-bar{
+  transition: width 0.3s ease;
+}
+
+
 .hover-action {
   &:not(:hover) {
     .hover-show {
