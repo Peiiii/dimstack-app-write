@@ -3,6 +3,7 @@ import { createPlugin } from "@/toolkit/common/plugin";
 import { Action } from "@/toolkit/common/types";
 import { SpaceDef } from "@/toolkit/types/space";
 import {
+  Avatar,
   Badge,
   Box,
   Card,
@@ -15,6 +16,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import {
+  AiFillFolder,
   AiOutlineDelete,
   AiOutlineFolder,
   AiOutlineInfoCircle,
@@ -99,7 +101,8 @@ export const folderTreeService = createPlugin({
         xbook.layoutService.activityBar.addActivity({
           id: id,
           name: repo,
-          icon: AiOutlineFolder,
+          // icon: (props) => <Avatar name={repo} {...props} />,
+          icon: AiFillFolder,
         });
         xbook.layoutService.sidebar.addView(
           {

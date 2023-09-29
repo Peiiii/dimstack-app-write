@@ -259,9 +259,10 @@ export const createActivityBar = () =>
                         p="0px 4px"
                         overflow={"hidden"}
                         whiteSpace={"nowrap"}
-                        textOverflow={"ellipsis"}
+                        // textOverflow={"ellipsis"}
+                        // textOverflow={"clip"}
                       >
-                        {name}
+                        {name.slice(0,2).toUpperCase()}
                       </Text>
                     </VStack>
                   </Stack>
