@@ -126,9 +126,8 @@ export const createPageBox = () =>
   createDeferredComponentProxy<PageBoxMethods>(
     ({ proxy }) => {
       const tabBarRef = useRef<HTMLDivElement>(null);
-      const tabListRef = useRef<HTMLDivElement>(null);
       const minTabWidth = 100;
-      const maxTabWidth = 800;
+      const maxTabWidth = 10000;
       const maxCacheSize = 5;
       const [tabBarWidth, setTabBarWidth] = useState(1e4);
 
