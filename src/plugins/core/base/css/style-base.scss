@@ -1,0 +1,23 @@
+.icon {
+    &.dir {
+        color: #ffce45;
+        // color: var(--primary-color);
+        // opacity: 0.7;
+    }
+
+    &.file {
+        color: var(--secondary-color);
+        opacity: 0.7;
+        &.file-markdown {
+            color: var(--primary-color);
+        }
+    }
+}
+
+.side-card{
+    .header {
+        // color: gray;
+        // opacity: 0.8;
+        text-transform: capitalize;
+    }
+}

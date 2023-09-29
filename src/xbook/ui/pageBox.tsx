@@ -20,7 +20,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { AiOutlineMenu, AiOutlineMenuFold } from "react-icons/ai";
+import { AiFillCloseCircle, AiOutlineClose, AiOutlineMenu, AiOutlineMenuFold } from "react-icons/ai";
 import { VscClose } from "react-icons/vsc";
 import {
   ProxiedControls,
@@ -30,6 +30,10 @@ import { createDeferredComponentProxy } from "xbook/hooks/useDeferredComponentPr
 import { cacheService } from "xbook/services";
 import { commandService } from "xbook/services/commandService";
 import { componentService } from "./componentService";
+import SimpleBar from "simplebar-react";
+import "simplebar-react/dist/simplebar.min.css";
+import { device } from "xbook/common/device";
+
 type PageDescriptor = {
   id: string;
   title: string;
@@ -86,6 +90,7 @@ const Tab: FC<{
       minW={minWidth}
       maxW={maxWidth}
       flexGrow={1}
+      flexShrink={0}
     >
       <Box
         textOverflow={"ellipsis"}
@@ -98,7 +103,7 @@ const Tab: FC<{
       {(stretch || width || minWidth) && <Box flexGrow={1} />}
       <Icon
         className="hover-visible"
-        as={VscClose}
+        as={AiOutlineClose}
         onClick={(e) => {
           e.stopPropagation();
           e.preventDefault();
@@ -116,6 +121,7 @@ export const createPageBox = () =>
   createDeferredComponentProxy<PageBoxMethods>(
     ({ proxy }) => {
       const tabBarRef = useRef<HTMLDivElement>(null);
+      const tabListRef = useRef<HTMLDivElement>(null);
       const minTabWidth = 100;
       const maxTabWidth = 800;
       const maxCacheSize = 5;
@@ -238,7 +244,7 @@ export const createPageBox = () =>
       });
       let tabBarRight;
       if (pageList.length > tabBarCapacity) {
-        tabsView.splice(tabBarCapacity);
+        // tabsView.splice(tabBarCapacity);
         tabBarRight = (
           <>
             <Flex align={"center"} h="100%" flexShrink={0} flexGrow={0}>
@@ -251,20 +257,18 @@ export const createPageBox = () =>
                   ))}
                 ></MenuButton>
                 <MenuList maxW="400px" className="right-list">
-                  {pageList
-                    .slice(tabBarCapacity)
-                    .map(({ title, id, active }) => (
-                      <MenuItem key={id}>
-                        <Tab
-                          minWidth={minTabWidth}
-                          title={title}
-                          isActive={active}
-                          onClick={() => proxy.showPage(id)}
-                          onClose={() => proxy.removePage(id)}
-                          stretch
-                        />
-                      </MenuItem>
-                    ))}
+                  {pageList.slice(0).map(({ title, id, active }) => (
+                    <MenuItem key={id}>
+                      <Tab
+                        minWidth={minTabWidth}
+                        title={title}
+                        isActive={active}
+                        onClick={() => proxy.showPage(id)}
+                        onClose={() => proxy.removePage(id)}
+                        stretch
+                      />
+                    </MenuItem>
+                  ))}
                 </MenuList>
               </Menu>
             </Flex>
@@ -322,13 +326,28 @@ export const createPageBox = () =>
                   <Icon fontSize={"lg"} as={AiOutlineMenuFold} />
                 </TabIconButton>
                 <HStack
-                  className="tab-bar-content"
+                  className="tab-bar-content scroll scroll-9"
                   flexGrow={1}
                   h="100%"
-                  overflow={"hidden"}
+                  // overflow={"hidden"}
+                  overflowY={"hidden"}
+                  overflowX="auto"
                   gap={0}
                 >
-                  {tabsView}
+                  {device.isMobile() ? (
+                    tabsView
+                  ) : (
+                    <SimpleBar
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        height: "100%",
+                        flexFlow: "row",
+                      }}
+                    >
+                      {tabsView}
+                    </SimpleBar>
+                  )}
                 </HStack>
                 {tabBarRight}
               </HStack>

@@ -14,9 +14,10 @@ import {
   Icon,
   IconButton,
   Tooltip,
+  Spacer,
 } from "@chakra-ui/react";
 import { FC, ReactNode } from "react";
-import { AiOutlineSetting } from "react-icons/ai";
+import { AiOutlineHome, AiOutlineSetting } from "react-icons/ai";
 import xbook from "xbook/index";
 export const SideCard: FC<{
   title: string;
@@ -38,24 +39,29 @@ export const SideCard: FC<{
         h="2.5rem"
         align={"center"}
         flexShrink={0}
-        className="side-card-header"
+        className="header"
       >
         <Flex pl="0.6rem" align={"center"} w="100%">
           <Tooltip label={title}>
-            <Text
-              as="b"
-              textOverflow={"ellipsis"}
-              whiteSpace={"nowrap"}
-              overflow="hidden"
-            >
-              {title}
-            </Text>
+            <>
+              {/* <AiOutlineHome />
+              <Box w="0.3em"/> */}
+              <Text
+                as="b"
+                textOverflow={"ellipsis"}
+                whiteSpace={"nowrap"}
+                overflow="hidden"
+              >
+                {title}
+              </Text>
+            </>
           </Tooltip>
 
           <Box flexGrow={1} />
           <Flex flexGrow={0} flexShrink={0}>
             <Menu>
               <MenuButton
+                borderRadius={0}
                 as={IconButton}
                 icon={<AiOutlineSetting />}
                 bg="inherit"

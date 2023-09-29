@@ -51,14 +51,7 @@
     --scroll-thumb-color: #dfdfdf;
   }
 
-  &-7{
-    --scroll-size: 5px;
-    --scroll-thumb-color: transparent;
-    &:hover{
-      --scroll-size: 5px;
-    --scroll-thumb-color:#dfdfdf52;
-    }
-  }
+  
 
   // Ejemplo 2
   &-2 {
@@ -110,6 +103,24 @@
         #{$bg-mask} 60%, transparent 60%,
         transparent 80%, #{$bg-mask} 80%);
     --scroll-thumb-color: #10b981;
+  }
+
+  &-7{
+    --scroll-size: 5px;
+    --scroll-thumb-color: transparent;
+    &:hover{
+      --scroll-size: 5px;
+    --scroll-thumb-color:#dfdfdf52;
+    }
+  }
+
+  &-9{
+    --scroll-size: 0px;
+    --scroll-thumb-color: transparent;
+    &:hover{
+      --scroll-size: 3px;
+    --scroll-thumb-color:#dfdfdf52;
+    }
   }
 }
 

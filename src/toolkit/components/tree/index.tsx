@@ -139,6 +139,7 @@ const createViewSystem = <T,>(
   return viewSystem;
 };
 type ViewSystem = ReturnType<typeof createViewSystem>;
+// const defaultRenderer = createRenderer();
 
 // Plugin System
 export type WidgetContext<
@@ -215,7 +216,7 @@ export const Tree = <
         },
         getContext
       ),
-    [finalEventBus, viewSystem, dataStore, renderer, getContext]
+    [finalEventBus, viewSystem, dataStore, renderer]
   );
 
   useEffect(() => {

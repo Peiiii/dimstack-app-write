@@ -38,6 +38,7 @@ export default createPlugin({
           if (meta) {
             meta.setAttribute("content", themeColor);
           }
+          
         }, [colorMode, toggleColorMode]);
         return (
          <Button onClick={()=>{

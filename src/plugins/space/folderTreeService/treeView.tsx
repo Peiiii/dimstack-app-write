@@ -81,7 +81,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
     <ContextProvider space={space}>
       <SideCard
         title={`${space.repo}`}
-        className="channelList"
+        className="fs-tree-container"
         actions={actions}
       >
         {/* <Box m={2}>

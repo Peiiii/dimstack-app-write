@@ -10,10 +10,13 @@ import { space } from "@chakra-ui/react";
 import { nanoid } from "@reduxjs/toolkit";
 import { join } from "path-browserify";
 import {
+  AiFillFileAdd,
+  AiFillFolderAdd,
   AiFillPlusCircle,
   AiOutlineFileAdd,
   AiOutlineFolderAdd,
 } from "react-icons/ai";
+import { VscNewFile, VscNewFolder } from "react-icons/vsc";
 export default createTreeHelper<FolderTreeNode>().createPlugin({
   addOptions() {
     return {
@@ -33,16 +36,6 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
   }) {
     viewSystem.addNodeMenuItems([
       {
-        id: "addFile",
-        name: "新建文件",
-        title: "新建文件",
-        event: "addFileAt",
-        validate: ({ node }) => {
-          return node.type === "dir";
-        },
-        icon: <AiOutlineFileAdd />,
-      },
-      {
         id: "addNode",
         name: "新建文件夹",
         title: "新建文件夹",
@@ -50,10 +43,22 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
         validate: ({ node }) => {
           return node.type === "dir";
         },
-        icon: <AiOutlineFolderAdd />,
+        // icon: <VscNewFolder />,
+        icon: <AiFillFolderAdd />,
+      },
+      {
+        id: "addFile",
+        name: "新建文件",
+        title: "新建文件",
+        event: "addFileAt",
+        validate: ({ node }) => {
+          return node.type === "dir";
+        },
+        // icon: <VscNewFile />,
+        icon: <AiFillFileAdd />,
       },
     ]);
-    
+
     eventBus.on("addFileAt", ({ node }) => {
       const parentId = node.id;
       const parentNode = dataStore.getNode(parentId)!;

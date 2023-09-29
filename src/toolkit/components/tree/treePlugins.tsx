@@ -185,8 +185,10 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
         actionBar = (
           <Menu>
             <MenuButton
+             h="100%"
               className="hover-visible"
               as={Button}
+              borderRadius={0}
               variant="solid"
               size="xs"
               ml={2}
@@ -345,7 +347,7 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
               
               </Button> */}
               <Box flexGrow={1} />
-              <Box>{actionBar}</Box>
+              <Flex className="action-box" align={"center"} justify={"center"} h="100%">{actionBar}</Flex>
             </Flex>
             <Box w="0.5rem" flexShrink={0} />
           </Flex>

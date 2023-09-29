@@ -34,6 +34,7 @@
     "redux-persist": "^6.0.0",
     "redux-persist-pouchdb": "^0.2.1",
     "rxjs": "^7.8.1",
+    "simplebar-react": "^3.2.4",
     "systemjs": "^6.14.2",
     "tinykeys": "^2.1.0",
     "usehooks-ts": "^2.9.1"

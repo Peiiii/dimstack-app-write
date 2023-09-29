@@ -183,7 +183,7 @@ export const createSidebar = () =>
                     className="view"
                     display={visible ? "block" : "none"}
                   >
-                    {componentService.render(viewData)}
+                    {visible && componentService.render(viewData)}
                   </Box>
                 );
               })}
