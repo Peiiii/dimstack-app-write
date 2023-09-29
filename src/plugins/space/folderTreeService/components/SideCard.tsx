@@ -33,6 +33,7 @@ export const SideCard: FC<{
       h="100%"
       overflow={"hidden"}
       flexShrink={0}
+      gap={0}
     >
       <HStack
         w="100%"

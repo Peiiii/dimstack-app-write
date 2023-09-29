@@ -20,7 +20,12 @@ import {
   useRef,
   useState,
 } from "react";
-import { AiFillCloseCircle, AiOutlineClose, AiOutlineMenu, AiOutlineMenuFold } from "react-icons/ai";
+import {
+  AiFillCloseCircle,
+  AiOutlineClose,
+  AiOutlineMenu,
+  AiOutlineMenuFold,
+} from "react-icons/ai";
 import { VscClose } from "react-icons/vsc";
 import {
   ProxiedControls,
@@ -146,6 +151,7 @@ export const createPageBox = () =>
         [tabBarWidth]
       );
 
+      console.log("rendering pageBox...");
       const loadPageList = () => {
         const pageList: PageDescriptor[] = cache.get("pageList", []);
 
@@ -275,26 +281,30 @@ export const createPageBox = () =>
           </>
         );
       }
-      const bodiesView = pageList.map((page) => {
-        const { id, active, viewData } = page;
-        let finalView;
-        if (viewData) {
-          finalView = componentService.render(viewData);
-        }
-        return (
-          <Box
-            key={id}
-            m="0 !important"
-            h="100%"
-            w="100%"
-            id={id}
-            overflow={"auto"}
-            display={active ? "block" : "none"}
-          >
-            {finalView}
-          </Box>
-        );
-      });
+      const bodiesView = useMemo(
+        () =>
+          pageList.map((page) => {
+            const { id, active, viewData } = page;
+            let finalView;
+            if (viewData) {
+              finalView = componentService.render(viewData);
+            }
+            return (
+              <Box
+                key={id}
+                m="0 !important"
+                h="100%"
+                w="100%"
+                id={id}
+                overflow={"auto"}
+                display={active ? "block" : "none"}
+              >
+                {finalView}
+              </Box>
+            );
+          }),
+        [pageList]
+      );
       // console.log("pageList:", JSON.stringify(pageList));
       return (
         <VStack
@@ -338,6 +348,7 @@ export const createPageBox = () =>
                     tabsView
                   ) : (
                     <SimpleBar
+                      autoHide
                       style={{
                         width: "100%",
                         display: "flex",
