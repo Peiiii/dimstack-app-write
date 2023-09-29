@@ -250,7 +250,7 @@ export const createActivityBar = () =>
                         proxy.showActivity(id);
                       }}
                     >
-                      <Icon as={icon as As} fontSize={iconFontSize}></Icon>
+                      <Icon className="icon" as={icon as As} fontSize={iconFontSize}></Icon>
                       <Text
                         m="0 !important"
                         fontSize={textFontSize}

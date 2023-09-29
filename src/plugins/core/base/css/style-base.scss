@@ -8,13 +8,42 @@
     &.file {
         color: var(--secondary-color);
         opacity: 0.7;
+
         &.file-markdown {
             color: var(--primary-color);
         }
     }
 }
 
-.side-card{
+.activity-bar {
+    .activity {
+        .icon {
+            color: #ffce45;
+            opacity: 0.3;
+        }
+
+        &.active {
+            font-weight: bolder;
+            opacity: 0.7;
+            .icon {
+                color: #ffce45;
+                opacity: 0.7;
+            }
+        }
+
+        &:hover {
+            font-weight: bolder;
+            opacity: 0.7;
+            .icon {
+                color: #ffce45;
+                opacity: 0.7;
+            }
+        }
+
+    }
+}
+
+.side-card {
     .header {
         // color: gray;
         // opacity: 0.8;
