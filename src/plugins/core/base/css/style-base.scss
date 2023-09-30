@@ -42,11 +42,14 @@
 
     }
 }
-
-.side-card {
-    .header {
-        // color: gray;
-        // opacity: 0.8;
-        text-transform: capitalize;
+.sidebar{
+    width: 13rem;
+    .side-card {
+        width: 13rem;
+        .header {
+            // color: gray;
+            // opacity: 0.8;
+            text-transform: capitalize;
+        }
     }
 }

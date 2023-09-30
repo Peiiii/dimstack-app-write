@@ -15,6 +15,7 @@ import {
 import {
   FC,
   MouseEventHandler,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -151,7 +152,7 @@ export const createPageBox = () =>
       );
 
       console.log("rendering pageBox...");
-      const loadPageList = () => {
+      const loadPageList = useCallback(() => {
         const pageList: PageDescriptor[] = cache.get("pageList", []);
 
         return pageList
@@ -159,7 +160,7 @@ export const createPageBox = () =>
           .concat(
             pageList.filter((page) => !page.active).slice(0, maxCacheSize - 1)
           );
-      };
+      }, [cache]);
       const [pageList, setPageList] = useState<PageDescriptor[]>(loadPageList);
       useEffect(() => {
         cache.set("pageList", pageList);
@@ -230,56 +231,62 @@ export const createPageBox = () =>
           showTabBar,
         });
       }, [pageList, setPageList, setTabBarVisible, tabBarVisible, proxy]);
-      const tabsView = pageList.map(({ id, title, active }) => {
-        return (
-          <Tab
-            minWidth={minTabWidth}
-            maxWidth={maxTabWidth}
-            key={id}
-            title={title}
-            isActive={active}
-            onClick={() => {
-              proxy.showPage(id);
-            }}
-            onClose={() => {
-              proxy.removePage(id);
-            }}
-          />
-        );
-      });
-      let tabBarRight;
-      if (pageList.length > tabBarCapacity) {
-        // tabsView.splice(tabBarCapacity);
-        tabBarRight = (
-          <>
-            <Flex align={"center"} h="100%" flexShrink={0} flexGrow={0}>
-              <Menu>
-                <MenuButton
-                  as={forwardRef((props, ref) => (
-                    <TabIconButton {...props} ref={ref}>
-                      <Icon fontSize={"lg"} as={AiOutlineMenu} />
-                    </TabIconButton>
-                  ))}
-                ></MenuButton>
-                <MenuList maxW="400px" className="right-list">
-                  {pageList.slice(0).map(({ title, id, active }) => (
-                    <MenuItem key={id}>
-                      <Tab
-                        minWidth={minTabWidth}
-                        title={title}
-                        isActive={active}
-                        onClick={() => proxy.showPage(id)}
-                        onClose={() => proxy.removePage(id)}
-                        stretch
-                      />
-                    </MenuItem>
-                  ))}
-                </MenuList>
-              </Menu>
-            </Flex>
-          </>
-        );
-      }
+      const tabsView = useMemo(
+        () =>
+          pageList.map(({ id, title, active }) => {
+            return (
+              <Tab
+                minWidth={minTabWidth}
+                maxWidth={maxTabWidth}
+                key={id}
+                title={title}
+                isActive={active}
+                onClick={() => {
+                  proxy.showPage(id);
+                }}
+                onClose={() => {
+                  proxy.removePage(id);
+                }}
+              />
+            );
+          }),
+        [pageList, minTabWidth, maxTabWidth, proxy]
+      );
+
+      const tabBarRight = useMemo(
+        () =>
+          pageList.length > tabBarCapacity && (
+            <>
+              <Flex align={"center"} h="100%" flexShrink={0} flexGrow={0}>
+                <Menu>
+                  <MenuButton
+                    as={forwardRef((props, ref) => (
+                      <TabIconButton {...props} ref={ref}>
+                        <Icon fontSize={"lg"} as={AiOutlineMenu} />
+                      </TabIconButton>
+                    ))}
+                  ></MenuButton>
+                  <MenuList maxW="400px" className="right-list">
+                    {pageList.slice(0).map(({ title, id, active }) => (
+                      <MenuItem key={id}>
+                        <Tab
+                          minWidth={minTabWidth}
+                          title={title}
+                          isActive={active}
+                          onClick={() => proxy.showPage(id)}
+                          onClose={() => proxy.removePage(id)}
+                          stretch
+                        />
+                      </MenuItem>
+                    ))}
+                  </MenuList>
+                </Menu>
+              </Flex>
+            </>
+          ),
+        [pageList, tabBarCapacity]
+      );
+
       const bodiesView = useMemo(
         () =>
           pageList.map((page) => {

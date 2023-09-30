@@ -8,10 +8,12 @@ import { SpaceDef } from "@/toolkit/types/space";
 import {
   Button,
   Card,
+  Container,
   Flex,
   Input,
   InputGroup,
   InputRightAddon,
+  Text,
 } from "@chakra-ui/react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 
@@ -55,7 +57,11 @@ export const addGiteeSpace = createPlugin({
                 title: "从URL添加",
                 height: "320px",
                 view: (
-                  <Card>
+                  <>
+                    <Text color="gray" wordBreak={"break-all"} mb="1em">
+                      请输入你的Gitee仓库链接，例如:{" "}
+                      <Text as="a">https://gitee.com/peiiii/docs</Text>
+                    </Text>
                     <InputGroup>
                       <Input
                         placeholder="请输入链接"
@@ -86,7 +92,7 @@ export const addGiteeSpace = createPlugin({
                         一键添加
                       </InputRightAddon>
                     </InputGroup>
-                  </Card>
+                  </>
                 ),
               },
               {
@@ -160,46 +166,12 @@ export const addGiteeSpace = createPlugin({
         content: pageBox,
         footer: false,
       });
-
-      // const modal = createModalForm({
-      //   title: "添加",
-      //   fieldList: [
-      //     {
-      //       name: "platform",
-      //       title: "平台",
-      //       select: {
-      //         options: [
-      //           { value: "github", label: "GitHub" },
-      //           { value: "gitee", label: "Gitee" },
-      //         ],
-      //       },
-      //       required: true,
-      //     },
-      //     {
-      //       name: "owner",
-      //       title: "所有者",
-      //       required: true,
-      //     },
-      //     {
-      //       name: "repo",
-      //       title: "仓库名",
-      //       required: true,
-      //     },
-      //   ],
-      //   defaultData: {
-      //     platform: "gitee",
-      //   },
-      //   onFinish: (data) => {
-      //     // console.log(data);
-      //     xbook.notificationService.success("成功添加空间");
-      //     const spaceStore = xbook.registry.get(
-      //       "spaceStore"
-      //     ) as DataStore<SpaceDef>;
-      //     const id = `${data.platform}:${data.owner}:${data.repo}`;
-      //     spaceStore.getActions().upsert({ ...data, id });
-      //   },
-      // });
       modal.open();
+    });
+    spaceHelper.getStore().on("load", () => {
+      if (spaceHelper.getStore().getData().length === 0) {
+        xbook.eventBus.emit(`shortcut:${id}:clicked`);
+      }
     });
   },
 });

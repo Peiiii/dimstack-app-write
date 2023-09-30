@@ -9,18 +9,18 @@ declare global {
     System: any;
   }
 }
-const importFromString = (str: string) => {
-  if (URL.createObjectURL) {
-    const blob = new Blob([str], { type: "text/javascript" });
-    const url = URL.createObjectURL(blob);
-    const module = import(url);
-    URL.revokeObjectURL(url); // GC objectURLs
-    return module;
-  }
+// const importFromString = (str: string) => {
+//   if (URL.createObjectURL) {
+//     const blob = new Blob([str], { type: "text/javascript" });
+//     const url = URL.createObjectURL(blob);
+//     const module = import(url);
+//     URL.revokeObjectURL(url); // GC objectURLs
+//     return module;
+//   }
 
-  const url = "data:text/javascript;base64," + btoa(str);
-  return import(url);
-};
+//   const url = "data:text/javascript;base64," + btoa(str);
+//   return import(url);
+// };
 export default createPlugin({
   async initilize(xbook) {
     window.System.set("app:react", { default: React, __useDefault: true });

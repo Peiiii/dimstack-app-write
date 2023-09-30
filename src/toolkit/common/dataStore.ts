@@ -1,3 +1,4 @@
+import { createAtom } from "@/toolkit/common/atom";
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 import { nanoid } from "nanoid";
 import PouchDB from "pouchdb-browser";
@@ -46,6 +47,7 @@ export const createDataStore = <T extends { [k: string]: any }>({
     name,
     initialState: {
       data: initialState,
+      rehydrated: false,
     },
     reducers: {
       init: (state, action) => {
@@ -88,13 +90,16 @@ export const createDataStore = <T extends { [k: string]: any }>({
         const _record = state.data.find(
           (record) => record[primaryKey] === action.payload
         )!;
-        console.log("state:",[...state.data])
-        console.log("find_record:",action.payload, _record);
+        console.log("state:", [...state.data]);
+        console.log("find_record:", action.payload, _record);
         const index = state.data.indexOf(_record);
         console.log("deleted:", index);
         if (index !== -1) {
           state.data.splice(index, 1);
         }
+      },
+      __rehydrationCompleted: (state, action) => {
+        state.rehydrated = action.payload === undefined ? action.payload : true;
       },
     },
   });
@@ -122,6 +127,9 @@ export const createDataStore = <T extends { [k: string]: any }>({
         transforms: persistConfig.transforms || [],
       },
       slice.reducer
+      // () => {
+      //   // slice.actions.rehydrationCompleted(true);
+      // }
     );
   }
   const store = configureStore({
@@ -134,7 +142,19 @@ export const createDataStore = <T extends { [k: string]: any }>({
         ...middlewareConfig,
       }).concat([thunk]),
   });
-  if (persistConfig) persistStore(store);
+
+  const atom = createAtom<{
+    events: {
+      load: [];
+    };
+  }>();
+
+  if (persistConfig)
+    persistStore(store, {}, () => {
+      store.dispatch(slice.actions.__rehydrationCompleted(true));
+      atom.emit("load");
+    });
+
   function useSelectedState(store, selector) {
     const [selectedState, setSelectedState] = useState(
       selector(store.getState())
@@ -233,6 +253,7 @@ export const createDataStore = <T extends { [k: string]: any }>({
     id: nanoid(),
     addObserver,
     removeObserver,
+    on: atom.on,
   };
 };
 

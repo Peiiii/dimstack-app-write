@@ -95,13 +95,14 @@ export const SideCard: FC<{
         {title}
       </Button> */}
       </HStack>
-      <VStack m="0 !important" w="100%" flexGrow={1} overflow="hidden">
+      <VStack m="0 !important" w="100%" flexGrow={1} overflow="hidden" gap={0}>
         <VStack
           w="100%"
           height={"100%"}
           overflowX={"hidden"}
           overflowY="auto"
           className="scroll scroll-7 "
+          gap={0}
         >
           {children}
         </VStack>

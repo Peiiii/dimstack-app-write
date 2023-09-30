@@ -1,4 +1,4 @@
-import { Alert, Box, Link } from "@chakra-ui/react";
+import { Alert, Box, Icon, Link } from "@chakra-ui/react";
 import "./sidebar.scss";
 
 import { fileSystemHelper } from "@/helpers/file-system.helper";
@@ -29,6 +29,7 @@ import treePluginEditNode from "./plugins/treePluginEditNode";
 import ContextProvider from "@/toolkit/components/context";
 import treePluginRefresh from "@/plugins/space/folderTreeService/plugins/treePluginRefresh";
 import { createServiceBus } from "@/toolkit/common/serviceBus";
+import { useAtom } from "@/toolkit/common/hooks/use-atom";
 
 const TreeView = ({ space }: { space: SpaceDef }) => {
   const treeDataStore = useMemo(
@@ -61,7 +62,11 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
       }),
     [space.id]
   );
-  const [isLogin, setIsLogin] = useState(true);
+  const atom = useAtom({ id: `fstree#${space.id}` });
+
+  const [isLogin, setIsLogin] = xbook.cacheService
+    .space(atom.id, "localStorage")
+    .useLocalStorage("isLogin", true);
   useEffect(() => {
     return xbook.pipeService.on(`space[${space.id}].isLogin`, setIsLogin);
   }, [space.id]);
@@ -79,6 +84,34 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
 
   return (
     <ContextProvider space={space}>
+      {!isLogin && (
+        <Alert
+         display={"p"}
+          status="warning"
+          size={"sm"}
+          fontSize={"sm"}
+          flexGrow={0}
+          flexShrink={0}
+          p="10px"
+          w="100%"
+        >
+          此空间未空间，请前往
+          <Link
+            
+            color="blue.300"
+            // display={"flex"}
+            onClick={() => {
+              xbook.serviceBus.invoke(
+                "spaceService.redirectAuthPage",
+                space.id
+              );
+            }}
+          >
+            授权
+            <Icon as={AiOutlineLink}/>
+          </Link>
+        </Alert>
+      )}
       <SideCard
         title={`${space.repo}`}
         className="fs-tree-container"
@@ -88,24 +121,8 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
         <Input size="sm" placeholder="搜索" />
       </Box> */}
         {/* <Box h="0.1rem" /> */}
-        {!isLogin && (
-          <Alert status="warning" fontSize={"sm"}>
-            您尚未登录，请前往
-            <Link
-              color="blue.300"
-              display={"flex"}
-              onClick={() => {
-                xbook.serviceBus.invoke(
-                  "spaceService.redirectAuthPage",
-                  space.id
-                );
-              }}
-            >
-              登录
-              <AiOutlineLink />
-            </Link>
-          </Alert>
-        )}
+
+        <Box h="0.5rem" flexShrink={0} flexGrow={0} />
         <Box w="100%" className="channel-tree">
           <Tree
             serviceBus={serviceBus}
@@ -171,6 +188,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
             ]}
           />
         </Box>
+        <Box h="1rem" flexShrink={0} flexGrow={0} />
       </SideCard>
     </ContextProvider>
   );

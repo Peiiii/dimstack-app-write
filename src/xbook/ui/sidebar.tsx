@@ -165,9 +165,9 @@ export const createSidebar = () =>
             // visibilityControl.visible &&
             <Box
               maxH={"100%"}
-              w="13em"
               {...options}
               // display={visible ? "block" : "none"}
+              overflow={"hidden"}
               flexShrink={0}
               flexGrow={1}
               className={"sidebar sidebarV2 " + (visible ? "" : "width-collapsed")}
