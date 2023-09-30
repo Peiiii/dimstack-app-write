@@ -122,7 +122,7 @@ export default createPlugin({
       // xbook.layoutService.sidebar.hide();
       // xbook.layoutService.activityBar.hide();
       // xbook.layoutService.sidebar.setFullwidth(false);
-      // xbook.layoutService.pageBox.hide();
+      xbook.layoutService.pageBox.hide();
       // xbook.cacheService.space("base","localStorage")
       xbook.commandService.registerCommand("client:toggleHome", () => {
         // xbook.layoutService.pageBox.showPage("home");
