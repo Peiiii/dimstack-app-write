@@ -19,7 +19,7 @@ if (urlParams.has("testMode")) {
 }
 xbook.pluginService.use([
   base,
-  asyncPluginService,
+  // asyncPluginService,
   spaceService,
   displaySpaces,
   listenGiteeLoginCallback,
@@ -30,5 +30,6 @@ xbook.pluginService.use([
   settings,
   theme,
   clearLocalCache,
+  asyncPluginService
 ]);
 xbook.layoutService.renderLayout(document.getElementById("root")!);
