@@ -11,7 +11,12 @@ import settings from "@/plugins/widgets/settings";
 import clearLocalCache from "@/plugins/utilities/clearLocalCache";
 import asyncPluginService from "@/plugins/services/asyncPluginService";
 import fileSystemService from "@/plugins/services/fileSystemService";
-
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.has("testMode")) {
+  import("https://esm.sh/vconsole@latest" as any).then((m) => {
+    new m.default();
+  });
+}
 xbook.pluginService.use([
   base,
   asyncPluginService,

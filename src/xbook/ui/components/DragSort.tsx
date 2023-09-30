@@ -11,9 +11,22 @@ const defaultStyle = {
   // padding: "0.5rem 1rem",
   // marginBottom: ".5rem",
   // backgroundColor: "white",
-  cursor: "move",
+  // cursor: "move",
 };
+export const moveItem = (data, idx1, idx2) => {
+  if (idx1 === idx2) return data;
+  const before = data.slice(0, Math.min(idx1, idx2));
+  const after = data.slice(Math.max(idx1, idx2) + 1);
+  const middle = data.slice(Math.min(idx1, idx2) + 1, Math.max(idx1, idx2));
+  const source = data[idx1];
+  const target = data[idx2];
 
+  if (idx1 < idx2) {
+    return [...before, ...middle, target, source, ...after];
+  } else {
+    return [...before, source, target, ...middle, ...after];
+  }
+};
 export interface DragItemProps {
   id: any;
   index: number;
@@ -50,57 +63,57 @@ export const DragSortItem: FC<DragItemProps> = ({
         handlerId: monitor.getHandlerId(),
       };
     },
-    drop(item: DragItem, monitor) {
-      
-      if (!ref.current) {
-        return;
-      }
-      const dragIndex = item.index;
-      const hoverIndex = index;
-      console.log("drag:",dragIndex,hoverIndex);
+    // drop(item: DragItem, monitor) {
 
-      // Don't replace items with themselves
-      if (dragIndex === hoverIndex) {
-        return;
-      }
+    //   if (!ref.current) {
+    //     return;
+    //   }
+    //   const dragIndex = item.index;
+    //   const hoverIndex = index;
+    //   console.log("drag:",dragIndex,hoverIndex);
 
-      // Determine rectangle on screen
-      const hoverBoundingRect = ref.current?.getBoundingClientRect();
+    //   // Don't replace items with themselves
+    //   if (dragIndex === hoverIndex) {
+    //     return;
+    //   }
 
-      // Get vertical middle
-      const hoverMiddleY =
-        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+    //   // Determine rectangle on screen
+    //   const hoverBoundingRect = ref.current?.getBoundingClientRect();
 
-      // Determine mouse position
-      const clientOffset = monitor.getClientOffset();
+    //   // Get vertical middle
+    //   const hoverMiddleY =
+    //     (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
 
-      // Get pixels to the top
-      const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top;
+    //   // Determine mouse position
+    //   const clientOffset = monitor.getClientOffset();
 
-      // Only perform the move when the mouse has crossed half of the items height
-      // When dragging downwards, only move when the cursor is below 50%
-      // When dragging upwards, only move when the cursor is above 50%
+    //   // Get pixels to the top
+    //   const hoverClientY = (clientOffset as XYCoord).y - hoverBoundingRect.top;
 
-      // Dragging downwards
-      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-        return;
-      }
+    //   // Only perform the move when the mouse has crossed half of the items height
+    //   // When dragging downwards, only move when the cursor is below 50%
+    //   // When dragging upwards, only move when the cursor is above 50%
 
-      // Dragging upwards
-      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-        return;
-      }
+    //   // Dragging downwards
+    //   if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+    //     return;
+    //   }
 
-      // Time to actually perform the action
-      moveItem(dragIndex, hoverIndex);
+    //   // Dragging upwards
+    //   if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+    //     return;
+    //   }
 
-      // Note: we're mutating the monitor item here!
-      // Generally it's better to avoid mutations,
-      // but it's good here for the sake of performance
-      // to avoid expensive index searches.
-      item.index = hoverIndex;
-     
-    },
+    //   // Time to actually perform the action
+    //   moveItem(dragIndex, hoverIndex);
+
+    //   // Note: we're mutating the monitor item here!
+    //   // Generally it's better to avoid mutations,
+    //   // but it's good here for the sake of performance
+    //   // to avoid expensive index searches.
+    //   item.index = hoverIndex;
+
+    // },
     hover(item: DragItem, monitor) {
       if (!ref.current) {
         return;
@@ -143,7 +156,6 @@ export const DragSortItem: FC<DragItemProps> = ({
       // Time to actually perform the action
       moveItem(dragIndex, hoverIndex);
 
-
       // Note: we're mutating the monitor item here!
       // Generally it's better to avoid mutations,
       // but it's good here for the sake of performance
@@ -162,13 +174,12 @@ export const DragSortItem: FC<DragItemProps> = ({
     }),
   });
 
-  const opacity = isDragging ? 0 : 1;
   drag(drop(ref));
   return (
     <div
-      className={className}
+      className={`draggable ${className || ""} ${isDragging ? "is-dragging" : ""}`}
       ref={ref}
-      style={{ ...defaultStyle, opacity, ...style }}
+      style={{ ...defaultStyle, ...style }}
       data-handler-id={handlerId}
     >
       {children}

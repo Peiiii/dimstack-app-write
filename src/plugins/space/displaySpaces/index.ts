@@ -39,12 +39,14 @@ export default createPlugin({
         const middle = data.slice(Math.min(idx1, idx2) + 1, Math.max(idx1, idx2));
         const source = data[idx1];
         const target = data[idx2];
-
+        let res;
         if (idx1 < idx2) {
-          return [...before, ...middle, target, source, ...after];
+          res= [...before, ...middle, target, source, ...after];
         } else {
-          return [...before, source, target, ...middle, ...after];
+          res= [...before, source, target, ...middle, ...after];
         }
+        console.log("spaceDataChange:",data.length,"=>",res.length)
+        return res;
       });
     });
   },

@@ -33,12 +33,13 @@ import {
   VisibilityControl,
 } from "xbook/hooks/proxiedControls";
 import { createDeferredComponentProxy } from "xbook/hooks/useDeferredComponentProxy";
-import { cacheService } from "xbook/services";
+import { cacheService, eventBus } from "xbook/services";
 import { commandService } from "xbook/services/commandService";
 import { componentService } from "./componentService";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
 import { device } from "xbook/common/device";
+import { DragSortItem, moveItem } from "xbook/ui/components/DragSort";
 
 type PageDescriptor = {
   id: string;
@@ -247,22 +248,31 @@ export const createPageBox = () =>
       }, [pageList, setPageList, setTabBarVisible, tabBarVisible, proxy]);
       const tabsView = useMemo(
         () =>
-          pageList.map(({ id, title, active, status }) => {
+          pageList.map(({ id, title, active, status },index) => {
             return (
-              <Tab
-                minWidth={minTabWidth}
-                maxWidth={maxTabWidth}
+              <DragSortItem
                 key={id}
-                title={title}
-                status={status}
-                isActive={active}
-                onClick={() => {
-                  proxy.showPage(id);
+                id={id}
+                index={index}
+                moveItem={(idx1: number, idx2: number) => {
+                  setPageList((data) => moveItem(data, idx1, idx2));
                 }}
-                onClose={() => {
-                  proxy.removePage(id);
-                }}
-              />
+              >
+                <Tab
+                  minWidth={minTabWidth}
+                  maxWidth={maxTabWidth}
+                  key={id}
+                  title={title}
+                  status={status}
+                  isActive={active}
+                  onClick={() => {
+                    proxy.showPage(id);
+                  }}
+                  onClose={() => {
+                    proxy.removePage(id);
+                  }}
+                />
+              </DragSortItem>
             );
           }),
         [pageList, minTabWidth, maxTabWidth, proxy]

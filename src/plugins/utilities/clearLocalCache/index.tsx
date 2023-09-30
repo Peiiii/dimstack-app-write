@@ -14,7 +14,7 @@ export default createPlugin({
         return (
           <Button
             onClick={() => {
-              if (confirm("确认清空本地缓存（不包括聊天消息）吗？")) {
+              if (confirm("确认清空本地缓存（LocalStorage）吗？")) {
                 localStorage.clear();
               }
             }}

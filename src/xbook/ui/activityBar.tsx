@@ -13,16 +13,14 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { useLocalStorage } from "usehooks-ts";
-import { device } from "xbook/common/device";
-import { ProxiedControls } from "xbook/hooks/proxiedControls";
+import { AnyFunction, SafeAny } from "xbook/common/types";
 import { createDeferredComponentProxy } from "xbook/hooks/useDeferredComponentProxy";
 import { eventBus } from "xbook/services";
 import { cacheService } from "xbook/services/cacheService";
 import { commandService } from "xbook/services/commandService";
-import { componentService } from "./componentService";
-import { AnyFunction, SafeAny } from "xbook/common/types";
+import { DragSortItem, moveItem } from "xbook/ui/components/DragSort";
 import { createShell } from "xbook/ui/shell";
-import { DragSortItem } from "xbook/ui/components/DragSort";
+import { componentService } from "./componentService";
 
 type ActivityBarMethods = {
   addActivity(activity: ActivityItem): SafeAny;
@@ -205,185 +203,155 @@ export const createActivityBar = () =>
       const iconFontSize = "1.5rem";
       return (
         <>
-          {
-            <Stack
-              flexFlow={direction}
-              justify={isMobile ? "space-around" : "flex-start"}
-              minW={"60px"}
-              maxW={"64px"}
-              overflow={"hidden"}
-              className={"activity-bar " + (visible ? "" : "width-collapsed")}
-              align="stretch"
-              flexShrink={0}
-              gap={"0.5rem"}
-              {...options}
-            >
-              {activityList.map((activity, index) => {
-                const { icon, name, id } = activity;
-                const classList: string[] = ["activity-wrapper", "activity"];
-                if (activeId && activeId === id) classList.push("active");
-                const className = classList.join(" ");
-                const props = {};
-                if (crossDirection(direction) === "row") {
-                  props["w"] = "100%";
-                } else {
-                  props["h"] = "100%";
-                }
-                return (
-                  <DragSortItem
+          <Stack
+            flexFlow={direction}
+            justify={isMobile ? "space-around" : "flex-start"}
+            minW={"60px"}
+            maxW={"64px"}
+            overflow={"hidden"}
+            className={"activity-bar " + (visible ? "" : "width-collapsed")}
+            align="stretch"
+            flexShrink={0}
+            gap={"0.5rem"}
+            {...options}
+          >
+            {activityList.map((activity, index) => {
+              const { icon, name, id } = activity;
+              const classList: string[] = ["activity-wrapper", "activity"];
+              if (activeId && activeId === id) classList.push("active");
+              const className = classList.join(" ");
+              const props = {};
+              if (crossDirection(direction) === "row") {
+                props["w"] = "100%";
+              } else {
+                props["h"] = "100%";
+              }
+              return (
+                <DragSortItem
+                  key={id}
+                  id={id}
+                  index={index}
+                  moveItem={(idx1: number, idx2: number) => {
+                    setActivityList((data) => moveItem(data, idx1, idx2));
+                    eventBus.emit("activityBar:dragItem", idx1, idx2);
+                  }}
+                >
+                  <Stack
+                    direction={crossDirection(direction)}
+                    {...props}
+                    className={className}
                     key={id}
-                    id={id}
-                    index={index}
-                    moveItem={(idx1: number, idx2: number) => {
-                      setActivityList((data) => {
-                        if (idx1 === idx2) return data;
-                        const before = data.slice(0, Math.min(idx1, idx2));
-                        const after = data.slice(Math.max(idx1, idx2) + 1);
-                        const middle = data.slice(
-                          Math.min(idx1, idx2) + 1,
-                          Math.max(idx1, idx2)
-                        );
-                        const source = data[idx1];
-                        const target = data[idx2];
-
-                        if (idx1 < idx2) {
-                          return [
-                            ...before,
-                            ...middle,
-                            target,
-                            source,
-                            ...after,
-                          ];
-                        } else {
-                          return [
-                            ...before,
-                            source,
-                            target,
-                            ...middle,
-                            ...after,
-                          ];
-                        }
-                      });
-                      eventBus.emit("activityBar:dragItem", idx1, idx2);
-                    }}
+                    maxW={"100%"}
+                    overflow={"hidden"}
+                    m="0 !important"
+                    marginInlineStart={"10px"}
+                    justify={"center"}
+                    align="center"
                   >
+                    <VStack
+                      maxW={"100%"}
+                      gap={0}
+                      overflow={"hidden"}
+                      title={name}
+                      onClick={() => {
+                        proxy.showActivity(id);
+                      }}
+                    >
+                      <Icon
+                        className="icon"
+                        as={icon as As}
+                        fontSize={iconFontSize}
+                      ></Icon>
+                      <Text
+                        m="0 !important"
+                        fontSize={textFontSize}
+                        className="activity-text"
+                        maxW={"100%"}
+                        p="0px 4px"
+                        overflow={"hidden"}
+                        whiteSpace={"nowrap"}
+                        // textOverflow={"ellipsis"}
+                        // textOverflow={"clip"}
+                      >
+                        {name.slice(0, 2).toUpperCase()}
+                      </Text>
+                    </VStack>
+                  </Stack>
+                </DragSortItem>
+              );
+            })}
+            {!isMobile && <Stack flexGrow={1}></Stack>}
+            {shortcutList.map((shortcut) => {
+              const { icon, name, id } = shortcut;
+              const classList: string[] = ["activity", "shortcut"];
+              const className = classList.join(" ");
+              const props = {};
+              if (crossDirection(direction) === "row") {
+                props["w"] = "100%";
+              } else {
+                props["h"] = "100%";
+              }
+              return (
+                <Popover
+                  key={id}
+                  placement={isMobile ? "auto" : "right-end"}
+                  isLazy
+                >
+                  <PopoverTrigger>
                     <Stack
                       direction={crossDirection(direction)}
                       {...props}
-                      className={className}
+                      className="activity-wrapper shortcut"
                       key={id}
-                      maxW={"100%"}
-                      overflow={"hidden"}
                       m="0 !important"
                       marginInlineStart={"10px"}
                       justify={"center"}
                       align="center"
+                      maxW={"100%"}
+                      overflow={"hidden"}
                     >
                       <VStack
                         maxW={"100%"}
-                        gap={0}
                         overflow={"hidden"}
-                        title={name}
+                        gap={0}
                         onClick={() => {
-                          proxy.showActivity(id);
+                          eventBus.emit(`shortcut:${id}:clicked`);
                         }}
                       >
                         <Icon
-                          className="icon"
+                          className={className}
                           as={icon as As}
                           fontSize={iconFontSize}
+                          title={name}
                         ></Icon>
                         <Text
                           m="0 !important"
                           fontSize={textFontSize}
-                          className="activity-text"
+                          className="shortcut-text"
                           maxW={"100%"}
-                          p="0px 4px"
                           overflow={"hidden"}
                           whiteSpace={"nowrap"}
-                          // textOverflow={"ellipsis"}
-                          // textOverflow={"clip"}
+                          textOverflow={"ellipsis"}
                         >
-                          {name.slice(0, 2).toUpperCase()}
+                          {name}
                         </Text>
                       </VStack>
                     </Stack>
-                  </DragSortItem>
-                );
-              })}
-              {!isMobile && <Stack flexGrow={1}></Stack>}
-              {shortcutList.map((shortcut) => {
-                const { icon, name, id } = shortcut;
-                const classList: string[] = ["activity", "shortcut"];
-                const className = classList.join(" ");
-                const props = {};
-                if (crossDirection(direction) === "row") {
-                  props["w"] = "100%";
-                } else {
-                  props["h"] = "100%";
-                }
-                return (
-                  <Popover
-                    key={id}
-                    placement={isMobile ? "auto" : "right-end"}
-                    isLazy
-                  >
-                    <PopoverTrigger>
-                      <Stack
-                        direction={crossDirection(direction)}
-                        {...props}
-                        className="activity-wrapper shortcut"
-                        key={id}
-                        m="0 !important"
-                        marginInlineStart={"10px"}
-                        justify={"center"}
-                        align="center"
-                        maxW={"100%"}
-                        overflow={"hidden"}
-                      >
-                        <VStack
-                          maxW={"100%"}
-                          overflow={"hidden"}
-                          gap={0}
-                          onClick={() => {
-                            eventBus.emit(`shortcut:${id}:clicked`);
-                          }}
-                        >
-                          <Icon
-                            className={className}
-                            as={icon as As}
-                            fontSize={iconFontSize}
-                            title={name}
-                          ></Icon>
-                          <Text
-                            m="0 !important"
-                            fontSize={textFontSize}
-                            className="shortcut-text"
-                            maxW={"100%"}
-                            overflow={"hidden"}
-                            whiteSpace={"nowrap"}
-                            textOverflow={"ellipsis"}
-                          >
-                            {name}
-                          </Text>
-                        </VStack>
-                      </Stack>
-                    </PopoverTrigger>
-                    <Portal>
-                      <PopoverContent maxW={"100vw"}>
-                        <PopoverArrow />
-                        <PopoverBody>
-                          {componentService.render({
-                            type: `shortcut:${id}:page`,
-                          })}
-                        </PopoverBody>
-                      </PopoverContent>
-                    </Portal>
-                  </Popover>
-                );
-              })}
-            </Stack>
-          }
+                  </PopoverTrigger>
+                  <Portal>
+                    <PopoverContent maxW={"100vw"}>
+                      <PopoverArrow />
+                      <PopoverBody>
+                        {componentService.render({
+                          type: `shortcut:${id}:page`,
+                        })}
+                      </PopoverBody>
+                    </PopoverContent>
+                  </Portal>
+                </Popover>
+              );
+            })}
+          </Stack>
         </>
       );
     },
