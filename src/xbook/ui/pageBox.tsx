@@ -258,7 +258,22 @@ export const createPageBox = () =>
       const tabsView = useMemo(
         () =>
           pageList.map(({ id, title, active, status }, index) => {
-            return (
+            return device.isMobile() ? (
+              <Tab
+                minWidth={minTabWidth}
+                maxWidth={maxTabWidth}
+                key={id}
+                title={title}
+                status={status}
+                isActive={active}
+                onClick={() => {
+                  proxy.showPage(id);
+                }}
+                onClose={() => {
+                  proxy.removePage(id);
+                }}
+              />
+            ) : (
               <DragSortItem
                 style={{ height: "100%" }}
                 key={id}
