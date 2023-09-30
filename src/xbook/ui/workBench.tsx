@@ -6,6 +6,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { device } from "xbook/common/device";
+import { Flex } from "@chakra-ui/react";
 
 type CosutomComponentTypes =
   | "sidebar"
@@ -97,7 +98,14 @@ export const createWorkbench = () => {
     }, [proxy, setLayout]);
     return (
       <DndProvider backend={device.isMobile() ? TouchBackend : HTML5Backend}>
-        {componentService.render(layout)}
+        <Flex
+          className={`workbench ${device.isMobile() ? "mobile" : "pc"}`}
+          w="100%"
+          h="100%"
+          overflow={"hidden"}
+        >
+          {componentService.render(layout)}
+        </Flex>
       </DndProvider>
     );
   });

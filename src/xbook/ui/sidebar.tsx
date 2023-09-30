@@ -168,7 +168,7 @@ export const createSidebar = () =>
               {...options}
               // display={visible ? "block" : "none"}
               overflow={"hidden"}
-              flexShrink={0}
+              // flexShrink={1}
               flexGrow={1}
               className={"sidebar sidebarV2 " + (visible ? "" : "width-collapsed")}
             >
