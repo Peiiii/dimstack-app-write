@@ -95,7 +95,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
           p="10px"
           w="100%"
         >
-          此空间未空间，请前往
+          此空间未授权，请前往
           <Link
             
             color="blue.300"
