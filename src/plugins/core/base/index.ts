@@ -119,15 +119,18 @@ export default createPlugin({
     if (device.isMobile()) {
       xbook.layoutService.pageBox.showTabBar();
       xbook.layoutService.workbench.setLayout(MobileLayout);
-      xbook.layoutService.sidebar.hide();
-      xbook.layoutService.activityBar.hide();
-      xbook.layoutService.sidebar.setFullwidth(false);
+      // xbook.layoutService.sidebar.hide();
+      // xbook.layoutService.activityBar.hide();
+      // xbook.layoutService.sidebar.setFullwidth(false);
+      // xbook.layoutService.pageBox.hide();
+      // xbook.cacheService.space("base","localStorage")
       xbook.commandService.registerCommand("client:toggleHome", () => {
         // xbook.layoutService.pageBox.showPage("home");
         xbook.layoutService.sidebar.toggle();
-        xbook.layoutService.sidebar.setFullwidth(
-          !xbook.layoutService.sidebar.getFullwidth()
-        );
+        // xbook.layoutService.sidebar.toggle();
+        // xbook.layoutService.sidebar.setFullwidth(
+        //   !xbook.layoutService.sidebar.getFullwidth()
+        // );
         xbook.layoutService.activityBar.toggle();
         xbook.layoutService.pageBox.toggle();
       });

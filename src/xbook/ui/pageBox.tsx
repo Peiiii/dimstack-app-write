@@ -248,9 +248,10 @@ export const createPageBox = () =>
       }, [pageList, setPageList, setTabBarVisible, tabBarVisible, proxy]);
       const tabsView = useMemo(
         () =>
-          pageList.map(({ id, title, active, status },index) => {
+          pageList.map(({ id, title, active, status }, index) => {
             return (
               <DragSortItem
+                style={{ height: "100%" }}
                 key={id}
                 id={id}
                 index={index}
