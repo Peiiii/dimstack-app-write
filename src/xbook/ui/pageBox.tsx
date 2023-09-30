@@ -171,14 +171,23 @@ export const createPageBox = () =>
       useEffect(() => {
         cache.set("pageList", pageList);
       }, [pageList, setPageList]);
-      const visibilityControl = ProxiedControls.useVisibilityControl(
-        proxy,
-        true
-      );
+      // const visibilityControl = ProxiedControls.useVisibilityControl(
+      //   proxy,
+      //   true
+      // );
+
+      const [visible, setVisible] = cache.useCachedState("visible", true);
       const [tabBarVisible, setTabBarVisible] = cache.useCachedState(
         "tabBar.visible",
         true
       );
+      useEffect(() => {
+        const show = () => setVisible(true);
+        const hide = () => setVisible(false);
+        const toggle = () => setVisible(!visible);
+        return proxy.register({ show, hide, toggle });
+      }, [proxy, visible]);
+
       useEffect(() => {
         const addPage = (page: PageDescriptor, show: boolean = true) => {
           let exists = false;
@@ -346,7 +355,7 @@ export const createPageBox = () =>
           align="stretch"
           className="page-box"
           overflow={"hidden"}
-          display={visibilityControl.visible ? "flex" : "none"}
+          display={visible ? "flex" : "none"}
           gap={0}
         >
           <>

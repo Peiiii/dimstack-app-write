@@ -116,14 +116,20 @@ const PCLayout: Layout = {
 export default createPlugin({
   initilize(xbook) {
     (window as any).xbook = xbook;
+    const cache = xbook.cacheService.space("base", "localStorage");
     if (device.isMobile()) {
       xbook.layoutService.pageBox.showTabBar();
       xbook.layoutService.workbench.setLayout(MobileLayout);
       // xbook.layoutService.sidebar.hide();
       // xbook.layoutService.activityBar.hide();
       // xbook.layoutService.sidebar.setFullwidth(false);
-      xbook.layoutService.pageBox.hide();
-      // xbook.cacheService.space("base","localStorage")
+      if (!cache.get("initialized", false)) {
+        xbook.layoutService.sidebar.show();
+        xbook.layoutService.activityBar.show();
+        xbook.layoutService.pageBox.hide();
+        cache.set("initialized", import.meta.env.DEV?false:true);
+      }
+
       xbook.commandService.registerCommand("client:toggleHome", () => {
         // xbook.layoutService.pageBox.showPage("home");
         xbook.layoutService.sidebar.toggle();
