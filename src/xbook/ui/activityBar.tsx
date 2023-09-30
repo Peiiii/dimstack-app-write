@@ -22,6 +22,7 @@ import { commandService } from "xbook/services/commandService";
 import { componentService } from "./componentService";
 import { AnyFunction, SafeAny } from "xbook/common/types";
 import { createShell } from "xbook/ui/shell";
+import { DragSortItem } from "xbook/ui/components/DragSort";
 
 type ActivityBarMethods = {
   addActivity(activity: ActivityItem): SafeAny;
@@ -217,7 +218,7 @@ export const createActivityBar = () =>
               gap={"0.5rem"}
               {...options}
             >
-              {activityList.map((activity) => {
+              {activityList.map((activity, index) => {
                 const { icon, name, id } = activity;
                 const classList: string[] = ["activity-wrapper", "activity"];
                 if (activeId && activeId === id) classList.push("active");
@@ -229,43 +230,85 @@ export const createActivityBar = () =>
                   props["h"] = "100%";
                 }
                 return (
-                  <Stack
-                    direction={crossDirection(direction)}
-                    {...props}
-                    className={className}
+                  <DragSortItem
                     key={id}
-                    maxW={"100%"}
-                    overflow={"hidden"}
-                    m="0 !important"
-                    marginInlineStart={"10px"}
-                    justify={"center"}
-                    align="center"
+                    id={id}
+                    index={index}
+                    moveItem={(idx1: number, idx2: number) => {
+                      setActivityList((data) => {
+                        if (idx1 === idx2) return data;
+                        const before = data.slice(0, Math.min(idx1, idx2));
+                        const after = data.slice(Math.max(idx1, idx2) + 1);
+                        const middle = data.slice(
+                          Math.min(idx1, idx2) + 1,
+                          Math.max(idx1, idx2)
+                        );
+                        const source = data[idx1];
+                        const target = data[idx2];
+
+                        if (idx1 < idx2) {
+                          return [
+                            ...before,
+                            ...middle,
+                            target,
+                            source,
+                            ...after,
+                          ];
+                        } else {
+                          return [
+                            ...before,
+                            source,
+                            target,
+                            ...middle,
+                            ...after,
+                          ];
+                        }
+                      });
+                      eventBus.emit("activityBar:dragItem", idx1, idx2);
+                    }}
                   >
-                    <VStack
+                    <Stack
+                      direction={crossDirection(direction)}
+                      {...props}
+                      className={className}
+                      key={id}
                       maxW={"100%"}
-                      gap={0}
                       overflow={"hidden"}
-                      title={name}
-                      onClick={() => {
-                        proxy.showActivity(id);
-                      }}
+                      m="0 !important"
+                      marginInlineStart={"10px"}
+                      justify={"center"}
+                      align="center"
                     >
-                      <Icon className="icon" as={icon as As} fontSize={iconFontSize}></Icon>
-                      <Text
-                        m="0 !important"
-                        fontSize={textFontSize}
-                        className="activity-text"
+                      <VStack
                         maxW={"100%"}
-                        p="0px 4px"
+                        gap={0}
                         overflow={"hidden"}
-                        whiteSpace={"nowrap"}
-                        // textOverflow={"ellipsis"}
-                        // textOverflow={"clip"}
+                        title={name}
+                        onClick={() => {
+                          proxy.showActivity(id);
+                        }}
                       >
-                        {name.slice(0,2).toUpperCase()}
-                      </Text>
-                    </VStack>
-                  </Stack>
+                        <Icon
+                          className="icon"
+                          as={icon as As}
+                          fontSize={iconFontSize}
+                        ></Icon>
+                        <Text
+                          m="0 !important"
+                          fontSize={textFontSize}
+                          className="activity-text"
+                          maxW={"100%"}
+                          p="0px 4px"
+                          overflow={"hidden"}
+                          whiteSpace={"nowrap"}
+                          // textOverflow={"ellipsis"}
+                          // textOverflow={"clip"}
+                        >
+                          {name.slice(0, 2).toUpperCase()}
+                        </Text>
+                      </VStack>
+                    </Stack>
+                  </DragSortItem>
                 );
               })}
               {!isMobile && <Stack flexGrow={1}></Stack>}

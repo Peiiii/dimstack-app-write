@@ -49,6 +49,7 @@ export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
           //   dataStore.getData(),
           //   "viewStateData:",
           //   viewSystem.viewStateStore.getData()
+          
           // );
           return (
             <Icon
@@ -60,7 +61,7 @@ export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
         } else {
           if (getNodeFileType(node) === "file") {
             const isMarkdown =
-              node.id.endsWith(".md") || node.id.endsWith(".markdown");
+              node.name.endsWith(".md") || node.name.endsWith(".markdown");
             return (
               <Icon
                 className={"icon file " + (isMarkdown ? "file-markdown" : "")}

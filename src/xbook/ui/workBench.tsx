@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import "./index.scss";
 import { createDeferredComponentProxy } from "xbook/hooks/useDeferredComponentProxy";
 import { componentService } from "./componentService";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 type CosutomComponentTypes =
   | "sidebar"
@@ -91,6 +93,10 @@ export const createWorkbench = () => {
         setLayout,
       });
     }, [proxy, setLayout]);
-    return componentService.render(layout);
+    return (
+      <DndProvider backend={HTML5Backend}>
+        {componentService.render(layout)}
+      </DndProvider>
+    );
   });
 };

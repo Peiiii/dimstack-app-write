@@ -46,11 +46,13 @@ type PageDescriptor = {
   viewData?: LayoutNode;
   src?: string;
   active?: boolean;
+  status?: "deleted" | "loading";
 };
 type PageBoxMethods = {
   addPage(page: PageDescriptor): void;
   removePage(id: string): void;
   showPage(id: string): void;
+  updatePage(page: Partial<PageDescriptor> & Pick<PageDescriptor, "id">): void;
   hideTabBar(): void;
   showTabBar(): void;
 } & VisibilityControl;
@@ -65,6 +67,7 @@ const Tab: FC<{
   onClick?: MouseEventHandler<HTMLDivElement>;
   onClose?: MouseEventHandler<SVGElement>;
   stretch?: boolean;
+  status?: PageDescriptor["status"];
 }> = ({
   title,
   isActive,
@@ -74,6 +77,7 @@ const Tab: FC<{
   width,
   minWidth,
   maxWidth,
+  status,
 }) => {
   const classList: string[] = ["tab", "hover-action"];
   if (isActive) classList.push("active");
@@ -103,6 +107,7 @@ const Tab: FC<{
         overflow={"hidden"}
         whiteSpace={"nowrap"}
         title={title}
+        textDecoration={status === "deleted" ? "line-through" : undefined}
       >
         {shortTitle}
       </Box>
@@ -202,6 +207,14 @@ export const createPageBox = () =>
             }
           }
         };
+        const updatePage = (
+          page: Partial<PageDescriptor> & Pick<PageDescriptor, "id">
+        ) => {
+          const { id } = page;
+          setPageList((pl) =>
+            pl.map((p) => (p.id === id ? { ...p, ...page } : p))
+          );
+        };
         const showPage = (id: string) => {
           console.log("showPage:", id);
           setPageList((pageList) => {
@@ -227,19 +240,21 @@ export const createPageBox = () =>
           addPage,
           showPage,
           removePage,
+          updatePage,
           hideTabBar,
           showTabBar,
         });
       }, [pageList, setPageList, setTabBarVisible, tabBarVisible, proxy]);
       const tabsView = useMemo(
         () =>
-          pageList.map(({ id, title, active }) => {
+          pageList.map(({ id, title, active, status }) => {
             return (
               <Tab
                 minWidth={minTabWidth}
                 maxWidth={maxTabWidth}
                 key={id}
                 title={title}
+                status={status}
                 isActive={active}
                 onClick={() => {
                   proxy.showPage(id);
@@ -267,7 +282,7 @@ export const createPageBox = () =>
                     ))}
                   ></MenuButton>
                   <MenuList maxW="400px" className="right-list">
-                    {pageList.slice(0).map(({ title, id, active }) => (
+                    {pageList.slice(0).map(({ title, id, active, status }) => (
                       <MenuItem key={id}>
                         <Tab
                           minWidth={minTabWidth}
@@ -275,6 +290,7 @@ export const createPageBox = () =>
                           isActive={active}
                           onClick={() => proxy.showPage(id)}
                           onClose={() => proxy.removePage(id)}
+                          status={status}
                           stretch
                         />
                       </MenuItem>

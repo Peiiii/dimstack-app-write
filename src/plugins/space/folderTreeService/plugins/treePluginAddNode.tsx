@@ -17,6 +17,7 @@ import {
   AiOutlineFolderAdd,
 } from "react-icons/ai";
 import { VscNewFile, VscNewFolder } from "react-icons/vsc";
+import xbook from "xbook/index";
 export default createTreeHelper<FolderTreeNode>().createPlugin({
   addOptions() {
     return {
@@ -70,16 +71,19 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
         parentId,
         nodeType: "file",
         callback: async (name: string) => {
-          console.log("[afterInputNodeName]");
+          // console.log("[afterInputNodeName]");
           const path = join(parentNode.path!, name);
           await fileSystemHelper.service.createFile(
             fileSystemHelper.generateFileId(space?.id, path),
             "# "
           );
+          const childNode={ id: childId, type: "file", path, name };
           dataStore.getActions().add({
-            node: { id: childId, type: "file", path, name },
+            node: childNode,
             parentId,
           });
+          console.log(`CreateNode[${path}]`);
+          xbook.serviceBus.invoke("openerService.open", spaceId, childNode);
         },
       });
     });
@@ -94,7 +98,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
         parentId,
         nodeType: "dir",
         callback: async (name: string) => {
-          console.log("[afterInputNodeName]");
+          // console.log("[afterInputNodeName]");
           const path = join(parentNode.path!, name);
           await fileSystemHelper.service.createDirectory(
             fileSystemHelper.generateFileId(space?.id, path)
