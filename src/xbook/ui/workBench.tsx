@@ -4,6 +4,8 @@ import { createDeferredComponentProxy } from "xbook/hooks/useDeferredComponentPr
 import { componentService } from "./componentService";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { TouchBackend } from "react-dnd-touch-backend";
+import { device } from "xbook/common/device";
 
 type CosutomComponentTypes =
   | "sidebar"
@@ -94,7 +96,7 @@ export const createWorkbench = () => {
       });
     }, [proxy, setLayout]);
     return (
-      <DndProvider backend={HTML5Backend}>
+      <DndProvider backend={device.isMobile() ? TouchBackend : HTML5Backend}>
         {componentService.render(layout)}
       </DndProvider>
     );
