@@ -1,146 +1,34 @@
+@import "./theme-base.scss";
+
 .chakra-ui-light {
-  --base-background-color-light: #f5f5f5;
-  --message-background-color-light: #fafafa;
-  --bg-light: #fbfbfb;
-  --shadow-base-1: 0px 1px 1px 0px rgba(0, 0, 0, 0.1);
-  --shadow-base-3: 0px 1px 1px 0px rgba(0, 0, 0, 0.1),
-    1px 0px 1px 0px rgba(0, 0, 0, 0.1), 0px -1px 1px 0px rgba(0, 0, 0, 0.1),
-    -1px 0px 1px 0px rgba(0, 0, 0, 0.1);
-  --shadow-base-2: var(--chakra-shadow-base);
-  --shadow-base: var(--shadow-base-3);
-  --text-color-seconday-focused: #000000ad;
-  --background-color-content: #eeeeee;
-
-  // --pagebox-background-color: white;
-  --pagebox-background-color: var(--bg-light);
-
-  --page-header-background-color-light: var(--pagebox-background-color);
-
-  --sidebar-background-color-light: #f2f3f5;
-  --activity-bar-background-color-light: #2c2c2c;
-  // --side-card-shadow: var(--chakra-shadows-base);
-  --side-card-shadow: var(--shadow-base);
-  --page-card-shadow: var(--shadow-base);
-  // --content-card-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.2);
-  --content-card-shadow: var(--shadow-base);
-  --background-color-item-focused: #d7d9dc;
-  --shadow-inset-bottom: inset -1px 0 1px 1px #eeeeeeee;
+  @include theme-base;
+  //   semantic basic
+  --primary-color: var(--blue);
   --border-light-gray: 1px solid #80808024;
-  --primary-color: #2db6f4;
   --light-color: white;
+
   --secondary-color: gray;
+  --secondary-text-color: var(--secondary-color);
+  --secondary-100-bg-color: #fcfcfc;
+  --secondary-200-bg-color: #e3e3e3;
+  --secondary-bg-color: var(--secondary-100-bg-color);
+
+  --item-highlight-bg-color: white;
+  --item-highlight-text-color: var(--secondary-color);
+  --item-focused-bg-color: #d7d9dc;
+  --item-focused-text-color: white;
+  --item-focused-border-color: var(--primary-color);
+
   --dark-highlight-text-color: #ffffffd4;
+  --normal-bg-color: white;
+  --normal-text-color: black;
 
-  // semantic
   --hover-highlight-bg-color: #e0e0e0;
-
+  // semantic components
+  --side-hover-bg-color: #dfe1e5;
+  --side-shadow-inset: inset -1px 0 1px 1px #eeeeeeee;
   // xbook
-
-  --activity-icon-color: #ffce45;
-
+  --activity-icon-color: #ffcd45d3;
+  --activity-icon-highlight-color: #ffce45;
   // widget
-
-  .text-highlight {
-    color: black;
-    font-weight: 700;
-  }
-
-  .page-header {
-    background-color: var(--page-header-background-color-light);
-  }
-
-  .sidebar,
-  .sidebar-main {
-    background-color: var(--sidebar-background-color-light);
-    box-shadow: var(--shadow-inset-bottom);
-
-    .chakra-input {
-      background-color: white;
-    }
-
-    .side-card {
-      &.card {
-        box-shadow: 0 !important;
-      }
-
-      border-radius: 0;
-      background-color: inherit !important;
-
-      .header {
-        box-shadow: var(--side-card-shadow);
-        &:hover {
-          background-color: #dfe1e5;
-        }
-      }
-    }
-  }
-
-  .page-box {
-    background-color: var(--chatpage-background-color);
-
-    .header-box {
-      box-shadow: var(--page-card-shadow) !important;
-    }
-
-    .tab-bar {
-      color: gray;
-      // box-shadow: var(--shadow-inset-bottom);
-      border-bottom: var(--border-light-gray);
-
-      .right-list {
-        .tab {
-          &.active {
-            border-left: 1px solid var(--primary-color);
-            background-color: white;
-            color: var(--primary-color);
-          }
-        }
-      }
-
-      .tab-bar-content {
-        .simplebar-content {
-          height: 100%;
-          display: flex;
-          flex-flow: row;
-        }
-
-        .tab {
-          border-right: var(--border-light-gray);
-          &:first-child {
-            border-left: var(--border-light-gray);
-          }
-
-          &:hover {
-            background-color: white;
-            color: black;
-          }
-
-          &.active {
-            border-top: 1px solid var(--primary-color);
-            background-color: white;
-            color: black;
-            // flex-basis: min(50%, 300px);
-          }
-        }
-      }
-    }
-  }
-
-  .channel-tree {
-    color: gray;
-
-    .tree-node-header {
-      &:hover {
-        color: var(--text-color-seconday-focused);
-        background-color: var(--background-color-item-focused);
-      }
-    }
-
-    .tree-node.tree-node-highlight {
-      .tree-node-header {
-        color: var(--text-color-seconday-focused);
-        background-color: var(--background-color-item-focused);
-      }
-    }
-  }
 }

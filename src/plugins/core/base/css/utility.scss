@@ -1,70 +1,52 @@
+.chakra-input {
+  background-color: var(--normal-bg-color);
+}
+
 .hover-action {
-    &:not(:hover) {
-        .hover-show {
-            visibility: hidden;
-            display: none;
-        }
-
+  &:not(:hover) {
+    .hover-show {
+      visibility: hidden;
+      display: none;
     }
+  }
 
-    &:hover {
-        .hover-show {
-            visibility: visible !important;
-        }
-
+  &:hover {
+    .hover-show {
+      visibility: visible !important;
     }
+  }
 
-    &:not(:hover) {
-        .hover-visible {
-            visibility: hidden;
-        }
-
+  &:not(:hover) {
+    .hover-visible {
+      visibility: hidden;
     }
+  }
 
-    &:hover {
-        .hover-visible {
-            visibility: visible !important;
-        }
-
+  &:hover {
+    .hover-visible {
+      visibility: visible !important;
     }
+  }
 }
 
 .hover-highlight {
-    &:hover {
-        background-color: var(--hover-highlight-bg-color);
-    }
+  &:hover {
+    background-color: var(--hover-highlight-bg-color);
+  }
 }
-
 
 .width-collapsed {
-    width: 0 !important;
-    min-width: 0 !important;
-
+  width: 0 !important;
+  min-width: 0 !important;
 }
 
-.icon {
-    &.dir {
-        color: #ffce45;
-        // color: var(--primary-color);
-        // opacity: 0.7;
-    }
-
-    &.file {
-        color: var(--secondary-color);
-        opacity: 0.7;
-
-        &.file-markdown {
-            color: var(--primary-color);
-        }
-    }
-}
 
 .draggable {
-    cursor: pointer;
+  cursor: pointer;
 
-    &.is-dragging {
-        border: 1px dashed gray;
-        opacity: 0;
-        background-color: var(--primary-color);
-    }
+  &.is-dragging {
+    border: 1px dashed gray;
+    opacity: 0;
+    background-color: var(--primary-color);
+  }
 }

@@ -319,7 +319,7 @@ export const createActivityBar = () =>
                         }}
                       >
                         <Icon
-                          className={className}
+                          // className={className}
                           as={icon as As}
                           fontSize={iconFontSize}
                           title={name}

@@ -1,97 +1,138 @@
 .activity-bar {
   transition: width 0.3s ease;
-  background-color: var(--activity-bar-background-color-light);
+  background-color: var(--secondary-200-bg-color);
+
+  //   .activity-wrapper {
+  //     background-color: transparent !important;
+  //     box-shadow: none !important;
+  //   }
 
   @mixin normal-side-item {
     color: var(--secondary-color);
-
     .text {
       color: var(--secondary-color);
     }
   }
 
   @mixin highlight-side-item {
-    color: var(--dark-highlight-text-color);
-
+    background-color: var(--item-highlight-bg-color);
+    color: var(--item-highlight-text-color);
     .text {
-      color: var(--dark-highlight-text-color);
+      color: var(--item-highlight-text-color);
     }
   }
-
   .activity,
   .shortcut {
     @include normal-side-item();
-
     &:not(.active):hover {
       @include highlight-side-item();
     }
-
+    &:hover {
+      @include highlight-side-item;
+    }
     &.active {
       @include highlight-side-item();
     }
-  }
-
-  .activity-wrapper {
-    background-color: transparent !important;
-    box-shadow: none !important;
   }
 
   .activity {
     .icon {
       color: var(--activity-icon-color);
-      opacity: 0.3;
+      //   opacity: 0.3;
     }
 
     &.active {
       font-weight: bolder;
-      opacity: 0.7;
-
+      //   opacity: 0.7;
       .icon {
-        color: var(--activity-icon-color);
-        opacity: 0.7;
+        color: var(--activity-icon-highlight-color);
+        // opacity: 0.7;
       }
     }
 
     &:hover {
       font-weight: bolder;
-      opacity: 0.7;
-
+      //   opacity: 0.7;
       .icon {
-        color: var(--activity-icon-color);
-        opacity: 0.7;
+        color: var(--activity-icon-highlight-color);
+        // opacity: 0.7;
       }
     }
   }
-}
-
-.sidebar {
-  transition: width 0.3s ease;
 }
 
 .pc {
   .sidebar {
     width: 13rem;
     flex-shrink: 0;
-
     .side-card {
       width: 13rem;
-
       .header {
-        // color: gray;
-        // opacity: 0.8;
         text-transform: capitalize;
       }
     }
   }
 }
-
 .mobile {
   .sidebar {
     flex-shrink: 1;
   }
 }
 
+.page-header {
+  background-color: var(--page-header-background-color-light);
+}
+.sidebar,
+.sidebar-main {
+  transition: width 0.3s ease;
+  background-color: var(--secondary-bg-color);
+  color: var(--secondary-text-color);
+  box-shadow: var(--side-shadow-inset);
+
+  .text-highlight {
+    color: var(--normal-text-color);
+    font-weight: 700;
+  }
+}
+
 .page-box {
-  .tab-bar {
+  .header-box {
+    box-shadow: var(--page-card-shadow) !important;
+  }
+}
+.tab-bar {
+  background-color: var(--secondary-bg-color);
+  color: var(--secondary-text-color);
+  border-bottom: var(--border-light-gray);
+  .right-list {
+    .tab {
+      &.active {
+        border-left: 1px solid var(--primary-color);
+        background-color: var(--normal-bg-color);
+        color: var(--primary-color);
+      }
+    }
+  }
+  .tab-bar-content {
+    .simplebar-content {
+      height: 100%;
+      display: flex;
+      flex-flow: row;
+    }
+    .tab {
+      border-right: var(--border-light-gray);
+      &:first-child {
+        border-left: var(--border-light-gray);
+      }
+      &:hover {
+        background-color: var(--item-focused-bg-color);
+        color: var(--item-focused-text-color);
+      }
+      &.active {
+        border-top: 1px solid var(--item-focused-border-color);
+        background-color: var(--item-focused-bg-color);
+        color: var(--item-focused-text-color);
+      }
+    }
   }
 }

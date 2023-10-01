@@ -3,6 +3,7 @@ import "./css/utility.scss";
 import "./css/xbook.scss";
 import "./css/widgets.scss";
 import "./css/scroll.scss";
+// import "./css/themes/theme-base.scss";
 import "./css/themes/discord-light.scss";
 import "./css/themes/dark.scss";
 import "./css/themes/light.scss";
