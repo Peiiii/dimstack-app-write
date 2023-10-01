@@ -79,9 +79,7 @@
   }
 }
 
-.page-header {
-  background-color: var(--page-header-background-color-light);
-}
+
 .sidebar,
 .sidebar-main {
   transition: width 0.3s ease;
@@ -95,11 +93,6 @@
   }
 }
 
-.page-box {
-  .header-box {
-    box-shadow: var(--page-card-shadow) !important;
-  }
-}
 .tab-bar {
   background-color: var(--secondary-bg-color);
   color: var(--secondary-text-color);
@@ -125,13 +118,13 @@
         border-left: var(--border-light-gray);
       }
       &:hover {
-        background-color: var(--item-focused-bg-color);
-        color: var(--item-focused-text-color);
+        background-color: var(--item-highlight-bg-color);
+        color: var(--item-highlight-text-color);
       }
       &.active {
         border-top: 1px solid var(--item-focused-border-color);
-        background-color: var(--item-focused-bg-color);
-        color: var(--item-focused-text-color);
+        background-color: var(--item-highlight-bg-color);
+        color: var(--item-highlight-text-color);
       }
     }
   }

@@ -3,10 +3,11 @@
     box-shadow: 0 !important;
   }
   border-radius: 0;
-  background-color: inherit !important;
 
   .header {
-    box-shadow: var(--side-card-shadow);
+    box-shadow: var(--secondary-shadow);
+    // background-color: var(--side-card-bg-color);
+    border-bottom: 1px solid var(--secondary-color);
     &:hover {
       background-color: var(--item-focused-bg-color);
       color: var(--item-focused-text-color);

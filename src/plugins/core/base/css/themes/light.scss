@@ -12,6 +12,12 @@
   --secondary-100-bg-color: #fcfcfc;
   --secondary-200-bg-color: #e3e3e3;
   --secondary-bg-color: var(--secondary-100-bg-color);
+  --secondary-shadow: box-shadow: 2.8px 2.8px 2.2px rgba(0, 0, 0, 0.011),
+  6.7px 6.7px 5.3px rgba(0, 0, 0, 0.016),
+  12.5px 12.5px 10px rgba(0, 0, 0, 0.02),
+  22.3px 22.3px 17.9px rgba(0, 0, 0, 0.024),
+  41.8px 41.8px 33.4px rgba(0, 0, 0, 0.029),
+  100px 100px 80px rgba(0, 0, 0, 0.04);
 
   --item-highlight-bg-color: white;
   --item-highlight-text-color: var(--secondary-color);
@@ -31,4 +37,5 @@
   --activity-icon-color: #ffcd45d3;
   --activity-icon-highlight-color: #ffce45;
   // widget
+  --side-card-bg-color: #f5f5f5;
 }
