@@ -1,0 +1,39 @@
+.tree {
+  .tree-root-node {
+    & > .tree-node-content > .tree-node-content-top > .tree-node-header * {
+      text-transform: uppercase;
+    }
+  }
+
+  .tree-node-wrapper {
+    .tree-node {
+      .tree-node-content-top {
+        .tree-node-header {
+          border-radius: 0.3rem;
+          font-weight: bold;
+        }
+        &:hover {
+          .tree-node-header {
+            background-color: var(--background-color-item-focused);
+          }
+        }
+      }
+      .tree-node-children-list {
+        border-left: 1px solid gray;
+      }
+    }
+    // &:last-of-type > .tree-node > .tree-node-content > .tree-node-children-list {
+    //     border-left: none !important;
+    // }
+  }
+
+  .tree-node.tree-node-highlight {
+    .hover-show {
+      visibility: visible !important;
+    }
+
+    .tree-node-header {
+      background-color: var(--background-color-item-focused);
+    }
+  }
+}

@@ -1,5 +1,7 @@
 import "./css/index.scss";
-import "./css/style-base.scss";
+import "./css/utility.scss";
+import "./css/xbook.scss";
+import "./css/widgets.scss";
 import "./css/scroll.scss";
 import "./css/themes/discord-light.scss";
 import "./css/themes/dark.scss";
@@ -127,7 +129,7 @@ export default createPlugin({
         xbook.layoutService.sidebar.show();
         xbook.layoutService.activityBar.show();
         xbook.layoutService.pageBox.hide();
-        cache.set("initialized", import.meta.env.DEV?false:true);
+        cache.set("initialized", import.meta.env.DEV ? false : true);
       }
 
       xbook.commandService.registerCommand("client:toggleHome", () => {

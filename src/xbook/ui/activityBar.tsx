@@ -265,7 +265,7 @@ export const createActivityBar = () =>
                       <Text
                         m="0 !important"
                         fontSize={textFontSize}
-                        className="activity-text"
+                        className="activity-text text"
                         maxW={"100%"}
                         p="0px 4px"
                         overflow={"hidden"}
@@ -327,7 +327,7 @@ export const createActivityBar = () =>
                         <Text
                           m="0 !important"
                           fontSize={textFontSize}
-                          className="shortcut-text"
+                          className="shortcut-text text"
                           maxW={"100%"}
                           overflow={"hidden"}
                           whiteSpace={"nowrap"}

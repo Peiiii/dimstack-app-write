@@ -185,7 +185,7 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
         actionBar = (
           <Menu>
             <MenuButton
-             h="100%"
+              h="100%"
               className="hover-visible"
               as={Button}
               borderRadius={0}
@@ -246,89 +246,114 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
         >
           <Flex
             direction={"row"}
-            h="2rem"
             w="100%"
             align={"center"}
             overflow={"hidden"}
             className={classList.join(" ")}
           >
-            <Box className="placeholder" w={level * 4 + 2} flexShrink={0} />
+            <Box
+              className="placeholder"
+              w={3}
+              flexShrink={0}
+              flexGrow={0}
+            />
             <Flex
-              minW={0}
-              overflow={"hidden"}
-              direction={"row"}
-              h="2rem"
+              className="tree-node-content"
+              flexFlow={"column"}
+              h="100%"
               flexGrow={1}
-              align="center"
-              onClick={eventBus.connector("node::click", (event) => ({
-                node,
-                event,
-              }))}
-              tabIndex={-1}
-              onKeyDown={(e) => {
-                if (e.code.toLowerCase() === "enter") {
-                  eventBus.emit("node::keydown.enter", { node, event: e });
-                }
-              }}
-              className={"hover-action tree-node-header"}
+              align={"center"}
+              overflow={"hidden"}
             >
               <Flex
-                direction={"row"}
-                pl="6p"
-                align="center"
+                className="tree-node-content-top"
+                flexFlow={"row"}
+                w="100%"
+                h="2rem"
+                // flexGrow={1}
+                align={"center"}
                 overflow={"hidden"}
-                className="hover-action"
               >
-                <Flex pr="0.5rem" alignItems={"center"}>
-                  {expandable ? (
-                    expanded ? (
-                      viewSystem.render("icon-expanded")
-                    ) : (
-                      viewSystem.render("icon-collapsed")
-                    )
-                  ) : (
-                    <Box visibility={"hidden"}>
-                      {viewSystem.render("icon-collapsed")}
-                    </Box>
-                  )}
-                </Flex>
-                {viewSystem.render("icon-node-type", { node })}
-                <Box w="0.5em"></Box>
-                {editMode ? (
-                  <Input
-                    ref={inputRef}
-                    autoFocus
-                    size={"sm"}
-                    flexGrow={0}
-                    onChange={eventBus.connector("editProgress", (event) => ({
-                      node,
-                      event,
-                    }))}
-                    onBlur={eventBus.connector("editBlur", (event) => ({
-                      node,
-                      event,
-                    }))}
-                    onKeyDown={(event) => {
-                      if (event.code.toLocaleLowerCase() === "enter") {
-                        eventBus.emit("editKeyEnter", { node, event });
-                      }
-                    }}
-                    defaultValue={name}
-                  />
-                ) : (
-                  // <Tooltip label={name}>
-                  <Text
-                    title={name}
-                    textOverflow={"ellipsis"}
-                    whiteSpace={"nowrap"}
+                <Flex
+                  minW={0}
+                  overflow={"hidden"}
+                  direction={"row"}
+                  h="2rem"
+                  w="100%"
+                  flexGrow={1}
+                  align="center"
+                  onClick={eventBus.connector("node::click", (event) => ({
+                    node,
+                    event,
+                  }))}
+                  tabIndex={-1}
+                  onKeyDown={(e) => {
+                    if (e.code.toLowerCase() === "enter") {
+                      eventBus.emit("node::keydown.enter", { node, event: e });
+                    }
+                  }}
+                  className={"hover-action tree-node-header"}
+                >
+                  <Flex
+                    direction={"row"}
+                    pl="6p"
+                    align="center"
                     overflow={"hidden"}
+                    className="hover-action"
                   >
-                    {name}
-                  </Text>
-                  // </Tooltip>
-                )}
-              </Flex>
-              {/* <Button
+                    <Flex pr="0.5rem" alignItems={"center"}>
+                      {expandable ? (
+                        expanded ? (
+                          viewSystem.render("icon-expanded")
+                        ) : (
+                          viewSystem.render("icon-collapsed")
+                        )
+                      ) : (
+                        <Box visibility={"hidden"}>
+                          {viewSystem.render("icon-collapsed")}
+                        </Box>
+                      )}
+                    </Flex>
+                    {viewSystem.render("icon-node-type", { node })}
+                    <Box w="0.5em"></Box>
+                    {editMode ? (
+                      <Input
+                        ref={inputRef}
+                        autoFocus
+                        size={"sm"}
+                        flexGrow={0}
+                        onChange={eventBus.connector(
+                          "editProgress",
+                          (event) => ({
+                            node,
+                            event,
+                          })
+                        )}
+                        onBlur={eventBus.connector("editBlur", (event) => ({
+                          node,
+                          event,
+                        }))}
+                        onKeyDown={(event) => {
+                          if (event.code.toLocaleLowerCase() === "enter") {
+                            eventBus.emit("editKeyEnter", { node, event });
+                          }
+                        }}
+                        defaultValue={name}
+                      />
+                    ) : (
+                      // <Tooltip label={name}>
+                      <Text
+                        title={name}
+                        textOverflow={"ellipsis"}
+                        whiteSpace={"nowrap"}
+                        overflow={"hidden"}
+                      >
+                        {name}
+                      </Text>
+                      // </Tooltip>
+                    )}
+                  </Flex>
+                  {/* <Button
                 pl="6px"
                 variant="link"
                 color={"inherit"}
@@ -346,30 +371,42 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
               >
               
               </Button> */}
-              <Box flexGrow={1} />
-              <Flex className="action-box" align={"center"} justify={"center"} h="100%">{actionBar}</Flex>
+                  <Box flexGrow={1} />
+                  <Flex
+                    className="action-box"
+                    align={"center"}
+                    justify={"center"}
+                    h="100%"
+                  >
+                    {actionBar}
+                  </Flex>
+                </Flex>
+                <Box w="0.5rem" flexShrink={0} />
+              </Flex>
+              <Flex
+                // w="100%"
+                direction={"column"}
+                overflow={"hidden"}
+                ml="0.5rem"
+                className="tree-node-children-list"
+                w="calc(100% - 0.5rem)"
+                {...(expanded ? {} : { display: "none" })}
+              >
+                {children &&
+                  [...children]
+                    .sort(
+                      (a, b) =>
+                        (a.type === "file" ? 1 : 0) -
+                        (b.type === "file" ? 1 : 0)
+                    )
+                    .map((node) =>
+                      viewSystem.renderNode({
+                        node,
+                        level: level + 1,
+                      })
+                    )}
+              </Flex>
             </Flex>
-            <Box w="0.5rem" flexShrink={0} />
-          </Flex>
-          <Flex
-            w="100%"
-            direction={"column"}
-            overflow={"hidden"}
-            className="tree-node-children-list"
-            {...(expanded ? {} : { display: "none" })}
-          >
-            {children &&
-              [...children]
-                .sort(
-                  (a, b) =>
-                    (a.type === "file" ? 1 : 0) - (b.type === "file" ? 1 : 0)
-                )
-                .map((node) =>
-                  viewSystem.renderNode({
-                    node,
-                    level: level + 1,
-                  })
-                )}
           </Flex>
         </Flex>
       );

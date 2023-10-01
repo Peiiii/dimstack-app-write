@@ -1,0 +1,97 @@
+.activity-bar {
+  transition: width 0.3s ease;
+  background-color: var(--activity-bar-background-color-light);
+
+  @mixin normal-side-item {
+    color: var(--secondary-color);
+
+    .text {
+      color: var(--secondary-color);
+    }
+  }
+
+  @mixin highlight-side-item {
+    color: var(--dark-highlight-text-color);
+
+    .text {
+      color: var(--dark-highlight-text-color);
+    }
+  }
+
+  .activity,
+  .shortcut {
+    @include normal-side-item();
+
+    &:not(.active):hover {
+      @include highlight-side-item();
+    }
+
+    &.active {
+      @include highlight-side-item();
+    }
+  }
+
+  .activity-wrapper {
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .activity {
+    .icon {
+      color: var(--activity-icon-color);
+      opacity: 0.3;
+    }
+
+    &.active {
+      font-weight: bolder;
+      opacity: 0.7;
+
+      .icon {
+        color: var(--activity-icon-color);
+        opacity: 0.7;
+      }
+    }
+
+    &:hover {
+      font-weight: bolder;
+      opacity: 0.7;
+
+      .icon {
+        color: var(--activity-icon-color);
+        opacity: 0.7;
+      }
+    }
+  }
+}
+
+.sidebar {
+  transition: width 0.3s ease;
+}
+
+.pc {
+  .sidebar {
+    width: 13rem;
+    flex-shrink: 0;
+
+    .side-card {
+      width: 13rem;
+
+      .header {
+        // color: gray;
+        // opacity: 0.8;
+        text-transform: capitalize;
+      }
+    }
+  }
+}
+
+.mobile {
+  .sidebar {
+    flex-shrink: 1;
+  }
+}
+
+.page-box {
+  .tab-bar {
+  }
+}

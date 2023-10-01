@@ -83,7 +83,8 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
             parentId,
           });
           console.log(`CreateNode[${path}]`);
-          xbook.serviceBus.invoke("openerService.open", spaceId, childNode);
+          // xbook.serviceBus.invoke("openerService.open", spaceId, childNode);
+          eventBus.emit("node::click",{node:childNode})
         },
       });
     });
