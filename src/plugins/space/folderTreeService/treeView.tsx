@@ -30,6 +30,7 @@ import ContextProvider from "@/toolkit/components/context";
 import treePluginRefresh from "@/plugins/space/folderTreeService/plugins/treePluginRefresh";
 import { createServiceBus } from "@/toolkit/common/serviceBus";
 import { useAtom } from "@/toolkit/common/hooks/use-atom";
+import treePluginInit from "@/plugins/space/folderTreeService/plugins/treePluginInit";
 
 const TreeView = ({ space }: { space: SpaceDef }) => {
   const treeDataStore = useMemo(
@@ -135,6 +136,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
                 defaultExpanded: false,
               }),
               treePluginRefresh(),
+              treePluginInit(),
               treePluginClickNode(),
               treePluginEditNode({
                 editable: ({ level }) => {
