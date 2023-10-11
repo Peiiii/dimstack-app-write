@@ -309,15 +309,11 @@ export const createActivityBar = () =>
                       align="center"
                       maxW={"100%"}
                       overflow={"hidden"}
+                      onClick={() => {
+                        eventBus.emit(`shortcut:${id}:clicked`);
+                      }}
                     >
-                      <VStack
-                        maxW={"100%"}
-                        overflow={"hidden"}
-                        gap={0}
-                        onClick={() => {
-                          eventBus.emit(`shortcut:${id}:clicked`);
-                        }}
-                      >
+                      <VStack maxW={"100%"} overflow={"hidden"} gap={0}>
                         <Icon
                           // className={className}
                           as={icon as As}

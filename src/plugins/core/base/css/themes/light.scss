@@ -5,7 +5,10 @@
   //   semantic basic
   --primary-color: var(--blue);
   --border-light-gray: 1px solid #80808024;
+  --border-color-light: #e5e1e185;
+  --border-light: 1px solid var(--border-color-light);
   --light-color: white;
+  --default-bg-color: white;
 
   --secondary-color: gray;
   --secondary-text-color: var(--secondary-color);
@@ -20,7 +23,7 @@
   100px 100px 80px rgba(0, 0, 0, 0.04);
 
   --item-highlight-bg-color: white;
-  --item-highlight-text-color: var(--secondary-color);
+  --item-highlight-text-color: var(--primary-color);
   --item-focused-bg-color: #d7d9dc;
   --item-focused-text-color: white;
   --item-focused-border-color: var(--primary-color);
@@ -35,7 +38,7 @@
   --side-shadow-inset: inset -1px 0 1px 1px #eeeeeeee;
   // xbook
   --activity-icon-color: #ffcd45d3;
-  --activity-icon-highlight-color: #ffce45;
+  --activity-icon-highlight-color: var(--primary-color);
   // widget
   --side-card-bg-color: #f5f5f5;
 }

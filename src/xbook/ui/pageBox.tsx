@@ -108,12 +108,14 @@ const Tab: FC<{
         overflow={"hidden"}
         whiteSpace={"nowrap"}
         title={title}
+        flexGrow={1}
         textDecoration={status === "deleted" ? "line-through" : undefined}
       >
         {shortTitle}
       </Box>
       {(stretch || width || minWidth) && <Box flexGrow={1} />}
       <Icon
+        flexShrink={0}
         className="hover-visible"
         as={AiOutlineClose}
         onClick={(e) => {

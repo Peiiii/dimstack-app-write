@@ -1,40 +1,28 @@
 import { SafeAny } from "@/toolkit/common/types";
 
+
 export type PluginInitializationConfiguration<
-  TypeOptions extends Record<string, SafeAny>,
-  TypeMethodName extends string,
-  TypeContext
+  TOptions extends Record<string, SafeAny>,
+  TMethodName extends string,
+  TContext
 > = {
   id?: string;
   name?: string;
   description?: string;
-  addOptions?: () => TypeOptions;
+  addOptions?: () => TOptions;
 } & {
-  [methdName in TypeMethodName]?: (
+  [methdName in TMethodName]?: (
     this: {
       id?: string;
       name?: string;
       description?: string;
-      options: TypeOptions;
+      options: Partial<TOptions>;
     },
-    context: TypeContext
+    context: TContext
   ) => void;
 };
 
-export const createPluginSystem = <
-  TypeContext,
-  TypeMethodName extends string
->() => {
-  // type PluginInitializationConfiguration<
-  //   TypeOptions extends Record<string, SafeAny>,
-  //   M
-  // > = {
-  //   id?: string;
-  //   name?: string;
-  //   description?: string;
-  //   addOptions?: () => TypeOptions;
-  // } & M;
-
+export const createPluginSystem = <TContext, TMethodName extends string>() => {
   type PluginType<M, O> = {
     id?: string;
     name?: string;
@@ -43,33 +31,10 @@ export const createPluginSystem = <
     configure(partialOptions: Partial<O>): PluginType<M, O>;
   } & M;
 
-  // const createPlugin = <TypeOptions extends Record<string, SafeAny>>(
-  //   config: PluginInitializationConfiguration<
-  //     {
-  //       [methdName in TypeMethodName]: (
-  //         this: {
-  //           id?: string;
-  //           name?: string;
-  //           description?: string;
-  //           options: TypeOptions;
-  //         },
-  //         context: TypeContext
-  //       ) => void;
-  //     },
-  //     TypeOptions
-  //   >
-  // ) => {
-  const createPlugin = <TypeOptions extends Record<string, SafeAny>>(
-    config: PluginInitializationConfiguration<
-      TypeOptions,
-      TypeMethodName,
-      TypeContext
-    >
+  const createPlugin = <TOptions extends Record<string, SafeAny>>(
+    config: PluginInitializationConfiguration<TOptions, TMethodName, TContext>
   ) => {
-    // const { addOptions = () => ({}) } = config;
-    // type PluginOptions = ReturnType<typeof addOptions>;
-
-    return (partialOptions: Partial<TypeOptions> = {}) => {
+    return (partialOptions: Partial<TOptions> = {}) => {
       const {
         id,
         name,
@@ -78,7 +43,7 @@ export const createPluginSystem = <
         ...lifecycles
       } = config;
       const options = addOptions();
-      const configure = (partialOptions: Partial<TypeOptions>) => {
+      const configure = (partialOptions: Partial<TOptions>) => {
         Object.assign(options, partialOptions);
         return plugin;
       };
@@ -94,26 +59,30 @@ export const createPluginSystem = <
       type Lifecycles = {
         [k in keyof RawLifecycles]?: (
           this: ReturnType<typeof createPlugin>,
-          ...args: Parameters<Exclude<RawLifecycles[k],undefined>>
-        ) => ReturnType<Exclude<RawLifecycles[k],undefined>>;
+          ...args: Parameters<NonNullable<RawLifecycles[k]>>
+        ) => void;
       };
       const newLifecycles: Lifecycles = {} as Lifecycles;
       for (const k in lifecycles) {
-        newLifecycles[k as keyof Lifecycles] = lifecycles[k].bind(plugin);
+        newLifecycles[k as keyof Lifecycles] = (
+          lifecycles[k as keyof RawLifecycles] as NonNullable<
+            RawLifecycles[keyof RawLifecycles]
+          >
+        ).bind(plugin);
       }
       return Object.assign(plugin, newLifecycles) as unknown as PluginType<
         {
-          [methdName in TypeMethodName]?: (
+          [methdName in TMethodName]?: (
             this: {
               id?: string;
               name?: string;
               description?: string;
-              options: TypeOptions;
+              options: TOptions;
             },
-            context: TypeContext
+            context: TContext
           ) => void;
         },
-        TypeOptions
+        TOptions
       >;
     };
   };

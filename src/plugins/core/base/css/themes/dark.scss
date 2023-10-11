@@ -4,6 +4,9 @@
   //   semantic basic
   --primary-color: var(--blue);
   --light-color: white;
+  --default-bg-color: var(--secondary-bg-color);
+  --border-color-light: #e5e1e129;
+  --border-light: 1px solid var(--border-color-light);
 
   --secondary-color: gray;
   --secondary-text-color: var(--secondary-color);
@@ -32,7 +35,7 @@
 
   // xbook
   --activity-icon-color: #ffce458a;
-  --activity-icon-highlight-color: #ffcd45d5;
+  --activity-icon-highlight-color: var(--primary-color);
   // widget
-//   --side-card-bg-color: #f5f5f5;
+  //   --side-card-bg-color: #f5f5f5;
 }

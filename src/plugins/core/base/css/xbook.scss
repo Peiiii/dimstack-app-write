@@ -1,6 +1,6 @@
 .activity-bar {
   transition: width 0.3s ease;
-  background-color: var(--secondary-200-bg-color);
+  // background-color: var(--secondary-200-bg-color);
 
   //   .activity-wrapper {
   //     background-color: transparent !important;
@@ -17,6 +17,7 @@
   @mixin highlight-side-item {
     background-color: var(--item-highlight-bg-color);
     color: var(--item-highlight-text-color);
+    border-left: 2px solid var(--primary-color);
     .text {
       color: var(--item-highlight-text-color);
     }
@@ -63,10 +64,10 @@
 
 .pc {
   .sidebar {
-    width: 13rem;
+    width: 15rem;
     flex-shrink: 0;
     .side-card {
-      width: 13rem;
+      width: 15rem;
       .header {
         text-transform: capitalize;
       }
@@ -79,13 +80,15 @@
   }
 }
 
-
 .sidebar,
 .sidebar-main {
   transition: width 0.3s ease;
-  background-color: var(--secondary-bg-color);
+  // background-color: var(--secondary-bg-color);
+  background-color: var(--default-bg-color);
   color: var(--secondary-text-color);
-  box-shadow: var(--side-shadow-inset);
+  // box-shadow: var(--side-shadow-inset);
+  border-left: var(--border-light);
+  border-right: var(--border-light);
 
   .text-highlight {
     color: var(--normal-text-color);
@@ -94,9 +97,9 @@
 }
 
 .tab-bar {
-  background-color: var(--secondary-bg-color);
+  background-color: var(--default-bg-color);
   color: var(--secondary-text-color);
-  border-bottom: var(--border-light-gray);
+  border-bottom: var(--border-light);
   .right-list {
     .tab {
       &.active {
@@ -107,22 +110,21 @@
     }
   }
   .tab-bar-content {
+    border-left: var(--border-light);
     .simplebar-content {
       height: 100%;
       display: flex;
       flex-flow: row;
     }
     .tab {
-      border-right: var(--border-light-gray);
-      &:first-child {
-        border-left: var(--border-light-gray);
-      }
+      border-right: var(--border-light);
       &:hover {
         background-color: var(--item-highlight-bg-color);
         color: var(--item-highlight-text-color);
       }
       &.active {
-        border-top: 1px solid var(--item-focused-border-color);
+        border-top: 1px solid var(--primary-color);
+        font-weight: bolder;
         background-color: var(--item-highlight-bg-color);
         color: var(--item-highlight-text-color);
       }
