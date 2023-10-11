@@ -22,7 +22,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
         name: "编辑",
         title: "编辑",
         validate: (context) => {
-          return this.options.editable(context);
+          return this.options.editable?.(context) || false;
         },
         icon: <AiFillEdit />,
       },
@@ -36,7 +36,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
         parentId: string;
         callback: (name: string) => void;
         nodeType: string;
-        validate?: ()=>boolean;
+        validate?: () => boolean;
       }) => {
         setTimeout(() => {
           const childId = nanoid();
@@ -84,7 +84,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
         pipe.emit("edit.forInput", false);
         eventBus.emit("edit.inputResult", event.target.value);
       } else if (event.target.value.trim()) {
-        this.options.renameNode(node, event.target.value.trim());
+        this.options.renameNode!(node, event.target.value.trim());
       }
     });
     eventBus.on("editKeyEnter", ({ node, event }) => {
