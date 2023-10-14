@@ -65,11 +65,11 @@
 .pc {
   .sidebar {
     // width: 100%;
-    width: 16rem;
+    min-width: 16rem;
     flex-shrink: 0;
     .side-card {
       // width: 100%;
-      width: 16rem;
+      min-width: 16rem;
     }
   }
 }
