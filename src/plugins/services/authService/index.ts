@@ -6,15 +6,14 @@ type Authentication = {
   auth: Record<string, any>;
 };
 interface Authenticator {
-    getAuthResult();
+  getAuthResult();
 }
 
 export default createPlugin({
   initilize() {
     const authentications: Authentication[] = [];
-    const find = ({ ...params }) => {};
-    const authenticate=()=>{
-
-    }
+    const find = () => {};
+    const authenticate = () => {};
+    return { authentications, find, authenticate };
   },
 });
