@@ -91,10 +91,23 @@ const PCLayout: Layout = {
               type: "activityBar",
             },
             {
-              type: "sidebar",
-            },
-            {
-              type: "pageBox",
+              type: "row",
+              children: [
+                {
+                  type: "SplitPane.Horizontal",
+                  props:{
+                    id: "sidebarResizer"
+                  },
+                  children: [
+                    {
+                      type: "sidebar",
+                    },
+                    {
+                      type: "pageBox",
+                    },
+                  ],
+                },
+              ],
             },
           ],
         },
@@ -158,6 +171,7 @@ export default createPlugin({
       xbook.commandService.registerCommand("client:toggleHome", () => {
         xbook.layoutService.sidebar.toggle();
         xbook.layoutService.activityBar.toggle();
+        xbook.serviceBus.invoke("sidebarResizer.toggleResizable")
       });
 
       xbook.commandService.registerCommand("client:toChatPage", () => {

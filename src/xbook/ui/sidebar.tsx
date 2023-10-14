@@ -73,8 +73,8 @@ export const createSidebar = () =>
                   else return v;
                 })
               );
-              return;
             }
+            return;
           }
           viewList.push(view);
           setViewList(viewList.slice());
@@ -170,7 +170,9 @@ export const createSidebar = () =>
               overflow={"hidden"}
               // flexShrink={1}
               flexGrow={1}
-              className={"sidebar sidebarV2 " + (visible ? "" : "width-collapsed")}
+              className={
+                "sidebar sidebarV2 " + (visible ? "" : "width-collapsed")
+              }
             >
               {viewList.map((view) => {
                 const { id, visible, viewData } = view;

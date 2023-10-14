@@ -64,13 +64,12 @@
 
 .pc {
   .sidebar {
-    width: 15rem;
+    // width: 100%;
+    width: 16rem;
     flex-shrink: 0;
     .side-card {
-      width: 15rem;
-      .header {
-        text-transform: capitalize;
-      }
+      // width: 100%;
+      width: 16rem;
     }
   }
 }
@@ -82,6 +81,14 @@
 
 .sidebar,
 .sidebar-main {
+  flex-grow: 1;
+  height: 100%;
+ 
+  .side-card {
+    .header {
+      text-transform: capitalize;
+    }
+  }
   transition: width 0.3s ease;
   // background-color: var(--secondary-bg-color);
   background-color: var(--default-bg-color);
@@ -100,6 +107,7 @@
   background-color: var(--default-bg-color);
   color: var(--secondary-text-color);
   border-bottom: var(--border-light);
+  z-index: 0;
   .right-list {
     .tab {
       &.active {
@@ -129,5 +137,15 @@
         color: var(--item-highlight-text-color);
       }
     }
+  }
+}
+
+.page-box {
+  z-index: 0;
+}
+
+.split-pane {
+  .pane {
+    transition: all 0.2s ease;
   }
 }

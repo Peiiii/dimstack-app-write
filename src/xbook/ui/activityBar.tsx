@@ -42,6 +42,7 @@ export type ActivityItem = {
   icon: React.Component | React.FC;
   isActive?: boolean;
   disabled?: boolean;
+  events?: "click" | "focus" | "blur" | "mouseenter" | "mouseleave";
 };
 
 export type ShortcutItem = {

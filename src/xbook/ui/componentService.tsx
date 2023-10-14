@@ -5,6 +5,7 @@ import { createSidebar } from "./sidebar";
 import { createStatusBar } from "./statusBar";
 import { createTitleBar } from "./titleBar";
 import { createRenderer } from "xbook/common/renderer";
+import SplitPane from "xbook/ui/components/split-pane";
 export const activityBar = createActivityBar();
 export const statusBar = createStatusBar();
 export const titleBar = createTitleBar();
@@ -55,3 +56,4 @@ componentService.register("titleBar", () => {
 componentService.register("pageBox", () => {
   return pageBox.instance;
 });
+componentService.register("SplitPane.Horizontal", SplitPane.Horizontal);

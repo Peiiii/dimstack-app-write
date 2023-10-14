@@ -15,7 +15,12 @@ type CosutomComponentTypes =
   | "titleBar"
   | "activityBar";
 export type Layout = {
-  type: "row" | "column" | "element" | CosutomComponentTypes;
+  type:
+    | "row"
+    | "column"
+    | "element"
+    | "SplitPane.Horizontal"
+    | CosutomComponentTypes;
   props?: Record<string, unknown>;
   children?: Layout[];
 };

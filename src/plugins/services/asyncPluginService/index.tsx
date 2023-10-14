@@ -3,6 +3,8 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import "systemjs/dist/system.min";
 import "systemjs/dist/extras/amd";
+import { VscExtensions } from "react-icons/vsc";
+import { Button, Card, Input, InputAddon, InputGroup } from "@chakra-ui/react";
 
 declare global {
   interface Window {
@@ -47,5 +49,31 @@ export default createPlugin({
     //     console.log("plugin:", plugin);
     //     xbook.pluginService.use(plugin);
     //   });
+
+    xbook.layoutService.activityBar.addActivity({
+      id: "plugins",
+      name: "Plugins",
+      icon: VscExtensions,
+    });
+    xbook.componentService.register("pluginsPanel", () => {
+      return (
+        <Card>
+          <InputGroup>
+            <Input placeholder="请输入关键词搜索插件" />
+            <Button colorScheme="blue">搜索</Button>
+          </InputGroup>
+        </Card>
+      );
+    });
+
+    xbook.eventBus.on("activity:plugins:clicked", () => {
+      xbook.layoutService.sidebar.addView({
+        id: "plugins",
+        viewData: {
+          type: "pluginsPanel",
+        },
+      });
+      xbook.layoutService.sidebar.setView("plugins");
+    });
   },
 });

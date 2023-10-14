@@ -1,0 +1,40 @@
+.split-pane {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  .resizer {
+    height: 100%;
+    z-index: 999;
+    position: relative;
+  }
+  .resizer-anchor {
+    position: absolute;
+    width: 0;
+    height: 100%;
+  }
+  .pane {
+    display: flex;
+    transition: all 0.2s ease;
+  }
+  .left {
+    // overflow-x: auto;
+    overflow: hidden;
+  }
+  .left-inner-wrapper {
+    display: flex;
+    width: 100%;
+    overflow-x: auto;
+  }
+  .right-un {
+    flex: 1;
+  }
+
+  &.resizable {
+    .resizer {
+      background-color: var(--splitter-color);
+      cursor: ew-resize;
+      width: 6px;
+      left: -3px;
+    }
+  }
+}
