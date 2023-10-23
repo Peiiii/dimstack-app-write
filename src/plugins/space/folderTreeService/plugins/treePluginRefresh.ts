@@ -31,10 +31,10 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
         },
       });
       console.log("updatedData:", dataStore.getData());
-      if (Math.random() > 0.9) {
-        const spaceId = `${platform}:${owner}:${repo}`;
-        xbook.serviceBus.invoke("spaceService.refreshAuth", spaceId);
-      }
+      // if (Math.random() > 0.9) {
+      // const spaceId = `${platform}:${owner}:${repo}`;
+      // xbook.serviceBus.invoke("spaceService.refreshAuth", spaceId);
+      // }
     });
   },
 });

@@ -1,4 +1,4 @@
-import { SafeAny } from "@/toolkit/common/types";
+import { AnyFunction, SafeAny } from "@/toolkit/common/types";
 import xbook from "xbook";
 import { ActivityItem } from "xbook/ui/activityBar";
 const _xbook = xbook;
@@ -12,7 +12,11 @@ type SimplePageConfiguration = [string, SimplePageMap] | SimplePageMap;
 
 export type PluginConfiguration = {
   initilize?: (xbook: typeof _xbook) => void;
-  addServices?: (xbook: typeof _xbook) => SafeAny;
+  addServices?: (
+    xbook: typeof _xbook
+  ) =>
+    | [string, { [name: string]: AnyFunction }]
+    | { [name: string]: AnyFunction };
   addEvents?: (xbook: typeof _xbook) => SafeAny;
   addCommands?: (xbook: typeof _xbook) => SafeAny;
   addComponents?: (

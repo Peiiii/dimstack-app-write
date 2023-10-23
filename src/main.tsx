@@ -22,7 +22,7 @@ xbook.pluginService.use([
   // asyncPluginService,
   spaceService,
   displaySpaces,
-  listenGiteeLoginCallback,
+  // listenGiteeLoginCallback,
   addGiteeSpace,
   fileSystemService,
   folderTreeService,
@@ -30,6 +30,7 @@ xbook.pluginService.use([
   settings,
   theme,
   clearLocalCache,
-  asyncPluginService
+  asyncPluginService,
 ]);
+xbook.taskService.start();
 xbook.layoutService.renderLayout(document.getElementById("root")!);

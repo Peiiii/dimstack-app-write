@@ -144,7 +144,9 @@ export const createPageBox = () =>
         () =>
           new ResizeObserver((entries) => {
             const el = entries[0];
-            setTabBarWidth(el.contentRect.width);
+            setTimeout(() => {
+              setTabBarWidth(el.contentRect.width);
+            }, 100);
           }),
         []
       );

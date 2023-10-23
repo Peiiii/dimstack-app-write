@@ -5,7 +5,7 @@ import {
   getFileContent,
   rename,
   rm,
-  setFileContent
+  setFileContent,
 } from "@/plugins/services/fileSystemService/utils";
 import { DataStore } from "@/toolkit/common/dataStore";
 import { createPlugin } from "@/toolkit/common/plugin";

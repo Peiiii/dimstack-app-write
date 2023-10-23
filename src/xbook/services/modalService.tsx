@@ -2,6 +2,7 @@ import { AnyFunction } from "@/toolkit/common/types";
 import {
   Button,
   ChakraProvider,
+  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -12,11 +13,11 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import * as ReactDOM from "react-dom/client";
 import { createDeferredComponentProxy } from "xbook/hooks/useDeferredComponentProxy";
 export type ModalSpec = {
-  title?: string;
+  title?: ReactNode;
   content: React.ReactNode;
   onOk?: AnyFunction;
   onCancel?: AnyFunction;
@@ -50,9 +51,9 @@ export const createModalService = () => {
     title,
     onOk,
     onCancel,
-    okText="Confirm",
-    cancelText="Cancel",
-    footer=true,
+    okText = "Confirm",
+    cancelText = "Cancel",
+    footer = true,
   }: ModalSpec) => {
     const modal = createDeferredComponentProxy<ModalMethods>(({ proxy }) => {
       const ModalWrapper = ({ content }) => {
@@ -68,7 +69,7 @@ export const createModalService = () => {
             <ModalOverlay />
             <ModalContent>
               {title && <ModalHeader>{title}</ModalHeader>}
-              <ModalCloseButton  tabIndex={-1} />
+              <ModalCloseButton tabIndex={-1} />
               <ModalBody>{content}</ModalBody>
 
               {footer && (
@@ -104,7 +105,53 @@ export const createModalService = () => {
     );
     return modal.proxy;
   };
-  return { createModal };
+  const prompt = (title: ReactNode, description: ReactNode) => {
+    const promptBox = createDeferredComponentProxy<{
+      getInput: () => string | undefined;
+    }>(({ proxy }) => {
+      const [content, setContent] = useState<string>();
+      useEffect(() => {
+        proxy.register({
+          getInput: () => content,
+        });
+      }, [content, proxy]);
+      return (
+        <div>
+          <Text>{description}</Text>
+          <Input onChange={(e) => setContent(e.target.value)}></Input>
+        </div>
+      );
+    });
+    return new Promise((resolve) => {
+      createModal({
+        title,
+        content: promptBox.instance,
+        onOk: () => {
+          resolve(promptBox.proxy.getInput());
+        },
+        onCancel: () => {
+          resolve(undefined);
+        },
+      });
+    });
+  };
+  const confirm = (title: ReactNode, description: ReactNode) => {
+    return new Promise((resolve) => {
+      createModal({
+        title,
+        content: <div>{description}</div>,
+
+        onOk: () => {
+          resolve(true);
+        },
+        onCancel: () => {
+          resolve(false);
+        },
+      });
+    });
+  };
+
+  return { createModal, prompt, confirm };
 };
 
 type ModalMethods = {

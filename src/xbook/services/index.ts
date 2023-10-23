@@ -1,4 +1,5 @@
 export { logService } from "./logService";
+export { taskService } from "./taskService";
 export { serviceBus } from "./serviceBus";
 export { commandService } from "./commandService";
 export { eventBus } from "./eventBus";
@@ -12,6 +13,7 @@ export { modalService } from "./modalService";
 export { componentService as componentService } from "../ui/componentService";
 
 import { logService } from "./logService";
+import { taskService } from "./taskService";
 import { serviceBus } from "./serviceBus";
 import { commandService } from "./commandService";
 import { eventBus } from "./eventBus";
@@ -27,6 +29,7 @@ import { componentService } from "xbook/ui/componentService";
 
 export default {
   logService,
+  taskService,
   serviceBus,
   commandService,
   eventBus,
@@ -37,5 +40,5 @@ export default {
   layoutService,
   notificationService,
   modalService,
-  componentService: componentService,
+  componentService,
 };

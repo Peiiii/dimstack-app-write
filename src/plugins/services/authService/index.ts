@@ -1,19 +1,15 @@
+import { CheckAuthCodeAndNext } from "@/plugins/services/authService/providers/gitee/checkAuthCodeAndNext";
+import { giteeAuthProvider } from "@/plugins/services/authService/providers/gitee";
+import { authService } from "@/plugins/services/authService/service";
 import { createPlugin } from "@/toolkit/common/plugin";
-
-type Authentication = {
-  platform: string;
-  username: string;
-  auth: Record<string, any>;
-};
-interface Authenticator {
-  getAuthResult();
-}
+import xbook from "xbook/index";
 
 export default createPlugin({
   initilize() {
-    const authentications: Authentication[] = [];
-    const find = () => {};
-    const authenticate = () => {};
-    return { authentications, find, authenticate };
+    xbook.taskService.registerTaskType(CheckAuthCodeAndNext);
+    authService.registerAuthProvider(giteeAuthProvider);
+  },
+  addServices() {
+    return ["authService", authService];
   },
 });
