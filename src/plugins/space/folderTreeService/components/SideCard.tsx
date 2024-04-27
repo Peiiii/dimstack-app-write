@@ -1,23 +1,20 @@
-import { Action } from "@/toolkit/types";
 import { useGlobalContext } from "@/toolkit/components/context";
+import { Action } from "@/toolkit/types";
 import {
-  Button,
-  HStack,
-  VStack,
-  Text,
   Box,
   Flex,
+  HStack,
+  IconButton,
   Menu,
   MenuButton,
-  MenuList,
   MenuItem,
-  Icon,
-  IconButton,
+  MenuList,
+  Text,
   Tooltip,
-  Spacer,
+  VStack
 } from "@chakra-ui/react";
 import { FC, ReactNode } from "react";
-import { AiOutlineHome, AiOutlineSetting } from "react-icons/ai";
+import { AiOutlineSetting } from "react-icons/ai";
 import xbook from "xbook/index";
 export const SideCard: FC<{
   title: string;
@@ -35,66 +32,67 @@ export const SideCard: FC<{
       flexShrink={0}
       gap={0}
     >
-      <HStack
-        w="100%"
-        h="2.5rem"
-        align={"center"}
-        flexShrink={0}
-        className="header"
-      >
-        <Flex pl="0.6rem" align={"center"} w="100%">
-          <Tooltip label={title}>
-            <>
-              {/* <AiOutlineHome />
+      <Menu>
+        <HStack
+          w="100%"
+          h="2.5rem"
+          align={"center"}
+          flexShrink={0}
+          className="header"
+        >
+          <Flex pl="0.6rem" align={"center"} w="100%">
+            <Tooltip label={title}>
+              <>
+                {/* <AiOutlineHome />
               <Box w="0.3em"/> */}
-              <Text
-                as="b"
-                textOverflow={"ellipsis"}
-                whiteSpace={"nowrap"}
-                overflow="hidden"
-              >
-                {title}
-              </Text>
-            </>
-          </Tooltip>
+                <Text
+                  as="b"
+                  textOverflow={"ellipsis"}
+                  whiteSpace={"nowrap"}
+                  overflow="hidden"
+                >
+                  {title}
+                </Text>
+              </>
+            </Tooltip>
 
-          <Box flexGrow={1} />
-          <Flex flexGrow={0} flexShrink={0}>
-            <Menu>
+            <Box flexGrow={1} />
+            <Flex flexGrow={0} flexShrink={0}>
               <MenuButton
                 borderRadius={0}
                 as={IconButton}
                 icon={<AiOutlineSetting />}
                 bg="inherit"
               />
-              <MenuList>
-                {actions.map((a) => {
-                  const eventMap = {};
-                  if (a.events && a.id) {
-                    a.events.forEach(
-                      (e) =>
-                        (eventMap[`on${e}`] = (event: Event) =>
-                          xbook.eventBus.emit(`${a.id}::${e}`, {
-                            event: event,
-                            context: context,
-                          }))
-                    );
-                  }
-                  // console.log("eventMap:", eventMap);
-                  return (
-                    <MenuItem key={a.title} icon={a.icon} {...eventMap}>
-                      {a.title}
-                    </MenuItem>
-                  );
-                })}
-              </MenuList>
-            </Menu>
+            </Flex>
           </Flex>
-        </Flex>
-        {/* <Button  borderRadius={0} className="side-card-header" flexShrink={0}>
+
+          {/* <Button  borderRadius={0} className="side-card-header" flexShrink={0}>
         {title}
       </Button> */}
-      </HStack>
+        </HStack>
+        <MenuList>
+          {actions.map((a) => {
+            const eventMap = {};
+            if (a.events && a.id) {
+              a.events.forEach(
+                (e) =>
+                  (eventMap[`on${e}`] = (event: Event) =>
+                    xbook.eventBus.emit(`${a.id}::${e}`, {
+                      event: event,
+                      context: context,
+                    }))
+              );
+            }
+            // console.log("eventMap:", eventMap);
+            return (
+              <MenuItem key={a.title} icon={a.icon} {...eventMap}>
+                {a.title}
+              </MenuItem>
+            );
+          })}
+        </MenuList>
+      </Menu>
       <VStack m="0 !important" w="100%" flexGrow={1} overflow="hidden" gap={0}>
         <VStack
           w="100%"

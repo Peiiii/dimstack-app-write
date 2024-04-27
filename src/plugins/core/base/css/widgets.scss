@@ -8,10 +8,10 @@
     box-shadow: var(--secondary-shadow);
     // background-color: var(--side-card-bg-color);
     border-bottom: 1px solid var(--border-color-light);
-    &:hover {
-      background-color: var(--item-focused-bg-color);
-      color: var(--item-focused-text-color);
-    }
+    // &:hover {
+    //   background-color: var(--item-focused-bg-color);
+    //   color: var(--item-focused-text-color);
+    // }
   }
 }
 .tree {

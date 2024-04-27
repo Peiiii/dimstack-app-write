@@ -96,7 +96,7 @@ const PCLayout: Layout = {
                 {
                   type: "SplitPane.Horizontal",
                   props:{
-                    id: "sidebarResizer"
+                    // id: "sidebarResizer"
                   },
                   children: [
                     {

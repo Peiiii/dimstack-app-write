@@ -4,8 +4,10 @@
   height: 100%;
   .resizer {
     height: 100%;
-    z-index: 999;
+    z-index: 1;
     position: relative;
+    // background-color: 0;
+    opacity: 0;
   }
   .resizer-anchor {
     position: absolute;
