@@ -1,4 +1,4 @@
-import { AnyFunction, SafeAny } from "@/toolkit/common/types";
+import { AnyFunction, SafeAny } from "@/toolkit/types";
 import xbook from "xbook";
 import { ActivityItem } from "xbook/ui/activityBar";
 const _xbook = xbook;
@@ -10,6 +10,11 @@ type SimplePageMap = {
 };
 type SimplePageConfiguration = [string, SimplePageMap] | SimplePageMap;
 
+type EventHandler = (args: SafeAny) => void;
+type EventMapConfiguration = {
+  [key: string]: EventHandler;
+};
+
 export type PluginConfiguration = {
   initilize?: (xbook: typeof _xbook) => void;
   addServices?: (
@@ -17,7 +22,7 @@ export type PluginConfiguration = {
   ) =>
     | [string, { [name: string]: AnyFunction }]
     | { [name: string]: AnyFunction };
-  addEvents?: (xbook: typeof _xbook) => SafeAny;
+  addEvents?: (xbook: typeof _xbook) => EventMapConfiguration;
   addCommands?: (xbook: typeof _xbook) => SafeAny;
   addComponents?: (
     xbook: typeof _xbook
@@ -25,13 +30,12 @@ export type PluginConfiguration = {
   addActivities?: (xbook: typeof _xbook) => ActivityItem | ActivityItem[];
   addPages?: (xbook: typeof _xbook) => SimplePageConfiguration;
 };
+
 const createHelper = (xbook: typeof _xbook) => {
-  const doAddEvents = (res) => {
-    if (Array.isArray(res)) {
-      xbook.eventBus.createScopedProxy(res[0]).on(res[1]);
-    } else if (res) {
-      xbook.eventBus.on(res);
-    }
+  const doAddEvents = (res: EventMapConfiguration) => {
+    Object.entries(res).forEach(([name, handler]) => {
+      xbook.eventBus.on(name, handler);
+    });
   };
 
   const doAddCommands = (res) => {
@@ -70,7 +74,7 @@ const createHelper = (xbook: typeof _xbook) => {
 
   const doAddPages = (res: SimplePageConfiguration) => {
     const addPageAt = (scope: string, { id, title }) => {
-      xbook.eventBus.createScopedProxy(scope).on(id, () => {
+      xbook.eventBus.on(`${scope}::${id}`, () => {
         xbook.layoutService.pageBox.addPage({
           id,
           title,

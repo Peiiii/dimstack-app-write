@@ -1,113 +1,10 @@
 import axios from "redaxios";
 import { Base64 } from "js-base64";
-type Method =
-  | "get"
-  | "post"
-  | "put"
-  | "patch"
-  | "delete"
-  | "options"
-  | "head"
-  | "GET"
-  | "POST"
-  | "PUT"
-  | "PATCH"
-  | "DELETE"
-  | "OPTIONS"
-  | "HEAD";
-type Response<T> = {
-  status: number;
-  statusText: string;
-  config: any;
-  data: T;
-  headers: Headers;
-  redirect: boolean;
-  url: string;
-  type: ResponseType;
-  body: ReadableStream<Uint8Array> | null;
-  bodyUsed: boolean;
-};
-
-interface FileResponse {
-  content: string;
-  sha: string;
-  name: string;
-  path: string;
-  download_url: string;
-  html_url: string;
-  size: number;
-  type: "file" | "dir";
-  [name: string]: any;
-}
-export type FileItemResponse = Pick<
-  FileResponse,
-  "name" | "path" | "download_url" | "html_url" | "type" | "sha"|"data"
->;
-interface FileHelper {
-  get: ({
-    owner,
-    repo,
-    path,
-  }: {
-    owner: any;
-    repo: any;
-    path: any;
-  }) => Promise<Response<FileResponse>>;
-  getInfo: ({
-    owner,
-    repo,
-    path,
-  }: {
-    owner: any;
-    repo: any;
-    path: any;
-  }) => Promise<Response<FileItemResponse[]>>;
-  add: ({
-    owner,
-    repo,
-    path,
-    content,
-    message,
-    branch,
-  }: {
-    owner: any;
-    repo: any;
-    path: any;
-    content: any;
-    message?: any;
-    branch?: string | undefined;
-  }) => Promise<Response<any>>;
-  update: ({
-    owner,
-    repo,
-    path,
-    content,
-    message,
-    branch,
-    sha,
-  }: {
-    owner: any;
-    repo: any;
-    path: any;
-    content: any;
-    message?: any;
-    branch?: string | undefined;
-    sha?: null | undefined;
-  }) => Promise<Response<any>>;
-  delete: ({
-    owner,
-    repo,
-    path,
-    sha,
-    message,
-  }: {
-    owner: any;
-    repo: any;
-    path: any;
-    sha?: string;
-    message?: any;
-  }) => Promise<Response<any>>;
-}
+import {
+  FileHelper,
+  GiteeClient,
+  Method,
+} from "libs/gitee-api/gitee-client.types";
 
 export const getLoginUrl = ({ redirectUri, clientId }) => {
   return `https://gitee.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=user_info%20projects`;
@@ -198,7 +95,11 @@ const URLBuilder = (() => {
     getPathContents,
   };
 })();
-export const createGiteeClient = ({ accessToken }: { accessToken? }) => {
+export const createGiteeClient = ({
+  accessToken,
+}: {
+  accessToken?;
+}): GiteeClient => {
   let access_token = accessToken;
   const setAccessToken = (accessToken) => {
     access_token = accessToken;
@@ -353,4 +254,4 @@ export default {
   createGiteeClient,
 };
 
-export type GiteeClient = ReturnType<typeof createGiteeClient>;
+export type { GiteeClient } from "./gitee-client.types";

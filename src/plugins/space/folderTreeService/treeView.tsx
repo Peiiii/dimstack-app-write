@@ -5,32 +5,33 @@ import { fileSystemHelper } from "@/helpers/file-system.helper";
 import { useStateFromRegistry } from "@/helpers/hooks/user-state-from-registry";
 import SideCard from "@/plugins/space/folderTreeService/components/SideCard";
 import treePluginAddNode from "@/plugins/space/folderTreeService/plugins/treePluginAddNode";
+import treePluginInit from "@/plugins/space/folderTreeService/plugins/treePluginInit";
 import treePluginMigration from "@/plugins/space/folderTreeService/plugins/treePluginMigration";
 import treePluginNodeType from "@/plugins/space/folderTreeService/plugins/treePluginNodeType";
+import treePluginRefresh from "@/plugins/space/folderTreeService/plugins/treePluginRefresh";
 import treePluginRefreshSpaceAuth from "@/plugins/space/folderTreeService/plugins/treePluginRefreshSpaceAuth";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
-import { createDataStore } from "@/toolkit/common/dataStore";
-import { createTreeDataStore } from "@/toolkit/common/treeDataStore";
-import { Action } from "@/toolkit/common/types";
+import ContextProvider from "@/toolkit/components/context";
 import { Tree, WidgetViewState } from "@/toolkit/components/tree";
 import {
   treePluginExpandTemplate,
   treePluginInitViewTemplate,
 } from "@/toolkit/components/tree/treePlugins";
+import { createDataStore } from "@/toolkit/factories/dataStore";
+import { createServiceBus } from "@/toolkit/factories/serviceBus";
+import { createTreeDataStore } from "@/toolkit/factories/treeDataStore";
+import { Action } from "@/toolkit/types";
 import { SpaceDef } from "@/toolkit/types/space";
+import { useAtom } from "@/toolkit/utils/hooks/useAtom";
 import { dirname, join } from "path-browserify";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { AiOutlineLink } from "react-icons/ai";
 import xbook from "xbook/index";
 import treePluginClickNode from "./plugins/treePluginClickNode";
 import treePluginConfig from "./plugins/treePluginConfig";
 import treePluginDeleteNode from "./plugins/treePluginDeleteNode";
 import treePluginEditNode from "./plugins/treePluginEditNode";
-import ContextProvider from "@/toolkit/components/context";
-import treePluginRefresh from "@/plugins/space/folderTreeService/plugins/treePluginRefresh";
-import { createServiceBus } from "@/toolkit/common/serviceBus";
-import { useAtom } from "@/toolkit/common/hooks/use-atom";
-import treePluginInit from "@/plugins/space/folderTreeService/plugins/treePluginInit";
+import { EventKeys } from "@/constants/events";
 
 const TreeView = ({ space }: { space: SpaceDef }) => {
   const treeDataStore = useMemo(
@@ -87,7 +88,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
     <ContextProvider space={space}>
       {!isLogin && (
         <Alert
-         display={"p"}
+          display={"p"}
           status="warning"
           size={"sm"}
           fontSize={"sm"}
@@ -98,18 +99,13 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
         >
           此空间未授权，请前往
           <Link
-            
             color="blue.300"
-            // display={"flex"}
             onClick={() => {
-              xbook.serviceBus.invoke(
-                "spaceService.redirectAuthPage",
-                space.id
-              );
+              xbook.eventBus.emit(EventKeys.RequestRedirectAuthPage, space.id);
             }}
           >
             授权
-            <Icon as={AiOutlineLink}/>
+            <Icon as={AiOutlineLink} />
           </Link>
         </Alert>
       )}

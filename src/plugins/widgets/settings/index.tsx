@@ -1,4 +1,4 @@
-import { createPlugin } from "@/toolkit/common/plugin";
+import { createPlugin } from "xbook/common/createPlugin";
 import { AiOutlineSetting } from "react-icons/ai";
 import store from "./store";
 import View from "./View";

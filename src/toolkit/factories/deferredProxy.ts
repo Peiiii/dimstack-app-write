@@ -1,4 +1,4 @@
-import { AnyArgs, AnyFunction } from "xbook/common/types";
+import { AnyArgs, AnyFunction } from "@/toolkit/types";
 
 export type DeferredProxySpec = Record<
   Exclude<string, "register">,

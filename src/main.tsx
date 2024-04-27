@@ -22,7 +22,7 @@ xbook.pluginService.use([
   // asyncPluginService,
   spaceService,
   displaySpaces,
-  // listenGiteeLoginCallback,
+  listenGiteeLoginCallback,
   addGiteeSpace,
   fileSystemService,
   folderTreeService,

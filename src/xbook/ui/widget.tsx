@@ -1,4 +1,4 @@
-import { AnyFunction, SafeAny } from "@/toolkit/common/types";
+import { AnyFunction, SafeAny } from "@/toolkit/types";
 import React from "react";
 import { useEffect, useState } from "react";
 import { cacheService, commandService } from "xbook/services";

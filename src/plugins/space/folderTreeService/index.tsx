@@ -1,6 +1,6 @@
 import { spaceHelper } from "@/helpers/space.helper";
-import { createPlugin } from "@/toolkit/common/plugin";
-import { Action } from "@/toolkit/common/types";
+import { createPlugin } from "xbook/common/createPlugin";
+import { Action } from "@/toolkit/types";
 import { SpaceDef } from "@/toolkit/types/space";
 import {
   Avatar,
@@ -54,12 +54,12 @@ export const folderTreeService = createPlugin({
       },
     ]);
 
-    xbook.eventBus.on("space.delete::Click", ({ context }) => {
+    xbook.eventBus.on<any>("space.delete::Click", ({ context }) => {
       console.log("Space delete:", context);
       spaceHelper.getStore().getActions().delete(context.space.id);
     });
 
-    xbook.eventBus.on("space.info::Click", ({ context }) => {
+    xbook.eventBus.on<any>("space.info::Click", ({ context }) => {
       const { repo, id, owner, platform } = context.space;
       const url = `https://${platform}.com/${owner}/${repo}`;
       xbook.modalService

@@ -1,7 +1,7 @@
 import { authService } from "@/plugins/services/authService/service";
 import { appInfo } from "@/plugins/space/listenGiteeLoginCallback/appInfo";
-import { DataStore } from "@/toolkit/common/dataStore";
-import { createPlugin } from "@/toolkit/common/plugin";
+import { DataStore } from "@/toolkit/factories/dataStore";
+import { createPlugin } from "xbook/common/createPlugin";
 import { SpaceDef } from "@/toolkit/types/space";
 import { getLoginUrl } from "libs/gitee-api";
 import giteeClient from "libs/gitee-api/gitee-client";

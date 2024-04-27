@@ -1,10 +1,26 @@
 import { appInfo } from "@/plugins/space/listenGiteeLoginCallback/appInfo";
-import { DataStore } from "@/toolkit/common/dataStore";
-import { createPlugin } from "@/toolkit/common/plugin";
+import { DataStore } from "@/toolkit/factories/dataStore";
+import { createPlugin } from "xbook/common/createPlugin";
 import { SpaceDef } from "@/toolkit/types/space";
 import { getLoginUrl } from "libs/gitee-api";
 import giteeClient from "libs/gitee-api/gitee-client";
 import history from "xbook/common/history";
+import xbook from "xbook/index";
+import { EventKeys } from "@/constants/events";
+
+const redirectAuthPage = (spaceId: string) => {
+  xbook.cacheService.space("tmp", "localStorage").set("authSpaceId", spaceId);
+  const sId = xbook.cacheService
+    .space("tmp", "localStorage")
+    .get("authSpaceId");
+  console.log("save space id: " + sId);
+  const url = getLoginUrl({
+    redirectUri: appInfo.redirectUri,
+    clientId: appInfo.clientId,
+  });
+  console.log("url to redirect: " + url);
+  window.open(url);
+};
 
 export const listenGiteeLoginCallback = createPlugin({
   initilize(xbook) {
@@ -43,20 +59,7 @@ export const listenGiteeLoginCallback = createPlugin({
       );
     }
 
-    xbook.serviceBus.expose("redirectAuthPage", (spaceId) => {
-      xbook.cacheService
-        .space("tmp", "localStorage")
-        .set("authSpaceId", spaceId);
-      const sId = xbook.cacheService
-        .space("tmp", "localStorage")
-        .get("authSpaceId");
-      console.log("save space id: " + sId);
-      const url = getLoginUrl({
-        redirectUri: appInfo.redirectUri,
-        clientId: appInfo.clientId,
-      });
-      console.log("url to redirect: " + url);
-      window.open(url);
-    });
+    // xbook.serviceBus.expose("redirectAuthPage", redirectAuthPage);
+    xbook.eventBus.on(EventKeys.RequestRedirectAuthPage, redirectAuthPage);
   },
 });

@@ -18,7 +18,6 @@ const makeMessageService = () => {
       const makeFunction = (type) => {
         return (message) =>
           toast({
-            // title: 'Account created.',
             description: message,
             status: type,
             duration: 3000,

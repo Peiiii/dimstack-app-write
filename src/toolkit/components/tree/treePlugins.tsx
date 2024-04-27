@@ -1,7 +1,7 @@
 import {
   PluginInitializationConfiguration,
   createPluginSystem,
-} from "@/toolkit/common/pluginSystem";
+} from "@/toolkit/factories/pluginSystem";
 import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import {
   Box,
@@ -19,7 +19,7 @@ import {
 import { useEffect, useRef } from "react";
 import { HiOutlineEllipsisVertical } from "react-icons/hi2";
 import { WidgetContext } from ".";
-import { SafeAny } from "@/toolkit/common/types";
+import { SafeAny } from "@/toolkit/types";
 
 export const getCreateTreePlugin = <
   TreeNodeType extends Record<string, SafeAny>
@@ -270,6 +270,8 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
                 flexFlow={"row"}
                 w="100%"
                 h="2rem"
+                mt="2px"
+                mb="2px"
                 // flexGrow={1}
                 align={"center"}
                 overflow={"hidden"}

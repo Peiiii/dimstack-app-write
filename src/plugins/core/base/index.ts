@@ -8,7 +8,7 @@ import "./css/themes/discord-light.scss";
 import "./css/themes/dark.scss";
 import "./css/themes/light.scss";
 
-import { createPlugin } from "@/toolkit/common/plugin";
+import { createPlugin } from "xbook/common/createPlugin";
 import { device } from "xbook/common/device";
 import "./css/themes/markdown/github.css";
 import { Layout } from "xbook/ui/workBench";

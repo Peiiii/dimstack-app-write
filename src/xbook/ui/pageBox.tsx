@@ -1,4 +1,4 @@
-import { LayoutNode } from "@/toolkit/common/renderer";
+import { LayoutNode } from "@/toolkit/factories/renderer";
 import {
   Box,
   Button,
@@ -22,24 +22,19 @@ import {
   useState,
 } from "react";
 import {
-  AiFillCloseCircle,
   AiOutlineClose,
   AiOutlineMenu,
   AiOutlineMenuFold,
 } from "react-icons/ai";
-import { VscClose } from "react-icons/vsc";
-import {
-  ProxiedControls,
-  VisibilityControl,
-} from "xbook/hooks/proxiedControls";
-import { createDeferredComponentProxy } from "xbook/hooks/useDeferredComponentProxy";
-import { cacheService, eventBus } from "xbook/services";
-import { commandService } from "xbook/services/commandService";
-import { componentService } from "./componentService";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
 import { device } from "xbook/common/device";
+import { VisibilityControl } from "xbook/hooks/proxiedControls";
+import { createDeferredComponentProxy } from "xbook/hooks/useDeferredComponentProxy";
+import { cacheService } from "xbook/services";
+import { commandService } from "xbook/services/commandService";
 import { DragSortItem, moveItem } from "xbook/ui/components/DragSort";
+import { componentService } from "./componentService";
 
 type PageDescriptor = {
   id: string;

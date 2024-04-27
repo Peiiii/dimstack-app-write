@@ -7,8 +7,8 @@ import {
   rm,
   setFileContent,
 } from "@/plugins/services/fileSystemService/utils";
-import { DataStore } from "@/toolkit/common/dataStore";
-import { createPlugin } from "@/toolkit/common/plugin";
+import { DataStore } from "@/toolkit/factories/dataStore";
+import { createPlugin } from "xbook/common/createPlugin";
 import { SpaceDef } from "@/toolkit/types/space";
 import { join } from "path-browserify";
 const SEPERATOR = "::";

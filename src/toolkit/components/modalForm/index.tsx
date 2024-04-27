@@ -17,7 +17,7 @@ import {
 import React, { useEffect, useState } from "react";
 import * as ReactDOM from "react-dom/client";
 import { Field } from "@/toolkit/types/field";
-import { createDeferredProxy } from "@/toolkit/common/deferredProxy";
+import { createDeferredProxy } from "@/toolkit/factories/deferredProxy";
 
 type FormDataDefinition = Field[];
 const getContainer = (name: string) => {

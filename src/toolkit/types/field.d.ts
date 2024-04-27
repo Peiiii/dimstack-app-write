@@ -1,4 +1,4 @@
-import { SafeAny } from "@/toolkit/common/types";
+import { SafeAny } from "@/toolkit/types";
 
 export type Field<K extends string =string,V=SafeAny> = {
   name: K;

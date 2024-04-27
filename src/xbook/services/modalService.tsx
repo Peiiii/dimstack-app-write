@@ -1,4 +1,4 @@
-import { AnyFunction } from "@/toolkit/common/types";
+import { AnyFunction } from "@/toolkit/types";
 import {
   Button,
   ChakraProvider,

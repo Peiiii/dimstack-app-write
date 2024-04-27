@@ -1,4 +1,8 @@
-import { AnyFunction } from "@/toolkit/common/types";
+import { AnyFunction } from "@/toolkit/types";
+
+type ServiceHandler<Tin extends any[], Tout extends any> = (
+  ...args: Tin
+) => Tout;
 
 export const createServiceBus = <T extends Record<string, AnyFunction>>() => {
   const SPERATOR = ".";
@@ -47,4 +51,3 @@ export const createServiceBus = <T extends Record<string, AnyFunction>>() => {
     invoke,
   };
 };
-

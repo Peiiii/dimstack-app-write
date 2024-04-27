@@ -1,8 +1,9 @@
 import { CheckAuthCodeAndNext } from "@/plugins/services/authService/providers/gitee/checkAuthCodeAndNext";
 import { giteeAuthProvider } from "@/plugins/services/authService/providers/gitee";
 import { authService } from "@/plugins/services/authService/service";
-import { createPlugin } from "@/toolkit/common/plugin";
+import { createPlugin } from "xbook/common/createPlugin";
 import xbook from "xbook/index";
+import { EventKeys } from "@/constants/events";
 
 export default createPlugin({
   initilize() {

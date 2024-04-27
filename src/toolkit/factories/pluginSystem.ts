@@ -1,4 +1,4 @@
-import { SafeAny } from "@/toolkit/common/types";
+import { SafeAny } from "@/toolkit/types";
 
 
 export type PluginInitializationConfiguration<

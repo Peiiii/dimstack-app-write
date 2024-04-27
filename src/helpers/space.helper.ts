@@ -1,5 +1,5 @@
 import { useStateFromPipe } from "@/helpers/hooks/user-state-from-pipe";
-import { DataStore } from "@/toolkit/common/dataStore";
+import { DataStore } from "@/toolkit/factories/dataStore";
 import { SpaceDef } from "@/toolkit/types/space";
 import xbook from "xbook/index";
 

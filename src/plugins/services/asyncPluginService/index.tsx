@@ -1,4 +1,4 @@
-import { createPlugin } from "@/toolkit/common/plugin";
+import { createPlugin } from "xbook/common/createPlugin";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import "systemjs/dist/system.min";
@@ -38,7 +38,7 @@ export default createPlugin({
     )
       // console.log("code:",code)
       // importFromString(code)
-      .then((module) => module.default)
+      .then((module) => module.default.plugin)
       .then((plugin) => {
         console.log("plugin:", plugin);
         xbook.pluginService.use(plugin);

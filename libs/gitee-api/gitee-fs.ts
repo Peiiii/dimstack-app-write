@@ -33,6 +33,7 @@ const buildGiteeFS = ({
       })
       .catch(callback);
   };
+
   const readdir = (path, callback) => {
     File.getInfo({ owner, repo, path })
       .then((r) => {
@@ -132,7 +133,7 @@ const buildGiteeFS = ({
           console.assert(encoding === "utf8" || encoding === "utf-8");
           content = file.data.content;
         } else {
-          content = file.data.unit8array;
+          content = file.data.uint8array;
         }
         return callback(null, content);
       })

@@ -1,6 +1,6 @@
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import IframeOpener from "@/plugins/services/openerService/IframeOpener";
-import { createPlugin } from "@/toolkit/common/plugin";
+import { createPlugin } from "xbook/common/createPlugin";
 import { device } from "xbook/common/device";
 type Subscriber = (s: string) => void;
 type Unsubscriber = () => void;

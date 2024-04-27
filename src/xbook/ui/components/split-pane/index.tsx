@@ -1,32 +1,6 @@
-// import { useMemo } from "react";
-
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./index.scss";
 import xbook from "xbook/index";
-// const Pane = ({ children }) => {
-//   return <>{children}</>;
-// };
-// const Resizer=({index}:{index:number})=>{
-//     return <div className="resizer"/>
-// }
-// const SplitPane = ({
-//   onResize,
-//   splitter,
-//   children,
-// }: {
-//   onResize: (values: [number | string, number | string]) => void;
-//   splitter: React.ComponentType;
-//   children: React.ReactNode[];
-// }) => {
-//   const finalChildren = useMemo(() => {
-//     const result: React.ReactNode[] = [];
-//     for (const child of children) {
-//       result.push(child);
-//       result.push(<div className="resizer" data="" />);
-//     }
-//   }, [children]);
-//   return <></>;
-// };
 
 const SplitPane = {
   Horizontal: ({
@@ -123,8 +97,6 @@ const SplitPane = {
       },
       [leftEl, setMouseMoving]
     );
-
-    // console.log(leftWidth, rightWidth);
 
     return (
       <div className={`split-pane ${resizable ? "resizable" : ""}`}>

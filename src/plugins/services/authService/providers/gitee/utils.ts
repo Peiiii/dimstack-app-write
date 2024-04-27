@@ -1,5 +1,5 @@
 import { appInfo } from "@/plugins/services/authService/providers/gitee/appInfo";
-import { JSONStorage } from "@/toolkit/common/treeStorage";
+import { JSONStorage } from "@/toolkit/factories/treeStorage";
 import { getGiteeAccessToken } from "libs/gitee-api/gitee-client";
 
 export var getUrlParam = function (name) {

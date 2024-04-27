@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
-import { DeferredProxy, DeferredProxySpec } from "xbook/common/deferredProxy";
+import { useCallback } from "react";
 import { cacheService } from "xbook/services/cacheService";
 
 export const createShell = <T,>(

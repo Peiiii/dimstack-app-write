@@ -1,14 +1,11 @@
 import { spaceHelper } from "@/helpers/space.helper";
-import { createAtom } from "@/toolkit/common/atom";
-import { DataStore } from "@/toolkit/common/dataStore";
-import { createPlugin } from "@/toolkit/common/plugin";
 import PageBox from "@/toolkit/components/page-box";
 import PowerForm, { PowerFormAtom } from "@/toolkit/components/power-form";
+import { createAtom } from "@/toolkit/factories/atom";
+import { DataStore } from "@/toolkit/factories/dataStore";
 import { SpaceDef } from "@/toolkit/types/space";
 import {
   Button,
-  Card,
-  Container,
   Flex,
   Input,
   InputGroup,
@@ -16,6 +13,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
+import { createPlugin } from "xbook/common/createPlugin";
 
 const doAddSpace = (xbook, platform: string, owner: string, repo: string) => {
   const spaceStore = xbook.registry.get("spaceStore") as DataStore<SpaceDef>;

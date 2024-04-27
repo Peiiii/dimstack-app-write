@@ -13,7 +13,6 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { useLocalStorage } from "usehooks-ts";
-import { AnyFunction, SafeAny } from "xbook/common/types";
 import { createDeferredComponentProxy } from "xbook/hooks/useDeferredComponentProxy";
 import { eventBus } from "xbook/services";
 import { cacheService } from "xbook/services/cacheService";
@@ -21,6 +20,8 @@ import { commandService } from "xbook/services/commandService";
 import { DragSortItem, moveItem } from "xbook/ui/components/DragSort";
 import { createShell } from "xbook/ui/shell";
 import { componentService } from "./componentService";
+import { AnyFunction, SafeAny } from "@/toolkit/types";
+import { EventKeys } from "@/constants/events";
 
 type ActivityBarMethods = {
   addActivity(activity: ActivityItem): SafeAny;
@@ -128,11 +129,6 @@ export const createActivityBar = () =>
           setActiveId(id);
         };
         const showActivity = (id: string) => {
-          // setActivityList((as) =>
-          //   as.map((a) =>
-          //     a.id === id ? { ...a, isActive: true } : { ...a, isActive: false }
-          //   )
-          // );
           if (activityList.find((a) => a.id === id)) {
             setActiveId(id);
             eventBus.emit(`activity:${id}:clicked`);
@@ -234,7 +230,10 @@ export const createActivityBar = () =>
                   index={index}
                   moveItem={(idx1: number, idx2: number) => {
                     setActivityList((data) => moveItem(data, idx1, idx2));
-                    eventBus.emit("activityBar:dragItem", idx1, idx2);
+                    eventBus.emit(EventKeys.ActivityBar.DragItem, {
+                      prevIndex: idx1,
+                      nextIndex: idx2,
+                    });
                   }}
                 >
                   <Stack

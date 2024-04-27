@@ -1,6 +1,6 @@
 import Auth from "@/plugins/space/spaceService/Auth";
-import { createDataStore } from "@/toolkit/common/dataStore";
-import { createPlugin } from "@/toolkit/common/plugin";
+import { createDataStore } from "@/toolkit/factories/dataStore";
+import { createPlugin } from "xbook/common/createPlugin";
 import { SpaceDef } from "@/toolkit/types/space";
 import { refreshAccessToken } from "libs/gitee-api";
 

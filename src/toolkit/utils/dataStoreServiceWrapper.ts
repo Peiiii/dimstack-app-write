@@ -1,4 +1,4 @@
-import { DataStore } from "@/toolkit/common/dataStore";
+import { DataStore } from "@/toolkit/factories/dataStore";
 
 export const wrapDataStoreAsService = <T extends Record<string, unknown>>(
   store: DataStore<T>

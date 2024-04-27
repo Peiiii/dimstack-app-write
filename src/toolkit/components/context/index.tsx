@@ -1,4 +1,4 @@
-import { SafeAny } from "@/toolkit/common/types";
+import { SafeAny } from "@/toolkit/types";
 import { FC, createContext, useContext } from "react";
 
 const GlobalContext = createContext({});

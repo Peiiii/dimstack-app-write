@@ -1,4 +1,4 @@
-import { SafeAny } from "@/toolkit/common/types";
+import { SafeAny } from "@/toolkit/types";
 import { Alert, Box, Button } from "@chakra-ui/react";
 import { combineReducers, configureStore, createSlice } from "@reduxjs/toolkit";
 import { ErrorBoundary } from "react-error-boundary";

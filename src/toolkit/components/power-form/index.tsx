@@ -1,5 +1,5 @@
-import { Atom, AtomSpec } from "@/toolkit/common/atom";
-import { SafeAny } from "@/toolkit/common/types";
+import { Atom } from "@/toolkit/factories/atom";
+import { SafeAny } from "@/toolkit/types";
 import { Field } from "@/toolkit/types/field";
 import { Flex, FormControl, FormLabel, Input, Select } from "@chakra-ui/react";
 import { useEffect, useState } from "react";

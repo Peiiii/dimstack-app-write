@@ -1,7 +1,6 @@
-import { createAtom } from "@/toolkit/common/atom";
+import { createAtom } from "@/toolkit/factories/atom";
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 import { nanoid } from "nanoid";
-import PouchDB from "pouchdb-browser";
 import { useEffect, useState } from "react";
 import { batch } from "react-redux";
 import type { Transform } from "redux-persist";

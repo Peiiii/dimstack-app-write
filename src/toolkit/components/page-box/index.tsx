@@ -1,4 +1,4 @@
-import { Atom } from "@/toolkit/common/atom";
+import { Atom } from "@/toolkit/factories/atom";
 import {
   Card,
   CardBody,

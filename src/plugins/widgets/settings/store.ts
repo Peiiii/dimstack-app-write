@@ -1,4 +1,4 @@
-import { createDataStore } from "@/toolkit/common/dataStore";
+import { createDataStore } from "@/toolkit/factories/dataStore";
 import { SettingEntry } from "./types";
 
 export default createDataStore<SettingEntry>({

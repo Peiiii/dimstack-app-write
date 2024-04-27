@@ -1,4 +1,4 @@
-import { createPlugin } from "@/toolkit/common/plugin";
+import { createPlugin } from "xbook/common/createPlugin";
 import { Button, useColorMode } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { CiDark, CiLight } from "react-icons/ci";

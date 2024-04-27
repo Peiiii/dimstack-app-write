@@ -14,12 +14,13 @@
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    "noEmit": true,    
     "jsx": "react-jsx",
     /* Linting */
     "strict": true,
+    "noEmitOnError": false,
     "noUnusedLocals": false,
-    "noUnusedParameters": true,
+    "noUnusedParameters": false,
     "noImplicitAny": false,
     "noFallthroughCasesInSwitch": true,
     "paths": {

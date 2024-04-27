@@ -1,4 +1,4 @@
-import { Action } from "@/toolkit/common/types";
+import { Action } from "@/toolkit/types";
 import { useGlobalContext } from "@/toolkit/components/context";
 import {
   Button,

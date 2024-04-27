@@ -1,4 +1,4 @@
-import { SafeAny } from "@/toolkit/common/types";
+import { SafeAny } from "@/toolkit/types";
 
 // 定义任务类型
 export interface TaskType {

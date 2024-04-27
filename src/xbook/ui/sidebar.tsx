@@ -6,8 +6,8 @@ import { createDeferredComponentProxy } from "xbook/hooks/useDeferredComponentPr
 import { cacheService } from "xbook/services";
 import { commandService } from "xbook/services/commandService";
 import { componentService } from "./componentService";
-import { LayoutNode } from "@/toolkit/common/renderer";
-import { AnyFunction } from "@/toolkit/common/types";
+import { LayoutNode } from "@/toolkit/factories/renderer";
+import { AnyFunction } from "@/toolkit/types";
 import { DeferredProxy, DeferredProxySpec } from "xbook/common/deferredProxy";
 import { createShell } from "xbook/ui/shell";
 type View = {

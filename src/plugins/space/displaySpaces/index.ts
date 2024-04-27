@@ -1,6 +1,7 @@
 import { spaceHelper } from "@/helpers/space.helper";
-import { createPlugin } from "@/toolkit/common/plugin";
+import { createPlugin } from "xbook/common/createPlugin";
 import { SpaceDef } from "@/toolkit/types/space";
+import { EventKeys } from "@/constants/events";
 
 export default createPlugin({
   initilize(xbook) {
@@ -30,24 +31,30 @@ export default createPlugin({
       //   xbook.serviceBus.invoke("folderTreeService.focus", space.id);
       // });
     });
-    xbook.eventBus.on("activityBar:dragItem", (idx1: number, idx2: number) => {
-      const store = spaceHelper.getStore();
-      store.getActions().reduce((data) => {
-        if (idx1 === idx2) return data;
-        const before = data.slice(0, Math.min(idx1, idx2));
-        const after = data.slice(Math.max(idx1, idx2) + 1);
-        const middle = data.slice(Math.min(idx1, idx2) + 1, Math.max(idx1, idx2));
-        const source = data[idx1];
-        const target = data[idx2];
-        let res;
-        if (idx1 < idx2) {
-          res= [...before, ...middle, target, source, ...after];
-        } else {
-          res= [...before, source, target, ...middle, ...after];
-        }
-        console.log("spaceDataChange:",data.length,"=>",res.length)
-        return res;
-      });
-    });
+    xbook.eventBus.on(
+      EventKeys.ActivityBar.DragItem,
+      ({ prevIndex: idx1, nextIndex: idx2 }) => {
+        const store = spaceHelper.getStore();
+        store.getActions().reduce((data) => {
+          if (idx1 === idx2) return data;
+          const before = data.slice(0, Math.min(idx1, idx2));
+          const after = data.slice(Math.max(idx1, idx2) + 1);
+          const middle = data.slice(
+            Math.min(idx1, idx2) + 1,
+            Math.max(idx1, idx2)
+          );
+          const source = data[idx1];
+          const target = data[idx2];
+          let res;
+          if (idx1 < idx2) {
+            res = [...before, ...middle, target, source, ...after];
+          } else {
+            res = [...before, source, target, ...middle, ...after];
+          }
+          console.log("spaceDataChange:", data.length, "=>", res.length);
+          return res;
+        });
+      }
+    );
   },
 });
