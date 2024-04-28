@@ -69,6 +69,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
   const [isLogin, setIsLogin] = xbook.cacheService
     .space(atom.id, "localStorage")
     .useLocalStorage("isLogin", true);
+
   useEffect(() => {
     return xbook.pipeService.on(`space[${space.id}].isLogin`, setIsLogin);
   }, [space.id]);

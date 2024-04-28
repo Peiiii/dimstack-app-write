@@ -45,7 +45,7 @@ export const listenGiteeLoginCallback = createPlugin({
             spaceStore.getActions().upsert({ id: spaceId, auth });
             xbook.cacheService
               .space("tmp", "localStorage")
-              .remove("authSpaceId");
+            .remove("authSpaceId");
           }
         });
       const newQuery = { ...history.location.query };

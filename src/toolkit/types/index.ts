@@ -24,3 +24,4 @@ export type ExtractKeyType<T> = T extends TypedKey<infer U> ? U : never;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Key<T = any> = string | TypedKey<T>;
+
