@@ -6,7 +6,7 @@ import { getLoginUrl } from "libs/gitee-api";
 import giteeClient from "libs/gitee-api/gitee-client";
 import history from "xbook/common/history";
 import xbook from "xbook/index";
-import { EventKeys } from "@/constants/events";
+import { EventKeys } from "@/constants/eventKeys";
 
 const redirectAuthPage = (spaceId: string) => {
   xbook.cacheService.space("tmp", "localStorage").set("authSpaceId", spaceId);

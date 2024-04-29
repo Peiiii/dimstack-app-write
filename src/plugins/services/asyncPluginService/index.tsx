@@ -1,10 +1,10 @@
-import { createPlugin } from "xbook/common/createPlugin";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import "systemjs/dist/system.min";
-import "systemjs/dist/extras/amd";
+import { EventKeys } from "@/constants/eventKeys";
+import { systemjsModuleService } from "@/services/systemjsModuleService";
+import { Button, Card, Input, InputGroup } from "@chakra-ui/react";
 import { VscExtensions } from "react-icons/vsc";
-import { Button, Card, Input, InputAddon, InputGroup } from "@chakra-ui/react";
+import "systemjs/dist/extras/amd";
+import "systemjs/dist/system.min";
+import { createPlugin } from "xbook/common/createPlugin";
 
 declare global {
   interface Window {
@@ -25,30 +25,23 @@ declare global {
 // };
 export default createPlugin({
   async initilize(xbook) {
-    window.System.set("app:react", { default: React, __useDefault: true });
-    window.System.set("app:react-dom", {
-      default: ReactDOM,
-      __useDefault: true,
-    });
-    // const code = await fetch(
-    //   "https://apps.eiooie.com/tiptap-editor/lib/tiptap-editor.umd.js"
-    // ).then((res) => res.text());
-    window.System.import(
-      "https://apps.eiooie.com/tiptap-editor/lib/tiptap-editor.umd.js" as any
-    )
-      // console.log("code:",code)
-      // importFromString(code)
-      .then((module) => module.default.plugin)
+    if (!systemjsModuleService.isInitialized()) {
+      systemjsModuleService.init();
+    }
+    systemjsModuleService
+      .load(
+        "https://apps.eiooie.com/tiptap-editor/lib/tiptap-editor.umd.js" as any
+      )
+      .then((module) => module.plugin)
       .then((plugin) => {
-        console.log("plugin:", plugin);
         xbook.pluginService.use(plugin);
+        xbook.eventBus.on(EventKeys.FileSaved, () => {
+          xbook.notificationService.success({
+            title: "文件保存成功",
+            duration: 1000,
+          });
+        });
       });
-    // import("https://apps.eiooie.com/tiptap-editor/lib/tiptap-editor.mjs" as any)
-    //   .then((module) => module.default)
-    //   .then((plugin) => {
-    //     console.log("plugin:", plugin);
-    //     xbook.pluginService.use(plugin);
-    //   });
 
     xbook.layoutService.activityBar.addActivity({
       id: "plugins",

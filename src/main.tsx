@@ -2,7 +2,7 @@ import { addGiteeSpace } from "@/plugins/space/addSpace";
 import base from "@/plugins/core/base";
 import xbook from "xbook";
 import { folderTreeService } from "@/plugins/space/folderTreeService";
-import { spaceService } from "@/plugins/space/spaceService";
+import { spaceServiceModule } from "@/plugins/space/spaceService";
 import { listenGiteeLoginCallback } from "@/plugins/space/listenGiteeLoginCallback";
 import displaySpaces from "@/plugins/space/displaySpaces";
 import openerService from "@/plugins/services/openerService";
@@ -20,7 +20,7 @@ if (urlParams.has("testMode")) {
 xbook.pluginService.use([
   base,
   // asyncPluginService,
-  spaceService,
+  spaceServiceModule,
   displaySpaces,
   listenGiteeLoginCallback,
   addGiteeSpace,

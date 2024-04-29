@@ -21,7 +21,7 @@ import { DragSortItem, moveItem } from "xbook/ui/components/DragSort";
 import { createShell } from "xbook/ui/shell";
 import { componentService } from "./componentService";
 import { AnyFunction, SafeAny } from "@/toolkit/types";
-import { EventKeys } from "@/constants/events";
+import { EventKeys } from "@/constants/eventKeys";
 
 type ActivityBarMethods = {
   addActivity(activity: ActivityItem): SafeAny;

@@ -3,7 +3,7 @@ import { giteeAuthProvider } from "@/plugins/services/authService/providers/gite
 import { authService } from "@/plugins/services/authService/service";
 import { createPlugin } from "xbook/common/createPlugin";
 import xbook from "xbook/index";
-import { EventKeys } from "@/constants/events";
+import { EventKeys } from "@/constants/eventKeys";
 
 export default createPlugin({
   initilize() {

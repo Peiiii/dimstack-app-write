@@ -1,27 +1,31 @@
-import { AnyFunction } from "@/toolkit/types";
+import { AnyFunction, Key } from "@/toolkit/types";
+import { getPlainKey } from "@/toolkit/utils/typedKey";
 
 type ServiceHandler<Tin extends any[], Tout extends any> = (
   ...args: Tin
 ) => Tout;
 
-export const createConstraintServiceBus = <T extends Record<string, AnyFunction>>() => {
-  const SPERATOR = ".";
+export const createConstraintServiceBus = <
+  T extends Record<string, AnyFunction>
+>() => {
+  const SEPERATOR = ".";
   // const allowOverride = true;
   const map: Partial<T> = {};
   const exist = (name: string | symbol | number) => {
     return Object.hasOwnProperty.call(map, name);
   };
-  const exposeAt = (
-    scope: string,
-    serviceMap: { [name: string]: AnyFunction }
+  const exposeAt = <T extends Record<string, any>>(
+    scope: Key<T>,
+    serviceMap: T
   ) => {
+    scope = getPlainKey(scope);
     for (const name in serviceMap) {
-      if (exist(`${scope}${SPERATOR}${name}`)) {
+      if (exist(`${scope}${SEPERATOR}${name}`)) {
         return false;
       }
     }
     for (const name in serviceMap) {
-      expose(`${scope}${SPERATOR}${name}`, serviceMap[name] as T[keyof T]);
+      expose(`${scope}${SEPERATOR}${name}`, serviceMap[name] as T[keyof T]);
     }
   };
   const expose = <K extends keyof T = never>(
@@ -45,9 +49,23 @@ export const createConstraintServiceBus = <T extends Record<string, AnyFunction>
     const result = map[name]!(...args);
     return result;
   };
+
+  const createProxy = <T extends Record<string, any>>(key: Key<T>) => {
+    return new Proxy(
+      {},
+      {
+        get: (_, prop: string) => {
+          const plainKey = getPlainKey(`${key}${SEPERATOR}${prop}` as Key<any>);
+          return (...args: any[]) => invoke(plainKey, ...(args as any));
+        },
+      }
+    ) as T;
+  };
+
   return {
     expose,
     exposeAt,
     invoke,
+    createProxy,
   };
 };

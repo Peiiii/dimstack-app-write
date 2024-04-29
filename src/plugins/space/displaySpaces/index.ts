@@ -1,7 +1,7 @@
 import { spaceHelper } from "@/helpers/space.helper";
 import { createPlugin } from "xbook/common/createPlugin";
 import { SpaceDef } from "@/toolkit/types/space";
-import { EventKeys } from "@/constants/events";
+import { EventKeys } from "@/constants/eventKeys";
 
 export default createPlugin({
   initilize(xbook) {

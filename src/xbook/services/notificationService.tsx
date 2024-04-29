@@ -1,9 +1,9 @@
-import { ChakraProvider, useToast } from "@chakra-ui/react";
+import { ChakraProvider, UseToastOptions, useToast } from "@chakra-ui/react";
 import { useEffect } from "react";
 import * as ReactDOM from "react-dom/client";
 import { createDeferredProxy } from "xbook/common/deferredProxy";
 
-type LogFunction = (message: string) => void;
+type LogFunction = (message: string | Omit<UseToastOptions, "status">) => void;
 const makeMessageService = () => {
   const handle = createDeferredProxy<{
     success: LogFunction;
@@ -16,14 +16,23 @@ const makeMessageService = () => {
     const toast = useToast();
     useEffect(() => {
       const makeFunction = (type) => {
-        return (message) =>
-          toast({
-            description: message,
-            status: type,
-            duration: 3000,
-            isClosable: true,
-            position: "bottom-right",
-          });
+        return (message: string | Omit<UseToastOptions, "status">) => {
+          typeof message === "string"
+            ? toast({
+                description: message,
+                status: type,
+                duration: 3000,
+                isClosable: true,
+                position: "bottom-right",
+              })
+            : toast({
+                duration: 3000,
+                isClosable: true,
+                position: "bottom-right",
+                ...message,
+                status: type,
+              });
+        };
       };
       const success = makeFunction("success");
       const error = makeFunction("error");
