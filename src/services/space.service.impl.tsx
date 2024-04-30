@@ -49,10 +49,20 @@ export const createSpaceService = (): ISpaceService => {
     xbook.serviceBus.invoke("redirectAuthPage", spaceId);
   };
 
+  const isAuthorized = (spaceId: string) => {
+    // const space = spaceStore.getRecord(spaceId);
+    // return !!space?.auth;
+    const space = spaceStore.getRecord(spaceId);
+    if (!space) return false;
+    if (!space.auth) return false;
+    return true;
+  };
+
   return {
     refreshAuth,
     login,
     redirectAuthPage,
+    isAuthorized,
   };
 };
 

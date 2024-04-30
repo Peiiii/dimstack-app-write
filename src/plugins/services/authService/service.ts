@@ -1,28 +1,7 @@
-import { CheckAuthCodeAndNext } from "@/plugins/services/authService/providers/gitee/checkAuthCodeAndNext";
+import { IAuthService, AuthInfo, AuthProvider } from "@/services/auth.service.interface";
 import xbook from "xbook/index";
 
-type AuthInfo = {
-  platform: string;
-  username: string;
-  accessToken?: string;
-  refreshToken?: string;
-  expirationTime?: number;
-  [k: string]: number | string | undefined;
-};
-
-type AuthService = {
-  saveAuthInfo: (authInfo: AuthInfo) => void;
-  getAuthInfo: (platform: string, username: string) => AuthInfo | undefined;
-  authenticate: (platform: string, username: string) => Promise<void>;
-  registerAuthProvider: (provider: AuthProvider) => void;
-};
-
-type AuthProvider = {
-  platform: string;
-  authenticate: (username: string) => Promise<void>;
-};
-
-const createAuthService = (): AuthService => {
+const createAuthService = (): IAuthService => {
   const authInfoMap: { [platform: string]: { [username: string]: AuthInfo } } =
     {};
   const storageKey = "authInfo";
@@ -67,7 +46,6 @@ const createAuthService = (): AuthService => {
       xbook.notificationService.error("不支持的平台:" + platform);
       return;
     }
- 
     authProvider.authenticate(username);
   };
 
