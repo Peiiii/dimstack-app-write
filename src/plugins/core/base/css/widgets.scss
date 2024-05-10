@@ -75,3 +75,9 @@
     }
   }
 }
+
+.editor {
+  --color-bg-editor: var(--default-bg-color);
+  --color-bg-editor-header: var(--secondary-bg-color);
+  --color-bg-editor-inner: var(--item-highlight-bg-color);
+}
