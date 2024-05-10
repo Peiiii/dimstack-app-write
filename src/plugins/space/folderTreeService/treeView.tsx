@@ -1,6 +1,8 @@
 import { Alert, Box, Icon, Link } from "@chakra-ui/react";
 import "./sidebar.scss";
 
+import { EventKeys } from "@/constants/eventKeys";
+import { Tokens } from "@/constants/tokens";
 import { fileSystemHelper } from "@/helpers/file-system.helper";
 import { useStateFromRegistry } from "@/helpers/hooks/user-state-from-registry";
 import SideCard from "@/plugins/space/folderTreeService/components/SideCard";
@@ -31,9 +33,6 @@ import treePluginClickNode from "./plugins/treePluginClickNode";
 import treePluginConfig from "./plugins/treePluginConfig";
 import treePluginDeleteNode from "./plugins/treePluginDeleteNode";
 import treePluginEditNode from "./plugins/treePluginEditNode";
-import { EventKeys } from "@/constants/eventKeys";
-import { Tokens } from "@/constants/tokens";
-import { eventBus } from "xbook/services";
 
 const TreeView = ({ space }: { space: SpaceDef }) => {
   const treeDataStore = useMemo(
