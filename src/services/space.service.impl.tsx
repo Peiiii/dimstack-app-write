@@ -1,8 +1,10 @@
+import { Tokens } from "@/constants/tokens";
 import Auth from "@/plugins/space/spaceService/Auth";
 import { ISpaceService } from "@/services/space.service.interface";
 import { createDataStore } from "@/toolkit/factories/dataStore";
 import { SpaceDef } from "@/toolkit/types/space";
 import { refreshAccessToken } from "libs/gitee-api";
+import { useEffect, useState } from "react";
 import xbook from "xbook/index";
 
 export const createSpaceService = (): ISpaceService => {
@@ -54,15 +56,44 @@ export const createSpaceService = (): ISpaceService => {
     // return !!space?.auth;
     const space = spaceStore.getRecord(spaceId);
     if (!space) return false;
-    if (!space.auth) return false;
-    return true;
+    // if (!space.auth) return false;
+    const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
+    return authService.isAuthorized(space.platform, space.owner);
+  };
+
+  const useIsAuthorized = (spaceId: string) => {
+    const space = spaceStore.getRecord(spaceId);
+    if (!space) return false;
+    // if (!space.auth) return false;
+    const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
+    const [authorized, setAuthorized] = useState<boolean>(
+      authService.isAuthorized(space.platform, space.owner)
+    );
+    useEffect(() => {
+      authService.onAuthChange(() => {
+        setAuthorized(authService.isAuthorized(space.platform, space.owner));
+      });
+    }, []);
+
+    return authorized;
+  };
+
+  const getSpace = (spaceId: string) => {
+    return spaceStore.getRecord(spaceId);
+  };
+
+  const updateSpace = (space: SpaceDef) => {
+    spaceStore.getActions().update(space);
   };
 
   return {
     refreshAuth,
     login,
     redirectAuthPage,
+    getSpace,
     isAuthorized,
+    useIsAuthorized,
+    updateSpace,
   };
 };
 

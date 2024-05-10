@@ -1,7 +1,5 @@
 import { createPlugin } from "xbook/common/createPlugin";
-import {
-  Button
-} from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import { AiOutlineClear } from "react-icons/ai";
 
 export default createPlugin({
@@ -13,8 +11,13 @@ export default createPlugin({
       widget: () => {
         return (
           <Button
-            onClick={() => {
-              if (confirm("确认清空本地缓存（LocalStorage）吗？")) {
+            onClick={async () => {
+              if (
+                await xbook.modalService.confirm({
+                  title: "清空本地缓存",
+                  description: "是否确定清空本地缓存？",
+                })
+              ) {
                 localStorage.clear();
               }
             }}

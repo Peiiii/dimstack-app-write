@@ -1,4 +1,5 @@
 import { SafeAny } from "@/toolkit/types";
+import { log } from "console";
 
 // 定义任务类型
 export interface TaskType {
@@ -10,6 +11,7 @@ export interface TaskType {
 // 定义任务状态的枚举
 export enum TaskStatus {
   Pending = "Pending",
+  Deffered = "Deffered",
   InProgress = "InProgress",
   Completed = "Completed",
   Error = "Error", // 新增的错误状态
@@ -59,25 +61,36 @@ export class TaskManager {
     this.taskTypes.set(taskType.name, taskType);
   }
 
-  addTask(taskTypeName: string, taskData: any) {
+  addTask(
+    taskTypeName: string,
+    taskData: any,
+    options: { deffered: boolean } = { deffered: false }
+  ) {
     if (!this.taskTypes.has(taskTypeName)) {
       throw new Error(`Task type "${taskTypeName}" is not registered.`);
     }
-    const task = new Task(this.taskTypes.get(taskTypeName)!, taskData);
+    const task = new Task(
+      this.taskTypes.get(taskTypeName)!,
+      taskData,
+      options.deffered ? TaskStatus.Deffered : TaskStatus.Pending
+    );
     this.taskQueue.push(task);
+    this.saveTasks();
     setTimeout(() => {
       this.executeTasks();
     });
   }
 
   private executeTasks() {
-    this.taskQueue.forEach((task) => {
-      if (task.status === TaskStatus.Pending) {
-        task.execute().then(() => {
-          this.archiveTask(task);
-        });
-      }
-    });
+    this.taskQueue
+      .filter((task) => task.status !== TaskStatus.Deffered)
+      .forEach((task) => {
+        if (task.status == TaskStatus.Pending) {
+          task.execute().then(() => {
+            this.archiveTask(task);
+          });
+        }
+      });
   }
   private archiveTask(task: Task): void {
     const index = this.taskQueue.indexOf(task);
@@ -85,6 +98,7 @@ export class TaskManager {
       this.taskQueue.splice(index, 1);
       this.historyTasks.push(task); // 将任务添加到历史任务队列
     }
+    this.saveTasks();
   }
 
   private continueInterruptedTasks() {
@@ -152,9 +166,14 @@ export class TaskManager {
         taskData.taskData
       );
       task.status = taskData.status;
+
+      if (task.status === TaskStatus.Deffered) {
+        task.status = TaskStatus.Pending;
+      }
       queue.push(task);
       return queue;
     }, [] as Task[]);
+
     this.historyTasks = serializedData.historyTasks.reduce(
       (queue, taskData) => {
         const taskTypeName = taskData.taskType;
@@ -180,6 +199,7 @@ export class TaskManager {
     window.addEventListener("DOMContentLoaded", () => {
       this.loadTasks();
       this.continueInterruptedTasks();
+      this.executeTasks();
     });
   }
 }

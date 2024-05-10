@@ -5,15 +5,18 @@ export type AuthInfo = {
   accessToken?: string;
   refreshToken?: string;
   expirationTime?: number;
+  createdAt?: number;
   [k: string]: number | string | undefined;
 };
 export type IAuthService = {
   saveAuthInfo: (authInfo: AuthInfo) => void;
   getAuthInfo: (platform: string, username: string) => AuthInfo | undefined;
   authenticate: (platform: string, username: string) => Promise<void>;
-  registerAuthProvider: (provider: AuthProvider) => void;
+  registerAuthProvider: (provider: IAuthProvider) => void;
+  isAuthorized: (platform: string, username: string) => boolean;
+  onAuthChange: (callback: () => void) => void;
 };
-export type AuthProvider = {
+export type IAuthProvider = {
   platform: string;
   authenticate: (username: string) => Promise<void>;
 };

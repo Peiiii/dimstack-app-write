@@ -55,7 +55,7 @@ export const createConstraintServiceBus = <
       {},
       {
         get: (_, prop: string) => {
-          const plainKey = getPlainKey(`${key}${SEPERATOR}${prop}` as Key<any>);
+          const plainKey = getPlainKey(`${getPlainKey(key)}${SEPERATOR}${prop}` as Key<any>);
           return (...args: any[]) => invoke(plainKey, ...(args as any));
         },
       }

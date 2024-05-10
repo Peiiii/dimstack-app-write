@@ -1,10 +1,10 @@
-import { authService } from "@/plugins/services/authService/service";
-import { appInfo } from "@/plugins/space/listenGiteeLoginCallback/appInfo";
+import { Tokens } from "@/constants/tokens";
+import { appInfo } from "@/plugins/services/authService/providers/gitee/appInfo";
 import { DataStore } from "@/toolkit/factories/dataStore";
-import { createPlugin } from "xbook/common/createPlugin";
 import { SpaceDef } from "@/toolkit/types/space";
 import { getLoginUrl } from "libs/gitee-api";
 import giteeClient from "libs/gitee-api/gitee-client";
+import { createPlugin } from "xbook/common/createPlugin";
 import history from "xbook/common/history";
 import xbook from "xbook/index";
 
@@ -66,6 +66,7 @@ export const listenGiteeLoginCallback = createPlugin({
 export const CheckAuthCodeAndNext = {
   name: "CheckAuthCodeAndNext",
   execute(taskData: { platform: string; username: string }): void {
+    const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
     const { platform, username } = taskData;
     const code = history.location.query["code"];
     if (code) {

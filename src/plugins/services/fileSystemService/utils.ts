@@ -3,7 +3,7 @@ import { createGiteeClient } from "libs/gitee-api";
 import { FileItemResponse } from "libs/gitee-api/gitee-client.types";
 
 export const getFileContent = async (space: SpaceDef, path: string) => {
-  const { access_token, refresh_token } = space.auth || {};
+  const { access_token } = space.auth || {};
   const File = createGiteeClient({ accessToken: access_token }).File;
   console.log("[readFile] space:", space);
   return (await File.get({ owner: space.owner, repo: space.repo, path })).data
@@ -15,7 +15,7 @@ export const setFileContent = async (
   path: string,
   content: string
 ) => {
-  const { access_token, refresh_token } = space.auth || {};
+  const { access_token } = space.auth || {};
   const File = createGiteeClient({ accessToken: access_token }).File;
   return await File.update({
     owner: space.owner,
@@ -66,7 +66,7 @@ export const rename = async (
 };
 
 export const getSpaceFileHelper = (space: SpaceDef) => {
-  const { access_token, refresh_token } = space.auth || {};
+  const { access_token } = space.auth || {};
   const File = createGiteeClient({ accessToken: access_token }).File;
   return File;
 };

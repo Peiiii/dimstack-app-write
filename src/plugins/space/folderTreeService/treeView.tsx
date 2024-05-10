@@ -32,6 +32,8 @@ import treePluginConfig from "./plugins/treePluginConfig";
 import treePluginDeleteNode from "./plugins/treePluginDeleteNode";
 import treePluginEditNode from "./plugins/treePluginEditNode";
 import { EventKeys } from "@/constants/eventKeys";
+import { Tokens } from "@/constants/tokens";
+import { eventBus } from "xbook/services";
 
 const TreeView = ({ space }: { space: SpaceDef }) => {
   const treeDataStore = useMemo(
@@ -66,20 +68,20 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
   );
   const atom = useAtom({ id: `fstree#${space.id}` });
 
-  const [isLogin, setIsLogin] = xbook.cacheService
-    .space(atom.id, "localStorage")
-    .useLocalStorage("isLogin", true);
-
-  useEffect(() => {
-    return xbook.pipeService.on(`space[${space.id}].isLogin`, setIsLogin);
-  }, [space.id]);
-
+  const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
+  const isLogin = spaceService.useIsAuthorized(space.id);
   useEffect(() => {
     xbook.serviceBus.expose(`space-${space.id}.trigger`, () => {
       serviceBus.invoke("expandNode", "root");
       serviceBus.invoke("refresh", "root");
     });
   }, []);
+
+  useEffect(() => {
+    if (isLogin) {
+      serviceBus.invoke("refresh", "root");
+    }
+  }, [isLogin]);
 
   const [actions] = useStateFromRegistry<Action[]>("space.actions", []);
 

@@ -135,19 +135,23 @@ export const createModalService = () => {
       });
     });
   };
-  const confirm = (title: ReactNode, description: ReactNode) => {
+  const confirm = (props: { title: ReactNode; description: ReactNode }) => {
+    const { title, description } = props;
     return new Promise((resolve) => {
-      createModal({
+      const modal = createModal({
         title,
         content: <div>{description}</div>,
 
         onOk: () => {
           resolve(true);
+          modal.close();
         },
         onCancel: () => {
           resolve(false);
+          modal.close();
         },
       });
+      modal.open();
     });
   };
 
