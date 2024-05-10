@@ -315,7 +315,7 @@ export const createPageBox = () =>
                       </TabIconButton>
                     ))}
                   ></MenuButton>
-                  <MenuList maxW="400px" className="right-list">
+                  <MenuList maxW="400px" className="right-list" zIndex={100}>
                     {pageList.slice(0).map(({ title, id, active, status }) => (
                       <MenuItem key={id}>
                         <Tab
