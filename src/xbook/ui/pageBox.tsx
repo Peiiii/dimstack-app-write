@@ -389,6 +389,7 @@ export const createPageBox = () =>
                 // overflow="auto"
                 w="100%"
                 gap={0}
+                zIndex={1}
               >
                 <TabIconButton
                   className="tab-bar-left-extra"
