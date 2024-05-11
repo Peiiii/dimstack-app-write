@@ -103,6 +103,7 @@ const Tab: FC<{
         overflow={"hidden"}
         whiteSpace={"nowrap"}
         title={title}
+        className="tab-title"
         flexGrow={1}
         textDecoration={status === "deleted" ? "line-through" : undefined}
       >

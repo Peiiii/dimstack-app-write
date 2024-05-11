@@ -151,7 +151,9 @@
         // background-color: var(--item-highlight-bg-color);
         color: var(--item-highlight-text-color);
         background-color: var(--main-content-bg-color);
-        padding-right: 0.5rem;
+        .tab-title {
+          padding-right: 0.5rem;
+        }
       }
     }
   }
