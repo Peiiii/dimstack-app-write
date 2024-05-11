@@ -89,9 +89,10 @@
   .editor-inner {
     box-shadow: none !important;
     max-width: 100% !important;
-    .editor-content-left,
-    .editor-content-right {
-      width: 1rem !important;
+    .editor-content-extra-left,
+    .editor-content-extra-right {
+      width: 2rem !important;
+      flex-shrink: 0;
     }
     .editor-content {
       max-width: 100% !important;
