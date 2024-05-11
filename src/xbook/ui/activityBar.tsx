@@ -1,3 +1,5 @@
+import { EventKeys } from "@/constants/eventKeys";
+import { AnyFunction, SafeAny } from "@/toolkit/types";
 import {
   As,
   Icon,
@@ -10,6 +12,7 @@ import {
   Stack,
   Text,
   VStack,
+  useDisclosure,
 } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { useLocalStorage } from "usehooks-ts";
@@ -20,8 +23,6 @@ import { commandService } from "xbook/services/commandService";
 import { DragSortItem, moveItem } from "xbook/ui/components/DragSort";
 import { createShell } from "xbook/ui/shell";
 import { componentService } from "./componentService";
-import { AnyFunction, SafeAny } from "@/toolkit/types";
-import { EventKeys } from "@/constants/eventKeys";
 
 type ActivityBarMethods = {
   addActivity(activity: ActivityItem): SafeAny;
@@ -79,6 +80,10 @@ const createCRUDActions = (setData: AnyFunction, primaryKey: string = "id") => {
     update: (record) => setData((data) => update(data, record)),
     delete: (id) => setData((data) => remove(data, id)),
   };
+};
+
+const crossDirection = (direction: string) => {
+  return direction === "row" ? "column" : "row";
 };
 
 const cache = cacheService.space("activityBar");
@@ -180,10 +185,6 @@ export const createActivityBar = () =>
         toggle,
       ]);
 
-      const crossDirection = (direction: string) => {
-        return direction === "row" ? "column" : "row";
-      };
-
       console.log("activeId:", activeId);
 
       const options = {};
@@ -281,70 +282,16 @@ export const createActivityBar = () =>
               );
             })}
             {!isMobile && <Stack flexGrow={1}></Stack>}
+
             {shortcutList.map((shortcut) => {
-              const { icon, name, id } = shortcut;
-              const classList: string[] = ["activity", "shortcut"];
-              const className = classList.join(" ");
-              const props = {};
-              if (crossDirection(direction) === "row") {
-                props["w"] = "100%";
-              } else {
-                props["h"] = "100%";
-              }
               return (
-                <Popover
-                  key={id}
-                  placement={isMobile ? "auto" : "right-end"}
-                  isLazy
-                >
-                  <PopoverTrigger>
-                    <Stack
-                      direction={crossDirection(direction)}
-                      {...props}
-                      className="activity-wrapper shortcut"
-                      key={id}
-                      m="0 !important"
-                      marginInlineStart={"10px"}
-                      justify={"center"}
-                      align="center"
-                      maxW={"100%"}
-                      overflow={"hidden"}
-                      onClick={() => {
-                        eventBus.emit(`shortcut:${id}:clicked`);
-                      }}
-                    >
-                      <VStack maxW={"100%"} overflow={"hidden"} gap={0}>
-                        <Icon
-                          // className={className}
-                          as={icon as As}
-                          fontSize={iconFontSize}
-                          title={name}
-                        ></Icon>
-                        <Text
-                          m="0 !important"
-                          fontSize={textFontSize}
-                          className="shortcut-text text"
-                          maxW={"100%"}
-                          overflow={"hidden"}
-                          whiteSpace={"nowrap"}
-                          textOverflow={"ellipsis"}
-                        >
-                          {name}
-                        </Text>
-                      </VStack>
-                    </Stack>
-                  </PopoverTrigger>
-                  <Portal>
-                    <PopoverContent maxW={"100vw"}>
-                      <PopoverArrow />
-                      <PopoverBody>
-                        {componentService.render({
-                          type: `shortcut:${id}:page`,
-                        })}
-                      </PopoverBody>
-                    </PopoverContent>
-                  </Portal>
-                </Popover>
+                <ShortcutItemView
+                  shortcut={shortcut}
+                  direction={direction}
+                  iconFontSize={iconFontSize}
+                  textFontSize={textFontSize}
+                  isMobile={isMobile}
+                />
               );
             })}
           </Stack>
@@ -355,3 +302,93 @@ export const createActivityBar = () =>
       commandService.registerCommandWithScope("activityBar", name, func);
     }
   );
+
+export const ShortcutItemView = ({
+  direction,
+  shortcut,
+  isMobile,
+  iconFontSize,
+  textFontSize,
+}: {
+  direction: string;
+  shortcut: ShortcutItem;
+  isMobile?: boolean;
+  iconFontSize?: string;
+  textFontSize?: string;
+}) => {
+  const { id, icon, name } = shortcut;
+  const props = {};
+  if (crossDirection(direction) === "row") {
+    props["w"] = "100%";
+  } else {
+    props["h"] = "100%";
+  }
+  const classList: string[] = ["activity", "shortcut"];
+  const className = classList.join(" ");
+
+  return (
+    <Popover key={id} placement={isMobile ? "auto" : "right-end"} isLazy>
+      {({
+        isOpen,
+        onClose
+      }) => (
+        <>
+          <PopoverTrigger>
+            <Stack
+              direction={crossDirection(direction)}
+              {...props}
+              className="activity-wrapper shortcut"
+              key={id}
+              m="0 !important"
+              marginInlineStart={"10px"}
+              justify={"center"}
+              align="center"
+              maxW={"100%"}
+              overflow={"hidden"}
+              onClick={() => {
+                // onOpen();
+                eventBus.emit(`shortcut:${id}:clicked`);
+              }}
+            >
+              <VStack maxW={"100%"} overflow={"hidden"} gap={0}>
+                <Icon
+                  // className={className}
+                  as={icon as As}
+                  fontSize={iconFontSize}
+                  title={name}
+                ></Icon>
+                <Text
+                  m="0 !important"
+                  fontSize={textFontSize}
+                  className="shortcut-text text"
+                  maxW={"100%"}
+                  overflow={"hidden"}
+                  whiteSpace={"nowrap"}
+                  textOverflow={"ellipsis"}
+                >
+                  {name}
+                </Text>
+              </VStack>
+            </Stack>
+          </PopoverTrigger>
+          <Portal>
+            <PopoverContent
+              maxW={"100vw"}
+              borderRadius={"4px"}
+              onClick={() => {
+                onClose();
+              }}
+            >
+              <PopoverArrow />
+              <PopoverBody>
+                {componentService.render({
+                  type: `shortcut:${id}:page`,
+                })}
+              </PopoverBody>
+            </PopoverContent>
+          </Portal>
+        </>
+      )}
+    </Popover>
+  );
+};

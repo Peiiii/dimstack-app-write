@@ -1,5 +1,5 @@
 import { useGlobalContext } from "@/toolkit/components/context";
-import { Action } from "@/toolkit/types";
+import { Action, SafeAny } from "@/toolkit/types";
 import {
   Box,
   Flex,
@@ -11,9 +11,9 @@ import {
   MenuList,
   Text,
   Tooltip,
-  VStack
+  VStack,
 } from "@chakra-ui/react";
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, forwardRef } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
 import xbook from "xbook/index";
 export const SideCard: FC<{
@@ -59,9 +59,18 @@ export const SideCard: FC<{
             <Box flexGrow={1} />
             <Flex flexGrow={0} flexShrink={0}>
               <MenuButton
-                borderRadius={0}
-                as={IconButton}
-                icon={<AiOutlineSetting />}
+                // borderRadius={0}
+                as={forwardRef<SafeAny>((props, ref) => (
+                  <IconButton
+                    ref={ref}
+                    aria-label=""
+                    size={"sm"}
+                    mr="0.2rem"
+                    variant={"ghost"}
+                    {...props}
+                    icon={<AiOutlineSetting />}
+                  />
+                ))}
                 bg="inherit"
               />
             </Flex>

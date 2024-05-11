@@ -188,9 +188,10 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
               h="100%"
               className="hover-visible"
               as={Button}
-              borderRadius={0}
-              variant="solid"
+              // borderRadius={0}
+              variant="ghost"
               size="xs"
+              mr="0.2rem"
               ml={2}
               aria-label="Options"
               onClick={(e) => {
