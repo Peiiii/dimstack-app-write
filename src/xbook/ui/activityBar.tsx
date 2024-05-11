@@ -12,7 +12,6 @@ import {
   Stack,
   Text,
   VStack,
-  useDisclosure,
 } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import { useLocalStorage } from "usehooks-ts";
@@ -51,6 +50,7 @@ export type ShortcutItem = {
   id: string;
   name: string;
   icon: React.Component | React.FC;
+  hasPopover?: boolean;
 };
 const createCRUDActions = (setData: AnyFunction, primaryKey: string = "id") => {
   const add = (data, record, _update = false) => {
@@ -316,7 +316,7 @@ export const ShortcutItemView = ({
   iconFontSize?: string;
   textFontSize?: string;
 }) => {
-  const { id, icon, name } = shortcut;
+  const { id, icon, name, hasPopover } = shortcut;
   const props = {};
   if (crossDirection(direction) === "row") {
     props["w"] = "100%";
@@ -326,12 +326,15 @@ export const ShortcutItemView = ({
   const classList: string[] = ["activity", "shortcut"];
   const className = classList.join(" ");
 
-  return (
-    <Popover key={id} placement={isMobile ? "auto" : "right-end"} isLazy>
-      {({
-        isOpen,
-        onClose
-      }) => (
+  return hasPopover ? (
+    <Popover
+      key={id}
+      placement={isMobile ? "auto" : "right-end"}
+      isLazy
+      closeOnBlur={true}
+      returnFocusOnClose={true}
+    >
+      {({ isOpen, onClose }) => (
         <>
           <PopoverTrigger>
             <Stack
@@ -373,6 +376,9 @@ export const ShortcutItemView = ({
           </PopoverTrigger>
           <Portal>
             <PopoverContent
+              _focus={{
+                boxShadow: "none",
+              }}
               maxW={"100vw"}
               borderRadius={"4px"}
               onClick={() => {
@@ -380,7 +386,9 @@ export const ShortcutItemView = ({
               }}
             >
               <PopoverArrow />
-              <PopoverBody>
+              <PopoverBody
+               
+              >
                 {componentService.render({
                   type: `shortcut:${id}:page`,
                 })}
@@ -390,5 +398,43 @@ export const ShortcutItemView = ({
         </>
       )}
     </Popover>
+  ) : (
+    <>
+      <Stack
+        direction={crossDirection(direction)}
+        {...props}
+        className="activity-wrapper shortcut"
+        key={id}
+        m="0 !important"
+        marginInlineStart={"10px"}
+        justify={"center"}
+        align="center"
+        maxW={"100%"}
+        overflow={"hidden"}
+        onClick={() => {
+          eventBus.emit(`shortcut:${id}:clicked`);
+        }}
+      >
+        <VStack maxW={"100%"} overflow={"hidden"} gap={0}>
+          <Icon
+            // className={className}
+            as={icon as As}
+            fontSize={iconFontSize}
+            title={name}
+          ></Icon>
+          <Text
+            m="0 !important"
+            fontSize={textFontSize}
+            className="shortcut-text text"
+            maxW={"100%"}
+            overflow={"hidden"}
+            whiteSpace={"nowrap"}
+            textOverflow={"ellipsis"}
+          >
+            {name}
+          </Text>
+        </VStack>
+      </Stack>
+    </>
   );
 };

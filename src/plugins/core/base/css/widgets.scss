@@ -77,7 +77,32 @@
 }
 
 .editor {
-  --color-bg-editor: var(--default-bg-color);
-  --color-bg-editor-header: var(--secondary-bg-color);
-  --color-bg-editor-inner: var(--item-highlight-bg-color);
+  --editor-default-bg-color: var(--main-content-bg-color);
+  // --color-bg-editor: var(--default-bg-color);
+  // --color-bg-editor-header: var(--secondary-bg-color);
+  // --color-bg-editor-inner: var(--item-highlight-bg-color);
+  --color-bg-editor: var(--editor-default-bg-color);
+  --color-bg-editor-header: var(--editor-default-bg-color);
+  --color-bg-editor-inner: var(--editor-default-bg-color);
+  --color-text-editor: var(--main-content-text-color);
+
+  .editor-inner {
+    box-shadow: none !important;
+    max-width: 100% !important;
+    .editor-content-left,
+    .editor-content-right {
+      width: 1rem !important;
+    }
+    .editor-content {
+      padding-top: 0rem !important;
+      p::selection, p>*::selection {
+        background-color: #073CA7;
+        color: white;
+        &:not(:focus){
+          background-color: #707274;
+          color: #393939;
+        }
+      }
+    }
+  }
 }

@@ -8,6 +8,7 @@ export default createPlugin({
     xbook.layoutService.activityBar.addShortcut({
       id: "settings",
       name: "设置",
+      hasPopover: true,
       icon: (props) => {
         return (
           <>

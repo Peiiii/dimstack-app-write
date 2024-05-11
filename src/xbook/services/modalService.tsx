@@ -135,7 +135,7 @@ export const createModalService = () => {
       });
     });
   };
-  const confirm = (props: { title: ReactNode; description: ReactNode }) => {
+  const confirm = (props: { title: ReactNode; description?: ReactNode }) => {
     const { title, description } = props;
     return new Promise((resolve) => {
       const modal = createModal({

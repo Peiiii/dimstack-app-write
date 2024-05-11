@@ -86,8 +86,8 @@ const Tab: FC<{
       h="100%"
       m="0 !important"
       className={classList.join(" ")}
-      pl="5px"
-      pr="5px"
+      pl="12px"
+      pr="12px"
       align={"center"}
       justify="flex-start"
       overflow={"hidden"}
@@ -306,7 +306,13 @@ export const createPageBox = () =>
         () =>
           pageList.length > tabBarCapacity && (
             <>
-              <Flex align={"center"} h="100%" flexShrink={0} flexGrow={0}>
+              <Flex
+                align={"center"}
+                h="100%"
+                flexShrink={0}
+                flexGrow={0}
+                className="tab-bar-right-extra"
+              >
                 <Menu>
                   <MenuButton
                     as={forwardRef((props, ref) => (
@@ -385,6 +391,7 @@ export const createPageBox = () =>
                 gap={0}
               >
                 <TabIconButton
+                  className="tab-bar-left-extra"
                   onClick={() => {
                     commandService.executeCommand("client:toggleHome");
                   }}

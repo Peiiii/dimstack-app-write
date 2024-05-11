@@ -83,7 +83,7 @@
 .sidebar-main {
   flex-grow: 1;
   height: 100%;
- 
+
   .side-card {
     .header {
       text-transform: capitalize;
@@ -106,7 +106,7 @@
 .tab-bar {
   background-color: var(--default-bg-color);
   color: var(--secondary-text-color);
-  border-bottom: var(--border-light);
+
   z-index: 0;
   .right-list {
     .tab {
@@ -117,6 +117,17 @@
       }
     }
   }
+
+  .tab {
+    &.active {
+      font-style: italic;
+    }
+  }
+  .tab-bar-left-extra,
+  .tab-bar-right-extra {
+    border-bottom: var(--border-light);
+  }
+
   .tab-bar-content {
     border-left: var(--border-light);
     .simplebar-content {
@@ -124,17 +135,22 @@
       display: flex;
       flex-flow: row;
     }
+
     .tab {
       border-right: var(--border-light);
+      border-bottom: var(--border-light);
+
       &:hover {
-        background-color: var(--item-highlight-bg-color);
+        // background-color: var(--item-highlight-bg-color);
         color: var(--item-highlight-text-color);
       }
       &.active {
+        border-bottom: none;
         border-top: 1px solid var(--primary-color);
-        font-weight: bolder;
-        background-color: var(--item-highlight-bg-color);
+        // font-weight: bolder;
+        // background-color: var(--item-highlight-bg-color);
         color: var(--item-highlight-text-color);
+        background-color: var(--main-content-bg-color);
       }
     }
   }
