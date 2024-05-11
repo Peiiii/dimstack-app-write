@@ -94,6 +94,7 @@
       width: 1rem !important;
     }
     .editor-content {
+      max-width: 100% !important;
       padding-top: 0rem !important;
       p::selection, p>*::selection {
         background-color: #073CA7;
