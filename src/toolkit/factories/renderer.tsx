@@ -42,7 +42,7 @@ function matchPath(path: string, routePath) {
     return false;
   }
 }
-function ErrorFallback({ error, resetErrorBoundary }) {
+function DefaultErrorFallback({ error, resetErrorBoundary }) {
   return (
     <div role="alert">
       <p>Something went wrong:</p>
@@ -77,27 +77,42 @@ export const createRenderer = (registryName: string = "componentRegistry") => {
       getDefaultMiddleware({ serializableCheck: false }),
   });
 
-  const useComponent = (name) =>
-    useSelector<SafeAny, ComponentNode>((state) => {
-      const component = state![registryName][name];
-      // console.log(
-      //   "fetch Component:",
-      //   name,
-      //   "component exists",
-      //   !!component,
-      //   "components:",
-      //   Object.keys(state[registryName])
-      // );
-      if (component) return component;
-      else {
-        for (const namePattern in state![registryName]) {
-          const matcher = matchPath(name, namePattern);
-          if (matcher) {
-            return state![registryName][namePattern];
-          }
+  const getComponent = (state: ComponentRegistry, name: string) => {
+    const component = state![registryName][name];
+    if (component) return component;
+    else {
+      for (const namePattern in state![registryName]) {
+        const matcher = matchPath(name, namePattern);
+        if (matcher) {
+          return state![registryName][namePattern];
         }
       }
+    }
+  };
+
+  const useComponent = (name) =>
+    useSelector<SafeAny, ComponentNode>((state) => {
+      return getComponent(state, name);
     });
+
+  let ErrorFallback = DefaultErrorFallback;
+  const setFallbackComponent = (fallback) => {
+    ErrorFallback = fallback;
+  };
+  let DefaultNotFoundComponent = ({ type }: { type: string }) => {
+    return (
+      <Box>
+        <Alert>Unknown component type: {type}</Alert>
+        <Button
+          onClick={() => {
+            xbook.eventBus.emit("/welcome");
+          }}
+        >
+          返回首页
+        </Button>
+      </Box>
+    );
+  };
 
   // 注册组件
   const registerComponent = (
@@ -116,18 +131,12 @@ export const createRenderer = (registryName: string = "componentRegistry") => {
     if (!Component) {
       // requestComponent(type);
       // console.log("components:", store.getState());
-      return (
-        <Box>
-          <Alert>Unknown component type: {type}</Alert>
-          <Button
-            onClick={() => {
-              xbook.eventBus.emit("/welcome");
-            }}
-          >
-            返回首页
-          </Button>
-        </Box>
-      );
+
+      const NotFoundComponent =
+        getComponent(store.getState(), "NotFoundComponent") ||
+        DefaultNotFoundComponent;
+
+      return <NotFoundComponent type={type} />;
     }
 
     const ReactComponent = Component as React.ComponentType<SafeAny>;
@@ -167,6 +176,7 @@ export const createRenderer = (registryName: string = "componentRegistry") => {
     register,
     render,
     getComponents,
+    setFallbackComponent,
   };
 };
 

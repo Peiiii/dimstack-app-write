@@ -7,6 +7,7 @@ import { createTitleBar } from "./titleBar";
 import SplitPane from "xbook/ui/components/split-pane";
 import SplitPaneV2 from "xbook/ui/components/SplitPane";
 import { createRenderer } from "@/toolkit/factories/renderer";
+import { useEffect, useState } from "react";
 export const activityBar = createActivityBar();
 export const statusBar = createStatusBar();
 export const titleBar = createTitleBar();
@@ -14,6 +15,20 @@ export const pageBox = createPageBox();
 export const sidebar = createSidebar();
 
 export const componentService = createRenderer();
+
+componentService.register("NotFoundComponent", ({ type }) => {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setVisible(true);
+    }, 1000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  });
+  return <>{visible && <div>{type}组件未找到</div>}</>;
+});
+
 // 注册行组件
 componentService.register("row", ({ children, ...rest }) => (
   <Box
