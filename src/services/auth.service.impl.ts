@@ -47,7 +47,7 @@ export const createAuthService = (): IAuthService => {
     // return authInfoMap[platform]?.[username];
     return (
       authInfoMap[platform]?.[username] ||
-      Object.values(authInfoMap[platform])[0]
+      Object.values(authInfoMap[platform] || {})[0]
     );
   };
 
