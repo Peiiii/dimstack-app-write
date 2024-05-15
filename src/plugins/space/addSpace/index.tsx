@@ -14,8 +14,17 @@ import {
 } from "@chakra-ui/react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { createPlugin } from "xbook/common/createPlugin";
+import xbook from "xbook/index";
 
-const doAddSpace = (xbook, platform: string, owner: string, repo: string) => {
+const doAddSpace = ({
+  platform,
+  owner,
+  repo,
+}: {
+  platform: string;
+  owner: string;
+  repo: string;
+}) => {
   const spaceStore = xbook.registry.get("spaceStore") as DataStore<SpaceDef>;
   const id = `${platform}:${owner}:${repo}`;
   spaceStore.getActions().upsert({ platform, owner, repo, id });
@@ -28,6 +37,7 @@ const doAddSpace = (xbook, platform: string, owner: string, repo: string) => {
     xbook.serviceBus.invoke(`space-${id}.trigger`);
   }, 100);
 };
+
 export const addGiteeSpace = createPlugin({
   initilize(xbook) {
     const id = "addGiteeRepo";
@@ -82,7 +92,11 @@ export const addGiteeSpace = createPlugin({
                               "输入链接格式不符!"
                             );
                           } else {
-                            doAddSpace(xbook, platform, owner, repo);
+                            doAddSpace({
+                              platform,
+                              owner,
+                              repo,
+                            });
                             modal.close();
                           }
                         }}
@@ -139,12 +153,9 @@ export const addGiteeSpace = createPlugin({
                           const data = atom.invoke("getData");
                           // console.log(data);
 
-                          doAddSpace(
-                            xbook,
-                            data.platform,
-                            data.owner,
-                            data.repo
-                          );
+                          doAddSpace({
+                            ...data,
+                          });
                           modal.close();
                         }}
                       >
