@@ -1,4 +1,3 @@
-import { Tokens } from "@/constants/tokens";
 import {
   AuthInfo,
   IAuthProvider,
@@ -40,13 +39,24 @@ export const createAuthService = (): IAuthService => {
     authChange$.next(authInfoMap);
   };
 
- 
+  // 获取认证信息
+  const getAnyAuthInfo = (
+    platform: string,
+    username: string
+  ): AuthInfo | undefined => {
+    // return authInfoMap[platform]?.[username];
+    return (
+      authInfoMap[platform]?.[username] ||
+      Object.values(authInfoMap[platform])[0]
+    );
+  };
 
   // 获取认证信息
   const getAuthInfo = (
     platform: string,
     username: string
   ): AuthInfo | undefined => {
+    // return authInfoMap[platform]?.[username];
     return authInfoMap[platform]?.[username];
   };
 
@@ -68,7 +78,17 @@ export const createAuthService = (): IAuthService => {
     authProviders.push(provider);
   };
 
-  const isAuthorized = (platform: string, username: string): boolean => {
+  const hasReadPermission = (platform: string, username: string): boolean => {
+    const authInfo = getAnyAuthInfo(platform, username);
+    return (
+      !!authInfo &&
+      authInfo.createdAt !== undefined &&
+      authInfo.expirationTime !== undefined &&
+      (authInfo.createdAt + authInfo.expirationTime) * 1000 > Date.now()
+    );
+  };
+
+  const hasWritePermission = (platform: string, username: string): boolean => {
     const authInfo = getAuthInfo(platform, username);
     return (
       !!authInfo &&
@@ -81,9 +101,10 @@ export const createAuthService = (): IAuthService => {
   return {
     saveAuthInfo,
     getAuthInfo,
+    hasWritePermission,
     authenticate,
     registerAuthProvider,
-    isAuthorized,
+    hasReadPermission,
     onAuthChange,
   };
 };

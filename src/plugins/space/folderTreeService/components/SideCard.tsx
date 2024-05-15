@@ -17,7 +17,7 @@ import { FC, ReactNode, forwardRef } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
 import xbook from "xbook/index";
 export const SideCard: FC<{
-  title: string;
+  title: ReactNode;
   className?: string;
   actions: Action[];
   children: ReactNode;

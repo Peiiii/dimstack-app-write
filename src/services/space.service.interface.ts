@@ -6,6 +6,9 @@ export interface ISpaceService {
   isAuthorized(spaceId: string): boolean;
   redirectAuthPage(spaceId: string): void;
   getSpace(spaceId: string): SpaceDef | undefined;
-  useIsAuthorized(spaceId: string): boolean;
+  usePermissions(spaceId: string): {
+    hasReadPermission: boolean;
+    hasWritePermission: boolean;
+  };
   updateSpace(space: SpaceDef): void;
 }

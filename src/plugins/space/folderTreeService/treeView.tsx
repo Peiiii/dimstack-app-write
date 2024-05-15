@@ -1,4 +1,4 @@
-import { Alert, Box, Icon, Link } from "@chakra-ui/react";
+import { Alert, Badge, Box, Icon, Link, Wrap } from "@chakra-ui/react";
 import "./sidebar.scss";
 
 import { EventKeys } from "@/constants/eventKeys";
@@ -68,7 +68,8 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
   const atom = useAtom({ id: `fstree#${space.id}` });
 
   const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
-  const isLogin = spaceService.useIsAuthorized(space.id);
+  const { hasReadPermission: isLogin, hasWritePermission } =
+    spaceService.usePermissions(space.id);
   useEffect(() => {
     xbook.serviceBus.expose(`space-${space.id}.trigger`, () => {
       serviceBus.invoke("expandNode", "root");
@@ -112,7 +113,18 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
         </Alert>
       )}
       <SideCard
-        title={`${space.repo}`}
+        title={
+          <>
+            <Wrap>
+              {`${space.repo}`}
+              {hasWritePermission && (
+                <div style={{ alignItems: "center", display: "flex" }}>
+                  <Badge>我的</Badge>
+                </div>
+              )}
+            </Wrap>
+          </>
+        }
         className="fs-tree-container"
         actions={actions}
       >

@@ -13,7 +13,8 @@ export type IAuthService = {
   getAuthInfo: (platform: string, username: string) => AuthInfo | undefined;
   authenticate: (platform: string, username: string) => Promise<void>;
   registerAuthProvider: (provider: IAuthProvider) => void;
-  isAuthorized: (platform: string, username: string) => boolean;
+  hasWritePermission: (platform: string, username: string) => boolean;
+  hasReadPermission: (platform: string, username: string) => boolean;
   onAuthChange: (callback: () => void) => void;
 };
 export type IAuthProvider = {

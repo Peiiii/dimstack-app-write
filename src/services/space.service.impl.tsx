@@ -58,24 +58,36 @@ export const createSpaceService = (): ISpaceService => {
     if (!space) return false;
     // if (!space.auth) return false;
     const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
-    return authService.isAuthorized(space.platform, space.owner);
+    return authService.hasReadPermission(space.platform, space.owner);
   };
 
-  const useIsAuthorized = (spaceId: string) => {
+  const usePermissions = (spaceId: string) => {
     const space = spaceStore.getRecord(spaceId);
-    if (!space) return false;
+    if (!space)
+      return {
+        hasReadPermission: false,
+        hasWritePermission: false,
+      };
     // if (!space.auth) return false;
     const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
-    const [authorized, setAuthorized] = useState<boolean>(
-      authService.isAuthorized(space.platform, space.owner)
+    const [hasReadPermission, setHasReadPermission] = useState<boolean>(
+      authService.hasReadPermission(space.platform, space.owner)
+    );
+    const [hasWritePermission, setHasWritePermission] = useState<boolean>(
+      authService.hasWritePermission(space.platform, space.owner)
     );
     useEffect(() => {
       authService.onAuthChange(() => {
-        setAuthorized(authService.isAuthorized(space.platform, space.owner));
+        setHasReadPermission(
+          authService.hasReadPermission(space.platform, space.owner)
+        );
+        setHasWritePermission(
+          authService.hasWritePermission(space.platform, space.owner)
+        );
       });
     }, []);
 
-    return authorized;
+    return { hasReadPermission, hasWritePermission };
   };
 
   const getSpace = (spaceId: string) => {
@@ -92,7 +104,7 @@ export const createSpaceService = (): ISpaceService => {
     redirectAuthPage,
     getSpace,
     isAuthorized,
-    useIsAuthorized,
+    usePermissions,
     updateSpace,
   };
 };
