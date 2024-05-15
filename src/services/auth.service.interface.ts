@@ -11,6 +11,7 @@ export type AuthInfo = {
 export type IAuthService = {
   saveAuthInfo: (authInfo: AuthInfo) => void;
   getAuthInfo: (platform: string, username: string) => AuthInfo | undefined;
+  getAnyAuthInfo: (platform: string, username: string) => AuthInfo | undefined;
   authenticate: (platform: string, username: string) => Promise<void>;
   registerAuthProvider: (provider: IAuthProvider) => void;
   hasWritePermission: (platform: string, username: string) => boolean;

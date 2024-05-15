@@ -101,6 +101,7 @@ export const createAuthService = (): IAuthService => {
   return {
     saveAuthInfo,
     getAuthInfo,
+    getAnyAuthInfo,
     hasWritePermission,
     authenticate,
     registerAuthProvider,

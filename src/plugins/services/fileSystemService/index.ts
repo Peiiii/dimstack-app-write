@@ -19,7 +19,7 @@ const getSpaceWithAuth = (spaceId: string): SpaceDef | undefined => {
   const space = spaceService.getSpace(spaceId);
   if (!space) return;
   const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
-  const authInfo = authService.getAuthInfo(space.platform, space.owner);
+  const authInfo = authService.getAnyAuthInfo(space.platform, space.owner);
   if (!authInfo) return;
   if (!authInfo.accessToken || !authInfo.refreshToken) return;
   return {
