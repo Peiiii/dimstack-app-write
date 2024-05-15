@@ -2,6 +2,14 @@
 
 .chakra-ui-light {
   @include theme-base;
+
+  // basic
+   /* 常规模式下的颜色变量 */
+   --link-color: blue;
+   --visited-link-color: purple;
+   --hover-link-color: blue;
+   --active-link-color: red;
+
   //   semantic basic
   --primary-color: var(--blue);
   --border-light-gray: 1px solid #80808024;
