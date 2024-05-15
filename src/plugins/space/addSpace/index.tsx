@@ -1,9 +1,8 @@
+import { Tokens } from "@/constants/tokens";
 import { spaceHelper } from "@/helpers/space.helper";
 import PageBox from "@/toolkit/components/page-box";
 import PowerForm, { PowerFormAtom } from "@/toolkit/components/power-form";
 import { createAtom } from "@/toolkit/factories/atom";
-import { DataStore } from "@/toolkit/factories/dataStore";
-import { SpaceDef } from "@/toolkit/types/space";
 import {
   Button,
   Flex,
@@ -14,33 +13,11 @@ import {
 } from "@chakra-ui/react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { createPlugin } from "xbook/common/createPlugin";
-import xbook from "xbook/index";
-
-const doAddSpace = ({
-  platform,
-  owner,
-  repo,
-}: {
-  platform: string;
-  owner: string;
-  repo: string;
-}) => {
-  const spaceStore = xbook.registry.get("spaceStore") as DataStore<SpaceDef>;
-  const id = `${platform}:${owner}:${repo}`;
-  spaceStore.getActions().upsert({ platform, owner, repo, id });
-  xbook.notificationService.success("成功添加空间");
-  xbook.serviceBus.invoke(
-    "folderTreeService.focus",
-    spaceHelper.generateSpaceId(platform, owner, repo)
-  );
-  setTimeout(() => {
-    xbook.serviceBus.invoke(`space-${id}.trigger`);
-  }, 100);
-};
 
 export const addGiteeSpace = createPlugin({
   initilize(xbook) {
     const id = "addGiteeRepo";
+    const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
     xbook.layoutService.activityBar.addShortcut({
       id,
       icon: AiOutlinePlusCircle,
@@ -79,20 +56,14 @@ export const addGiteeSpace = createPlugin({
                       <InputRightAddon
                         onClick={() => {
                           console.log("url:", url);
-                          const u = new URL(url);
-                          let platform, owner, repo;
-                          if (u.hostname === "gitee.com") platform = "gitee";
-                          else if (u.hostname === "github.com")
-                            platform = "github";
-                          [owner, repo] = u.pathname.slice(1).split("/");
-                          // if(u.pathname)
-                          console.log("path", u.pathname);
+                          const { platform, owner, repo } =
+                            spaceService.parseRepoUrl(url);
                           if (!(platform && owner && repo)) {
                             xbook.notificationService.error(
                               "输入链接格式不符!"
                             );
                           } else {
-                            doAddSpace({
+                            spaceService.addSpace({
                               platform,
                               owner,
                               repo,
@@ -153,7 +124,7 @@ export const addGiteeSpace = createPlugin({
                           const data = atom.invoke("getData");
                           // console.log(data);
 
-                          doAddSpace({
+                          spaceService.addSpace({
                             ...data,
                           });
                           modal.close();

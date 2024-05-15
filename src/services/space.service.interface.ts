@@ -11,4 +11,11 @@ export interface ISpaceService {
     hasWritePermission: boolean;
   };
   updateSpace(space: SpaceDef): void;
+  addSpace(
+    spaceInfo: { platform: string; owner: string; repo: string },
+    options?: {
+      focus?: boolean;
+    }
+  ): void;
+  parseRepoUrl(url: string): { platform: string; owner: string; repo: string };
 }
