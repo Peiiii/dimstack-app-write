@@ -83,7 +83,7 @@ const SplitPane = {
     initialLeftWidth = 300,
     initialRightWidth,
     minLeftWidth = 250,
-    maxLeftWidth = 400,
+    maxLeftWidth = 800,
     toggleLeftComponent,
     enableToggleLeft,
   }: {
