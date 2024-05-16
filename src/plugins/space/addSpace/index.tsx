@@ -9,10 +9,71 @@ import {
   Input,
   InputGroup,
   InputRightAddon,
+  Link,
   Text,
+  Wrap,
 } from "@chakra-ui/react";
+import { useContext, useState } from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { createPlugin } from "xbook/common/createPlugin";
+import xbook from "xbook/index";
+import { ModalActionContext } from "xbook/services/modalService";
+
+const AddSpaceView = () => {
+  const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
+  const [url, setUrl] = useState("");
+  const modal = useContext(ModalActionContext)!;
+  const demoUrl = "https://gitee.com/wondream/mianshibiji";
+  return (
+    <>
+      <Text color="gray" wordBreak={"break-all"} mb="1em">
+        请输入你的Gitee仓库链接。示例：
+        <Wrap>
+          <Text as="a">{demoUrl}</Text>
+          <Link
+            color="blue.500"
+            onClick={() => {
+              setUrl(demoUrl);
+            }}
+          >
+            填入
+          </Link>
+        </Wrap>
+      </Text>
+      <InputGroup>
+        <Input
+          placeholder="请输入链接"
+          autoFocus
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+        />
+        <InputRightAddon
+          onClick={() => {
+            console.log("url:", url);
+            const { platform, owner, repo } = spaceService.parseRepoUrl(url);
+            if (!(platform && owner && repo)) {
+              xbook.notificationService.error("输入链接格式不符!");
+            } else {
+              spaceService.addSpace(
+                {
+                  platform,
+                  owner,
+                  repo,
+                },
+                {
+                  focus: true,
+                }
+              );
+              modal.close();
+            }
+          }}
+        >
+          一键添加
+        </InputRightAddon>
+      </InputGroup>
+    </>
+  );
+};
 
 export const addGiteeSpace = createPlugin({
   initilize(xbook) {
@@ -30,7 +91,6 @@ export const addGiteeSpace = createPlugin({
         owner: string;
         repo: string;
       }> = createAtom();
-      let url;
       const pageBox = (
         <PageBox
           defaultActivePath="/"
@@ -42,44 +102,7 @@ export const addGiteeSpace = createPlugin({
                 id: "addFromUrl",
                 title: "从URL添加",
                 height: "320px",
-                view: (
-                  <>
-                    <Text color="gray" wordBreak={"break-all"} mb="1em">
-                      请输入你的Gitee仓库链接，例如:{" "}
-                      <Text as="a">https://gitee.com/peiiii/docs</Text>
-                    </Text>
-                    <InputGroup>
-                      <Input
-                        placeholder="请输入链接"
-                        autoFocus
-                        onChange={(e) => (url = e.target.value)}
-                      />
-                      <InputRightAddon
-                        onClick={() => {
-                          console.log("url:", url);
-                          const { platform, owner, repo } =
-                            spaceService.parseRepoUrl(url);
-                          if (!(platform && owner && repo)) {
-                            xbook.notificationService.error(
-                              "输入链接格式不符!"
-                            );
-                          } else {
-                            spaceService.addSpace({
-                              platform,
-                              owner,
-                              repo,
-                            },{
-                              focus: true,
-                            });
-                            modal.close();
-                          }
-                        }}
-                      >
-                        一键添加
-                      </InputRightAddon>
-                    </InputGroup>
-                  </>
-                ),
+                view: <AddSpaceView />,
               },
               {
                 id: "custom",
@@ -127,12 +150,14 @@ export const addGiteeSpace = createPlugin({
                           const data = atom.invoke("getData");
                           // console.log(data);
 
-                          spaceService.addSpace({
-                            ...data,
-                          },
-                        {
-                          focus: true,
-                        });
+                          spaceService.addSpace(
+                            {
+                              ...data,
+                            },
+                            {
+                              focus: true,
+                            }
+                          );
                           modal.close();
                         }}
                       >
@@ -154,7 +179,7 @@ export const addGiteeSpace = createPlugin({
       });
       modal.open();
     });
-    spaceHelper.getStore().on("load", () => {
+    spaceHelper.getStore().waitUtilLoaded(() => {
       if (spaceHelper.getStore().getData().length === 0) {
         xbook.eventBus.emit(`shortcut:${id}:clicked`);
       }

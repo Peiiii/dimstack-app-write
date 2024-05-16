@@ -8,6 +8,7 @@ import { persistReducer, persistStore } from "redux-persist";
 // import PouchDBStorage from "redux-persist-pouchdb";
 import persistLocalStorage from "redux-persist/lib/storage";
 import thunk from "redux-thunk";
+import { ReplaySubject, Subject } from "rxjs";
 
 const Storages = {
   localStorage: persistLocalStorage,
@@ -42,6 +43,7 @@ export const createDataStore = <T extends { [k: string]: any }>({
   middlewareConfig?: any;
   persistConfig?: PersistConfig;
 }) => {
+  const loadEvent$ = new ReplaySubject(1);
   const slice = createSlice({
     name,
     initialState: {
@@ -152,6 +154,7 @@ export const createDataStore = <T extends { [k: string]: any }>({
     persistStore(store, {}, () => {
       store.dispatch(slice.actions.__rehydrationCompleted(true));
       atom.emit("load");
+      loadEvent$.next(true);
     });
 
   function useSelectedState(store, selector) {
@@ -253,6 +256,10 @@ export const createDataStore = <T extends { [k: string]: any }>({
     addObserver,
     removeObserver,
     on: atom.on,
+    waitUtilLoaded: (callback: () => void) => {
+      const sub = loadEvent$.subscribe(callback);
+      return () => sub.unsubscribe();
+    },
   };
 };
 

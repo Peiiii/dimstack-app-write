@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import React, { ReactNode, useEffect, useState } from "react";
 import * as ReactDOM from "react-dom/client";
+import { DeferredProxy } from "xbook/common/deferredProxy";
 import { createDeferredComponentProxy } from "xbook/hooks/useDeferredComponentProxy";
 export type ModalSpec = {
   title?: ReactNode;
@@ -25,6 +26,10 @@ export type ModalSpec = {
   cancelText?: string;
   footer?: boolean;
 };
+
+export const ModalActionContext = React.createContext<
+  DeferredProxy<ModalMethods> | undefined
+>(undefined);
 
 export const createModalService = () => {
   const getContainer = (name: string) => {
@@ -65,37 +70,39 @@ export const createModalService = () => {
           });
         }, [onOpen, onClose, isOpen]);
         return (
-          <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
-            <ModalOverlay />
-            <ModalContent>
-              {title && <ModalHeader>{title}</ModalHeader>}
-              <ModalCloseButton tabIndex={-1} />
-              <ModalBody>{content}</ModalBody>
+          <ModalActionContext.Provider value={proxy}>
+            <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
+              <ModalOverlay />
+              <ModalContent>
+                {title && <ModalHeader>{title}</ModalHeader>}
+                <ModalCloseButton tabIndex={-1} />
+                <ModalBody>{content}</ModalBody>
 
-              {footer && (
-                <ModalFooter>
-                  <Button
-                    colorScheme="blue"
-                    onClick={() => {
-                      onOk?.();
-                    }}
-                  >
-                    {okText}
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    mr={3}
-                    onClick={() => {
-                      onClose();
-                      onCancel?.();
-                    }}
-                  >
-                    {cancelText}
-                  </Button>
-                </ModalFooter>
-              )}
-            </ModalContent>
-          </Modal>
+                {footer && (
+                  <ModalFooter>
+                    <Button
+                      colorScheme="blue"
+                      onClick={() => {
+                        onOk?.();
+                      }}
+                    >
+                      {okText}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      mr={3}
+                      onClick={() => {
+                        onClose();
+                        onCancel?.();
+                      }}
+                    >
+                      {cancelText}
+                    </Button>
+                  </ModalFooter>
+                )}
+              </ModalContent>
+            </Modal>
+          </ModalActionContext.Provider>
         );
       };
       return <ModalWrapper content={content} />;

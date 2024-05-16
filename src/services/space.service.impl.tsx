@@ -120,7 +120,7 @@ export class SpaceServiceImpl implements ISpaceService {
     const id = spaceHelper.generateSpaceId(platform, owner, repo);
     const { focus } = options || {};
     const existingSpace = spaceStore.getRecord(id);
-    spaceStore.on("load", () => {
+    spaceStore.waitUtilLoaded(() => {
       spaceStore.getActions().upsert({ platform, owner, repo, id });
     });
     if (!existingSpace) {
