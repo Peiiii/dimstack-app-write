@@ -22,6 +22,7 @@ export const addGiteeSpace = createPlugin({
       id,
       icon: AiOutlinePlusCircle,
       name: "添加",
+      order: 100,
     });
     xbook.eventBus.on(`shortcut:${id}:clicked`, () => {
       const atom: PowerFormAtom<{

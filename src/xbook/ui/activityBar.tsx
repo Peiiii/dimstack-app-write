@@ -42,6 +42,7 @@ export type ActivityItem = {
   shortcut?: string;
   icon: React.Component | React.FC;
   isActive?: boolean;
+  order?: number;
   disabled?: boolean;
   events?: "click" | "focus" | "blur" | "mouseenter" | "mouseleave";
 };
@@ -51,6 +52,7 @@ export type ShortcutItem = {
   name: string;
   icon: React.Component | React.FC;
   hasPopover?: boolean;
+  order?: number;
 };
 const createCRUDActions = (setData: AnyFunction, primaryKey: string = "id") => {
   const add = (data, record, _update = false) => {
@@ -283,17 +285,20 @@ export const createActivityBar = () =>
             })}
             {!isMobile && <Stack flexGrow={1}></Stack>}
 
-            {shortcutList.map((shortcut) => {
-              return (
-                <ShortcutItemView
-                  shortcut={shortcut}
-                  direction={direction}
-                  iconFontSize={iconFontSize}
-                  textFontSize={textFontSize}
-                  isMobile={isMobile}
-                />
-              );
-            })}
+            {shortcutList
+              .sort((s) => -(s.order || 0))
+              .map((shortcut) => {
+                return (
+                  <ShortcutItemView
+                    key={shortcut.id}
+                    shortcut={shortcut}
+                    direction={direction}
+                    iconFontSize={iconFontSize}
+                    textFontSize={textFontSize}
+                    isMobile={isMobile}
+                  />
+                );
+              })}
           </Stack>
         </>
       );
@@ -324,7 +329,7 @@ export const ShortcutItemView = ({
     props["h"] = "100%";
   }
   const classList: string[] = ["activity", "shortcut"];
-  const className = classList.join(" ");
+  // const className = classList.join(" ");
 
   return hasPopover ? (
     <Popover
@@ -386,9 +391,7 @@ export const ShortcutItemView = ({
               }}
             >
               <PopoverArrow />
-              <PopoverBody
-               
-              >
+              <PopoverBody>
                 {componentService.render({
                   type: `shortcut:${id}:page`,
                 })}

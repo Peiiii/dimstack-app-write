@@ -9,6 +9,7 @@ export default createPlugin({
       id: "settings",
       name: "设置",
       hasPopover: true,
+      order: 10000,
       icon: (props) => {
         return (
           <>
