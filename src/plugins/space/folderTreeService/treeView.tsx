@@ -118,8 +118,13 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
             <Wrap>
               {`${space.repo}`}
               {hasWritePermission && (
-                <div style={{ alignItems: "center", display: "flex" }}>
-                  <Badge>我的</Badge>
+                <div
+                  style={{
+                    alignItems: "center",
+                    display: "flex",
+                  }}
+                >
+                  <Badge textTransform={"none"}>{space.owner}</Badge>
                 </div>
               )}
             </Wrap>
