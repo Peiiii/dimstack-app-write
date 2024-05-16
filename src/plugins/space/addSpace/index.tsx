@@ -25,7 +25,7 @@ const AddSpaceView = () => {
   const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
   const [url, setUrl] = useState("");
   const modal = useContext(ModalActionContext)!;
-  const demoUrl = "https://gitee.com/wondream/mianshibiji";
+  const demoUrl = "https://gitee.com/liyupi/code-roadmap";
   return (
     <>
       <Text color="gray" wordBreak={"break-all"} mb="1em">
