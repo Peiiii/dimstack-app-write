@@ -115,21 +115,27 @@ export class SpaceServiceImpl implements ISpaceService {
     options?: {
       focus?: boolean;
     }
-  ) => {
+  ): SpaceDef => {
     const spaceStore = xbook.registry.get("spaceStore") as DataStore<SpaceDef>;
-    const id = `${platform}:${owner}:${repo}`;
+    const id = spaceHelper.generateSpaceId(platform, owner, repo);
     const { focus } = options || {};
     const existingSpace = spaceStore.getRecord(id);
-    spaceStore.getActions().upsert({ platform, owner, repo, id });
+    spaceStore.on("load", () => {
+      spaceStore.getActions().upsert({ platform, owner, repo, id });
+    });
     if (!existingSpace) {
       xbook.notificationService.success("成功添加空间");
     }
-    xbook.serviceBus.invoke(
-      "folderTreeService.focus",
-      spaceHelper.generateSpaceId(platform, owner, repo)
-    );
+    if (focus) {
+      this.focusSpace(id);
+    }
+    return { platform, owner, repo, id };
+  };
+
+  focusSpace = (spaceId: string) => {
+    xbook.serviceBus.invoke("folderTreeService.focus", spaceId);
     setTimeout(() => {
-      xbook.serviceBus.invoke(`space-${id}.trigger`);
+      xbook.serviceBus.invoke(`space-${spaceId}.trigger`);
     }, 100);
   };
 

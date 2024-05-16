@@ -16,6 +16,7 @@ export interface ISpaceService {
     options?: {
       focus?: boolean;
     }
-  ): void;
+  ): SpaceDef;
+  focusSpace(spaceId: string): void;
   parseRepoUrl(url: string): { platform: string; owner: string; repo: string };
 }

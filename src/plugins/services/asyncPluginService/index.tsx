@@ -43,11 +43,11 @@ export default createPlugin({
         });
       });
 
-    xbook.layoutService.activityBar.addActivity({
-      id: "plugins",
-      name: "Plugins",
-      icon: VscExtensions,
-    });
+    // xbook.layoutService.activityBar.addActivity({
+    //   id: "plugins",
+    //   name: "Plugins",
+    //   icon: VscExtensions,
+    // });
     xbook.componentService.register("pluginsPanel", () => {
       return (
         <Card>

@@ -24,7 +24,7 @@ xbook.pluginService.use([
   spaceServiceModule,
   displaySpaces,
   // listenGiteeLoginCallback,
-  addGiteeSpace,
+
   fileSystemService,
   folderTreeService,
   openerService,
@@ -34,6 +34,7 @@ xbook.pluginService.use([
   asyncPluginService,
   authService,
   checkUrlParamAndQuickOpen,
+  addGiteeSpace,
 ]);
 xbook.taskService.start();
 xbook.layoutService.renderLayout(document.getElementById("root")!);

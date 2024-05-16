@@ -39,7 +39,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
     () =>
       createTreeDataStore<FolderTreeNode>({
         initialState: {
-          name: "root",
+          name: "文件",
           content: "内容",
           id: "root",
           type: "dir",
@@ -100,14 +100,14 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
           p="10px"
           w="100%"
         >
-          此空间未授权，请前往
+          此空间未授权，请
           <Link
             color="blue.300"
             onClick={() => {
               xbook.eventBus.emit(EventKeys.RequestRedirectAuthPage, space.id);
             }}
           >
-            授权
+            点此授权
             <Icon as={AiOutlineLink} />
           </Link>
         </Alert>

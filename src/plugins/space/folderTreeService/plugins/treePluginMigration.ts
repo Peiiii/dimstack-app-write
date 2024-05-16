@@ -13,6 +13,7 @@ export default createTreePlugin<FolderTreeNode>({
       if (cloned.id === "root") {
         cloned.path = "/";
         cloned.type = "dir";
+        cloned.name = "文件";
       }
       return cloned;
     };

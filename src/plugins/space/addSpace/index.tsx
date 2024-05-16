@@ -67,6 +67,8 @@ export const addGiteeSpace = createPlugin({
                               platform,
                               owner,
                               repo,
+                            },{
+                              focus: true,
                             });
                             modal.close();
                           }
@@ -126,7 +128,10 @@ export const addGiteeSpace = createPlugin({
 
                           spaceService.addSpace({
                             ...data,
-                          });
+                          },
+                        {
+                          focus: true,
+                        });
                           modal.close();
                         }}
                       >

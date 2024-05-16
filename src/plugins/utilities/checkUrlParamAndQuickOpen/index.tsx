@@ -20,15 +20,14 @@ export default createPlugin({
   initilize(xbook) {
     const params = getUrlParams(window.location.search);
     const openRepo = params["openRepo"];
-
     const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
     if (openRepo) {
+      const { platform, owner, repo } = spaceService.parseRepoUrl(openRepo);
+      const space = spaceService.addSpace({ platform, owner, repo });
+      const url = removeUrlParams(window.location.href, ["openRepo"]);
+      window.history.replaceState(null, "", url);
       setTimeout(() => {
-        const { platform, owner, repo } = spaceService.parseRepoUrl(openRepo);
-        spaceService.addSpace({ platform, owner, repo });
-
-        const url = removeUrlParams(window.location.href, ["openRepo"]);
-        window.history.replaceState(null, "", url);
+        spaceService.focusSpace(space.id);
       }, 400);
     }
 
