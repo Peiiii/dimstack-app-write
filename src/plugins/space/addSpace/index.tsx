@@ -4,6 +4,8 @@ import PageBox from "@/toolkit/components/page-box";
 import PowerForm, { PowerFormAtom } from "@/toolkit/components/power-form";
 import { createAtom } from "@/toolkit/factories/atom";
 import {
+  Alert,
+  AlertIcon,
   Button,
   Flex,
   Input,
@@ -174,7 +176,22 @@ export const addGiteeSpace = createPlugin({
       );
       const modal = xbook.modalService.createModal({
         title: "添加空间",
-        content: pageBox,
+        width: "600px",
+        content: (
+          <>
+            <Alert status="info">
+              <AlertIcon />
+              1.
+              您可以将gitee仓库添加为空间，添加后，还需进行授权的操作才可正常使用。
+              <br />
+              2.
+              授权后，如果是你的仓库，你可以对仓库进行编辑。如果是别人的仓库，你只能查看。
+              <br />
+              3. 编辑文件后，可以通过快捷键Ctrl+S或Cmd+S保存文件。
+            </Alert>
+            {pageBox}
+          </>
+        ),
         footer: false,
       });
       modal.open();

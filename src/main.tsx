@@ -9,6 +9,7 @@ import { folderTreeService } from "@/plugins/space/folderTreeService";
 import { spaceServiceModule } from "@/plugins/space/spaceService";
 import checkUrlParamAndQuickOpen from "@/plugins/utilities/checkUrlParamAndQuickOpen";
 import clearLocalCache from "@/plugins/utilities/clearLocalCache";
+import introduction from "@/plugins/widgets/introduction";
 import theme from "@/plugins/utilities/theme";
 import settings from "@/plugins/widgets/settings";
 import xbook from "xbook";
@@ -35,6 +36,7 @@ xbook.pluginService.use([
   authService,
   checkUrlParamAndQuickOpen,
   addGiteeSpace,
+  introduction,
 ]);
 xbook.taskService.start();
 xbook.layoutService.renderLayout(document.getElementById("root")!);

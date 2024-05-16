@@ -25,6 +25,8 @@ export type ModalSpec = {
   okText?: string;
   cancelText?: string;
   footer?: boolean;
+  width?: string;
+  height?: string;
 };
 
 export const ModalActionContext = React.createContext<
@@ -59,6 +61,8 @@ export const createModalService = () => {
     okText = "Confirm",
     cancelText = "Cancel",
     footer = true,
+    width,
+    height,
   }: ModalSpec) => {
     const modal = createDeferredComponentProxy<ModalMethods>(({ proxy }) => {
       const ModalWrapper = ({ content }) => {
@@ -73,7 +77,11 @@ export const createModalService = () => {
           <ModalActionContext.Provider value={proxy}>
             <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
               <ModalOverlay />
-              <ModalContent>
+              <ModalContent
+                width={width}
+                height={height}
+                maxWidth={width ? "1000000px !important" : undefined}
+              >
                 {title && <ModalHeader>{title}</ModalHeader>}
                 <ModalCloseButton tabIndex={-1} />
                 <ModalBody>{content}</ModalBody>
