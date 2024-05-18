@@ -5,7 +5,6 @@ import { ISpaceService } from "@/services/space.service.interface";
 import { DataStore, createDataStore } from "@/toolkit/factories/dataStore";
 import { SpaceDef } from "@/toolkit/types/space";
 import { refreshAccessToken } from "libs/gitee-api";
-import { platform, userInfo } from "os";
 import { useEffect, useState } from "react";
 import xbook from "xbook/index";
 
@@ -17,6 +16,14 @@ export class SpaceServiceImpl implements ISpaceService {
       type: "LocalStorage",
     },
   });
+
+  setSpaces = (spaces: SpaceDef[]) => {
+    this.spaceStore.getActions().init(spaces);
+  };
+
+  getSpaceStore(): DataStore<SpaceDef> {
+    return this.spaceStore;
+  }
 
   constructor() {
     xbook.registry.set("spaceStore", this.spaceStore);
@@ -270,4 +277,4 @@ export class SpaceServiceImpl implements ISpaceService {
 
 // export const spaceService = createSpaceService();
 
-export const spaceService = new SpaceServiceImpl();
+// export const spaceService = new SpaceServiceImpl();

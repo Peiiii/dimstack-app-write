@@ -1,6 +1,9 @@
+import { DataStore } from "@/toolkit/factories/dataStore";
 import { SpaceDef } from "@/toolkit/types/space";
 
 export interface ISpaceService {
+  setSpaces(spaces: SpaceDef[]): void;
+  getSpaceStore(): DataStore<SpaceDef>;
   refreshAuth(spaceId: string): Promise<boolean>;
   login(spaceId: string): void;
   isAuthorized(spaceId: string): boolean;
@@ -9,7 +12,7 @@ export interface ISpaceService {
   usePermissions(spaceId: string): {
     hasReadPermission: boolean;
     hasWritePermission: boolean;
-    isExpired?:boolean;
+    isExpired?: boolean;
   };
   updateSpace(space: SpaceDef): void;
   addSpace(

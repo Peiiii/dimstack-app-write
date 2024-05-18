@@ -27,11 +27,14 @@ class HashGenerator {
 }
 
 const createSpaceHelper = () => {
+  const generateHash = (s: string) => {
+    return HashGenerator.generateAlphabeticHash(s);
+  };
   const getStore = () =>
     xbook.registry.get("spaceStore") as DataStore<SpaceDef>;
   const useSpaces = () => useStateFromPipe<SpaceDef[]>("spaceStore.spaces", []);
   const generateSpaceId = (platform: string, owner: string, repo: string) => {
-    return HashGenerator.generateAlphabeticHash(`${platform}:${owner}:${repo}`);
+    return generateHash(`${platform}:${owner}:${repo}`);
   };
   const getUri = (spaceId: string, path: string) => {
     return new Uri({
@@ -39,6 +42,6 @@ const createSpaceHelper = () => {
       path,
     });
   };
-  return { getStore, useSpaces, generateSpaceId, getUri };
+  return { getStore, useSpaces, generateSpaceId, getUri, generateHash };
 };
 export const spaceHelper = createSpaceHelper();

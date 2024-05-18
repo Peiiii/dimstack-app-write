@@ -6,109 +6,118 @@ import {
 import { Subject } from "rxjs";
 import xbook from "xbook/index";
 
-export const createAuthService = (): IAuthService => {
-  const authInfoMap: { [platform: string]: { [username: string]: AuthInfo } } =
-    {};
-  const storageKey = "authInfo";
-  const authProviders: IAuthProvider[] = [];
+export class AuthServiceImpl implements IAuthService {
+  private authInfoMap: { [platform: string]: { [username: string]: AuthInfo } };
+  private storageKey = "authInfo";
+  private authProviders: IAuthProvider[];
+  private authChange$ = new Subject<
+    | Partial<{
+        [platform: string]: {
+          [username: string]: AuthInfo;
+        };
+      }>
+    | undefined
+  >();
 
-  // 从localStorage中读取存储的认证信息
-  const storedAuthInfo = localStorage.getItem(storageKey);
-  if (storedAuthInfo) {
-    Object.assign(authInfoMap, JSON.parse(storedAuthInfo));
+  constructor() {
+    this.authInfoMap = {};
+    this.authProviders = [];
+
+    // 从localStorage中读取存储的认证信息
+    this.loadFromLocalStorage();
+
+    // 保存认证信息到localStorage
+    this.saveToLocalStorage = this.saveToLocalStorage.bind(this);
+
+    // 保存认证信息
+    this.saveAuthInfo = this.saveAuthInfo.bind(this);
+
+    // 获取认证信息
+    this.getAuthInfo = this.getAuthInfo.bind(this);
+    this.getAnyAuthInfo = this.getAnyAuthInfo.bind(this);
+
+    // 执行认证流程
+    this.authenticate = this.authenticate.bind(this);
+
+    // 注册认证提供者
+    this.registerAuthProvider = this.registerAuthProvider.bind(this);
+
+    // 检查权限
+    this.hasReadPermission = this.hasReadPermission.bind(this);
+    this.hasWritePermission = this.hasWritePermission.bind(this);
+
+    // 订阅认证信息变化
+    this.onAuthChange = this.onAuthChange.bind(this);
   }
 
-  // 保存认证信息到localStorage
-  const saveToLocalStorage = (): void => {
-    localStorage.setItem(storageKey, JSON.stringify(authInfoMap));
-  };
-
-  const authChange$ = new Subject();
-  const onAuthChange = (callback: () => void) => {
-    return authChange$.subscribe(callback);
-  };
-
-  // 保存认证信息
-  const saveAuthInfo = (authInfo: AuthInfo): void => {
-    const { platform, username } = authInfo;
-    if (!authInfoMap[platform]) {
-      authInfoMap[platform] = {};
+  private loadFromLocalStorage() {
+    const storedAuthInfo = localStorage.getItem(this.storageKey);
+    if (storedAuthInfo) {
+      Object.assign(this.authInfoMap, JSON.parse(storedAuthInfo));
     }
-    authInfoMap[platform][username] = authInfo;
-    saveToLocalStorage(); // 保存到localStorage
-    authChange$.next(authInfoMap);
-  };
+  }
 
-  // 获取认证信息
-  const getAnyAuthInfo = (
-    platform: string,
-    username: string
-  ): AuthInfo | undefined => {
-    // return authInfoMap[platform]?.[username];
+  private saveToLocalStorage() {
+    localStorage.setItem(this.storageKey, JSON.stringify(this.authInfoMap));
+  }
+
+  saveAuthInfo(authInfo: AuthInfo) {
+    const { platform, username } = authInfo;
+    if (!this.authInfoMap[platform]) {
+      this.authInfoMap[platform] = {};
+    }
+    this.authInfoMap[platform][username] = authInfo;
+    this.saveToLocalStorage();
+    this.authChange$.next(this.authInfoMap);
+  }
+
+  getAnyAuthInfo(platform: string, username: string): AuthInfo | undefined {
     return (
-      authInfoMap[platform]?.[username] ||
-      Object.values(authInfoMap[platform] || {})[0]
+      this.authInfoMap[platform]?.[username] ||
+      Object.values(this.authInfoMap[platform] || {})[0]
     );
-  };
+  }
 
-  // 获取认证信息
-  const getAuthInfo = (
-    platform: string,
-    username: string
-  ): AuthInfo | undefined => {
-    // return authInfoMap[platform]?.[username];
-    return authInfoMap[platform]?.[username];
-  };
+  getAuthInfo(platform: string, username: string): AuthInfo | undefined {
+    return this.authInfoMap[platform]?.[username];
+  }
 
-  // 执行认证流程
-  const authenticate = async (
-    platform: string,
-    username: string
-  ): Promise<void> => {
-    const authProvider = authProviders.find((p) => p.platform === platform);
+  async authenticate(platform: string, username: string) {
+    const authProvider = this.authProviders.find(
+      (p) => p.platform === platform
+    );
     if (!authProvider) {
       xbook.notificationService.error("不支持的平台:" + platform);
       return;
     }
-    authProvider.authenticate(username);
-  };
+    await authProvider.authenticate(username);
+  }
 
-  // 注册认证提供者
-  const registerAuthProvider = (provider: IAuthProvider): void => {
-    authProviders.push(provider);
-  };
+  registerAuthProvider(provider: IAuthProvider) {
+    this.authProviders.push(provider);
+  }
 
-  const hasReadPermission = (platform: string, username: string): boolean => {
-    const authInfo = getAnyAuthInfo(platform, username);
+  hasReadPermission(platform: string, username: string): boolean {
+    const authInfo = this.getAnyAuthInfo(platform, username);
     return (
       !!authInfo &&
       authInfo.createdAt !== undefined &&
       authInfo.expirationTime !== undefined &&
       (authInfo.createdAt + authInfo.expirationTime) * 1000 > Date.now()
     );
-  };
+  }
 
-  const hasWritePermission = (platform: string, username: string): boolean => {
-    const authInfo = getAuthInfo(platform, username);
+  hasWritePermission(platform: string, username: string): boolean {
+    const authInfo = this.getAuthInfo(platform, username);
     return (
       !!authInfo &&
       authInfo.createdAt !== undefined &&
       authInfo.expirationTime !== undefined &&
       (authInfo.createdAt + authInfo.expirationTime) * 1000 > Date.now()
     );
-  };
+  }
 
-
-  return {
-    saveAuthInfo,
-    getAuthInfo,
-    getAnyAuthInfo,
-    hasWritePermission,
-    authenticate,
-    registerAuthProvider,
-    hasReadPermission,
-    onAuthChange,
-  };
-};
-
-export const authService = createAuthService();
+  onAuthChange(callback: () => void) {
+    return this.authChange$.subscribe(callback);
+  }
+}

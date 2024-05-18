@@ -1,6 +1,6 @@
+import { Tokens } from "@/constants/tokens";
 import { appInfo } from "@/plugins/services/authService/providers/gitee/appInfo";
 import { CheckAuthCodeAndNext } from "@/plugins/services/authService/providers/gitee/checkAuthCodeAndNext";
-import { authService } from "@/services/auth.service.impl";
 import { IAuthProvider } from "@/services/auth.service.interface";
 import { getLoginUrl } from "libs/gitee-api";
 import giteeClient from "libs/gitee-api/gitee-client";
@@ -16,6 +16,7 @@ export const giteeAuthProvider: IAuthProvider = {
   }) => {
     const { platform, username, refreshToken } = params;
     const auth = await giteeClient.refreshAccessToken({ refreshToken });
+    const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
     authService.saveAuthInfo({
       platform,
       username,
@@ -63,6 +64,7 @@ export const giteeAuthProvider: IAuthProvider = {
 export default createPlugin({
   initilize(xbook) {
     xbook.taskService.registerTaskType(CheckAuthCodeAndNext);
+    const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
     authService.registerAuthProvider(giteeAuthProvider);
   },
 });
