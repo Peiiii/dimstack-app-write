@@ -1,5 +1,5 @@
 import { Tokens } from "@/constants/tokens";
-import { GitRepoFileSystemProvider } from "@/plugins/services/gitRepoFileSystemProvider/provider";
+import { GitRepoFileSystemProvider } from "@/services/gite-repo-file-system.provider";
 import { createGiteeClient } from "libs/gitee-api";
 import { createPlugin } from "xbook/common/createPlugin";
 
