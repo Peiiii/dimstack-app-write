@@ -33,6 +33,8 @@ import treePluginClickNode from "./plugins/treePluginClickNode";
 import treePluginConfig from "./plugins/treePluginConfig";
 import treePluginDeleteNode from "./plugins/treePluginDeleteNode";
 import treePluginEditNode from "./plugins/treePluginEditNode";
+import { fs } from "xbook/services";
+import { spaceHelper } from "@/helpers/space.helper";
 
 const TreeView = ({ space }: { space: SpaceDef }) => {
   const treeDataStore = useMemo(
@@ -68,16 +70,17 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
   const atom = useAtom({ id: `fstree#${space.id}` });
 
   const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
-  const { hasReadPermission: isLogin, hasWritePermission, isExpired } =
-    spaceService.usePermissions(space.id);
+  const {
+    hasReadPermission: isLogin,
+    hasWritePermission,
+    isExpired,
+  } = spaceService.usePermissions(space.id);
   useEffect(() => {
     xbook.serviceBus.expose(`space-${space.id}.trigger`, () => {
       serviceBus.invoke("expandNode", "root");
       serviceBus.invoke("refresh", "root");
     });
   }, []);
-
-  
 
   useEffect(() => {
     if (isLogin) {
@@ -161,9 +164,16 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
                 },
                 renameNode: async (node, name) => {
                   const newPath = join(dirname(node.path!), name);
-                  await fileSystemHelper.service.rename(
-                    fileSystemHelper.generateFileId(space.id, node.path!),
-                    fileSystemHelper.generateFileId(space.id!, newPath)
+                  // await fileSystemHelper.service.rename(
+                  //   fileSystemHelper.generateFileId(space.id, node.path!),
+                  //   fileSystemHelper.generateFileId(space.id!, newPath)
+                  // );
+                  await fs.rename(
+                    spaceHelper.getUri(space.id, node.path!),
+                    spaceHelper.getUri(space.id, newPath),
+                    {
+                      overwrite: false,
+                    }
                   );
                   // console.log("updateNode:", partialNode);
                   treeDataStore.getActions().delete({ id: node.id });
@@ -172,11 +182,16 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
                   const parentId = fileSystemHelper.isRootPath(parentPath)
                     ? "root"
                     : parentPath;
-                  console.log("parent:", parentId, parentPath);
+                  // console.log("parent:", parentId, parentPath, "newPath:", newPath);
                   treeDataStore.getActions().add({
                     node: { ...node, id: newPath, path: newPath, name },
                     parentId,
                   });
+                  // console.log(
+                  //   "data after rename:",
+                  //   treeDataStore.getNode(newPath)
+                  // );
+
                   // fileSystemHelper.createFile(fileSystemHelper.createFileId(space.id,));
                 },
               }),
@@ -193,9 +208,10 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
                   // console.log("deleteNode:", id);
                   treeDataStore.getActions().delete({ id });
                   // console.log("nodes:", treeDataStore.getData());
-                  fileSystemHelper.service.delete(
-                    fileSystemHelper.generateFileId(space.id, path!)
-                  );
+                  // fileSystemHelper.service.delete(
+                  //   fileSystemHelper.generateFileId(space.id, path!)
+                  // );
+                  fs.delete(spaceHelper.getUri(space.id, path!));
                 },
               }),
               treePluginConfig({

@@ -1,23 +1,12 @@
 import { fileSystemHelper } from "@/helpers/file-system.helper";
 import { spaceHelper } from "@/helpers/space.helper";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
-import {
-  createTreeHelper,
-  createTreePlugin,
-  getCreateTreePlugin,
-} from "@/toolkit/components/tree/treePlugins";
-import { space } from "@chakra-ui/react";
+import { createTreeHelper } from "@/toolkit/components/tree/treePlugins";
+import { Uri } from "@/toolkit/vscode/uri";
 import { nanoid } from "@reduxjs/toolkit";
 import { join } from "path-browserify";
-import {
-  AiFillFileAdd,
-  AiFillFolderAdd,
-  AiFillPlusCircle,
-  AiOutlineFileAdd,
-  AiOutlineFolderAdd,
-} from "react-icons/ai";
-import { VscNewFile, VscNewFolder } from "react-icons/vsc";
-import xbook from "xbook/index";
+import { AiFillFileAdd, AiFillFolderAdd } from "react-icons/ai";
+import { fs } from "xbook/services";
 export default createTreeHelper<FolderTreeNode>().createPlugin({
   addOptions() {
     return {
@@ -73,18 +62,27 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
         callback: async (name: string) => {
           // console.log("[afterInputNodeName]");
           const path = join(parentNode.path!, name);
-          await fileSystemHelper.service.createFile(
-            fileSystemHelper.generateFileId(space?.id, path),
-            "# "
+          // await fileSystemHelper.service.createFile(
+          //   fileSystemHelper.generateFileId(space?.id, path),
+          //   "# "
+          // );
+          fs.writeFile(
+            spaceHelper.getUri(space?.id, path),
+            new TextEncoder().encode("# "),
+            {
+              create: true,
+              overwrite: true,
+            }
           );
-          const childNode={ id: childId, type: "file", path, name };
+
+          const childNode = { id: childId, type: "file", path, name };
           dataStore.getActions().add({
             node: childNode,
             parentId,
           });
           console.log(`CreateNode[${path}]`);
           // xbook.serviceBus.invoke("openerService.open", spaceId, childNode);
-          eventBus.emit("node::click",{node:childNode})
+          eventBus.emit("node::click", { node: childNode });
         },
       });
     });
@@ -101,9 +99,10 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
         callback: async (name: string) => {
           // console.log("[afterInputNodeName]");
           const path = join(parentNode.path!, name);
-          await fileSystemHelper.service.createDirectory(
-            fileSystemHelper.generateFileId(space?.id, path)
-          );
+          // await fileSystemHelper.service.createDirectory(
+          //   fileSystemHelper.generateFileId(space?.id, path)
+          // );
+          await fs.createDirectory(spaceHelper.getUri(space?.id, path));
           dataStore.getActions().add({
             node: { id: childId, type: "dir", path, name, children: [] },
             parentId,

@@ -5,7 +5,6 @@ import { createPlugin } from "xbook/common/createPlugin";
 export const Migration20240518 = createPlugin({
   initilize(xbook) {
     const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
-    const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
     spaceService.subscribeSpaces((spaces) => {
       let isOld = false;
       const migrated = spaces.map((space) => {
@@ -24,6 +23,5 @@ export const Migration20240518 = createPlugin({
         spaceService.setSpaces(migrated);
       }
     });
-
   },
 });

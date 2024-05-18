@@ -1,10 +1,13 @@
-import axios from "redaxios";
 import { Base64 } from "js-base64";
 import {
   FileHelper,
   GiteeClient,
   Method,
 } from "libs/gitee-api/gitee-client.types";
+import axios from "redaxios";
+
+const API_BASE_URL = "https://gitee.com/api/v5";
+const AUTHORIZE_URL = "https://gitee.com/oauth/token";
 
 export const getLoginUrl = ({ redirectUri, clientId }) => {
   return `https://gitee.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=user_info%20projects`;
@@ -56,29 +59,27 @@ export const getUrlParam = (name: string) => {
   return urlParams.get(name);
 };
 const URLBuilder = (() => {
-  const getUserInfo = () => "https://gitee.com/api/v5/user";
+  const getUserInfo = () => `${API_BASE_URL}/user`;
   const getBranchList = (owner, repo) =>
-    `https://gitee.com/api/v5/repos/${owner}/${repo}/branches`;
+    `${API_BASE_URL}/repos/${owner}/${repo}/branches`;
   const createBranch = (owner, repo) =>
-    `https://gitee.com/api/v5/repos/${owner}/${repo}/branches`;
+    `${API_BASE_URL}/repos/${owner}/${repo}/branches`;
   const getBranch = (owner, repo, branch) =>
-    `https://gitee.com/api/v5/repos/${owner}/${repo}/branches/${branch}`;
+    `${API_BASE_URL}/repos/${owner}/${repo}/branches/${branch}`;
   const getPathContents = (owner, repo, path) =>
-    `https://gitee.com/api/v5/repos/${owner}/${repo}/contents/${path}`;
+    `${API_BASE_URL}/repos/${owner}/${repo}/contents/${path}`;
   const createFile = (owner, repo, path) =>
-    `https://gitee.com/api/v5/repos/${owner}/${repo}/contents/${path}`;
+    `${API_BASE_URL}/repos/${owner}/${repo}/contents/${path}`;
   const updateFile = (owner, repo, path) =>
-    `https://gitee.com/api/v5/repos/${owner}/${repo}/contents/${path}`;
+    `${API_BASE_URL}/repos/${owner}/${repo}/contents/${path}`;
   const deleteFile = (owner, repo, path) =>
-    `https://gitee.com/api/v5/repos/${owner}/${repo}/contents/${path}`;
-  const getRepo = (owner, repo) =>
-    `https://gitee.com/api/v5/repos/${owner}/${repo}`;
-  const deleteRepo = (owner, repo) =>
-    `https://gitee.com/api/v5/repos/${owner}/${repo}`;
+    `${API_BASE_URL}/repos/${owner}/${repo}/contents/${path}`;
+  const getRepo = (owner, repo) => `${API_BASE_URL}/repos/${owner}/${repo}`;
+  const deleteRepo = (owner, repo) => `${API_BASE_URL}/repos/${owner}/${repo}`;
   const clearRepo = (owner, repo) =>
-    `https://gitee.com/api/v5/repos/${owner}/${repo}/clear`;
-  const createRepo = () => `https://gitee.com/api/v5/user/repos`;
-  const getRepoList = () => `https://gitee.com/api/v5/user/repos`;
+    `${API_BASE_URL}/repos/${owner}/${repo}/clear`;
+  const createRepo = () => `${API_BASE_URL}/user/repos`;
+  const getRepoList = () => `${API_BASE_URL}/user/repos`;
   return {
     getUserInfo,
     createBranch,

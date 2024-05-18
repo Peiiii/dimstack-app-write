@@ -65,7 +65,7 @@ export type FileHelper = {
     owner: string;
     repo: string;
     path: string;
-    content: any;
+    content: string;
     message?: any;
     branch?: string | undefined;
     sha?: string | null | undefined;

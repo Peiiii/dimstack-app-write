@@ -107,11 +107,40 @@ export class GitRepoFileSystemProvider implements FileSystemProvider {
     });
   }
 
+  private async exists(uri: Uri): Promise<boolean> {
+    const path = uri.path; // 提取 Uri 中的路径
+    // 使用 GiteeClient 检查文件或目录是否存在
+    // 实现逻辑以检查文件或目录是否存在并处理错误
+    const fileExists = (
+      await this.gitClient.File.getInfo({
+        owner: this.owner,
+        repo: this.repo,
+        path,
+      })
+    ).data;
+    if (Array.isArray(fileExists) && fileExists.length === 0) {
+      return false;
+    }
+    return true;
+  }
+
   async writeFile(uri: Uri, content: Uint8Array): Promise<void> {
     const path = uri.path; // 提取 Uri 中的路径
+    const contentString = new TextDecoder().decode(content);
+
+    const exists = await this.exists(uri);
+    if (!exists) {
+      await this.gitClient.File.add({
+        owner: this.owner,
+        repo: this.repo,
+        path,
+        content: contentString,
+      });
+      return;
+    }
     // 使用 GiteeClient 写入文件内容
     // 实现逻辑以将内容写入文件并处理错误
-    const contentString = new TextDecoder().decode(content);
+
     await this.gitClient.File.update({
       owner: this.owner,
       repo: this.repo,

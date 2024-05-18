@@ -14,7 +14,7 @@ export const AddFileSystemProviderForEachSpace = createPlugin({
           space.id,
           new GitRepoFileSystemProvider(
             createGiteeClient({
-              accessToken: authService.getAuthInfo(space.platform, space.owner)
+              accessToken: authService.getAnyAuthInfo(space.platform, space.owner)
                 ?.accessToken,
             }),
             space.owner,

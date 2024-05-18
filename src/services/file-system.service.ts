@@ -134,7 +134,7 @@ export class FileSystemService {
     }
   }
 
-  async delete(uri: Uri, options: { recursive: boolean }): Promise<void> {
+  async delete(uri: Uri, options?: { recursive: boolean }): Promise<void> {
     const provider = this.getProvider(uri.scheme);
     if (provider) {
       await provider.delete(uri, options);

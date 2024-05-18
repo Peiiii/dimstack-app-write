@@ -20,11 +20,13 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@reduxjs/toolkit": "^1.9.5",
+    "add": "^2.0.6",
     "classnames": "^2.5.1",
     "framer-motion": "^10.16.1",
     "history": "^5.3.0",
     "js-base64": "^3.7.5",
     "lodash": "^4.17.21",
+    "octokit": "^4.0.2",
     "path-browserify": "^1.0.1",
     "pouchdb-browser": "^8.0.1",
     "react": "^18.2.0",
@@ -42,7 +44,8 @@
     "simplebar-react": "^3.2.4",
     "systemjs": "^6.14.2",
     "tinykeys": "^2.1.0",
-    "usehooks-ts": "^2.9.1"
+    "usehooks-ts": "^2.9.1",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@types/node": "^20.5.6",

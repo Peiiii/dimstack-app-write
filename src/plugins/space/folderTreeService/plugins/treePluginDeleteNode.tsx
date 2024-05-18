@@ -30,7 +30,7 @@ export default createTreePlugin<FolderTreeNode>({
       event.stopPropagation();
       if (
         await xbook.modalService.confirm({
-          title: "你确定要删除该会话吗？",
+          title: "你确定要删除该文件吗？",
         })
       ) {
         this.options.deleteNode(node);

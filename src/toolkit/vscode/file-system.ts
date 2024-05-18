@@ -222,7 +222,7 @@ export interface FileSystemProvider {
    * @throws [`FileNotFound`](#FileSystemError.FileNotFound) when `uri` doesn't exist.
    * @throws [`NoPermissions`](#FileSystemError.NoPermissions) when permissions aren't sufficient.
    */
-  delete(uri: Uri, options: { recursive: boolean }): void | Thenable<void>;
+  delete(uri: Uri, options?: { recursive: boolean }): void | Thenable<void>;
 
   /**
    * Rename a file or folder.
