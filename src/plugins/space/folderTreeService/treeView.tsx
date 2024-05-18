@@ -68,7 +68,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
   const atom = useAtom({ id: `fstree#${space.id}` });
 
   const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
-  const { hasReadPermission: isLogin, hasWritePermission } =
+  const { hasReadPermission: isLogin, hasWritePermission, isExpired } =
     spaceService.usePermissions(space.id);
   useEffect(() => {
     xbook.serviceBus.expose(`space-${space.id}.trigger`, () => {
@@ -76,6 +76,8 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
       serviceBus.invoke("refresh", "root");
     });
   }, []);
+
+  
 
   useEffect(() => {
     if (isLogin) {

@@ -32,6 +32,7 @@ const getSpaceWithAuth = (spaceId: string): SpaceDef | undefined => {
 };
 
 export default createPlugin({
+
   addServices(xbook) {
     return [
       "fileSystemService",

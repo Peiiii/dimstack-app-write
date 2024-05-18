@@ -13,6 +13,7 @@ import introduction from "@/plugins/widgets/introduction";
 import theme from "@/plugins/utilities/theme";
 import settings from "@/plugins/widgets/settings";
 import xbook from "xbook";
+import { AddFileSystemProviderForEachSpace } from "@/plugins/space/provideFileSystems";
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.has("testMode")) {
   import("https://esm.sh/vconsole@latest" as any).then((m) => {
@@ -28,6 +29,7 @@ xbook.pluginService.use([
 
   fileSystemService,
   folderTreeService,
+  AddFileSystemProviderForEachSpace,
   openerService,
   settings,
   theme,

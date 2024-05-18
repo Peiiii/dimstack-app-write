@@ -1,21 +1,22 @@
-import { Disposable } from "@/toolkit/vscode/Disposable";
-import { Event, EventEmitter } from "@/toolkit/vscode/EventEmitter";
-
-import { Uri } from "./Uri";
+import { Disposable } from "@/toolkit/vscode/disposable";
+import { Event } from "@/toolkit/vscode/event";
+import { EventEmitter } from "@/toolkit/vscode/event-emitter";
 import {
   FileChangeEvent,
   FileStat,
   FileSystemProvider,
   FileType,
-} from "./fileSystemProvider";
+} from "@/toolkit/vscode/file-system";
+import { Uri } from "@/toolkit/vscode/uri";
 
 interface FileSystemProviderEntry {
+  id: string;
   scheme: string;
   provider: FileSystemProvider;
   disposable: Disposable;
 }
 
-export class FileSystemManager {
+export class FileSystemService {
   private providers: FileSystemProviderEntry[] = [];
   private onDidChangeFileEmitter = new EventEmitter<FileChangeEvent[]>();
 
@@ -23,24 +24,40 @@ export class FileSystemManager {
     return this.onDidChangeFileEmitter.event;
   }
 
-  registerProvider(scheme: string, provider: FileSystemProvider): Disposable {
+  registerProvider(
+    id: string,
+    scheme: string,
+    provider: FileSystemProvider,
+    options: {
+      overwrite?: boolean;
+    } = {}
+  ): Disposable {
     const disposable = new Disposable(() => {
-      this.unregisterProvider(scheme);
+      this.unregisterProvider(id);
     });
-
     const entry: FileSystemProviderEntry = {
+      id,
       scheme,
       provider,
       disposable,
     };
 
-    this.providers.push(entry);
+    if (this.providers.some((entry) => entry.id === id)) {
+      if (options.overwrite) {
+        this.unregisterProvider(id);
+        this.providers.push(entry);
+      } else {
+        throw new Error(`Provider '${id}' already registered.`);
+      }
+    } else {
+      this.providers.push(entry);
+    }
 
     return disposable;
   }
 
-  private unregisterProvider(scheme: string): void {
-    const index = this.providers.findIndex((entry) => entry.scheme === scheme);
+  private unregisterProvider(id: string): void {
+    const index = this.providers.findIndex((entry) => entry.id === id);
     if (index !== -1) {
       const entry = this.providers.splice(index, 1)[0];
       entry.disposable.dispose();
@@ -58,6 +75,11 @@ export class FileSystemManager {
   ): Disposable {
     const provider = this.getProvider(uri.scheme);
     if (provider) {
+      if (!provider.watch) {
+        throw new Error(
+          `Provider for scheme '${uri.scheme}' does not support watching.`
+        );
+      }
       return provider.watch(uri, options);
     }
     throw new Error(`No provider registered for scheme '${uri.scheme}'`);

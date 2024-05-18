@@ -1,4 +1,3 @@
-
 export type AuthInfo = {
   platform: string;
   username: string;
@@ -16,9 +15,15 @@ export type IAuthService = {
   registerAuthProvider: (provider: IAuthProvider) => void;
   hasWritePermission: (platform: string, username: string) => boolean;
   hasReadPermission: (platform: string, username: string) => boolean;
+  // isExpired: (platform: string, username: string) => boolean;
   onAuthChange: (callback: () => void) => void;
 };
 export type IAuthProvider = {
   platform: string;
   authenticate: (username: string) => Promise<void>;
+  refresh?: (params: {
+    platform: string;
+    username: string;
+    refreshToken: string;
+  }) => Promise<void> | void;
 };

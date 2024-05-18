@@ -1,3 +1,3 @@
-import { FileSystemManager } from "./fileSystemManager";
+import { FileSystemService } from "@/services/file-system.service";
 
-export const fs = new FileSystemManager();
+export const fs = new FileSystemService();

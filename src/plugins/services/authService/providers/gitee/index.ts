@@ -3,11 +3,30 @@ import { CheckAuthCodeAndNext } from "@/plugins/services/authService/providers/g
 import { authService } from "@/services/auth.service.impl";
 import { IAuthProvider } from "@/services/auth.service.interface";
 import { getLoginUrl } from "libs/gitee-api";
+import giteeClient from "libs/gitee-api/gitee-client";
 import { createPlugin } from "xbook/common/createPlugin";
 import xbook from "xbook/index";
 
 export const giteeAuthProvider: IAuthProvider = {
   platform: "gitee",
+  refresh: async (params: {
+    platform: string;
+    username: string;
+    refreshToken: string;
+  }) => {
+    const { platform, username, refreshToken } = params;
+    const auth = await giteeClient.refreshAccessToken({ refreshToken });
+    authService.saveAuthInfo({
+      platform,
+      username,
+      accessToken: auth.access_token,
+      refreshToken: auth.refresh_token,
+      expirationTime: auth.expires_in,
+      createdAt: auth.created_at,
+      scope: auth.scope,
+      tokenType: auth.token_type,
+    });
+  },
   authenticate: async (username: string) => {
     // 弹窗询问用户是否确定跳转到对应平台的登录页面
     const userConfirmation = await xbook.modalService.confirm({
@@ -37,7 +56,7 @@ export const giteeAuthProvider: IAuthProvider = {
       clientId: appInfo.clientId,
     });
     console.log("url to redirect: " + url);
-    window.open(url,"_self");
+    window.open(url, "_self");
   },
 };
 

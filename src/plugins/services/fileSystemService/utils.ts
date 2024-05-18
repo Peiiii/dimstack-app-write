@@ -79,4 +79,5 @@ export const getDirectoryContent = async (
   return (await getSpaceFileHelper(space).getInfo({ owner, repo, path })).data;
 };
 
-export type FileItem=FileItemResponse;
+export type FileItem = FileItemResponse;
+

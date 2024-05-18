@@ -5,6 +5,7 @@ import { ISpaceService } from "@/services/space.service.interface";
 import { DataStore, createDataStore } from "@/toolkit/factories/dataStore";
 import { SpaceDef } from "@/toolkit/types/space";
 import { refreshAccessToken } from "libs/gitee-api";
+import { platform, userInfo } from "os";
 import { useEffect, useState } from "react";
 import xbook from "xbook/index";
 
@@ -80,6 +81,10 @@ export class SpaceServiceImpl implements ISpaceService {
     const [hasWritePermission, setHasWritePermission] = useState<boolean>(
       authService.hasWritePermission(space.platform, space.owner)
     );
+
+    // const [isExpired, setIsExpired] = useState<boolean>(
+    //   authService.isExpired(space.platform, space.owner)
+    // );
     useEffect(() => {
       authService.onAuthChange(() => {
         setHasReadPermission(
@@ -88,6 +93,9 @@ export class SpaceServiceImpl implements ISpaceService {
         setHasWritePermission(
           authService.hasWritePermission(space.platform, space.owner)
         );
+        // setIsExpired(
+        //   authService.isExpired(space.platform,space.owner)
+        // )
       });
     }, []);
 
@@ -116,7 +124,7 @@ export class SpaceServiceImpl implements ISpaceService {
       focus?: boolean;
     }
   ): SpaceDef => {
-    const spaceStore = xbook.registry.get("spaceStore") as DataStore<SpaceDef>;
+    const spaceStore = this.spaceStore;
     const id = spaceHelper.generateSpaceId(platform, owner, repo);
     const { focus } = options || {};
     const existingSpace = spaceStore.getRecord(id);
@@ -125,6 +133,8 @@ export class SpaceServiceImpl implements ISpaceService {
     });
     if (!existingSpace) {
       xbook.notificationService.success("成功添加空间");
+    } else {
+      xbook.notificationService.success("空间已存在");
     }
     if (focus) {
       this.focusSpace(id);
@@ -146,6 +156,13 @@ export class SpaceServiceImpl implements ISpaceService {
     else if (u.hostname === "github.com") platform = "github";
     [owner, repo] = u.pathname.slice(1).split("/");
     return { platform, owner, repo };
+  };
+
+  subscribeSpaces = (callback: (spaces: SpaceDef[]) => void) => {
+    callback(this.spaceStore.getData());
+    this.spaceStore.reduxStore.subscribe(() => {
+      callback(this.spaceStore.getData());
+    });
   };
 }
 

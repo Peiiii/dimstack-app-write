@@ -5,7 +5,7 @@ import { createPlugin } from "xbook/common/createPlugin";
 export default createPlugin({
   initilize(xbook) {
     xbook.fs.registerProvider(
-      "git",
+      "gitrepo",
       new GitRepoFileSystemProvider(
         createGiteeClient({ accessToken: "" }),
         "peiiii",

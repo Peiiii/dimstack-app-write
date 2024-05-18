@@ -9,6 +9,7 @@ export interface ISpaceService {
   usePermissions(spaceId: string): {
     hasReadPermission: boolean;
     hasWritePermission: boolean;
+    isExpired?:boolean;
   };
   updateSpace(space: SpaceDef): void;
   addSpace(
@@ -19,4 +20,5 @@ export interface ISpaceService {
   ): SpaceDef;
   focusSpace(spaceId: string): void;
   parseRepoUrl(url: string): { platform: string; owner: string; repo: string };
+  subscribeSpaces(callback: (spaces: SpaceDef[]) => void): void;
 }

@@ -1,7 +1,10 @@
 import { fileSystemHelper } from "@/helpers/file-system.helper";
+import { spaceHelper } from "@/helpers/space.helper";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreeHelper } from "@/toolkit/components/tree/treePlugins";
 import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
+import { FileType } from "@/toolkit/vscode/file-system";
+import xbook from "xbook/index";
 
 export default createTreeHelper<FolderTreeNode>().createPlugin({
   activate({
@@ -14,6 +17,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
       const data = viewStateStore.getData();
       console.log("viewStateStore:", data);
     });
+    /** read children only when expanded */
     const readTreeReferToViewState = async (
       spaceId: string,
       node: TreeDataNode<FolderTreeNode>
@@ -21,12 +25,35 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
       const oldNode = dataStore.getNode(node.id)!;
       const viewState = viewStateStore.getData().find((v) => v.id === node.id);
       if (!viewState || !viewState.expanded) return node;
-      const dirInfo = await fileSystemHelper.service.readDirectory(
-        fileSystemHelper.generateFileId(
-          spaceId,
-          node.id === "root" ? "/" : node.path!
-        )
+      // const dirInfo = await fileSystemHelper.service.readDirectory(
+      //   fileSystemHelper.generateFileId(
+      //     spaceId,
+      //     node.id === "root" ? "/" : node.path!
+      //   )
+      // );
+      const uri = spaceHelper.getUri(
+        spaceId,
+        node.id === "root" ? "/" : node.path!
       );
+
+      let parentPath = node.id === "root" ? "/" : node.path!;
+      parentPath = parentPath.endsWith("/") ? parentPath : parentPath + "/";
+
+      const info = await xbook.fs.readDirectory(uri);
+
+      const dirInfo = info.map(([name, type]) => {
+        return {
+          id: `${parentPath}/${name}`,
+          name,
+          path: `${parentPath}/${name}`,
+          type: (type === FileType.Directory
+            ? "dir"
+            : type === FileType.File
+            ? "file"
+            : "file") as "dir" | "file",
+        };
+      });
+
       return {
         ...node,
         children: await Promise.all(
