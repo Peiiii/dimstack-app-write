@@ -99,22 +99,23 @@ export class AuthServiceImpl implements IAuthService {
 
   hasReadPermission(platform: string, username: string): boolean {
     const authInfo = this.getAnyAuthInfo(platform, username);
-    return (
-      !!authInfo &&
-      authInfo.createdAt !== undefined &&
-      authInfo.expirationTime !== undefined &&
-      (authInfo.createdAt + authInfo.expirationTime) * 1000 > Date.now()
-    );
+    return !!authInfo && this.checkSessionValid(authInfo);
+  }
+
+  private checkSessionValid(authInfo?: AuthInfo) {
+    if (!authInfo || !authInfo.accessToken) {
+      return false;
+    } else if (!authInfo.expirationTime) {
+      return true;
+    } else if (!authInfo.createdAt) {
+      return false;
+    } else
+      return (authInfo.createdAt + authInfo.expirationTime) * 1000 > Date.now();
   }
 
   hasWritePermission(platform: string, username: string): boolean {
     const authInfo = this.getAuthInfo(platform, username);
-    return (
-      !!authInfo &&
-      authInfo.createdAt !== undefined &&
-      authInfo.expirationTime !== undefined &&
-      (authInfo.createdAt + authInfo.expirationTime) * 1000 > Date.now()
-    );
+    return !!authInfo && this.checkSessionValid(authInfo);
   }
 
   onAuthChange(callback: () => void) {

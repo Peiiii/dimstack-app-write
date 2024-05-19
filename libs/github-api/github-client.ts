@@ -113,7 +113,7 @@ import axios from "redaxios";
 // }
 
 export const getGithubLoginUrl = ({ redirectUri, clientId }) => {
-  return `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&apiresponse_type=code&scope=user_info%20projects`;
+  return `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&apiresponse_type=code&scope=user%20repo`;
 };
 
 const prepareParams = (params: Record<string, any>) => {
