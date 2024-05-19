@@ -1,46 +1,49 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="shortcut icon" type="image/png" href="/logo.png" />
+    <link rel="apple-touch-icon" type="image/png" href="/logo.png" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f1f1f1" />
+    <title>Wrtie your note</title>
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" href="/logo.png" />
-  <link rel="shortcut icon" type="image/png" href="/logo.png" />
-  <link rel="apple-touch-icon" type="image/png" href="/logo.png">
-  <link rel="manifest" href="manifest.json" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#f1f1f1">
-  <title>Wrtie your note</title>
-
-  <script>
-    if (navigator.serviceWorker != null) {
-      navigator.serviceWorker
-        .register("sw.js")
-        .then(function (registration) {
+    <script>
+      if (navigator.serviceWorker != null) {
+        navigator.serviceWorker.register("sw.js").then(function (registration) {
           console.log("Registered events at scope: ", registration.scope);
         });
-    }
-  </script>
-  <script type="systemjs-importmap">
-    {
-      "imports": {
-        "react": "app:react",
-        "react-dom": "app:react-dom"
       }
-    }
- </script>
-  <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    </script>
+    <script type="systemjs-importmap">
+      {
+        "imports": {
+          "react": "app:react",
+          "react-dom": "app:react-dom"
+        }
+      }
+    </script>
+    <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
   <script>
     // VConsole will be exported to `window.VConsole` by default.
     var vConsole = new window.VConsole();
   </script> -->
 
-  <!-- <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <!-- <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script> -->
-</head>
+  </head>
 
-<body>
-  <div id="root"></div>
-  <script type="module" src="/src/main.tsx"></script>
-</body>
-
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <!-- Cloudflare Web Analytics -->
+    <script
+      defer
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon='{"token": "a18a917576fb44fa897cab5b97d74ecd"}'
+    ></script>
+    <!-- End Cloudflare Web Analytics -->
+  </body>
 </html>
