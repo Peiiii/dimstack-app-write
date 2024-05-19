@@ -120,5 +120,5 @@ export type GiteeClient = {
       refs?: string;
     }) => Promise<ApiResponse<any>>;
   };
-  setAccessToken: (accessToken: any) => void;
+  // setAccessToken: (accessToken: any) => void;
 };

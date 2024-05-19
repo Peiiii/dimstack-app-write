@@ -25,22 +25,27 @@ const AddSpaceView = () => {
   const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
   const [url, setUrl] = useState("");
   const modal = useContext(ModalActionContext)!;
-  const demoUrl = "https://gitee.com/liyupi/code-roadmap";
+  const recommendUrls = [
+    "https://gitee.com/liyupi/code-roadmap",
+    "https://github.com/ruanyf/weekly",
+  ];
   return (
     <>
       <Text color="gray" wordBreak={"break-all"} mb="1em">
         请输入你的Gitee仓库链接。示例：
-        <Wrap>
-          <Text as="a">{demoUrl}</Text>
-          <Link
-            color="blue.500"
-            onClick={() => {
-              setUrl(demoUrl);
-            }}
-          >
-            填入
-          </Link>
-        </Wrap>
+        {recommendUrls.map((u) => (
+          <Wrap>
+            <Text as="a">{u}</Text>
+            <Link
+              color="blue.500"
+              onClick={() => {
+                setUrl(u);
+              }}
+            >
+              填入
+            </Link>
+          </Wrap>
+        ))}
       </Text>
       <InputGroup>
         <Input

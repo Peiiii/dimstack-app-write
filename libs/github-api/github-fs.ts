@@ -221,7 +221,7 @@ export const createGiteeFS = async ({
   if (refreshGithubAccessToken) {
     accessToken = await refreshGithubAccessToken({ refreshToken });
   }
-  const client = createGithubClient({ accessToken });
+  const client = createGithubClient({ getAccessToken: () => accessToken });
   const handle = buildGiteeFS({ client, owner, repo });
   return handle;
 };

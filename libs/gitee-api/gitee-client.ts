@@ -1,9 +1,5 @@
 import { Base64 } from "js-base64";
-import {
-  FileHelper,
-  GiteeClient,
-  Method,
-} from "libs/git-client.types";
+import { FileHelper, GiteeClient, Method } from "libs/git-client.types";
 import { GithubAuthInfo } from "libs/github-api";
 import axios from "redaxios";
 
@@ -91,14 +87,14 @@ const URLBuilder = (() => {
   };
 })();
 export const createGiteeClient = ({
-  accessToken,
+  getAccessToken,
 }: {
-  accessToken?;
+  getAccessToken: () => string | undefined;
 }): GiteeClient => {
-  let access_token = accessToken;
-  const setAccessToken = (accessToken) => {
-    access_token = accessToken;
-  };
+  // let access_token = accessToken;
+  // const setAccessToken = (accessToken) => {
+  //   access_token = accessToken;
+  // };
   const submitForm = async (url, data, method: Method = "POST") => {
     const formData = new FormData();
     Object.keys(data).forEach((key) => {
@@ -116,19 +112,19 @@ export const createGiteeClient = ({
   const User = {
     getInfo: async () => {
       return axios.get(URLBuilder.getUserInfo(), {
-        params: prepareParams({ access_token }),
+        params: prepareParams({ access_token: getAccessToken() }),
       });
     },
   };
   const Repo = {
     get: async ({ owner, repo }) => {
       return axios.get(URLBuilder.getRepo(owner, repo), {
-        params: prepareParams({ access_token }),
+        params: prepareParams({ access_token: getAccessToken() }),
       });
     },
     add: async ({ repo }) => {
       const data = {
-        access_token,
+        access_token: getAccessToken(),
         name: repo,
         has_issues: true,
         has_wiki: true,
@@ -139,33 +135,48 @@ export const createGiteeClient = ({
     },
     getList: async ({ page = 1, per_page = 20 }) => {
       return axios.get(URLBuilder.getRepoList(), {
-        params: prepareParams({ access_token, page, per_page }),
+        params: prepareParams({
+          access_token: getAccessToken(),
+          page,
+          per_page,
+        }),
       });
     },
     delete: async ({ owner, repo }) => {
       return axios.delete(URLBuilder.deleteRepo(owner, repo), {
-        params: { access_token, owner, repo },
+        params: { access_token: getAccessToken(), owner, repo },
       });
     },
     clear: async ({ owner, repo }) => {
       return axios.put(URLBuilder.clearRepo(owner, repo), {
-        params: { access_token, owner, repo },
+        params: { access_token: getAccessToken(), owner, repo },
       });
     },
   };
   const Branch = {
     get: async ({ owner, repo, branch }) => {
       return axios.get(URLBuilder.getBranch(owner, repo, branch), {
-        params: prepareParams({ access_token, owner, repo, branch }),
+        params: prepareParams({
+          access_token: getAccessToken(),
+          owner,
+          repo,
+          branch,
+        }),
       });
     },
     getList: async ({ owner, repo }) => {
       return axios.get(URLBuilder.getBranchList(owner, repo), {
-        params: prepareParams({ access_token, owner, repo }),
+        params: prepareParams({ access_token: getAccessToken(), owner, repo }),
       });
     },
     add: async ({ owner, repo, branch, refs = "master" }) => {
-      const data = { access_token, owner, repo, branch_name: branch, refs };
+      const data = {
+        access_token: getAccessToken(),
+        owner,
+        repo,
+        branch_name: branch,
+        refs,
+      };
       return submitForm(URLBuilder.createBranch(owner, repo), data);
     },
   };
@@ -177,7 +188,12 @@ export const createGiteeClient = ({
 
   const getPathInfo = async ({ owner, repo, path }) => {
     return axios.get(URLBuilder.getPathContents(owner, repo, path), {
-      params: prepareParams({ access_token, owner, repo, path }),
+      params: prepareParams({
+        access_token: getAccessToken(),
+        owner,
+        repo,
+        path,
+      }),
     });
   };
 
@@ -186,7 +202,14 @@ export const createGiteeClient = ({
       if (!isBase64Encoded(content)) content = Base64.encode(content);
       if (!message) message = "create " + path;
 
-      const data = { access_token, owner, path, content, message, branch };
+      const data = {
+        access_token: getAccessToken(),
+        owner,
+        path,
+        content,
+        message,
+        branch,
+      };
       return submitForm(URLBuilder.createFile(owner, repo, path), data) as any;
     },
     update: async ({
@@ -204,7 +227,7 @@ export const createGiteeClient = ({
       return submitForm(
         URLBuilder.updateFile(owner, repo, path),
         {
-          access_token,
+          access_token: getAccessToken(),
           owner,
           repo,
           path,
@@ -220,7 +243,14 @@ export const createGiteeClient = ({
       if (!sha) sha = (await getPathInfo({ owner, repo, path })).data.sha;
       if (!message) message = "delete " + path;
       return axios.delete(URLBuilder.deleteFile(owner, repo, path), {
-        params: { access_token, owner, repo, path, sha, message },
+        params: {
+          access_token: getAccessToken(),
+          owner,
+          repo,
+          path,
+          sha,
+          message,
+        },
       }) as any;
     },
     get: async ({ owner, repo, path }) => {
@@ -237,7 +267,6 @@ export const createGiteeClient = ({
     Repo,
     User,
     Branch,
-    setAccessToken,
   };
 };
 

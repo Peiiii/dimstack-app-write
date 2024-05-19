@@ -141,7 +141,7 @@ export const getGithubAccessToken = async ({
     redirectUri
   )}&client_secret=${clientSecret}`;
   // const url = `https://cors-anywhere.herokuapp.com/${proxyUrl}`;
-  const url =`https://proxy.brainbo.fun/?${proxyUrl}`
+  const url = `https://proxy.brainbo.fun/?${proxyUrl}`;
   console.log("url:", url);
   const res = await axios.post(url);
   // store.set("github", res.data);
@@ -226,11 +226,16 @@ const URLBuilder = (() => {
   };
 })();
 
-export const createGithubClient = ({ accessToken }: { accessToken? }) => {
-  let access_token = accessToken;
-  const setAccessToken = (accessToken) => {
-    access_token = accessToken;
-  };
+export const createGithubClient = ({
+  getAccessToken,
+}: {
+  getAccessToken: () => string | undefined;
+}) => {
+  // let access_token = accessToken;
+  // const setAccessToken = (accessToken) => {
+  //   access_token = accessToken;
+  // };
+  // const getAccessToken = () => access_token;
   const submitForm = async (
     url,
     data,
@@ -243,7 +248,7 @@ export const createGithubClient = ({ accessToken }: { accessToken? }) => {
         url,
         data,
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${getAccessToken()}`,
         },
       } as any);
     }
@@ -257,7 +262,7 @@ export const createGithubClient = ({ accessToken }: { accessToken? }) => {
       url,
       data: formData,
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${getAccessToken()}`,
       },
       // headers: { "Content-Type": "multipart/form-data" },
     } as any);
@@ -266,7 +271,7 @@ export const createGithubClient = ({ accessToken }: { accessToken? }) => {
   const User = {
     getInfo: async () => {
       return axios.get(URLBuilder.getUserInfo(), {
-        params: prepareParams({ access_token }),
+        params: prepareParams({ access_token: getAccessToken() }),
       });
     },
   };
@@ -329,7 +334,7 @@ export const createGithubClient = ({ accessToken }: { accessToken? }) => {
     return axios.get(URLBuilder.getPathContents(owner, repo, path), {
       params: prepareParams({ owner, repo, path }),
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${getAccessToken()}`,
       },
     });
   };
@@ -337,7 +342,7 @@ export const createGithubClient = ({ accessToken }: { accessToken? }) => {
   const File: FileHelper = {
     add: async ({ owner, repo, path, content, message, branch = "master" }) => {
       const octokit = new Octokit({
-        auth: accessToken,
+        auth: getAccessToken(),
       });
       path = path.startsWith("/") ? path.slice(1) : path;
 
@@ -381,7 +386,7 @@ export const createGithubClient = ({ accessToken }: { accessToken? }) => {
       return axios.delete(URLBuilder.deleteFile(owner, repo, path), {
         params: { owner, repo, path, sha, message },
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${getAccessToken()}`,
         },
       }) as any;
     },
@@ -399,7 +404,6 @@ export const createGithubClient = ({ accessToken }: { accessToken? }) => {
     Repo,
     User,
     Branch,
-    setAccessToken,
   };
 };
 
