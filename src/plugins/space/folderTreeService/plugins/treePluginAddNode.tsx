@@ -1,12 +1,11 @@
-import { fileSystemHelper } from "@/helpers/file-system.helper";
 import { spaceHelper } from "@/helpers/space.helper";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreeHelper } from "@/toolkit/components/tree/treePlugins";
-import { Uri } from "@/toolkit/vscode/uri";
+import { join } from "@/toolkit/utils/path";
 import { nanoid } from "@reduxjs/toolkit";
-import { join } from "path-browserify";
 import { AiFillFileAdd, AiFillFolderAdd } from "react-icons/ai";
 import { fs } from "xbook/services";
+
 export default createTreeHelper<FolderTreeNode>().createPlugin({
   addOptions() {
     return {
@@ -26,17 +25,6 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
   }) {
     viewSystem.addNodeMenuItems([
       {
-        id: "addNode",
-        name: "新建文件夹",
-        title: "新建文件夹",
-        event: "addFolderAt",
-        validate: ({ node }) => {
-          return node.type === "dir";
-        },
-        // icon: <VscNewFolder />,
-        icon: <AiFillFolderAdd />,
-      },
-      {
         id: "addFile",
         name: "新建文件",
         title: "新建文件",
@@ -46,6 +34,17 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
         },
         // icon: <VscNewFile />,
         icon: <AiFillFileAdd />,
+      },
+      {
+        id: "addNode",
+        name: "新建文件夹",
+        title: "新建文件夹",
+        event: "addFolderAt",
+        validate: ({ node }) => {
+          return node.type === "dir";
+        },
+        // icon: <VscNewFolder />,
+        icon: <AiFillFolderAdd />,
       },
     ]);
 

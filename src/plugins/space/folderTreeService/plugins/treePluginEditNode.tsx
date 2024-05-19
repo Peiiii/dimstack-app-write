@@ -8,9 +8,7 @@ import { AiFillEdit } from "react-icons/ai";
 export default createTreeHelper<FolderTreeNode>().createPlugin({
   addOptions() {
     return {
-      editable: ({ level }) => {
-        return level === 1;
-      },
+      editable: ({ level, node }):boolean => false,
       renameNode: (() => {}) as (node: FolderTreeNode, name: string) => void,
     };
   },

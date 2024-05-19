@@ -5,6 +5,7 @@ import { EventKeys } from "@/constants/eventKeys";
 import { Tokens } from "@/constants/tokens";
 import { fileSystemHelper } from "@/helpers/file-system.helper";
 import { useStateFromRegistry } from "@/helpers/hooks/user-state-from-registry";
+import { spaceHelper } from "@/helpers/space.helper";
 import SideCard from "@/plugins/space/folderTreeService/components/SideCard";
 import treePluginAddNode from "@/plugins/space/folderTreeService/plugins/treePluginAddNode";
 import treePluginInit from "@/plugins/space/folderTreeService/plugins/treePluginInit";
@@ -25,16 +26,16 @@ import { createTreeDataStore } from "@/toolkit/factories/treeDataStore";
 import { Action } from "@/toolkit/types";
 import { SpaceDef } from "@/toolkit/types/space";
 import { useAtom } from "@/toolkit/utils/hooks/useAtom";
-import { dirname, join } from "path-browserify";
+import { dirname } from "path-browserify";
 import { useEffect, useMemo } from "react";
 import { AiOutlineLink } from "react-icons/ai";
 import xbook from "xbook/index";
+import { fs } from "xbook/services";
 import treePluginClickNode from "./plugins/treePluginClickNode";
 import treePluginConfig from "./plugins/treePluginConfig";
 import treePluginDeleteNode from "./plugins/treePluginDeleteNode";
 import treePluginEditNode from "./plugins/treePluginEditNode";
-import { fs } from "xbook/services";
-import { spaceHelper } from "@/helpers/space.helper";
+import { join } from "@/toolkit/utils/path";
 
 const TreeView = ({ space }: { space: SpaceDef }) => {
   const treeDataStore = useMemo(
@@ -159,8 +160,8 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
               treePluginInit(),
               treePluginClickNode(),
               treePluginEditNode({
-                editable: ({ level }) => {
-                  return level !== 0;
+                editable: ({ level ,node}) => {
+                  return level !== 0 && node.type === "file";
                 },
                 renameNode: async (node, name) => {
                   const newPath = join(dirname(node.path!), name);

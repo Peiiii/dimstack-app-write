@@ -3,13 +3,14 @@ import {
   FileHelper,
   GiteeClient,
   Method,
-} from "libs/gitee-api/gitee-client.types";
+} from "libs/git-client.types";
+import { GithubAuthInfo } from "libs/github-api";
 import axios from "redaxios";
 
 const API_BASE_URL = "https://gitee.com/api/v5";
 const AUTHORIZE_URL = "https://gitee.com/oauth/token";
 
-export const getLoginUrl = ({ redirectUri, clientId }) => {
+export const getGiteeLoginUrl = ({ redirectUri, clientId }) => {
   return `https://gitee.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=user_info%20projects`;
 };
 
@@ -23,14 +24,7 @@ export const getGiteeAccessToken = async ({
   clientId,
   clientSecret,
   redirectUri,
-}): Promise<{
-  access_token: string;
-  created_at: number;
-  expires_in: number;
-  refresh_token: string;
-  scope: string;
-  token_type: string;
-}> => {
+}): Promise<GithubAuthInfo> => {
   const url = `https://gitee.com/oauth/token?grant_type=authorization_code&code=${code}&client_id=${clientId}&redirect_uri=${redirectUri}&client_secret=${clientSecret}`;
   console.log("url:", url);
   const res = await axios.post(url);
@@ -38,7 +32,7 @@ export const getGiteeAccessToken = async ({
   return res.data;
 };
 
-export const refreshAccessToken = async ({
+export const refreshGiteeAccessToken = async ({
   refreshToken,
 }): Promise<{
   access_token: string;
@@ -248,11 +242,11 @@ export const createGiteeClient = ({
 };
 
 export default {
-  refreshAccessToken,
+  refreshAccessToken: refreshGiteeAccessToken,
   getGiteeAccessToken,
   getUrlParam,
-  getLoginUrl,
+  getLoginUrl: getGiteeLoginUrl,
   createGiteeClient,
 };
 
-export type { GiteeClient } from "./gitee-client.types";
+export type { GiteeClient } from "../git-client.types";

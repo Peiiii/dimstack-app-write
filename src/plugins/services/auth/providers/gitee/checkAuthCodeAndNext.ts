@@ -1,8 +1,8 @@
 import { Tokens } from "@/constants/tokens";
-import { appInfo } from "@/plugins/services/authService/providers/gitee/appInfo";
+import { appInfo } from "@/plugins/services/auth/providers/gitee/appInfo";
 import { DataStore } from "@/toolkit/factories/dataStore";
 import { SpaceDef } from "@/toolkit/types/space";
-import { getLoginUrl } from "libs/gitee-api";
+import { getGiteeLoginUrl } from "libs/gitee-api";
 import giteeClient from "libs/gitee-api/gitee-client";
 import { createPlugin } from "xbook/common/createPlugin";
 import history from "xbook/common/history";
@@ -53,7 +53,7 @@ export const listenGiteeLoginCallback = createPlugin({
         .space("tmp", "localStorage")
         .get("authSpaceId");
       console.log("save space id: " + sId);
-      const url = getLoginUrl({
+      const url = getGiteeLoginUrl({
         redirectUri: appInfo.redirectUri,
         clientId: appInfo.clientId,
       });
@@ -85,6 +85,7 @@ export const CheckAuthCodeAndNext = {
               accessToken: auth.access_token,
               refreshToken: auth.refresh_token,
               expirationTime: auth.expires_in,
+              refreshTokenExpirationTime: auth.refresh_token_expires_in,
               createdAt: auth.created_at,
               scope: auth.scope,
               tokenType: auth.token_type,

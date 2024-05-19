@@ -1,4 +1,10 @@
-type AppInfo = { clientId: string; clientSecret: string; redirectUri: string };
+type AppInfo = {
+  clientId: string;
+  clientSecret: string;
+  redirectUri: string;
+  appId?: number;
+  privateKey?: string;
+};
 let appInfo: AppInfo;
 const oauthApps: Record<string, AppInfo> = {
   localhost: {
@@ -16,18 +22,18 @@ const oauthApps: Record<string, AppInfo> = {
     redirectUri: "https://apps.eiooie.com/gitee_login/index.html",
   },
   writeDimstack: {
-    clientId:
-      "e9d3ac7adbf20644f335257353e1798d709062b85b73896a4d4f762b7ee92e40",
-    clientSecret:
-      "c4bb089c4585b53ae68150b847a99ef3445de57c060082256c296b725df46de1",
-    redirectUri: "https://write.dimstack.com",
+    appId:394730,
+    privateKey: "SHA256:rGoqlxkc4jjLueh399vzrmAVbbbLHx9QsKqCC7NhqSQ=",
+    clientId: "Iv1.5e87359846424cbf",
+    clientSecret: "9cdd82864b981f1443cdff296394d525c5d19b27",
+    redirectUri: "https://write.dimstack.com?platform=github",
   },
   localhost5173: {
-    clientId:
-      "7fa2b5a6e0445f723e8bc04850293d604ca2d50b537e90ed71e344edcbdb87da",
-    clientSecret:
-      "45a3e2898145673b20f1198d0be5ac7600b4f3c792f5e2a0f40238ca4a984ca5",
-    redirectUri: "http://localhost:5173/",
+    clientId: "Iv23liYn2lMgMlkaiHmC",
+    clientSecret: "8e1f33bf7ea870b9a65b5668b2c0717cdd4e6961",
+    redirectUri: "http://localhost:5173/?platform=github",
+    appId: 901385,
+    privateKey: "SHA256:teY/ilyFltKzOiqXhi2ove1s1mFVIZ9B1W54oPcRPVc=",
   },
 };
 

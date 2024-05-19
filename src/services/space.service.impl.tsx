@@ -4,7 +4,7 @@ import Auth from "@/plugins/space/spaceService/Auth";
 import { ISpaceService } from "@/services/space.service.interface";
 import { DataStore, createDataStore } from "@/toolkit/factories/dataStore";
 import { SpaceDef } from "@/toolkit/types/space";
-import { refreshAccessToken } from "libs/gitee-api";
+import { refreshGiteeAccessToken } from "libs/gitee-api";
 import { useEffect, useState } from "react";
 import xbook from "xbook/index";
 
@@ -36,7 +36,7 @@ export class SpaceServiceImpl implements ISpaceService {
     return new Promise<boolean>((resolve) => {
       const space = this.spaceStore.getRecord(spaceId)!;
       if (!space.auth) return resolve(false);
-      refreshAccessToken({ refreshToken: space.auth?.refresh_token })
+      refreshGiteeAccessToken({ refreshToken: space.auth?.refresh_token })
         .then((res) => {
           this.spaceStore.getActions().update({ ...space, auth: res });
           console.log("auth updated:", res);

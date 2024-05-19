@@ -82,7 +82,7 @@ export class AuthServiceImpl implements IAuthService {
     return this.authInfoMap[platform]?.[username];
   }
 
-  async authenticate(platform: string, username: string) {
+  async authenticate(platform: string, username: string, repo: string) {
     const authProvider = this.authProviders.find(
       (p) => p.platform === platform
     );
@@ -90,7 +90,7 @@ export class AuthServiceImpl implements IAuthService {
       xbook.notificationService.error("不支持的平台:" + platform);
       return;
     }
-    await authProvider.authenticate(username);
+    await authProvider.authenticate(username, repo);
   }
 
   registerAuthProvider(provider: IAuthProvider) {

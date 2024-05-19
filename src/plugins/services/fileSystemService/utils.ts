@@ -1,6 +1,6 @@
 import { SpaceDef } from "@/toolkit/types/space";
+import { FileItemResponse } from "libs/git-client.types";
 import { createGiteeClient } from "libs/gitee-api";
-import { FileItemResponse } from "libs/gitee-api/gitee-client.types";
 
 export const getFileContent = async (space: SpaceDef, path: string) => {
   const { access_token } = space.auth || {};

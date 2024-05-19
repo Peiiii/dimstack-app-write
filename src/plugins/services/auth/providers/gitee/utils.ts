@@ -1,4 +1,4 @@
-import { appInfo } from "@/plugins/services/authService/providers/gitee/appInfo";
+import { appInfo } from "@/plugins/services/auth/providers/gitee/appInfo";
 import { JSONStorage } from "@/toolkit/factories/treeStorage";
 import { getGiteeAccessToken } from "libs/gitee-api/gitee-client";
 

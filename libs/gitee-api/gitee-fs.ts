@@ -1,7 +1,7 @@
 import {
   GiteeClient,
   createGiteeClient,
-  refreshAccessToken,
+  refreshGiteeAccessToken,
 } from "./gitee-client";
 const wrapPromise = (func) => {
   return (...args) => {
@@ -218,8 +218,8 @@ export const createGiteeFS = async ({
   repo,
   refreshToken,
 }) => {
-  if (refreshAccessToken) {
-    accessToken = await refreshAccessToken({ refreshToken });
+  if (refreshGiteeAccessToken) {
+    accessToken = await refreshGiteeAccessToken({ refreshToken });
   }
   const client = createGiteeClient({ accessToken });
   const handle = buildGiteeFS({ client, owner, repo });

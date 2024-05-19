@@ -1,7 +1,7 @@
 import {
   GiteeClient,
-  createGiteeClient,
-  refreshAccessToken,
+  createGithubClient,
+  refreshGithubAccessToken,
 } from "./github-client";
 const wrapPromise = (func) => {
   return (...args) => {
@@ -132,7 +132,7 @@ const buildGiteeFS = ({
           console.assert(encoding === "utf8" || encoding === "utf-8");
           content = file.data.content;
         } else {
-          content = file.data.unit8array;
+          content = file.data.uint8array;
         }
         return callback(null, content);
       })
@@ -202,12 +202,13 @@ const buildGiteeFS = ({
   };
 };
 
-interface AuthInfo {
+export interface GithubAuthInfo {
   access_token: string;
-  refresh_token: string;
+  refresh_token?: string;
   token_type: string;
   expires_in: number;
-  created_at: number;
+  created_at?: number;
+  refresh_token_expires_in?: number;
   scope: string;
 }
 
@@ -217,10 +218,10 @@ export const createGiteeFS = async ({
   repo,
   refreshToken,
 }) => {
-  if (refreshAccessToken) {
-    accessToken = await refreshAccessToken({ refreshToken });
+  if (refreshGithubAccessToken) {
+    accessToken = await refreshGithubAccessToken({ refreshToken });
   }
-  const client = createGiteeClient({ accessToken });
+  const client = createGithubClient({ accessToken });
   const handle = buildGiteeFS({ client, owner, repo });
   return handle;
 };

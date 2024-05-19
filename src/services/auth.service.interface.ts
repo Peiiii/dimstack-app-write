@@ -3,6 +3,7 @@ export type AuthInfo = {
   username: string;
   accessToken?: string;
   refreshToken?: string;
+  refreshTokenExpirationTime?: number;
   expirationTime?: number;
   createdAt?: number;
   [k: string]: number | string | undefined;
@@ -11,7 +12,7 @@ export type IAuthService = {
   saveAuthInfo: (authInfo: AuthInfo) => void;
   getAuthInfo: (platform: string, username: string) => AuthInfo | undefined;
   getAnyAuthInfo: (platform: string, username: string) => AuthInfo | undefined;
-  authenticate: (platform: string, username: string) => Promise<void>;
+  authenticate: (platform: string, username: string, repo:string) => Promise<void>;
   registerAuthProvider: (provider: IAuthProvider) => void;
   hasWritePermission: (platform: string, username: string) => boolean;
   hasReadPermission: (platform: string, username: string) => boolean;
@@ -20,7 +21,7 @@ export type IAuthService = {
 };
 export type IAuthProvider = {
   platform: string;
-  authenticate: (username: string) => Promise<void>;
+  authenticate: (username: string, repo: string) => Promise<void>;
   refresh?: (params: {
     platform: string;
     username: string;

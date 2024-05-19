@@ -43,9 +43,9 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
 
       const dirInfo = info.map(([name, type]) => {
         return {
-          id: `${parentPath}/${name}`,
+          id: `${parentPath}${name}`,
           name,
-          path: `${parentPath}/${name}`,
+          path: `${parentPath}${name}`,
           type: (type === FileType.Directory
             ? "dir"
             : type === FileType.File

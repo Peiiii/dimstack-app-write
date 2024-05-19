@@ -1,8 +1,8 @@
 import { Tokens } from "@/constants/tokens";
-import { appInfo } from "@/plugins/services/authService/providers/gitee/appInfo";
-import { CheckAuthCodeAndNext } from "@/plugins/services/authService/providers/gitee/checkAuthCodeAndNext";
+import { appInfo } from "@/plugins/services/auth/providers/gitee/appInfo";
+import { CheckAuthCodeAndNext } from "@/plugins/services/auth/providers/gitee/checkAuthCodeAndNext";
 import { IAuthProvider } from "@/services/auth.service.interface";
-import { getLoginUrl } from "libs/gitee-api";
+import { getGiteeLoginUrl } from "libs/gitee-api";
 import giteeClient from "libs/gitee-api/gitee-client";
 import { createPlugin } from "xbook/common/createPlugin";
 import xbook from "xbook/index";
@@ -52,7 +52,7 @@ export const giteeAuthProvider: IAuthProvider = {
         deffered: true,
       }
     );
-    const url = getLoginUrl({
+    const url = getGiteeLoginUrl({
       redirectUri: appInfo.redirectUri,
       clientId: appInfo.clientId,
     });

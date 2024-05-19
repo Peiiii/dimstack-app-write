@@ -1,6 +1,6 @@
 import base from "@/plugins/core/base";
 import asyncPluginService from "@/plugins/services/asyncPluginService";
-import authService from "@/plugins/services/authService";
+import authService from "@/plugins/services/auth";
 import fileSystemService from "@/plugins/services/fileSystemService";
 import openerService from "@/plugins/services/openerService";
 import { addGiteeSpace } from "@/plugins/space/addSpace";

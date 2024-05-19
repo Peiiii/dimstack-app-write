@@ -111,15 +111,20 @@ export class GitRepoFileSystemProvider implements FileSystemProvider {
     const path = uri.path; // 提取 Uri 中的路径
     // 使用 GiteeClient 检查文件或目录是否存在
     // 实现逻辑以检查文件或目录是否存在并处理错误
-    const fileExists = (
-      await this.gitClient.File.getInfo({
-        owner: this.owner,
-        repo: this.repo,
-        path,
-      })
-    ).data;
-    if (Array.isArray(fileExists) && fileExists.length === 0) {
-      return false;
+
+    try {
+      const fileExists = (
+        await this.gitClient.File.getInfo({
+          owner: this.owner,
+          repo: this.repo,
+          path,
+        })
+      ).data;
+      if (Array.isArray(fileExists) && fileExists.length === 0) {
+        return false;
+      }
+    } catch (error: any) {
+      if (error && error.status === 404) return false;
     }
     return true;
   }
@@ -137,6 +142,7 @@ export class GitRepoFileSystemProvider implements FileSystemProvider {
         content: contentString,
       });
       return;
+      
     }
     // 使用 GiteeClient 写入文件内容
     // 实现逻辑以将内容写入文件并处理错误
