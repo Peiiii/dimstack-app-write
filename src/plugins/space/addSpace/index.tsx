@@ -32,7 +32,7 @@ const AddSpaceView = () => {
   return (
     <>
       <Text color="gray" wordBreak={"break-all"} mb="1em">
-        请输入你的Gitee仓库链接。示例：
+        请输入你的Gitee/Github仓库链接。示例：
         {recommendUrls.map((u) => (
           <Wrap>
             <Text as="a">{u}</Text>
@@ -187,7 +187,7 @@ export const addGiteeSpace = createPlugin({
             <Alert status="info">
               <AlertIcon />
               1.
-              您可以将gitee仓库添加为空间，添加后，还需进行授权的操作才可正常使用。
+              您可以将Gitee/Github仓库添加为空间，添加后，还需进行授权的操作才可正常使用。
               <br />
               2.
               授权后，如果是你的仓库，你可以对仓库进行编辑。如果是别人的仓库，你只能查看。
