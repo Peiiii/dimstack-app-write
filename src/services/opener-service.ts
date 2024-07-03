@@ -13,6 +13,7 @@ import xbook from "xbook/index";
 
 type FileOpenerOptions = {
   match: string[] | RegExp[] | ((s: string) => boolean);
+  priority?: number;
   init(uri: string): void;
 };
 
@@ -27,9 +28,10 @@ export class OpenerService implements IOpenerService {
   open = async (spaceId: string, file: FolderTreeNode): Promise<void> => {
     if (!file || !file.path) return;
 
-    const opener = this.openers.find((opener) =>
-      this.match(opener, file.path!.split("/").pop()!)
-    );
+    const opener = this.openers
+      .sort((a, b) => (a.priority || 0) - (b.priority || 0))
+      .reverse()
+      .find((opener) => this.match(opener, file.path!.split("/").pop()!));
     console.log(
       "open file:",
       file.path,

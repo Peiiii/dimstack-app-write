@@ -17,6 +17,7 @@ export const COMMON_TEXT_FILE_EXTENSIONS = [
   "tsx",
   "yaml",
   "yml",
+  "toml",
   "xml",
   "csv",
   "log",
@@ -58,6 +59,7 @@ export default createPlugin({
   initilize(xbook) {
     const openerService = xbook.serviceBus.createProxy(Tokens.OpenerService);
     openerService.register({
+      priority: -100,
       match: COMMON_TEXT_FILE_EXTENSIONS.map((ext) => `.${ext}`),
       init: (uri: string) => {
         xbook.layoutService.pageBox.addPage({
