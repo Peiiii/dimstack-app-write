@@ -55,7 +55,7 @@ export type IUriStatic = {
    * @param strict Whether to throw an error if no scheme is parsed.
    * @returns A new Uri instance.
    */
-  parse(value: string, strict?: boolean): IUri;
+  parse(value: string, strict?: boolean): Uri;
 
   /**
    * Creates an URI from a file system path.
@@ -159,7 +159,7 @@ class Uri implements IUri {
     return encodeURIComponent(fragment).replace(/%20/g, "+");
   }
 
-  static parse(value: string): IUri {
+  static parse(value: string): Uri {
     return UriStatic.parse(value);
   }
 
@@ -176,16 +176,14 @@ class Uri implements IUri {
  * Uri类的静态部分实现
  */
 const UriStatic: IUriStatic = {
-  parse(value: string): IUri {
-    const [scheme, rest] = value.split(":", 1);
-    const authorityAndPath = rest?.split("//", 1)[1] || "";
-    const [authority, pathAndQuery] = authorityAndPath.split("/", 1) || [
-      "",
-      "",
-    ];
-    const [path, queryAndFragment] = pathAndQuery.split("?", 1) || ["", ""];
-    const [query, fragment] = queryAndFragment.split("#", 1) || ["", ""];
-
+  parse(value: string): Uri {
+    const [scheme, rest] = value.split(":", 2);
+    const fakeHttpUrl = `http:${rest}`;
+    const url = new URL(fakeHttpUrl);
+    const authority = url.host;
+    const path = url.pathname;
+    const query = url.search.slice(1);
+    const fragment = url.hash.slice(1);
     return new Uri({
       scheme,
       authority,

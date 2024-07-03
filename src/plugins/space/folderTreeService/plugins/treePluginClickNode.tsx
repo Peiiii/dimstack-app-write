@@ -1,3 +1,4 @@
+import { Tokens } from "@/constants/tokens";
 import { spaceHelper } from "@/helpers/space.helper";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreePlugin } from "@/toolkit/components/tree/treePlugins";
@@ -17,7 +18,10 @@ export default createTreePlugin<FolderTreeNode>({
       if (node.id === "root" || node.type === "dir") {
         return await serviceBus.invoke("refresh", node.id);
       } else {
-        xbook.serviceBus.invoke("openerService.open", spaceId, node);
+        const openerService = xbook.serviceBus.createProxy(
+          Tokens.OpenerService
+        );
+        openerService.open(spaceId, node);
       }
     });
   },

@@ -1,4 +1,5 @@
 import base from "@/plugins/core/base";
+import features from "@/plugins/features";
 import { Migration20240518 } from "@/plugins/migrations";
 import asyncPluginService from "@/plugins/services/asyncPluginService";
 import authService from "@/plugins/services/auth";
@@ -28,15 +29,19 @@ xbook.pluginService.use([
   spaceServiceModule,
   displaySpaces,
   // listenGiteeLoginCallback,
-
+  /** basic */
   fileSystemService,
   folderTreeService,
   AddFileSystemProviderForEachSpace,
   commonServiceProviders,
+  asyncPluginService,
+  /** features */
+  features,
+
+  /** widgets */
   settings,
   theme,
   clearLocalCache,
-  asyncPluginService,
 
   checkUrlParamAndQuickOpen,
   addGiteeSpace,

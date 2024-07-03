@@ -1,5 +1,5 @@
-import { OpenerService } from "@/plugins/services/openerService";
 import { IAuthService } from "@/services/auth.service.interface";
+import { OpenerService } from "@/services/opener-service";
 import { ISpaceService } from "@/services/space.service.interface";
 import { typedKey } from "@/toolkit/utils/typedKey";
 
