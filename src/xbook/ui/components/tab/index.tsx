@@ -1,7 +1,7 @@
 import { Box, Button, HStack, Icon, forwardRef } from "@chakra-ui/react";
 import { FC, MouseEventHandler, useMemo } from "react";
 import { AiOutlineClose } from "react-icons/ai";
-import { PageDescriptor } from "xbook/ui/page-box";
+import { PageDescriptor } from "xbook/ui/page-box/controller";
 
 export const Tab: FC<{
   title: string;

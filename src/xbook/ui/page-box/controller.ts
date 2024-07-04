@@ -22,7 +22,7 @@ export type PageDescriptor = {
   status?: "deleted" | "loading";
 };
 
-type PageBoxMethods = {
+export type PageBoxMethods = {
   addPage(page: PageDescriptor): void;
   removePage(id: string): void;
   showPage(id: string): void;
@@ -42,7 +42,7 @@ const cache = CacheController.create({
   storage: "localStorage",
 });
 
-export const PageBoxController = defineController(():PageBoxMethods => {
+export const PageBoxController = defineController(() => {
   //   const tabBarRef = useRef<HTMLDivElement>(null);
   const minTabWidth = 100;
   const maxTabWidth = 10000;
@@ -54,7 +54,7 @@ export const PageBoxController = defineController(():PageBoxMethods => {
     TabBarWidth$: tabBarWidth$,
   } = createReactBean("TabBarWidth", 10000);
 
-  const { getTabBarCapacity, useTabBarCapacity } = withUseHook(
+  const { useTabBarCapacity } = withUseHook(
     createBeanFromObservable(
       "TabBarCapacity",
       tabBarWidth$.pipe(
@@ -100,7 +100,7 @@ export const PageBoxController = defineController(():PageBoxMethods => {
     }
   );
 
-  const { getVisible, setVisible,useVisible } = createCustomReactBean(
+  const { getVisible, setVisible, useVisible } = createCustomReactBean(
     "Visible",
     true,
     () => {}
@@ -172,6 +172,7 @@ export const PageBoxController = defineController(():PageBoxMethods => {
   const showTabBar = () => {
     setTabBarVisible(true);
   };
+
   return {
     addPage,
     removePage,

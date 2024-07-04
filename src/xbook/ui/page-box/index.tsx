@@ -1,4 +1,3 @@
-import { LayoutNode } from "@/toolkit/factories/renderer";
 import {
   Box,
   Flex,
@@ -16,29 +15,12 @@ import { AiOutlineMenu, AiOutlineMenuFold } from "react-icons/ai";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
 import { device } from "xbook/common/device";
-import { VisibilityControl } from "xbook/hooks/proxiedControls";
 import { commandService } from "xbook/services/commandService";
 import { DragSortItem, moveItem } from "xbook/ui/components/DragSort";
-import { PageBoxController } from "xbook/ui/page-box/controller";
+import { PageBoxController, PageBoxMethods } from "xbook/ui/page-box/controller";
 import { componentService } from "../componentService";
 import { Tab, TabIconButton } from "../components/tab";
 
-export type PageDescriptor = {
-  id: string;
-  title: string;
-  viewData?: LayoutNode;
-  src?: string;
-  active?: boolean;
-  status?: "deleted" | "loading";
-};
-type PageBoxMethods = {
-  addPage(page: PageDescriptor): void;
-  removePage(id: string): void;
-  showPage(id: string): void;
-  updatePage(page: Partial<PageDescriptor> & Pick<PageDescriptor, "id">): void;
-  hideTabBar(): void;
-  showTabBar(): void;
-} & VisibilityControl;
 
 export const createPageBox = (): {
   proxy: PageBoxMethods;
