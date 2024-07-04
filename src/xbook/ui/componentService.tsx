@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { createActivityBar } from "./activityBar";
-import { createPageBox } from "./pageBox";
+import { createPageBox } from "./page-box";
 import { createSidebar } from "./sidebar";
 import { createStatusBar } from "./statusBar";
 import { createTitleBar } from "./titleBar";

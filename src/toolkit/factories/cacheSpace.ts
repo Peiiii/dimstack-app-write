@@ -5,6 +5,7 @@ interface StorageProvider {
   set(key: string, value: SafeAny): void;
   get(key: string): SafeAny;
   remove(key: string): void;
+  subscribe?<T>(key: string, callback: (value: T) => void): () => void;
   [k: string]: SafeAny;
 }
 const LocalStorageStore: StorageProvider = {
@@ -39,7 +40,7 @@ const MemoryStore: StorageProvider = (() => {
 })();
 
 type StorageProviderName = "memory" | "localStorage";
-const StorageProviders: { [key in StorageProviderName]: StorageProvider } = {
+export const StorageProviders: { [key in StorageProviderName]: StorageProvider } = {
   memory: MemoryStore,
   localStorage: LocalStorageStore,
 };

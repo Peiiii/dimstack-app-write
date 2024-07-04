@@ -1,7 +1,6 @@
 import { LayoutNode } from "@/toolkit/factories/renderer";
 import {
   Box,
-  Button,
   Flex,
   HStack,
   Icon,
@@ -12,20 +11,8 @@ import {
   VStack,
   forwardRef,
 } from "@chakra-ui/react";
-import {
-  FC,
-  MouseEventHandler,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import {
-  AiOutlineClose,
-  AiOutlineMenu,
-  AiOutlineMenuFold,
-} from "react-icons/ai";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AiOutlineMenu, AiOutlineMenuFold } from "react-icons/ai";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
 import { device } from "xbook/common/device";
@@ -34,9 +21,10 @@ import { createDeferredComponentProxy } from "xbook/hooks/useDeferredComponentPr
 import { cacheService } from "xbook/services";
 import { commandService } from "xbook/services/commandService";
 import { DragSortItem, moveItem } from "xbook/ui/components/DragSort";
-import { componentService } from "./componentService";
+import { componentService } from "../componentService";
+import { Tab, TabIconButton } from "../components/tab";
 
-type PageDescriptor = {
+export type PageDescriptor = {
   id: string;
   title: string;
   viewData?: LayoutNode;
@@ -52,81 +40,7 @@ type PageBoxMethods = {
   hideTabBar(): void;
   showTabBar(): void;
 } & VisibilityControl;
-
 const cache = cacheService.space("pageBox", "localStorage");
-const Tab: FC<{
-  title: string;
-  width?: number | string;
-  minWidth?: number | string;
-  maxWidth?: number | string;
-  isActive?: boolean;
-  onClick?: MouseEventHandler<HTMLDivElement>;
-  onClose?: MouseEventHandler<SVGElement>;
-  stretch?: boolean;
-  status?: PageDescriptor["status"];
-}> = ({
-  title,
-  isActive,
-  onClick,
-  onClose,
-  stretch,
-  width,
-  minWidth,
-  maxWidth,
-  status,
-}) => {
-  const classList: string[] = ["tab", "hover-action"];
-  if (isActive) classList.push("active");
-  const shortTitle = useMemo(
-    () => title.split("::").splice(-1)[0].split("/").splice(-1)[0],
-    [title]
-  );
-  return (
-    <HStack
-      h="100%"
-      m="0 !important"
-      className={classList.join(" ")}
-      pl="12px"
-      pr="12px"
-      align={"center"}
-      justify="flex-start"
-      overflow={"hidden"}
-      onClick={onClick}
-      w={width !== undefined ? width : stretch ? "100%" : undefined}
-      minW={minWidth}
-      maxW={maxWidth}
-      flexGrow={1}
-      flexShrink={0}
-    >
-      <Box
-        textOverflow={"ellipsis"}
-        overflow={"hidden"}
-        whiteSpace={"nowrap"}
-        title={title}
-        className="tab-title"
-        flexGrow={1}
-        textDecoration={status === "deleted" ? "line-through" : undefined}
-      >
-        {shortTitle}
-      </Box>
-      {(stretch || width || minWidth) && <Box flexGrow={1} />}
-      <Icon
-        flexShrink={0}
-        className="hover-visible"
-        as={AiOutlineClose}
-        onClick={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          onClose?.(e);
-        }}
-      ></Icon>
-    </HStack>
-  );
-};
-
-const TabIconButton = forwardRef((_, ref) => (
-  <Button bg="none" p="0" borderRadius={0} color={"inherit"} {..._} ref={ref} />
-));
 export const createPageBox = () =>
   createDeferredComponentProxy<PageBoxMethods>(
     ({ proxy }) => {
@@ -134,7 +48,7 @@ export const createPageBox = () =>
       const minTabWidth = 100;
       const maxTabWidth = 10000;
       const maxCacheSize = 5;
-      const [tabBarWidth, setTabBarWidth] = useState(1e4);
+      const [tabBarWidth, setTabBarWidth] = useState(10000);
 
       const resizeObserver = useMemo(
         () =>
@@ -175,7 +89,6 @@ export const createPageBox = () =>
       //   proxy,
       //   true
       // );
-
       const [visible, setVisible] = cache.useCachedState("visible", true);
       const [tabBarVisible, setTabBarVisible] = cache.useCachedState(
         "tabBar.visible",
@@ -255,6 +168,7 @@ export const createPageBox = () =>
           showTabBar,
         });
       }, [pageList, setPageList, setTabBarVisible, tabBarVisible, proxy]);
+
       const tabsView = useMemo(
         () =>
           pageList.map(({ id, title, active, status }, index) => {

@@ -123,6 +123,16 @@ export const withUseHook = <IKey extends string, IData>(
   } as IReactBean<IKey, IData>;
 };
 
+export type IAnyTypeOfBean<TKey extends string, TData, IExtra> =
+  | IBean<TKey, TData>
+  | IReactBean<TKey, TData>
+  | ICustomBean<TKey, TData, IExtra>
+  | ICustomReactBean<TKey, TData, IExtra>;
+
+export type IAnyTypeOfUsableBean<TKey extends string, TData, IExtra> =
+  | IReactBean<TKey, TData>
+  | ICustomReactBean<TKey, TData, IExtra>;
+
 export const useBeanValue = <IKey extends string, IData, IExtra>(
   bean:
     | IBean<IKey, IData>
@@ -288,6 +298,49 @@ export const compose = <
     [`${key}$`]: behaviorSubject.asObservable(),
   } as IBean<TKey, IBeanMapData<TBeanMap>>;
 };
+
+const getGetter = <TKey extends string, TData, TExtra>(
+  bean: IAnyTypeOfBean<TKey, TData, TExtra>
+) => {
+  const key = (bean as any).$$meta.key as TKey;
+  return bean[`get${key}`] as IBeanGetterAction<TData>;
+};
+const getSetter = <TKey extends string, TData, TExtra>(
+  bean: IAnyTypeOfBean<TKey, TData, TExtra>
+) => {
+  const key = (bean as any).$$meta.key as TKey;
+  return bean[`set${key}`] as IBeanSetterAction<TData>;
+};
+const getSubscriber = <TKey extends string, TData, TExtra>(
+  bean: IAnyTypeOfBean<TKey, TData, TExtra>
+) => {
+  const key = (bean as any).$$meta.key as TKey;
+  return bean[`subscribe${key}`] as IBeanSubscriberAction<TData>;
+};
+const getObservable = <TKey extends string, TData, TExtra>(
+  bean: IAnyTypeOfBean<TKey, TData, TExtra>
+) => {
+  const key = (bean as any).$$meta.key as TKey;
+  return bean[`${key}$`] as IBeanObservableAction<TData>;
+};
+const getUser = <TKey extends string, TData, TExtra>(
+  bean: IAnyTypeOfUsableBean<TKey, TData, TExtra>
+) => {
+  const key = (bean as any).$$meta.key as TKey;
+  return bean[`use${key}`] as IBeanUserAction<TData>;
+};
+
+export class BeanReflector {
+  static getGetter = getGetter;
+
+  static getSetter = getSetter;
+
+  static getSubscriber = getSubscriber;
+
+  static getObservable = getObservable;
+
+  static getUser = getUser;
+}
 
 export const exampleBean = createBean("Example", "Hello");
 
