@@ -5,7 +5,7 @@ import type { Transform } from "redux-persist";
 import { persistReducer, persistStore } from "redux-persist";
 // import PouchDBStorage from "redux-persist-pouchdb";
 import persistLocalStorage from "redux-persist/lib/storage";
-import thunk from "redux-thunk";
+// import thunk from "redux-thunk";
 
 const Storages = {
   localStorage: persistLocalStorage,
@@ -105,7 +105,7 @@ export const createTreeDataStore = <T extends { [k: string]: any }>({
       },
       delete: (state, action) => {
         // console.log("action:",action)
-        const{ id } = action.payload||{};
+        const { id } = action.payload || {};
         if (!id) return;
         const findAndDelete = (parent: TreeDataNode<T>, id: string) => {
           // console.log("parent:",parent)
@@ -115,7 +115,6 @@ export const createTreeDataStore = <T extends { [k: string]: any }>({
             );
             // console.log("foundNode：",index)
             if (index !== -1) {
-              
               parent.children.splice(index, 1);
               return true;
             } else {
@@ -181,7 +180,10 @@ export const createTreeDataStore = <T extends { [k: string]: any }>({
       getDefaultMiddleware({
         ...defaultMiddlewareConfig,
         ...middlewareConfig,
-      }).concat([thunk, diffMiddleware]),
+      }).concat([
+        // thunk,
+        diffMiddleware,
+      ]),
   });
   if (persistConfig) persistStore(store);
 

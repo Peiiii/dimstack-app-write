@@ -7,7 +7,7 @@ import type { Transform } from "redux-persist";
 import { persistReducer, persistStore } from "redux-persist";
 // import PouchDBStorage from "redux-persist-pouchdb";
 import persistLocalStorage from "redux-persist/lib/storage";
-import thunk from "redux-thunk";
+// import thunk from "redux-thunk";
 import { ReplaySubject, Subject } from "rxjs";
 
 const Storages = {
@@ -141,7 +141,9 @@ export const createDataStore = <T extends { [k: string]: any }>({
       getDefaultMiddleware({
         ...defaultMiddlewareConfig,
         ...middlewareConfig,
-      }).concat([thunk]),
+      }).concat([
+        // thunk
+      ]),
   });
 
   const atom = createAtom<{

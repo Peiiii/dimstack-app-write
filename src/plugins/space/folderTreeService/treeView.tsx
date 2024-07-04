@@ -26,6 +26,7 @@ import { createTreeDataStore } from "@/toolkit/factories/treeDataStore";
 import { Action } from "@/toolkit/types";
 import { SpaceDef } from "@/toolkit/types/space";
 import { useAtom } from "@/toolkit/utils/hooks/useAtom";
+import { join } from "@/toolkit/utils/path";
 import { dirname } from "path-browserify";
 import { useEffect, useMemo } from "react";
 import { AiOutlineLink } from "react-icons/ai";
@@ -35,7 +36,6 @@ import treePluginClickNode from "./plugins/treePluginClickNode";
 import treePluginConfig from "./plugins/treePluginConfig";
 import treePluginDeleteNode from "./plugins/treePluginDeleteNode";
 import treePluginEditNode from "./plugins/treePluginEditNode";
-import { join } from "@/toolkit/utils/path";
 
 const TreeView = ({ space }: { space: SpaceDef }) => {
   const treeDataStore = useMemo(
@@ -123,16 +123,17 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
           <>
             <Wrap>
               {`${space.repo}`}
-              {hasWritePermission && (
-                <div
-                  style={{
-                    alignItems: "center",
-                    display: "flex",
-                  }}
-                >
+              <div
+                style={{
+                  alignItems: "center",
+                  display: "flex",
+                }}
+              >
+                <Badge>{space.platform || ""}</Badge>
+                {hasWritePermission && (
                   <Badge textTransform={"none"}>{space.owner}</Badge>
-                </div>
-              )}
+                )}
+              </div>
             </Wrap>
           </>
         }
@@ -160,7 +161,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
               treePluginInit(),
               treePluginClickNode(),
               treePluginEditNode({
-                editable: ({ level ,node}) => {
+                editable: ({ level, node }) => {
                   return level !== 0 && node.type === "file";
                 },
                 renameNode: async (node, name) => {
