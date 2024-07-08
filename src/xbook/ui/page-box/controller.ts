@@ -7,7 +7,16 @@ import {
   createReactBean,
   withUseHook,
 } from "rx-bean";
-import { distinctUntilChanged, map } from "rxjs";
+import {
+  BehaviorSubject,
+  Observable,
+  ReplaySubject,
+  combineLatest,
+  distinctUntilChanged,
+  map,
+  of,
+  tap,
+} from "rxjs";
 import "simplebar-react/dist/simplebar.min.css";
 import { VisibilityControl } from "xbook/hooks/proxiedControls";
 import { commandService } from "xbook/services/commandService";
@@ -30,6 +39,14 @@ export type PageBoxMethods = {
   hideTabBar(): void;
   showTabBar(): void;
 } & VisibilityControl;
+
+export type IPageAction = {
+  id: string;
+  title: string;
+  icon?: string;
+  onClick: () => void;
+  when?: (() => Observable<boolean>) | Observable<boolean>;
+};
 
 // const cache = cacheService.space("pageBox", "localStorage");
 
@@ -173,6 +190,62 @@ export const PageBoxController = defineController(() => {
     setTabBarVisible(true);
   };
 
+  const PageActions = createCustomReactBean(
+    "PageActions",
+    [] as IPageAction[],
+    (bean) => {
+      const enabledMap$ = new BehaviorSubject<Record<string, boolean>>({});
+      const registerPageAction = (action: IPageAction) => {
+        bean.setPageActions([...bean.getPageActions(), action]);
+        const when$ =
+          (action.when instanceof Function ? action.when() : action.when) ||
+          of(true);
+        const sub = when$.subscribe((enabled) => {
+          enabledMap$.next({
+            ...enabledMap$.getValue(),
+            [action.id]: enabled,
+          });
+        });
+        return () => {
+          bean.setPageActions(
+            bean.getPageActions().filter((p) => p.id !== action.id)
+          );
+          enabledMap$.next({
+            ...enabledMap$.getValue(),
+            [action.id]: false,
+          });
+          sub.unsubscribe();
+        };
+      };
+      const {
+        getActivePageActions,
+        useActivePageActions,
+        ActivePageActions$: activePageActions$,
+      } = withUseHook(
+        createBeanFromObservable(
+          "ActivePageActions",
+          combineLatest([bean.PageActions$, enabledMap$]).pipe(
+            tap(([actions, enabledMap]) => {
+              console.log("allPageActions", actions);
+              console.log("enabledMap", enabledMap);
+            }),
+            map(([actions, enabledMap]) =>
+              actions.filter((action) => enabledMap[action.id] === true)
+            ),
+            tap((actions) => console.log("activePageActions", actions))
+          ),
+          [] as IPageAction[]
+        )
+      );
+      return {
+        registerPageAction,
+        getActivePageActions,
+        useActivePageActions,
+        activePageActions$,
+      };
+    }
+  );
+
   return {
     addPage,
     removePage,
@@ -196,5 +269,6 @@ export const PageBoxController = defineController(() => {
     usePageList,
     minTabWidth,
     maxTabWidth,
+    ...PageActions,
   };
 });

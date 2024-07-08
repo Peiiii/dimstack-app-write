@@ -1,13 +1,12 @@
+import { createRenderer } from "@/toolkit/factories/renderer";
 import { Box } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import SplitPane from "xbook/ui/components/split-pane";
 import { createActivityBar } from "./activityBar";
 import { createPageBox } from "./page-box";
 import { createSidebar } from "./sidebar";
 import { createStatusBar } from "./statusBar";
 import { createTitleBar } from "./titleBar";
-import SplitPane from "xbook/ui/components/split-pane";
-import SplitPaneV2 from "xbook/ui/components/SplitPane";
-import { createRenderer } from "@/toolkit/factories/renderer";
-import { useEffect, useState } from "react";
 export const activityBar = createActivityBar();
 export const statusBar = createStatusBar();
 export const titleBar = createTitleBar();

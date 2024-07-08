@@ -17,13 +17,13 @@ import "simplebar-react/dist/simplebar.min.css";
 import { device } from "xbook/common/device";
 import { commandService } from "xbook/services/commandService";
 import { DragSortItem, moveItem } from "xbook/ui/components/DragSort";
-import { PageBoxController, PageBoxMethods } from "xbook/ui/page-box/controller";
+import { PageActions } from "xbook/ui/page-box/components/page-actions";
+import { PageBoxController } from "xbook/ui/page-box/controller";
 import { componentService } from "../componentService";
 import { Tab, TabIconButton } from "../components/tab";
 
-
 export const createPageBox = (): {
-  proxy: PageBoxMethods;
+  proxy: ReturnType<typeof PageBoxController.create>;
   instance: ReactNode;
 } => {
   const pageBoxController = PageBoxController.create();
@@ -100,8 +100,8 @@ export const createPageBox = (): {
     );
 
     const tabBarRight = useMemo(
-      () =>
-        pageList.length > tabBarCapacity && (
+      () => (
+        <>
           <>
             <Flex
               align={"center"}
@@ -110,33 +110,37 @@ export const createPageBox = (): {
               flexGrow={0}
               className="tab-bar-right-extra"
             >
-              <Menu>
-                <MenuButton
-                  as={forwardRef((props, ref) => (
-                    <TabIconButton {...props} ref={ref}>
-                      <Icon fontSize={"lg"} as={AiOutlineMenu} />
-                    </TabIconButton>
-                  ))}
-                ></MenuButton>
-                <MenuList maxW="400px" className="right-list" zIndex={100}>
-                  {pageList.slice(0).map(({ title, id, active, status }) => (
-                    <MenuItem key={id}>
-                      <Tab
-                        minWidth={minTabWidth}
-                        title={title}
-                        isActive={active}
-                        onClick={() => proxy.showPage(id)}
-                        onClose={() => proxy.removePage(id)}
-                        status={status}
-                        stretch
-                      />
-                    </MenuItem>
-                  ))}
-                </MenuList>
-              </Menu>
+              <PageActions />
+              {pageList.length > tabBarCapacity && (
+                <Menu>
+                  <MenuButton
+                    as={forwardRef((props, ref) => (
+                      <TabIconButton {...props} ref={ref}>
+                        <Icon fontSize={"lg"} as={AiOutlineMenu} />
+                      </TabIconButton>
+                    ))}
+                  ></MenuButton>
+                  <MenuList maxW="400px" className="right-list" zIndex={100}>
+                    {pageList.slice(0).map(({ title, id, active, status }) => (
+                      <MenuItem key={id}>
+                        <Tab
+                          minWidth={minTabWidth}
+                          title={title}
+                          isActive={active}
+                          onClick={() => proxy.showPage(id)}
+                          onClose={() => proxy.removePage(id)}
+                          status={status}
+                          stretch
+                        />
+                      </MenuItem>
+                    ))}
+                  </MenuList>
+                </Menu>
+              )}
             </Flex>
           </>
-        ),
+        </>
+      ),
       [pageList, tabBarCapacity]
     );
 
@@ -166,80 +170,82 @@ export const createPageBox = (): {
     );
     // console.log("pageList:", JSON.stringify(pageList));
     return (
-      <VStack
-        w="100%"
-        h="100%"
-        align="stretch"
-        className="page-box"
-        overflow={"hidden"}
-        display={visible ? "flex" : "none"}
-        gap={0}
-      >
-        <>
-          {tabBarVisible && (
-            <HStack
-              ref={tabBarRef}
-              key={"tab-bar"}
-              h={"40px"}
-              minH={"40px"}
-              className="tab-bar"
-              // overflow="auto"
-              w="100%"
-              gap={0}
-              zIndex={1}
-            >
-              <TabIconButton
-                className="tab-bar-left-extra"
-                onClick={() => {
-                  commandService.executeCommand("client:toggleHome");
-                }}
-              >
-                <Icon fontSize={"lg"} as={AiOutlineMenuFold} />
-              </TabIconButton>
+      <PageBoxController.Provider value={pageBoxController}>
+        <VStack
+          w="100%"
+          h="100%"
+          align="stretch"
+          className="page-box"
+          overflow={"hidden"}
+          display={visible ? "flex" : "none"}
+          gap={0}
+        >
+          <>
+            {tabBarVisible && (
               <HStack
-                className="tab-bar-content scroll scroll-9"
-                flexGrow={1}
-                h="100%"
-                // overflow={"hidden"}
-                overflowY={"hidden"}
-                overflowX="auto"
+                ref={tabBarRef}
+                key={"tab-bar"}
+                h={"40px"}
+                minH={"40px"}
+                className="tab-bar"
+                // overflow="auto"
+                w="100%"
                 gap={0}
+                zIndex={999999}
               >
-                {device.isMobile() ? (
-                  tabsView
-                ) : (
-                  <SimpleBar
-                    autoHide
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      height: "100%",
-                      flexFlow: "row",
-                    }}
-                  >
-                    {tabsView}
-                  </SimpleBar>
-                )}
+                <TabIconButton
+                  className="tab-bar-left-extra"
+                  onClick={() => {
+                    commandService.executeCommand("client:toggleHome");
+                  }}
+                >
+                  <Icon fontSize={"lg"} as={AiOutlineMenuFold} />
+                </TabIconButton>
+                <HStack
+                  className="tab-bar-content scroll scroll-9"
+                  flexGrow={1}
+                  h="100%"
+                  // overflow={"hidden"}
+                  overflowY={"hidden"}
+                  overflowX="auto"
+                  gap={0}
+                >
+                  {device.isMobile() ? (
+                    tabsView
+                  ) : (
+                    <SimpleBar
+                      autoHide
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        height: "100%",
+                        flexFlow: "row",
+                      }}
+                    >
+                      {tabsView}
+                    </SimpleBar>
+                  )}
+                </HStack>
+                {tabBarRight}
               </HStack>
-              {tabBarRight}
-            </HStack>
-          )}
-        </>
-        <>
-          {
-            <Box
-              key="body"
-              flexBasis={"100%"}
-              m="0 !important"
-              className={"content-area"}
-              h="100%"
-              overflow={"hidden"}
-            >
-              {bodiesView}
-            </Box>
-          }
-        </>
-      </VStack>
+            )}
+          </>
+          <>
+            {
+              <Box
+                key="body"
+                flexBasis={"100%"}
+                m="0 !important"
+                className={"content-area"}
+                h="100%"
+                overflow={"hidden"}
+              >
+                {bodiesView}
+              </Box>
+            }
+          </>
+        </VStack>
+      </PageBoxController.Provider>
     );
   };
   return {

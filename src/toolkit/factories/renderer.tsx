@@ -172,11 +172,13 @@ export const createRenderer = (registryName: string = "componentRegistry") => {
   const getComponents = () => {
     return store.getState();
   };
+
   return {
     register,
     render,
     getComponents,
     setFallbackComponent,
+    useComponent,
   };
 };
 

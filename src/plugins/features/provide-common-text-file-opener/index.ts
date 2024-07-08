@@ -1,5 +1,7 @@
 import { Tokens } from "@/constants/tokens";
 import { TextFileView } from "@/plugins/features/provide-common-text-file-opener/components/text-file-view";
+import { VscOpenPreview } from "react-icons/vsc";
+import { of } from "rxjs";
 import { createPlugin } from "xbook/common/createPlugin";
 
 export const COMMON_TEXT_FILE_EXTENSIONS = [
@@ -73,6 +75,16 @@ export default createPlugin({
           },
         });
       },
+    });
+    xbook.componentService.register("vsc-open-preview", VscOpenPreview);
+    xbook.layoutService.pageBox.registerPageAction({
+      id: "preview-markdown",
+      title: "Preview Markdown",
+      icon: "vsc-open-preview",
+      onClick() {
+        xbook.notificationService.info("此功能暂未实现");
+      },
+      when: of(true),
     });
   },
 });
