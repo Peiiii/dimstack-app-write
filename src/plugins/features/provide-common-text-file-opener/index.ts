@@ -1,7 +1,7 @@
 import { Tokens } from "@/constants/tokens";
 import { TextFileView } from "@/plugins/features/provide-common-text-file-opener/components/text-file-view";
 import { VscOpenPreview } from "react-icons/vsc";
-import { of } from "rxjs";
+import { map, of } from "rxjs";
 import { createPlugin } from "xbook/common/createPlugin";
 
 export const COMMON_TEXT_FILE_EXTENSIONS = [
@@ -81,10 +81,26 @@ export default createPlugin({
       id: "preview-markdown",
       title: "Preview Markdown",
       icon: "vsc-open-preview",
-      onClick() {
-        xbook.notificationService.info("此功能暂未实现");
+      onClick({ page }) {
+        if (page.viewData) {
+          const nextViewType =
+            page.viewData.type === "text-file-view"
+              ? "tiptap-editor"
+              : "text-file-view";
+          xbook.layoutService.pageBox.updatePage({
+            id: page.id,
+            viewData: {
+              type: nextViewType,
+              props: page.viewData.props,
+            },
+          });
+        }
       },
-      when: of(true),
+      when: () => {
+        return xbook.layoutService.pageBox.currentPage$.pipe(
+          map((page) => page?.viewData?.props?.uri?.endsWith(".md") ?? false)
+        );
+      },
     });
   },
 });

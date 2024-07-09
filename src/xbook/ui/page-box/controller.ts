@@ -40,11 +40,13 @@ export type PageBoxMethods = {
   showTabBar(): void;
 } & VisibilityControl;
 
+export type IEvent<T> = T;
+
 export type IPageAction = {
   id: string;
   title: string;
   icon?: string;
-  onClick: () => void;
+  onClick: (e: IEvent<{ page: PageDescriptor }>) => void;
   when?: (() => Observable<boolean>) | Observable<boolean>;
 };
 
@@ -107,7 +109,12 @@ export const PageBoxController = defineController(() => {
         pageList.filter((page) => !page.active).slice(0, maxCacheSize - 1)
       );
   };
-  const { getPageList, setPageList, usePageList } = createCustomReactBean(
+  const {
+    getPageList,
+    setPageList,
+    usePageList,
+    PageList$: pageList$,
+  } = createCustomReactBean(
     "PageList",
     loadPageList() as PageDescriptor[],
     ({ PageList$: pageList$ }) => {
@@ -115,6 +122,18 @@ export const PageBoxController = defineController(() => {
         cache.set("pageList", pageList);
       });
     }
+  );
+
+  const {
+    getCurrentPage,
+    useCurrentPage,
+    CurrentPage$: currentPage$,
+  } = withUseHook(
+    createBeanFromObservable(
+      "CurrentPage",
+      pageList$.pipe(map((pageList) => pageList.find((p) => p.active))),
+      undefined
+    )
   );
 
   const { getVisible, setVisible, useVisible } = createCustomReactBean(
@@ -251,6 +270,9 @@ export const PageBoxController = defineController(() => {
     removePage,
     showPage,
     updatePage,
+    getCurrentPage,
+    useCurrentPage,
+    currentPage$,
     hideTabBar,
     showTabBar,
     getTabBarWidth,
