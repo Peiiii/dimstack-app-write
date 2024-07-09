@@ -3,11 +3,64 @@ import {
   MonacoKeyCode,
   MonacoKeyMod,
 } from "@/components/custom-monaco-editor";
-import { Tokens } from "@/constants/tokens";
 import { useResource } from "@/hooks/use-resource";
 import { Uri } from "@/toolkit/vscode/uri";
 import React from "react";
 import xbook from "xbook/index";
+
+// 30+ languages supported by Monaco Editor
+const LanguageMap = {
+  js: "javascript",
+  ts: "typescript",
+  json: "json",
+  html: "html",
+  css: "css",
+  md: "markdown",
+  scss: "scss",
+  less: "less",
+  vue: "vue",
+  jsx: "javascript",
+  tsx: "typescript",
+  yaml: "yaml",
+  yml: "yaml",
+  toml: "toml",
+  xml: "xml",
+  csv: "csv",
+  log: "log",
+  ini: "ini",
+  conf: "conf",
+  properties: "properties",
+  java: "java",
+  c: "c",
+  cpp: "cpp",
+  h: "c",
+  hpp: "cpp",
+  py: "python",
+  sh: "shell",
+  bat: "bat",
+  cmd: "cmd",
+  ps1: "powershell",
+  psm1: "powershell",
+  sql: "sql",
+  php: "php",
+  go: "go",
+  rb: "ruby",
+  lua: "lua",
+  pl: "perl",
+  m: "matlab",
+  r: "r",
+  rs: "rust",
+  cs: "csharp",
+  fs: "fsharp",
+  swift: "swift",
+  kt: "kotlin",
+  groovy: "groovy",
+  scala: "scala",
+  perl: "perl",
+  coffee: "coffeescript",
+};
+
+
 
 export const TextFileView: React.FC<{
   uri: string;
@@ -37,7 +90,7 @@ export const TextFileView: React.FC<{
   return (
     <CustomMonacoEditor
       value={data || ""}
-      language={suffix || "txt"}
+      language={(suffix && LanguageMap[suffix]) || "txt"}
       onChange={(e) => {
         htmlContentRef.current = e;
       }}

@@ -1,57 +1,11 @@
 import { Tokens } from "@/constants/tokens";
 import { TextFileView } from "@/plugins/features/provide-common-text-file-opener/components/text-file-view";
+import { COMMON_TEXT_FILE_EXTENSIONS } from "@/plugins/features/provide-common-text-file-opener/constants";
 import { VscOpenPreview } from "react-icons/vsc";
-import { map, of } from "rxjs";
+import { map } from "rxjs";
 import { createPlugin } from "xbook/common/createPlugin";
 
-export const COMMON_TEXT_FILE_EXTENSIONS = [
-  "txt",
-  "md",
-  "json",
-  "js",
-  "ts",
-  "html",
-  "css",
-  "scss",
-  "less",
-  "vue",
-  "jsx",
-  "tsx",
-  "yaml",
-  "yml",
-  "toml",
-  "xml",
-  "csv",
-  "log",
-  "ini",
-  "conf",
-  "properties",
-  "java",
-  "c",
-  "cpp",
-  "h",
-  "hpp",
-  "py",
-  "sh",
-  "bat",
-  "cmd",
-  "ps1",
-  "psm1",
-  "sql",
-  "php",
-  "go",
-  "rb",
-  "r",
-  "cs",
-  "swift",
-  "kt",
-  "groovy",
-  "scala",
-  "perl",
-  "lua",
-  "pl",
-  "m",
-];
+
 export default createPlugin({
   addComponents(xbook) {
     return {
