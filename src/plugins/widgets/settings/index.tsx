@@ -1,23 +1,21 @@
-import { createPlugin } from "xbook/common/createPlugin";
 import { AiOutlineSetting } from "react-icons/ai";
-import store from "./store";
+import { createPlugin } from "xbook/common/createPlugin";
 import View from "./View";
+import store from "./store";
 
 export default createPlugin({
   initilize(xbook) {
-    xbook.layoutService.activityBar.addShortcut({
-      id: "settings",
-      name: "设置",
-      hasPopover: true,
-      order: 10000,
-      icon: (props) => {
-        return (
-          <>
-            <AiOutlineSetting {...props} />
-          </>
-        );
+    xbook.componentService.register("settings", AiOutlineSetting);
+    xbook.layoutService.activityBar.addShortcut(
+      {
+        id: "settings",
+        name: "设置",
+        hasPopover: true,
+        order: 10000,
+        icon: "settings",
       },
-    });
+      true
+    );
   },
   addServices() {
     return [

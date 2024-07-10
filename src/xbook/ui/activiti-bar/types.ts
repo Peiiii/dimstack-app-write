@@ -1,41 +1,41 @@
 import { SafeAny } from "@/toolkit/types";
 
-export type ActivityItem = {
+export type IActivityItem = {
   id: string;
   name: string;
   shortcut?: string;
-  icon: React.Component | React.FC;
+  icon: string;
   isActive?: boolean;
   order?: number;
   disabled?: boolean;
   events?: "click" | "focus" | "blur" | "mouseenter" | "mouseleave";
 };
 
-export type ShortcutItem = {
+export type IShortcutItem = {
   id: string;
   name: string;
-  icon: React.Component | React.FC;
+  icon: string;
   hasPopover?: boolean;
   order?: number;
 };
 
 export type ActivityBarMethods = {
-  addActivity(activity: ActivityItem): SafeAny;
+  addActivity(activity: IActivityItem): SafeAny;
   showActivity(id: string): SafeAny;
   removeActivity(id: string): SafeAny;
   setHighlightActivity(id: string): SafeAny;
   toggleActivity(id: string): SafeAny;
   hideActivity(id: string): SafeAny;
   setDirection(direction: string): SafeAny;
-  addShortcut(shortcut: ShortcutItem): SafeAny;
+  addShortcut(shortcut: IShortcutItem): SafeAny;
   hide(): void;
   show(): void;
   toggle(): void;
 };
 
 export const createCRUDActions = <T>(
-  setData: (v: T) => void,
-  getData: () => T,
+  setData: (v: T[]) => void,
+  getData: () => T[],
   primaryKey: string = "id"
 ) => {
   const add = (data, record, _update = false) => {
@@ -61,8 +61,9 @@ export const createCRUDActions = <T>(
   };
 
   return {
-    add: (record, _update = false) => setData(add(getData(), record, _update)),
-    update: (record) => setData(update(getData(), record)),
-    delete: (id) => setData(remove(getData(), id)),
+    add: (record: T, _update = false) =>
+      setData(add(getData(), record, _update)),
+    update: (record: T) => setData(update(getData(), record)),
+    delete: (id: string) => setData(remove(getData(), id)),
   };
 };

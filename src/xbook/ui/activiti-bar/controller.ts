@@ -1,7 +1,7 @@
 import { defineController } from "app-toolkit";
 import { createCustomReactBean } from "rx-bean";
 import { eventBus } from "xbook/services/eventBus";
-import { ActivityItem, createCRUDActions } from "xbook/ui/activiti-bar/types";
+import { IActivityItem, IShortcutItem, createCRUDActions } from "xbook/ui/activiti-bar/types";
 import { CacheController, withCache } from "xbook/ui/services/cache-controller";
 
 const cache = CacheController.create({
@@ -51,9 +51,9 @@ export const ActivityBarController = defineController(() => {
     showActivity,
     setHighlightActivity,
     removeActivity,
-  } = createCustomReactBean("ActivityList", [] as ActivityItem[], (bean) => {
+  } = createCustomReactBean("ActivityList", [] as IActivityItem[], (bean) => {
     withCache(bean, cache);
-    const addActivity = (activity: ActivityItem) => {
+    const addActivity = (activity: IActivityItem) => {
       const activityList = bean.getActivityList();
       const existActivity = (id: string) => {
         return activityList.find((activity) => activity.id === id);
@@ -103,7 +103,7 @@ export const ActivityBarController = defineController(() => {
 
   const { addShortcut, useShortcutList } = createCustomReactBean(
     "ShortcutList",
-    [] as ActivityItem[],
+    [] as IShortcutItem[],
     (bean) => {
       withCache(bean, cache);
       const { add: addShortcut } = createCRUDActions(

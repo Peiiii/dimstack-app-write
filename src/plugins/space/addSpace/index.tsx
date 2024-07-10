@@ -86,12 +86,13 @@ export const addGiteeSpace = createPlugin({
   initilize(xbook) {
     const id = "addGiteeRepo";
     const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
+    xbook.componentService.register("AiOutlinePlusCircle", AiOutlinePlusCircle);
     xbook.layoutService.activityBar.addShortcut({
       id,
-      icon: AiOutlinePlusCircle,
+      icon: "AiOutlinePlusCircle",
       name: "添加",
       order: 100,
-    });
+    },true);
     xbook.eventBus.on(`shortcut:${id}:clicked`, () => {
       const atom: PowerFormAtom<{
         platform: string;

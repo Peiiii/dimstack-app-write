@@ -1,6 +1,6 @@
 import { AnyFunction, SafeAny } from "@/toolkit/types";
 import xbook from "xbook";
-import { ActivityItem } from "xbook/ui/activiti-bar/types";
+import { IActivityItem } from "xbook/ui/activiti-bar/types";
 const _xbook = xbook;
 
 type SimplePageMap = {
@@ -27,7 +27,7 @@ export type PluginConfiguration = {
   addComponents?: (
     xbook: typeof _xbook
   ) => Record<string, React.ComponentType<SafeAny>>;
-  addActivities?: (xbook: typeof _xbook) => ActivityItem | ActivityItem[];
+  addActivities?: (xbook: typeof _xbook) => IActivityItem | IActivityItem[];
   addPages?: (xbook: typeof _xbook) => SimplePageConfiguration;
 };
 

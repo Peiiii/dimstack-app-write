@@ -12,7 +12,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { componentService, eventBus } from "xbook/services";
-import { ShortcutItem } from "xbook/ui/activiti-bar/types";
+import { IShortcutItem } from "xbook/ui/activiti-bar/types";
 
 const crossDirection = (direction: string) => {
   return direction === "row" ? "column" : "row";
@@ -26,12 +26,17 @@ export const ShortcutItemView = ({
   textFontSize,
 }: {
   direction: string;
-  shortcut: ShortcutItem;
+  shortcut: IShortcutItem;
   isMobile?: boolean;
   iconFontSize?: string;
   textFontSize?: string;
 }) => {
   const { id, icon, name, hasPopover } = shortcut;
+  const IconComponent = componentService.useComponent(
+    icon || "AiOutlineQuestionCircle"
+  );
+  
+
   const props = {};
   if (crossDirection(direction) === "row") {
     props["w"] = "100%";
@@ -68,7 +73,7 @@ export const ShortcutItemView = ({
             >
               <VStack maxW={"100%"} overflow={"hidden"} gap={0}>
                 <Icon
-                  as={icon as As}
+                  as={IconComponent as As}
                   fontSize={iconFontSize}
                   title={name}
                 ></Icon>
@@ -125,7 +130,7 @@ export const ShortcutItemView = ({
       }}
     >
       <VStack maxW={"100%"} overflow={"hidden"} gap={0}>
-        <Icon as={icon as As} fontSize={iconFontSize} title={name}></Icon>
+        <Icon as={IconComponent as As} fontSize={iconFontSize} title={name}></Icon>
         <Text
           m="0 !important"
           fontSize={textFontSize}
