@@ -299,6 +299,12 @@ export const compose = <
   } as IBean<TKey, IBeanMapData<TBeanMap>>;
 };
 
+const getKey = <TKey extends string, TData, TExtra>(
+  bean: IAnyTypeOfBean<TKey, TData, TExtra>
+) => {
+  return (bean as any).$$meta.key as TKey;
+};
+
 const getGetter = <TKey extends string, TData, TExtra>(
   bean: IAnyTypeOfBean<TKey, TData, TExtra>
 ) => {
@@ -331,6 +337,8 @@ const getUser = <TKey extends string, TData, TExtra>(
 };
 
 export class BeanReflector {
+  static getKey = getKey;
+  
   static getGetter = getGetter;
 
   static getSetter = getSetter;

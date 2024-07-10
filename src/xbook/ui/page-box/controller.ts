@@ -1,4 +1,3 @@
-import { StorageProviders } from "@/toolkit/factories/cacheSpace";
 import { LayoutNode } from "@/toolkit/factories/renderer";
 import { defineController } from "app-toolkit";
 import {
@@ -52,9 +51,7 @@ export type IPageAction = {
 
 // const cache = cacheService.space("pageBox", "localStorage");
 
-export const getStorage = (storage: "localStorage" | "memory") => {
-  return StorageProviders[storage];
-};
+
 
 const cache = CacheController.create({
   scope: "pageBox",

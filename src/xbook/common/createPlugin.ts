@@ -1,6 +1,6 @@
 import { AnyFunction, SafeAny } from "@/toolkit/types";
 import xbook from "xbook";
-import { ActivityItem } from "xbook/ui/activityBar";
+import { ActivityItem } from "xbook/ui/activiti-bar/types";
 const _xbook = xbook;
 
 type SimplePageMap = {

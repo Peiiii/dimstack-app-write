@@ -1,7 +1,12 @@
-import { getStorage } from "../page-box/controller";
-
+import { StorageProviders } from "@/toolkit/factories/cacheSpace";
+import { SafeAny } from "@/toolkit/types";
 import { defineController } from "app-toolkit";
-import { createCustomReactBean, BeanReflector } from "rx-bean";
+import { BeanReflector, IAnyTypeOfBean, createCustomReactBean } from "rx-bean";
+import { distinctUntilChanged } from "rxjs";
+
+export const getStorage = (storage: "localStorage" | "memory") => {
+  return StorageProviders[storage];
+};
 
 export const CacheController = defineController(
   ({ scope, storage }: { scope: string; storage: "localStorage" }) => {
@@ -42,3 +47,27 @@ export const CacheController = defineController(
     };
   }
 );
+
+export type ICache = ReturnType<typeof CacheController.create>;
+
+export const withCache = <
+  TBean extends IAnyTypeOfBean<string, SafeAny, SafeAny>
+>(
+  bean: TBean,
+  cache: ICache
+) => {
+  const key = BeanReflector.getKey(bean as SafeAny);
+  const cachedValue = cache.get(
+    key,
+    BeanReflector.getGetter(bean as SafeAny)()
+  );
+  if (cachedValue !== BeanReflector.getGetter(bean as SafeAny)()) {
+    BeanReflector.getSetter(bean as SafeAny)(cachedValue);
+  }
+  BeanReflector.getObservable(bean as SafeAny)
+    .pipe(distinctUntilChanged())
+    .subscribe((value) => {
+      cache.set(key, value);
+    });
+  return bean;
+};
