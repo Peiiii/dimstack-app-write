@@ -71,7 +71,7 @@ export const folderTreeService = createPlugin({
                 <Text>
                   <Stat>
                     {url}
-                    <Link as={"a"} href={url}>
+                    <Link as={"a"} href={url} target="_blank">
                       <Icon as={HiOutlineExternalLink} />
                     </Link>
                   </Stat>
