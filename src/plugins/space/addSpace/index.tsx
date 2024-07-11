@@ -1,3 +1,4 @@
+import { EventKeys } from "@/constants/eventKeys";
 import { Tokens } from "@/constants/tokens";
 import { spaceHelper } from "@/helpers/space.helper";
 import PageBox from "@/toolkit/components/page-box";
@@ -87,13 +88,17 @@ export const addGiteeSpace = createPlugin({
     const id = "addGiteeRepo";
     const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
     xbook.componentService.register("AiOutlinePlusCircle", AiOutlinePlusCircle);
-    xbook.layoutService.activityBar.addShortcut({
-      id,
-      icon: "AiOutlinePlusCircle",
-      name: "添加",
-      order: 100,
-    },true);
-    xbook.eventBus.on(`shortcut:${id}:clicked`, () => {
+    xbook.layoutService.activityBar.addActivity(
+      {
+        id,
+        icon: "AiOutlinePlusCircle",
+        name: "添加",
+        order: 100,
+        unselectable: true,
+      },
+      true
+    );
+    xbook.eventBus.on(EventKeys.ActivityBar.ActivityClicked(id), () => {
       const atom: PowerFormAtom<{
         platform: string;
         owner: string;
@@ -204,7 +209,7 @@ export const addGiteeSpace = createPlugin({
     });
     spaceHelper.getStore().waitUtilLoaded(() => {
       if (spaceHelper.getStore().getData().length === 0) {
-        xbook.eventBus.emit(`shortcut:${id}:clicked`);
+        xbook.eventBus.emit(EventKeys.Shortcut.ShortcutClicked(id));
       }
     });
   },

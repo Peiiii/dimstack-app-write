@@ -1,18 +1,12 @@
+import { EventKeys } from "@/constants/eventKeys";
 import { spaceHelper } from "@/helpers/space.helper";
 import { Action } from "@/toolkit/types";
 import { SpaceDef } from "@/toolkit/types/space";
-import {
-  Box,
-  HStack,
-  Icon,
-  Link,
-  Stat,
-  Text
-} from "@chakra-ui/react";
+import { Box, HStack, Icon, Link, Stat, Text } from "@chakra-ui/react";
 import {
   AiFillFolder,
   AiOutlineDelete,
-  AiOutlineInfoCircle
+  AiOutlineInfoCircle,
 } from "react-icons/ai";
 import { HiOutlineExternalLink } from "react-icons/hi";
 import { createPlugin } from "xbook/common/createPlugin";
@@ -93,12 +87,12 @@ export const folderTreeService = createPlugin({
       add: (space: SpaceDef) => {
         const { repo, id } = space;
         xbook.componentService.register("AiFillFolder", AiFillFolder);
-        xbook.layoutService.activityBar.addActivity({
-          id: id,
-          name: repo,
-          // icon: (props) => <Avatar name={repo} {...props} />,
-          icon: "AiFillFolder",
-        });
+        // xbook.layoutService.activityBar.addActivity({
+        //   id: id,
+        //   name: repo,
+        //   // icon: (props) => <Avatar name={repo} {...props} />,
+        //   icon: "AiFillFolder",
+        // });
         xbook.layoutService.sidebar.addView(
           {
             id: id,
@@ -111,13 +105,17 @@ export const folderTreeService = createPlugin({
           },
           true
         );
-        xbook.eventBus.on(`activity:${id}:clicked`, () => {
+        xbook.eventBus.on(EventKeys.ActivityBar.ActivityClicked(id), () => {
           xbook.layoutService.sidebar.setView(id);
         });
         // console.log("compoenents:", xbook.componentService.getComponents());
       },
       focus: (id: string) => {
         xbook.layoutService.activityBar.showActivity(id);
+        xbook.layoutService.sidebar.setView(id);
+      },
+      getCurrentViewId: () => {
+        return xbook.layoutService.sidebar.getCurrentView()?.id;
       },
       remove: (id: string) => {
         xbook.layoutService.activityBar.removeActivity(id);

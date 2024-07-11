@@ -1,4 +1,6 @@
+import { EventKeys } from "@/constants/eventKeys";
 import { Stack } from "@chakra-ui/react";
+import { shortcutService } from "xbook/services";
 import { eventBus } from "xbook/services/eventBus";
 import ActivityItem from "xbook/ui/activiti-bar/components/activity-item";
 import { ShortcutItemView } from "xbook/ui/activiti-bar/components/shortcut-item-view";
@@ -23,12 +25,12 @@ export const createActivityBar = () => {
       showActivity,
       iconFontSize,
       textFontSize,
-      useShortcutList,
+      // useShortcutList,
     } = controller;
     const visible = useVisible();
     const activityList = useActivityList();
     const activeId = useActiveId();
-    const shortcutList = useShortcutList();
+    const shortcutList = shortcutService.useShortcutList();
 
     return (
       <>
@@ -51,7 +53,7 @@ export const createActivityBar = () => {
               index={index}
               moveItem={(idx1, idx2) => {
                 setActivityList(moveItem(activityList, idx1, idx2));
-                eventBus.emit("activityBar:DragItem", {
+                eventBus.emit(EventKeys.ActivityBar.DragItem, {
                   prevIndex: idx1,
                   nextIndex: idx2,
                 });
@@ -65,7 +67,6 @@ export const createActivityBar = () => {
           ))}
           {!isMobile && <Stack flexGrow={1}></Stack>}
           {shortcutList
-            .sort((s) => -(s.order || 0))
             .map((shortcut) => {
               return (
                 <ShortcutItemView

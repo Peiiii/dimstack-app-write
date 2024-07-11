@@ -11,7 +11,8 @@ export { layoutService } from "./layoutService";
 export { fs } from "./fs";
 export { notificationService } from "./notificationService";
 export { modalService } from "./modalService";
-export { componentService as componentService } from "../ui/componentService";
+export { componentService } from "../ui/componentService";
+export { shortcutService } from "./shortcutService";
 
 import { logService } from "./logService";
 import { taskService } from "./taskService";
@@ -28,6 +29,7 @@ import { fs } from "./fs";
 import { notificationService } from "./notificationService";
 import { modalService } from "./modalService";
 import { componentService } from "xbook/ui/componentService";
+import { shortcutService } from "./shortcutService";
 
 export default {
   logService,
@@ -44,4 +46,5 @@ export default {
   notificationService,
   modalService,
   componentService,
+  shortcutService
 };

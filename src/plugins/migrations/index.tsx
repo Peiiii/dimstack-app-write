@@ -1,27 +1,8 @@
-import { Tokens } from "@/constants/tokens";
-import { spaceHelper } from "@/helpers/space.helper";
+import { Migration20240518 } from "@/plugins/migrations/migration-20240518";
 import { createPlugin } from "xbook/common/createPlugin";
 
-export const Migration20240518 = createPlugin({
+export default createPlugin({
   initilize(xbook) {
-    const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
-    spaceService.subscribeSpaces((spaces) => {
-      let isOld = false;
-      const migrated = spaces.map((space) => {
-        // if(space.name === 'GitRepo')
-        if (space.id.includes(":")) {
-          isOld = true;
-        }
-        return {
-          ...space,
-          id: space.id.includes(":")
-            ? spaceHelper.generateHash(space.id)
-            : space.id,
-        };
-      });
-      if (isOld) {
-        spaceService.setSpaces(migrated);
-      }
-    });
+    xbook.pluginService.use([Migration20240518]);
   },
 });

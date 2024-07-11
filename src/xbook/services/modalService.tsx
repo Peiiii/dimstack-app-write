@@ -27,6 +27,9 @@ export type ModalSpec = {
   footer?: boolean;
   width?: string;
   height?: string;
+  closeIcon?: ReactNode;
+  modalContentClassName?: string;
+  modalBodyClassName?: string;
 };
 
 export const ModalActionContext = React.createContext<
@@ -63,6 +66,9 @@ export const createModalService = () => {
     footer = true,
     width,
     height,
+    closeIcon,
+    modalContentClassName,
+    modalBodyClassName,
   }: ModalSpec) => {
     const modal = createDeferredComponentProxy<ModalMethods>(({ proxy }) => {
       const ModalWrapper = ({ content }) => {
@@ -78,13 +84,15 @@ export const createModalService = () => {
             <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
               <ModalOverlay />
               <ModalContent
+                className={modalContentClassName}
                 width={width}
                 height={height}
                 maxWidth={width ? "1000000px !important" : undefined}
               >
                 {title && <ModalHeader>{title}</ModalHeader>}
-                <ModalCloseButton tabIndex={-1} />
-                <ModalBody>{content}</ModalBody>
+                {closeIcon === undefined && <ModalCloseButton tabIndex={-1} />}
+                {closeIcon && closeIcon}
+                <ModalBody className={modalBodyClassName}>{content}</ModalBody>
 
                 {footer && (
                   <ModalFooter>
@@ -120,6 +128,13 @@ export const createModalService = () => {
     );
     return modal.proxy;
   };
+
+  const open = (...params: Parameters<typeof createModal>) => {
+    const modal = createModal(...params);
+    modal.open();
+    return modal;
+  };
+
   const prompt = (title: ReactNode, description: ReactNode) => {
     const promptBox = createDeferredComponentProxy<{
       getInput: () => string | undefined;
@@ -170,7 +185,7 @@ export const createModalService = () => {
     });
   };
 
-  return { createModal, prompt, confirm };
+  return { createModal, prompt, confirm, open };
 };
 
 type ModalMethods = {

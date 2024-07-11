@@ -45,14 +45,18 @@ export const SideCard: FC<{
               <>
                 {/* <AiOutlineHome />
               <Box w="0.3em"/> */}
-                <Text
-                  as="b"
-                  textOverflow={"ellipsis"}
-                  whiteSpace={"nowrap"}
-                  overflow="hidden"
-                >
-                  {title}
-                </Text>
+                {typeof title === "string" ? (
+                  <Text
+                    as="b"
+                    textOverflow={"ellipsis"}
+                    whiteSpace={"nowrap"}
+                    overflow="hidden"
+                  >
+                    {title}
+                  </Text>
+                ) : (
+                  title
+                )}
               </>
             </Tooltip>
 
@@ -65,6 +69,7 @@ export const SideCard: FC<{
                     ref={ref}
                     aria-label=""
                     size={"sm"}
+                    ml="0.2rem"
                     mr="0.2rem"
                     variant={"ghost"}
                     {...props}

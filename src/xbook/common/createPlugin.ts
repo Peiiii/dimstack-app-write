@@ -16,6 +16,8 @@ type EventMapConfiguration = {
 };
 
 export type PluginConfiguration = {
+  priority?: number;
+  providers?: PluginConfiguration[];
   initilize?: (xbook: typeof _xbook) => void;
   addServices?: (
     xbook: typeof _xbook

@@ -20,6 +20,7 @@ const cache = cacheService.space("sidebar", "localStorage");
 export const createSidebar = () =>
   createDeferredComponentProxy<{
     setView(id: string): void;
+    getCurrentView(): View | undefined;
     toggleView(id: string): void;
     addView(view: View, update?: boolean): void;
     removeView(id: string): void;
@@ -116,6 +117,9 @@ export const createSidebar = () =>
         const setView = (id: string) => {
           showView(id);
         };
+        const getCurrentView = () => {
+          return viewList.find((view) => view.visible);
+        }
         const removeView = (id: string) => {
           console.log("removeView:", id);
           setViewList((vs) => vs.filter((v) => v.id !== id));
@@ -125,6 +129,7 @@ export const createSidebar = () =>
           addView,
           setView,
           hideView,
+          getCurrentView,
           removeView,
           show,
           hide,

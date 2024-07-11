@@ -59,7 +59,7 @@ export default createPlugin({
       );
     });
 
-    xbook.eventBus.on("activity:plugins:clicked", () => {
+    xbook.eventBus.on(EventKeys.ActivityBar.ActivityClicked("plugins"), () => {
       xbook.layoutService.sidebar.addView({
         id: "plugins",
         viewData: {

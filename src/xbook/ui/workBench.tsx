@@ -1,12 +1,12 @@
+import { Flex } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import "./index.scss";
-import { createDeferredComponentProxy } from "xbook/hooks/useDeferredComponentProxy";
-import { componentService } from "./componentService";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { device } from "xbook/common/device";
-import { Flex } from "@chakra-ui/react";
+import { createDeferredComponentProxy } from "xbook/hooks/useDeferredComponentProxy";
+import { componentService } from "./componentService";
+import "./styles/globals.scss";
 
 type CosutomComponentTypes =
   | "sidebar"
@@ -110,6 +110,7 @@ export const createWorkbench = () => {
           overflow={"hidden"}
         >
           {componentService.render(layout)}
+          {/* <ComboboxDemo /> */}
         </Flex>
       </DndProvider>
     );

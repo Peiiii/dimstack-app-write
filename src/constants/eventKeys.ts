@@ -6,7 +6,11 @@ export const EventKeys = {
     DragItem: typedKey<{
       prevIndex: number;
       nextIndex: number;
-    }>("activityBarDragItem"),
+    }>("activityBar:DragItem"),
+    ActivityClicked: (id: string) => typedKey(`activity:${id}:clicked`),
+  },
+  Shortcut: {
+    ShortcutClicked: (id: string) => typedKey(`shortcut:${id}:clicked`),
   },
   FileSaved: typedKey("FileSaved"),
 };

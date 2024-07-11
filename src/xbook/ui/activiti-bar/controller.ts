@@ -1,7 +1,9 @@
+import { EventKeys } from "@/constants/eventKeys";
 import { defineController } from "app-toolkit";
 import { createCustomReactBean } from "rx-bean";
+import { combineLatest } from "rxjs";
 import { eventBus } from "xbook/services/eventBus";
-import { IActivityItem, IShortcutItem, createCRUDActions } from "xbook/ui/activiti-bar/types";
+import { IActivityItem } from "xbook/ui/activiti-bar/types";
 import { CacheController, withCache } from "xbook/ui/services/cache-controller";
 
 const cache = CacheController.create({
@@ -13,13 +15,14 @@ export const ActivityBarController = defineController(() => {
   const isMobile = false; // const isMobile = device.isMobile();
   const direction = isMobile ? "row" : "column";
 
-  const { getActiveId, setActiveId, useActiveId } = createCustomReactBean(
-    "ActiveId",
-    "",
-    (bean) => {
-      withCache(bean, cache);
-    }
-  );
+  const {
+    getActiveId,
+    setActiveId,
+    useActiveId,
+    ActiveId$: activeId$,
+  } = createCustomReactBean("ActiveId", "", (bean) => {
+    withCache(bean, cache);
+  });
 
   const { hide, show, toggle, useVisible, getVisible } = createCustomReactBean(
     "Visible",
@@ -51,15 +54,31 @@ export const ActivityBarController = defineController(() => {
     showActivity,
     setHighlightActivity,
     removeActivity,
+    ActivityList$: activityList$,
   } = createCustomReactBean("ActivityList", [] as IActivityItem[], (bean) => {
-    withCache(bean, cache);
-    const addActivity = (activity: IActivityItem) => {
+    // withCache(bean, cache);
+    const addActivity = (activity: IActivityItem, update = false) => {
       const activityList = bean.getActivityList();
       const existActivity = (id: string) => {
         return activityList.find((activity) => activity.id === id);
       };
       if (existActivity(activity.id)) {
-        return activityList;
+        if (update) {
+          setActivityList(
+            activityList.map((a) => {
+              if (a.id === activity.id) {
+                return {
+                  ...a,
+                  ...activity,
+                };
+              }
+              return a;
+            })
+          );
+          return;
+        } else {
+          return;
+        }
       }
       if (activity.isActive) {
         activityList.forEach((activity) => {
@@ -76,9 +95,10 @@ export const ActivityBarController = defineController(() => {
 
     const showActivity = (id: string) => {
       const activityList = bean.getActivityList();
-      if (activityList.find((a) => a.id === id)) {
-        setActiveId(id);
-        eventBus.emit(`activity:${id}:clicked`);
+      const activity = activityList.find((a) => a.id === id);
+      if (activity) {
+        if (!activity.unselectable) setActiveId(id);
+        eventBus.emit(EventKeys.ActivityBar.ActivityClicked(id));
       }
     };
 
@@ -101,18 +121,33 @@ export const ActivityBarController = defineController(() => {
     };
   });
 
-  const { addShortcut, useShortcutList } = createCustomReactBean(
-    "ShortcutList",
-    [] as IShortcutItem[],
-    (bean) => {
-      withCache(bean, cache);
-      const { add: addShortcut } = createCRUDActions(
-        bean.setShortcutList,
-        bean.getShortcutList
-      );
-      return { addShortcut };
+  combineLatest([activeId$, activityList$]).subscribe(
+    ([activeId, activityList]) => {
+      if (activeId) {
+        const activity = activityList.find((a) => a.id === activeId);
+        if (!activity) {
+          setActiveId("");
+        } else {
+          if (activity.unselectable) {
+            setActiveId("");
+          }
+        }
+      }
     }
   );
+
+  // const { addShortcut, useShortcutList } = createCustomReactBean(
+  //   "ShortcutList",
+  //   [] as IShortcutItem[],
+  //   (bean) => {
+  //     withCache(bean, cache);
+  //     const { add: addShortcut } = createCRUDActions(
+  //       bean.setShortcutList,
+  //       bean.getShortcutList
+  //     );
+  //     return { addShortcut };
+  //   }
+  // );
 
   const options = {};
   if (isMobile) {
@@ -139,14 +174,16 @@ export const ActivityBarController = defineController(() => {
     toggle,
     getActiveId,
     useActiveId,
-    getActivityList,
-    useActivityList,
+    getActivityList: () =>
+      getActivityList().sort((a, b) => (a.order || 0) - (b.order || 0)),
+    useActivityList: () =>
+      useActivityList().sort((a, b) => (a.order || 0) - (b.order || 0)),
     setActivityList,
     addActivity,
     showActivity,
     setHighlightActivity,
     removeActivity,
-    addShortcut,
-    useShortcutList,
+    // addShortcut,
+    // useShortcutList,
   };
 });

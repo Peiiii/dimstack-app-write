@@ -21,6 +21,16 @@ export class SpaceServiceImpl implements ISpaceService {
     this.spaceStore.getActions().init(spaces);
   };
 
+  useSpaces = () => {
+    const [spaces, setSpaces] = useState<SpaceDef[]>(this.spaceStore.getData());
+    useEffect(() => {
+      this.spaceStore.reduxStore.subscribe(() => {
+        setSpaces(this.spaceStore.getData());
+      });
+    }, []);
+    return spaces;
+  };
+
   getSpaceStore(): DataStore<SpaceDef> {
     return this.spaceStore;
   }
@@ -154,6 +164,13 @@ export class SpaceServiceImpl implements ISpaceService {
     setTimeout(() => {
       xbook.serviceBus.invoke(`space-${spaceId}.trigger`);
     }, 100);
+  };
+
+  getFocusedSpace = () => {
+    const id = xbook.serviceBus.invoke("folderTreeService.getCurrentViewId");
+    if (id) {
+      return this.spaceStore.getRecord(id);
+    }
   };
 
   parseRepoUrl = (url: string) => {

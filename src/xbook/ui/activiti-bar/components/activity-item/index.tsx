@@ -1,7 +1,8 @@
 // components/ActivityItem.tsx
 import { As, Icon, Stack, Text, VStack } from "@chakra-ui/react";
-import { AiFillFolder, AiOutlineQuestionCircle } from "react-icons/ai";
+import { AiFillFolder } from "react-icons/ai";
 import { componentService } from "xbook/services";
+import { IActivityItem } from "xbook/ui/activiti-bar/types";
 import { DragSortItem } from "xbook/ui/components/DragSort";
 
 const ActivityItem = ({
@@ -13,8 +14,17 @@ const ActivityItem = ({
   showActivity,
   iconFontSize,
   textFontSize,
+}: {
+  activity: IActivityItem;
+  index: number;
+  moveItem: any;
+  crossDirection: "row" | "column";
+  activeId: string;
+  showActivity: any;
+  iconFontSize: string;
+  textFontSize: string;
 }) => {
-  const { icon = "AiFillFolder", name, id } = activity;
+  const { icon = "AiFillFolder", name, id, unselectable: disableSelect } = activity;
   const IconComponent = componentService.useComponent(icon) || AiFillFolder;
   const classList = ["activity-wrapper", "activity"];
   if (activeId && activeId === id) classList.push("active");

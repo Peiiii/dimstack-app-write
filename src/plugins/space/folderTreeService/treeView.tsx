@@ -1,4 +1,4 @@
-import { Alert, Badge, Box, Icon, Link, Wrap } from "@chakra-ui/react";
+import { Alert, Box, Icon, Link } from "@chakra-ui/react";
 import "./sidebar.scss";
 
 import { EventKeys } from "@/constants/eventKeys";
@@ -7,6 +7,8 @@ import { fileSystemHelper } from "@/helpers/file-system.helper";
 import { useStateFromRegistry } from "@/helpers/hooks/user-state-from-registry";
 import { spaceHelper } from "@/helpers/space.helper";
 import SideCard from "@/plugins/space/folderTreeService/components/SideCard";
+import { Combobox } from "@/plugins/space/folderTreeService/components/combobox";
+import { SpaceTag } from "@/plugins/space/folderTreeService/components/space-tag";
 import treePluginAddNode from "@/plugins/space/folderTreeService/plugins/treePluginAddNode";
 import treePluginInit from "@/plugins/space/folderTreeService/plugins/treePluginInit";
 import treePluginMigration from "@/plugins/space/folderTreeService/plugins/treePluginMigration";
@@ -93,6 +95,8 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
 
   // console.log("actions: ", actions);
 
+  const spaces = spaceService.useSpaces();
+
   return (
     <ContextProvider space={space}>
       {!isLogin && (
@@ -121,20 +125,19 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
       <SideCard
         title={
           <>
-            <Wrap>
-              {`${space.repo}`}
-              <div
-                style={{
-                  alignItems: "center",
-                  display: "flex",
-                }}
-              >
-                <Badge>{space.platform || ""}</Badge>
-                {hasWritePermission && (
-                  <Badge textTransform={"none"}>{space.owner}</Badge>
-                )}
-              </div>
-            </Wrap>
+            <Combobox
+              options={spaces.map((space) => ({
+                value: space.id,
+                label: <SpaceTag space={space} />,
+              }))}
+              value={spaceService.getFocusedSpace()?.id}
+              onChange={(value) => {
+                if (value) {
+                  spaceService.focusSpace(value);
+                }
+              }}
+              placeholder="search repo"
+            />
           </>
         }
         className="fs-tree-container"

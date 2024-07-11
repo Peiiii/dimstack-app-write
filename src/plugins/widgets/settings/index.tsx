@@ -6,7 +6,7 @@ import store from "./store";
 export default createPlugin({
   initilize(xbook) {
     xbook.componentService.register("settings", AiOutlineSetting);
-    xbook.layoutService.activityBar.addShortcut(
+    xbook.shortcutService.addShortcut(
       {
         id: "settings",
         name: "设置",

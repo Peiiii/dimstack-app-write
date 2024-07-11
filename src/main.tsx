@@ -1,6 +1,6 @@
 import base from "@/plugins/core/base";
 import features from "@/plugins/features";
-import { Migration20240518 } from "@/plugins/migrations";
+import migrations from "@/plugins/migrations";
 import asyncPluginService from "@/plugins/services/asyncPluginService";
 import authService from "@/plugins/services/auth";
 import commonServiceProviders from "@/plugins/services/common-service-providers";
@@ -13,8 +13,7 @@ import { spaceServiceModule } from "@/plugins/space/spaceService";
 import checkUrlParamAndQuickOpen from "@/plugins/utilities/checkUrlParamAndQuickOpen";
 import clearLocalCache from "@/plugins/utilities/clearLocalCache";
 import theme from "@/plugins/utilities/theme";
-import introduction from "@/plugins/widgets/introduction";
-import settings from "@/plugins/widgets/settings";
+import widgets from "@/plugins/widgets";
 import xbook from "xbook";
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.has("testMode")) {
@@ -39,14 +38,16 @@ xbook.pluginService.use([
   features,
 
   /** widgets */
-  settings,
+  // settings,
+  widgets,
   theme,
   clearLocalCache,
 
   checkUrlParamAndQuickOpen,
   addGiteeSpace,
-  introduction,
-  Migration20240518,
+  // introduction,
+  // Migration20240518,
+  migrations,
 ]);
 xbook.taskService.start();
 xbook.layoutService.renderLayout(document.getElementById("root")!);

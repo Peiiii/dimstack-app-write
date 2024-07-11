@@ -3,6 +3,7 @@ import { SpaceDef } from "@/toolkit/types/space";
 
 export interface ISpaceService {
   setSpaces(spaces: SpaceDef[]): void;
+  useSpaces(): SpaceDef[];
   getSpaceStore(): DataStore<SpaceDef>;
   refreshAuth(spaceId: string): Promise<boolean>;
   login(spaceId: string): void;
@@ -22,6 +23,7 @@ export interface ISpaceService {
     }
   ): SpaceDef;
   focusSpace(spaceId: string): void;
+  getFocusedSpace(): SpaceDef | undefined;
   parseRepoUrl(url: string): { platform: string; owner: string; repo: string };
   subscribeSpaces(callback: (spaces: SpaceDef[]) => void): void;
 }
