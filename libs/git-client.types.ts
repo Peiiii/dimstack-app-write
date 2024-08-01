@@ -37,6 +37,8 @@ export type FileItemResponse = {
   data: any;
 };
 
+
+
 export type FileResponse = FileItemResponse & {
   content: string;
   size: number;
@@ -101,7 +103,7 @@ export type GiteeClient = {
     }) => Promise<ApiResponse<any>>;
   };
   User: {
-    getInfo: (options: {}) => Promise<ApiResponse<any>>;
+    getInfo: () => Promise<ApiResponse<any>>;
   };
   Branch: {
     get: (options: {

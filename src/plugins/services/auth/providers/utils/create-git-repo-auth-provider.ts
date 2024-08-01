@@ -4,12 +4,16 @@ import { GithubAuthInfo } from "libs/github-api";
 import history from "xbook/common/history";
 import xbook from "xbook/index";
 
+export interface IUser {
+  username: string;
+}
 export const createOAuthCallbackTask = ({
   platform,
   createToken,
   clientId,
   clientSecret,
   redirectUri,
+  fetchUserInfo,
 }: {
   platform: string;
   clientId: string;
@@ -20,8 +24,9 @@ export const createOAuthCallbackTask = ({
     clientSecret: string;
     redirectUri: string;
     code: string;
-    repo: string;
+    // repo: string;
   }) => Promise<GithubAuthInfo>;
+  fetchUserInfo?: (params: { accessToken: string }) => Promise<IUser>;
 }) => {
   const CheckAuthCodeAndNext = {
     name: "CheckAuthCodeAndNext:" + platform,
@@ -30,23 +35,32 @@ export const createOAuthCallbackTask = ({
       const { platform, username } = taskData;
       const code = history.location.query["code"];
       const codePlatform = history.location.query["platform"];
-      const repo = localStorage.getItem("authRepo");
-      if (code && platform === codePlatform && repo) {
+      // const repo = localStorage.getItem("authRepo");
+      if (code && platform === codePlatform) {
         createToken({
           clientId,
           clientSecret,
           redirectUri,
           code: code,
-          repo,
-        }).then((auth) => {
+          // repo,
+        }).then(async (auth) => {
+          let fetchedUsername;
+          if (fetchUserInfo) {
+            const user = await fetchUserInfo({
+              accessToken: auth.access_token,
+            });
+            if (user) {
+              fetchedUsername = user.username;
+            }
+          }
           if (auth) {
             authService.saveAuthInfo({
               platform,
-              username,
+              username: fetchedUsername || username,
               accessToken: auth.access_token,
               refreshToken: auth.refresh_token,
               expirationTime: auth.expires_in,
-              refreshExpirationTime: auth.refresh_token_expires_in,
+              refreshTokenExpirationTime: auth.refresh_token_expires_in,
               createdAt: auth.created_at || Math.ceil(Date.now() / 1000),
               scope: auth.scope,
               tokenType: auth.token_type,
@@ -72,6 +86,9 @@ export const createGitRepoAuthProvider = ({
   refreshAccessToken,
   getLoginUrl,
   callbackTaskName,
+  id,
+  title,
+  description,
 }: {
   platform: string;
   refreshAccessToken: (params: {
@@ -79,9 +96,15 @@ export const createGitRepoAuthProvider = ({
   }) => Promise<GithubAuthInfo>;
   getLoginUrl(): string;
   callbackTaskName: string;
+  id: string;
+  title?: string;
+  description?: string;
 }) => {
   const authProvider: IAuthProvider = {
     platform,
+    id,
+    title,
+    description,
     refresh: async (params: {
       platform: string;
       username: string;
@@ -102,7 +125,8 @@ export const createGitRepoAuthProvider = ({
         tokenType: auth.token_type,
       });
     },
-    authenticate: async (username: string, repo: string) => {
+    getLoginUrl,
+    authenticate: async (username?: string, repo?: string) => {
       // 弹窗询问用户是否确定跳转到对应平台的登录页面
       const userConfirmation = await xbook.modalService.confirm({
         title: "即将跳转",
@@ -111,8 +135,8 @@ export const createGitRepoAuthProvider = ({
       if (!userConfirmation) {
         return; // 用户取消认证
       }
-      localStorage.setItem("authRepo", repo);
-      localStorage.setItem("authOwner", username);
+      localStorage.setItem("authRepo", repo || "");
+      localStorage.setItem("authOwner", username || "");
 
       // 执行其他认证流程，例如调用认证服务进行验证等
       // ...

@@ -67,5 +67,6 @@ export const createConstraintServiceBus = <
     exposeAt,
     invoke,
     createProxy,
+    $map:map,
   };
 };

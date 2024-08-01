@@ -3,6 +3,39 @@ import { FileHelper, GiteeClient, Method } from "libs/git-client.types";
 import { GithubAuthInfo } from "libs/github-api";
 import axios from "redaxios";
 
+
+export interface IGiteeUser {
+  avatar_url: string;
+  bio: string | null;
+  blog: string | null;
+  created_at: string;
+  email: string | null;
+  events_url: string;
+  followers: number;
+  followers_url: string;
+  following: number;
+  following_url: string;
+  gists_url: string;
+  html_url: string;
+  id: number;
+  login: string;
+  name: string;
+  organizations_url: string;
+  public_gists: number;
+  public_repos: number;
+  received_events_url: string;
+  remark: string;
+  repos_url: string;
+  stared: number;
+  starred_url: string;
+  subscriptions_url: string;
+  type: string;
+  updated_at: string;
+  url: string;
+  watched: number;
+  weibo: string | null;
+}
+
 const API_BASE_URL = "https://gitee.com/api/v5";
 const AUTHORIZE_URL = "https://gitee.com/oauth/token";
 

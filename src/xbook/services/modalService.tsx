@@ -30,6 +30,7 @@ export type ModalSpec = {
   closeIcon?: ReactNode;
   modalContentClassName?: string;
   modalBodyClassName?: string;
+  autoFocus?: boolean;
 };
 
 export const ModalActionContext = React.createContext<
@@ -69,6 +70,7 @@ export const createModalService = () => {
     closeIcon,
     modalContentClassName,
     modalBodyClassName,
+    autoFocus,
   }: ModalSpec) => {
     const modal = createDeferredComponentProxy<ModalMethods>(({ proxy }) => {
       const ModalWrapper = ({ content }) => {
@@ -81,7 +83,12 @@ export const createModalService = () => {
         }, [onOpen, onClose, isOpen]);
         return (
           <ModalActionContext.Provider value={proxy}>
-            <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
+            <Modal
+              blockScrollOnMount={false}
+              isOpen={isOpen}
+              onClose={onClose}
+              autoFocus={autoFocus}
+            >
               <ModalOverlay />
               <ModalContent
                 className={modalContentClassName}

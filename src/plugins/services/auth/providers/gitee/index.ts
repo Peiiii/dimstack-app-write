@@ -5,6 +5,7 @@ import {
   createOAuthCallbackTask,
 } from "@/plugins/services/auth/providers/utils/create-git-repo-auth-provider";
 import {
+  createGiteeClient,
   getGiteeAccessToken,
   getGiteeLoginUrl,
   refreshGiteeAccessToken,
@@ -19,8 +20,21 @@ export default createPlugin({
       clientSecret: appInfo.clientSecret,
       redirectUri: appInfo.redirectUri,
       createToken: getGiteeAccessToken,
+      fetchUserInfo: async ({ accessToken }) => {
+        const client = createGiteeClient({
+          getAccessToken: () => accessToken,
+        });
+        const user = await client.User.getInfo();
+        console.log("user", user);
+
+        return {
+          username: user.data?.name,
+          response: user,
+        };
+      },
     });
     const authProvider = createGitRepoAuthProvider({
+      id: "gitee",
       platform: "gitee",
       callbackTaskName: callbackTask.name,
       refreshAccessToken: refreshGiteeAccessToken,

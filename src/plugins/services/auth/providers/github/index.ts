@@ -1,14 +1,15 @@
 import { Tokens } from "@/constants/tokens";
 import { appInfo } from "@/plugins/services/auth/providers/github/appInfo";
 import {
-    createGitRepoAuthProvider,
-    createOAuthCallbackTask,
+  createGitRepoAuthProvider,
+  createOAuthCallbackTask,
 } from "@/plugins/services/auth/providers/utils/create-git-repo-auth-provider";
 import {
-    getGithubAccessToken,
-    getGithubLoginUrl,
-    getGithubRepositoryId,
-    refreshGithubAccessToken,
+  createGithubClient,
+  getGithubAccessToken,
+  getGithubLoginUrl,
+  getGithubRepositoryId,
+  refreshGithubAccessToken,
 } from "libs/github-api";
 import { OAuthApp } from "octokit";
 import { createPlugin } from "xbook/common/createPlugin";
@@ -35,15 +36,28 @@ export default createPlugin({
         //   owner,
         //   repo,
         // });
-        const repoId = await getGithubRepositoryId(owner, repo);
+        // const repoId = await getGithubRepositoryId(owner, repo);
 
         return getGithubAccessToken({
           ...params,
-          repository_id: repoId,
+          // repository_id: repoId,
         });
+      },
+      fetchUserInfo: async ({ accessToken }) => {
+        const client = createGithubClient({
+          getAccessToken: () => accessToken,
+        });
+        const user = await client.User.getInfo();
+        console.log("user", user);
+
+        return {
+          username: user.data?.name,
+          response: user,
+        };
       },
     });
     const authProvider = createGitRepoAuthProvider({
+      id: "github",
       platform: "github",
       callbackTaskName: callbackTask.name,
       refreshAccessToken: refreshGithubAccessToken,

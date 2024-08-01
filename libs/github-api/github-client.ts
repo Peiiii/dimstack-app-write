@@ -126,13 +126,13 @@ export const getGithubAccessToken = async ({
   clientId,
   clientSecret,
   redirectUri,
-  repository_id,
+  // repository_id,
 }: {
   code: string;
   clientId: string;
   clientSecret: string;
   redirectUri: string;
-  repository_id?: number;
+  // repository_id?: number;
 }): Promise<GithubAuthInfo> => {
   // const url =
   //   `https://github.com/login/oauth/access_token?code=${code}&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&client_secret=${clientSecret}` +
@@ -271,7 +271,10 @@ export const createGithubClient = ({
   const User = {
     getInfo: async () => {
       return axios.get(URLBuilder.getUserInfo(), {
-        params: prepareParams({ access_token: getAccessToken() }),
+        // params: prepareParams({ access_token: getAccessToken() }),
+        headers: {
+          Authorization: `Bearer ${getAccessToken()}`,
+        },
       });
     },
   };

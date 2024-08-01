@@ -103,7 +103,7 @@ export class SpaceServiceImpl implements ISpaceService {
     //   authService.isExpired(space.platform, space.owner)
     // );
     useEffect(() => {
-      authService.onAuthChange(() => {
+      authService.onAuthRecordsChange(() => {
         setHasReadPermission(
           authService.hasReadPermission(space.platform, space.owner)
         );
