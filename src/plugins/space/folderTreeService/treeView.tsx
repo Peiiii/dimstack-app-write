@@ -38,6 +38,7 @@ import treePluginClickNode from "./plugins/treePluginClickNode";
 import treePluginConfig from "./plugins/treePluginConfig";
 import treePluginDeleteNode from "./plugins/treePluginDeleteNode";
 import treePluginEditNode from "./plugins/treePluginEditNode";
+import treePluginAutoOpenReadme from "@/plugins/space/folderTreeService/plugins/treePluginAutoOpenReadme";
 
 const TreeView = ({ space }: { space: SpaceDef }) => {
   const treeDataStore = useMemo(
@@ -226,6 +227,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
               treePluginNodeType(),
               treePluginMigration(),
               treePluginRefreshSpaceAuth(),
+              treePluginAutoOpenReadme(),
             ]}
           />
         </Box>

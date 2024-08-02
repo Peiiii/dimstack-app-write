@@ -1,5 +1,6 @@
 import { Tokens } from "@/constants/tokens";
 import { spaceHelper } from "@/helpers/space.helper";
+import { TreeEventKeys } from "@/plugins/space/folderTreeService/tokens";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreePlugin } from "@/toolkit/components/tree/treePlugins";
 import xbook from "xbook";
@@ -14,7 +15,7 @@ export default createTreePlugin<FolderTreeNode>({
       },
     } = context;
     const spaceId = spaceHelper.generateSpaceId(platform, owner, repo);
-    eventBus.on("node::click", async ({ node }: { node: FolderTreeNode }) => {
+    eventBus.on(TreeEventKeys.NodeClick, async ({ node }: { node: FolderTreeNode }) => {
       if (node.id === "root" || node.type === "dir") {
         return await serviceBus.invoke("refresh", node.id);
       } else {

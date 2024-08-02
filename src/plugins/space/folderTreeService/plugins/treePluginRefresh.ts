@@ -1,5 +1,6 @@
 import { fileSystemHelper } from "@/helpers/file-system.helper";
 import { spaceHelper } from "@/helpers/space.helper";
+import { TreeEventKeys } from "@/plugins/space/folderTreeService/tokens";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreeHelper } from "@/toolkit/components/tree/treePlugins";
 import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
@@ -12,6 +13,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
     dataStore,
     viewSystem: { viewStateStore },
     options: { space },
+    eventBus
   }) {
     viewStateStore.reduxStore.subscribe(() => {
       const data = viewStateStore.getData();
@@ -112,6 +114,9 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
       const node = dataStore.getNode(id)!;
       const updatedNode = await readTreeReferToViewState(space.id, node);
       dataStore.getActions().update({ node: updatedNode });
+      eventBus.emit(TreeEventKeys.NodeContentLoaded, {
+        node: updatedNode,
+      });
       console.log("updatedData:", dataStore.getData());
     };
     serviceBus.expose("refresh", deepRefresh);

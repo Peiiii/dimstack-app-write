@@ -1,4 +1,5 @@
 import { spaceHelper } from "@/helpers/space.helper";
+import { TreeEventKeys } from "@/plugins/space/folderTreeService/tokens";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreeHelper } from "@/toolkit/components/tree/treePlugins";
 import { join } from "@/toolkit/utils/path";
@@ -81,7 +82,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
           });
           console.log(`CreateNode[${path}]`);
           // xbook.serviceBus.invoke("openerService.open", spaceId, childNode);
-          eventBus.emit("node::click", { node: childNode });
+          eventBus.emit(TreeEventKeys.NodeClick, { node: childNode });
         },
       });
     });

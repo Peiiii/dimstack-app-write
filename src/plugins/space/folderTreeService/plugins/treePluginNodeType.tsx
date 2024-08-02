@@ -1,3 +1,4 @@
+import { TreeEventKeys } from "@/plugins/space/folderTreeService/tokens";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreePlugin } from "@/toolkit/components/tree/treePlugins";
 import { Icon, Text } from "@chakra-ui/react";
@@ -141,7 +142,7 @@ export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
         }
       }
     };
-    eventBus.on("node::click", ({ node }) => {
+    eventBus.on(TreeEventKeys.NodeClick, ({ node }) => {
       focusNode(node);
     });
   },

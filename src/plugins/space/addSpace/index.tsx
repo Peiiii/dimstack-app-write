@@ -209,7 +209,7 @@ export const addGiteeSpace = createPlugin({
     });
     spaceHelper.getStore().waitUtilLoaded(() => {
       if (spaceHelper.getStore().getData().length === 0) {
-        xbook.eventBus.emit(EventKeys.Shortcut.ShortcutClicked(id));
+        xbook.eventBus.emit(EventKeys.ActivityBar.ActivityClicked(id));
       }
     });
   },

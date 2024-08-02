@@ -1,7 +1,11 @@
+import { TreeEventKeys } from "@/plugins/space/folderTreeService/tokens";
+import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
+import { nameSorter } from "@/toolkit/components/tree/utils";
 import {
   PluginInitializationConfiguration,
   createPluginSystem,
 } from "@/toolkit/factories/pluginSystem";
+import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
 import { SafeAny } from "@/toolkit/types";
 import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import {
@@ -17,14 +21,11 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { css, keyframes } from "@emotion/css";
+import classNames from "classnames";
 import { useRef } from "react";
 import { AiOutlineLoading } from "react-icons/ai";
 import { HiOutlineEllipsisVertical } from "react-icons/hi2";
 import { WidgetContext } from ".";
-import classNames from "classnames";
-import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
-import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
-import { nameSorter } from "@/toolkit/components/tree/utils";
 
 export const getCreateTreePlugin = <
   TreeNodeType extends Record<string, SafeAny>
@@ -104,7 +105,7 @@ export const treePluginExpandTemplate = createTreePluginTemplate<{
         .getActions()
         .upsert({ ...viewState, expanded: true });
     };
-    eventBus.on("node::click", toggleNode);
+    eventBus.on(TreeEventKeys.NodeClick, toggleNode);
     eventBus.on("node::keydown.enter", toggleNode);
     serviceBus.expose("expandNode", (id: string) => {
       expandNode({ node: dataStore.getNode(id)! });
@@ -321,10 +322,13 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
                   w="100%"
                   flexGrow={1}
                   align="center"
-                  onClick={eventBus.connector("node::click", (event) => ({
-                    node,
-                    event,
-                  }))}
+                  onClick={eventBus.connector(
+                    TreeEventKeys.NodeClick,
+                    (event) => ({
+                      node,
+                      event,
+                    })
+                  )}
                   tabIndex={-1}
                   onKeyDown={(e) => {
                     if (e.code.toLowerCase() === "enter") {
