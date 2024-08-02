@@ -129,6 +129,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
               options={spaces.map((space) => ({
                 value: space.id,
                 label: <SpaceTag space={space} />,
+                data: space,
               }))}
               value={spaceService.getFocusedSpace()?.id}
               onChange={(value) => {

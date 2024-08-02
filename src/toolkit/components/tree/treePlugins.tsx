@@ -2,6 +2,7 @@ import {
   PluginInitializationConfiguration,
   createPluginSystem,
 } from "@/toolkit/factories/pluginSystem";
+import { SafeAny } from "@/toolkit/types";
 import { ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import {
   Box,
@@ -14,12 +15,16 @@ import {
   MenuList,
   Portal,
   Text,
-  Tooltip,
 } from "@chakra-ui/react";
-import { useEffect, useRef } from "react";
+import { css, keyframes } from "@emotion/css";
+import { useRef } from "react";
+import { AiOutlineLoading } from "react-icons/ai";
 import { HiOutlineEllipsisVertical } from "react-icons/hi2";
 import { WidgetContext } from ".";
-import { SafeAny } from "@/toolkit/types";
+import classNames from "classnames";
+import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
+import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
+import { nameSorter } from "@/toolkit/components/tree/utils";
 
 export const getCreateTreePlugin = <
   TreeNodeType extends Record<string, SafeAny>
@@ -136,6 +141,18 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
     // Initial View System
     const IconCollapsed = ChevronRightIcon;
     const IconExpanded = ChevronDownIcon;
+    // const IconLoading = VscLoading;
+    const IconLoading = () => {
+      const spin = keyframes`
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  `;
+      // 创建一个包含动画的样式
+      const spinnerStyle = css`
+        animation: ${spin} 1s linear infinite;
+      `;
+      return <AiOutlineLoading className={spinnerStyle} />;
+    };
     const IconEllipsis = HiOutlineEllipsisVertical;
     viewSystem.renderer.register("icon-expanded", IconExpanded);
     viewSystem.renderer.register("icon-collapsed", IconCollapsed);
@@ -144,6 +161,7 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
     viewSystem.renderer.register("icon-collapsed-default", IconCollapsed);
     viewSystem.renderer.register("icon-ellipsis-default", IconEllipsis);
     viewSystem.renderer.register("icon-node-type", () => null);
+    viewSystem.renderer.register("icon-loading", IconLoading);
     viewSystem.setDefaultViewStateProvider((node, props) => {
       return {
         id: node.id,
@@ -165,7 +183,7 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
       context: WidgetContext<any>;
     }) => {
       const { id } = node;
-      const nodeData = dataStore.useNode(id);
+      const nodeData = dataStore.useNode(id) as TreeDataNode<FolderTreeNode>;
       if (!nodeData) return null;
       const { name, children } = nodeData;
       // console.log("children：",children)
@@ -177,7 +195,7 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
         viewSystem.getDefaultViewState({ id });
       const inputRef = useRef<HTMLInputElement>(null);
 
-      const { expanded, editMode, expandable, highlight } = viewState;
+      const { expanded, editMode, expandable, highlight, loading } = viewState;
       const nodeMenuItems = viewSystem.getNodeMenuItems({ node, level });
       let actionBar;
       if (nodeMenuItems.length === 0) actionBar = null;
@@ -238,6 +256,29 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
       const classList = ["tree-node"];
       if (level === 0) classList.push("tree-root-node");
       if (highlight) classList.push("tree-node-highlight");
+
+      const leftExtra = (
+        <>
+          {loading ? (
+            viewSystem.render("icon-loading")
+          ) : (
+            <>
+              {expandable ? (
+                expanded ? (
+                  viewSystem.render("icon-expanded")
+                ) : (
+                  viewSystem.render("icon-collapsed")
+                )
+              ) : (
+                <Box visibility={"hidden"}>
+                  {viewSystem.render("icon-collapsed")}
+                </Box>
+              )}
+            </>
+          )}
+        </>
+      );
+
       return (
         <Flex
           w="100%"
@@ -252,12 +293,7 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
             overflow={"hidden"}
             className={classList.join(" ")}
           >
-            <Box
-              className="placeholder"
-              w={3}
-              flexShrink={0}
-              flexGrow={0}
-            />
+            <Box className="placeholder" w={3} flexShrink={0} flexGrow={0} />
             <Flex
               className="tree-node-content"
               flexFlow={"column"}
@@ -281,7 +317,7 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
                   minW={0}
                   overflow={"hidden"}
                   direction={"row"}
-                  h="2rem"
+                  h={36}
                   w="100%"
                   flexGrow={1}
                   align="center"
@@ -305,17 +341,7 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
                     className="hover-action"
                   >
                     <Flex pr="0.5rem" alignItems={"center"}>
-                      {expandable ? (
-                        expanded ? (
-                          viewSystem.render("icon-expanded")
-                        ) : (
-                          viewSystem.render("icon-collapsed")
-                        )
-                      ) : (
-                        <Box visibility={"hidden"}>
-                          {viewSystem.render("icon-collapsed")}
-                        </Box>
-                      )}
+                      {leftExtra}
                     </Flex>
                     {viewSystem.render("icon-node-type", { node })}
                     <Box w="0.5em"></Box>
@@ -391,12 +417,19 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
                 direction={"column"}
                 overflow={"hidden"}
                 ml="0.5rem"
-                className="tree-node-children-list"
+                className={classNames({
+                  "tree-node-children-list": true,
+                  "tree-node-children-list-expanded": expanded,
+                  "tree-node-children-list-collapsed": !expanded,
+                  [css`
+                    height: ${children?.length ? `auto` : "0"};
+                  `]: expanded,
+                })}
                 w="calc(100% - 0.5rem)"
-                {...(expanded ? {} : { display: "none" })}
               >
                 {children &&
                   [...children]
+                    .sort(nameSorter)
                     .sort(
                       (a, b) =>
                         (a.type === "file" ? 1 : 0) -

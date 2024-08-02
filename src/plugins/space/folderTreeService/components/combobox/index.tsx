@@ -16,16 +16,17 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/toolkit/utils/shadcn-utils";
+import { SafeAny } from "@/toolkit/types";
+import { space } from "@chakra-ui/react";
 
 export function Combobox(props: {
-  options?: { value: string; label: React.ReactNode }[];
+  options?: { value: string; label: React.ReactNode; data?: SafeAny }[];
   value?: string;
   onChange?: (value: string | undefined) => void;
   placeholder?: string;
 }) {
   const { options = [], value, onChange, placeholder } = props;
   const [open, setOpen] = React.useState(false);
-  // const [innerValue, setValue] = React.useState("");
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -52,15 +53,27 @@ export function Combobox(props: {
         </div> */}
       </PopoverTrigger>
       <PopoverContent className="w-[220px] p-0">
-        <Command>
-          <CommandInput placeholder={placeholder} className="h-9" />
+        <Command
+          filter={(value, search) => {
+            const item = options.find((item) => item.value === value);
+            if (!item) return 0;
+            const context = `${item.data?.platform} ${item.data?.repo} ${item.data?.owner}`;
+            if (context.includes(search)) return 1;
+            return 0;
+          }}
+        >
+          <CommandInput
+            placeholder={placeholder}
+            className="h-9"
+            onValueChange={(v) => {}}
+          />
           <CommandEmpty>No framework found.</CommandEmpty>
           <CommandGroup>
             <CommandList>
-              {options.map((framework) => (
+              {options.map((item) => (
                 <CommandItem
-                  key={framework.value}
-                  value={framework.value}
+                  key={item.value}
+                  value={item.value}
                   onSelect={(currentValue) => {
                     onChange?.(
                       currentValue === value ? undefined : currentValue
@@ -68,11 +81,11 @@ export function Combobox(props: {
                     setOpen(false);
                   }}
                 >
-                  {framework.label}
+                  {item.label}
                   <CheckIcon
                     className={cn(
                       "ml-auto h-4 w-4",
-                      value === framework.value ? "opacity-100" : "opacity-0"
+                      value === item.value ? "opacity-100" : "opacity-0"
                     )}
                   />
                 </CommandItem>

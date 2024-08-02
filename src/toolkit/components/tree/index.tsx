@@ -15,6 +15,7 @@ export type WidgetViewState = {
   editMode?: boolean;
   expandable: boolean;
   highlight?: boolean;
+  loading?: boolean;
 };
 type NodeMenuItem = {
   id: string;
@@ -116,7 +117,7 @@ const createViewSystem = <T,>(
   let defaultViewStatePrider;
   const setDefaultViewStateProvider = (provider: ViewStateProvider) =>
     (defaultViewStatePrider = provider);
-  const getDefaultViewState = (node?: any, props?: any) => {
+  const getDefaultViewState = (node?: any, props?: any): WidgetViewState => {
     return defaultViewStatePrider
       ? defaultViewStatePrider(node, props)
       : { ...props };

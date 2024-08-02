@@ -31,6 +31,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
       //     node.id === "root" ? "/" : node.path!
       //   )
       // );
+
       const uri = spaceHelper.getUri(
         spaceId,
         node.id === "root" ? "/" : node.path!
@@ -39,7 +40,15 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
       let parentPath = node.id === "root" ? "/" : node.path!;
       parentPath = parentPath.endsWith("/") ? parentPath : parentPath + "/";
 
+      viewStateStore.getActions().update({
+        ...viewState,
+        loading: true,
+      });
       const info = await xbook.fs.readDirectory(uri);
+      viewStateStore.getActions().update({
+        ...viewState,
+        loading: false,
+      });
 
       const dirInfo = info.map(([name, type]) => {
         return {

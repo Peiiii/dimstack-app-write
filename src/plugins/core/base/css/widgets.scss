@@ -40,6 +40,15 @@
       }
       .tree-node-children-list {
         border-left: 1px solid var(--secondary-color);
+        transition: height 0.3s ease-out;
+      }
+
+      .tree-node-children-list-expanded {
+      }
+      .tree-node-children-list-collapsed {
+        overflow: hidden;
+        height: 0; /* 初始状态为收起 */
+        opacity: 0;
       }
     }
     // &:last-of-type > .tree-node > .tree-node-content > .tree-node-children-list {
@@ -97,10 +106,11 @@
     .editor-content {
       max-width: 100% !important;
       padding-top: 0rem !important;
-      p::selection, p>*::selection {
-        background-color: #073CA7;
+      p::selection,
+      p > *::selection {
+        background-color: #073ca7;
         color: white;
-        &:not(:focus){
+        &:not(:focus) {
           background-color: #707274;
           color: #393939;
         }
