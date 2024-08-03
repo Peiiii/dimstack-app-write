@@ -34,7 +34,7 @@
         &:hover {
           .tree-node-header {
             background-color: var(--item-focused-bg-color);
-            color: var(--item-focused-text-color);
+            // color: var(--item-focused-text-color);
           }
         }
       }
@@ -63,13 +63,13 @@
 
     .tree-node-header {
       background-color: var(--item-focused-bg-color);
-      color: var(--item-focused-text-color);
+      // color: var(--item-focused-text-color);
     }
   }
 
   .icon {
     &.dir {
-      color: #ffce45;
+      color: #b37619;
       // color: var(--primary-color);
       // opacity: 0.7;
     }
@@ -79,7 +79,8 @@
       opacity: 0.7;
 
       &.file-markdown {
-        color: var(--primary-color);
+        // color: var(--primary-color);
+        color: #14668b;
       }
     }
   }
