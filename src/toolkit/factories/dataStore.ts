@@ -54,9 +54,6 @@ export const createDataStore = <T extends { [k: string]: any }>({
       init: (state, action) => {
         state.data = action.payload || initialState;
       },
-      reduce: (state, action) => {
-        state.data = action.payload(state.data);
-      },
       upsert: (state, action) => {
         const record = action.payload;
         const pValue = record[primaryKey];
@@ -69,6 +66,10 @@ export const createDataStore = <T extends { [k: string]: any }>({
           state.data.push(record);
         }
       },
+      reduce: (state, action) => {
+        state.data = action.payload(state.data);
+      },
+     
       update: (state, action) => {
         // transforms(state);
         const record = action.payload;

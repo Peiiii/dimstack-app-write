@@ -1,34 +1,36 @@
-export { logService } from "./logService";
-export { taskService } from "./taskService";
-export { serviceBus } from "./serviceBus";
+export { componentService } from "../ui/componentService";
+export { cacheService } from "./cacheService";
 export { commandService } from "./commandService";
 export { eventBus } from "./eventBus";
-export { pipeService } from "./pipeService";
-export { registry as registryService } from "./registry";
-export { pluginService } from "./pluginService";
-export { cacheService } from "./cacheService";
-export { layoutService } from "./layoutService";
 export { fs } from "./fs";
-export { notificationService } from "./notificationService";
+export { layoutService } from "./layoutService";
+export { logService } from "./logService";
 export { modalService } from "./modalService";
-export { componentService } from "../ui/componentService";
+export { notificationService } from "./notificationService";
+export { pipeService } from "./pipeService";
+export { pluginService } from "./pluginService";
+export { popupService } from "./popupService";
+export { registry as registryService } from "./registry";
+export { serviceBus } from "./serviceBus";
 export { shortcutService } from "./shortcutService";
+export { taskService } from "./taskService";
 
-import { logService } from "./logService";
-import { taskService } from "./taskService";
-import { serviceBus } from "./serviceBus";
 import { commandService } from "./commandService";
 import { eventBus } from "./eventBus";
-import { pipeService } from "./pipeService";
 import { layoutService } from "./layoutService";
+import { logService } from "./logService";
+import { pipeService } from "./pipeService";
+import { serviceBus } from "./serviceBus";
+import { taskService } from "./taskService";
 
-import { registry } from "./registry";
-import { pluginService } from "./pluginService";
+import { componentService } from "xbook/ui/componentService";
 import { cacheService } from "./cacheService";
 import { fs } from "./fs";
-import { notificationService } from "./notificationService";
 import { modalService } from "./modalService";
-import { componentService } from "xbook/ui/componentService";
+import { notificationService } from "./notificationService";
+import { pluginService } from "./pluginService";
+import { popupService } from "./popupService";
+import { registry } from "./registry";
 import { shortcutService } from "./shortcutService";
 
 export default {
@@ -46,5 +48,6 @@ export default {
   notificationService,
   modalService,
   componentService,
-  shortcutService
+  shortcutService,
+  popupService,
 };

@@ -47,7 +47,7 @@ export const PageActions = () => {
       `}
     >
       {activePageActions.map((action) => (
-        <PageActionView action={action} />
+        <PageActionView action={action} key={action.id}/>
       ))}
     </div>
   );

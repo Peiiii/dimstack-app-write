@@ -18,7 +18,7 @@ export type PersistConfig = {
   transforms?: Transform<any, any>[];
 };
 
-export type TreeDataNode<T> = T & {
+export type TreeDataNode<T=any> = T & {
   children?: TreeDataNode<T>[];
   id: string;
 };

@@ -1,5 +1,4 @@
 import { TreeEventKeys } from "@/plugins/space/folderTreeService/tokens";
-import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { nameSorter } from "@/toolkit/components/tree/utils";
 import {
   PluginInitializationConfiguration,
@@ -22,10 +21,11 @@ import {
 } from "@chakra-ui/react";
 import { css, keyframes } from "@emotion/css";
 import classNames from "classnames";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { AiOutlineLoading } from "react-icons/ai";
 import { HiOutlineEllipsisVertical } from "react-icons/hi2";
-import { WidgetContext } from ".";
+import xbook from "xbook/index";
+import { NodeMenuItem, ViewSystem, WidgetContext } from ".";
 
 export const getCreateTreePlugin = <
   TreeNodeType extends Record<string, SafeAny>
@@ -120,12 +120,14 @@ export const treePluginEditNodeTemplate = createTreePluginTemplate<{
     viewSystem.addNodeMenuItems([
       {
         id: "editNode",
-        event: "editNode",
+        key: "editNode",
+        event: TreeEventKeys.EditNode.name,
         name: "编辑",
-        title: "编辑",
+        label: "编辑",
+        when: "level >= 1",
       },
     ]);
-    eventBus.on("editNode", ({ node }) => {
+    eventBus.on(TreeEventKeys.EditNode, ({ node }) => {
       viewSystem.viewStateStore.getActions().upsert({
         ...(viewSystem.viewStateStore.getRecord(node.id) ||
           viewSystem.getDefaultViewState(node, { expanded: false })),
@@ -134,6 +136,68 @@ export const treePluginEditNodeTemplate = createTreePluginTemplate<{
     });
   },
 });
+
+export const renderMenuEntry = ({
+  nodeMenuItems,
+  viewSystem,
+  node,
+}: {
+  nodeMenuItems: NodeMenuItem[];
+  viewSystem: ViewSystem;
+  node: TreeDataNode<any>;
+}) => {
+  let actionBar;
+  if (nodeMenuItems.length === 0) actionBar = null;
+  else if (nodeMenuItems.length >= 3) {
+    actionBar = (
+      <Menu>
+        <MenuButton
+          h="100%"
+          className="hover-visible"
+          as={Button}
+          // borderRadius={0}
+          variant="ghost"
+          size="xs"
+          mr="0.2rem"
+          ml={2}
+          aria-label="Options"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          {viewSystem.render("icon-ellipsis")}
+        </MenuButton>
+        <Portal>
+          <MenuList
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          >
+            {nodeMenuItems
+              .map((nodeMenuItem) =>
+                viewSystem.renderNodeMenuItem(nodeMenuItem, {
+                  node,
+                })
+              )
+              .map((menuItem, index) => (
+                <MenuItem key={index}>{menuItem}</MenuItem>
+              ))}
+          </MenuList>
+        </Portal>
+      </Menu>
+    );
+  } else {
+    actionBar = (
+      <Flex flexFlow={"row"} m="0 0.2rem" className="hover-show" gap={"0.2rem"}>
+        {nodeMenuItems.map((nodeMenuItem) =>
+          viewSystem.renderNodeMenuItem(nodeMenuItem, { node }, true)
+        )}
+      </Flex>
+    );
+  }
+  return actionBar;
+};
 
 export const treePluginInitViewTemplate = createTreePluginTemplate<{
   id: string;
@@ -178,81 +242,50 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
       node,
       level,
       context: { dataStore, viewSystem, eventBus },
+      parentNode,
     }: {
-      node: any;
+      node: TreeDataNode;
       level: number;
       context: WidgetContext<any>;
+      parentNode?: TreeDataNode;
     }) => {
       const { id } = node;
-      const nodeData = dataStore.useNode(id) as TreeDataNode<FolderTreeNode>;
+      const nodeData = dataStore.useNode(id) as TreeDataNode;
       if (!nodeData) return null;
       const { name, children } = nodeData;
-      // console.log("children：",children)
-      // if(children){
-      //   console.log([...children].sort(i=>i.type))
-      // }
+
       const viewState =
         viewSystem.viewStateStore.useRecord(id) ||
         viewSystem.getDefaultViewState({ id });
       const inputRef = useRef<HTMLInputElement>(null);
+      useEffect(() => {
+        if (viewState.editMode) {
+          inputRef.current?.focus();
+          // 设置光标位置到[name].[ext]的.[ext]之前，也就是最后一个点之前（如果存在点的话）
+          const dotIndex = name.lastIndexOf(".");
+          if (dotIndex > 0) {
+            console.log("inputRef.current:", inputRef.current);
 
-      const { expanded, editMode, expandable, highlight, loading } = viewState;
+            inputRef.current?.setSelectionRange(0, dotIndex);
+          }
+        }
+      }, [viewState.editMode]);
+
+      const {
+        expanded,
+        editMode,
+        expandable,
+        highlight,
+        loading,
+        validationMessage,
+        editingName,
+      } = viewState;
       const nodeMenuItems = viewSystem.getNodeMenuItems({ node, level });
-      let actionBar;
-      if (nodeMenuItems.length === 0) actionBar = null;
-      else if (nodeMenuItems.length >= 3)
-        actionBar = (
-          <Menu>
-            <MenuButton
-              h="100%"
-              className="hover-visible"
-              as={Button}
-              // borderRadius={0}
-              variant="ghost"
-              size="xs"
-              mr="0.2rem"
-              ml={2}
-              aria-label="Options"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            >
-              {viewSystem.render("icon-ellipsis")}
-            </MenuButton>
-            <Portal>
-              <MenuList
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-              >
-                {nodeMenuItems
-                  .map((nodeMenuItem) =>
-                    viewSystem.renderNodeMenuItem(nodeMenuItem, {
-                      node,
-                    })
-                  )
-                  .map((menuItem, index) => (
-                    <MenuItem key={index}>{menuItem}</MenuItem>
-                  ))}
-              </MenuList>
-            </Portal>
-          </Menu>
-        );
-      else {
-        actionBar = (
-          <Flex
-            flexFlow={"row"}
-            m="0 0.2rem"
-            className="hover-show"
-            gap={"0.2rem"}
-          >
-            {nodeMenuItems.map((nodeMenuItem) =>
-              viewSystem.renderNodeMenuItem(nodeMenuItem, { node }, true)
-            )}
-          </Flex>
-        );
-      }
+      const actionBar = renderMenuEntry({
+        nodeMenuItems,
+        viewSystem,
+        node,
+      });
 
       const classList = ["tree-node"];
       if (level === 0) classList.push("tree-root-node");
@@ -279,6 +312,49 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
           )}
         </>
       );
+
+      const inputBox = (
+        <Input
+          ref={inputRef}
+          type="text"
+          autoFocus
+          size={"sm"}
+          fontSize={"1rem"}
+          pl={0}
+          value={editingName}
+          flexGrow={0}
+          onChange={eventBus.connector(TreeEventKeys.EditChange, (event) => ({
+            node,
+            event,
+            parentNode,
+          }))}
+          onBlur={eventBus.connector(TreeEventKeys.EditBlur, (event) => ({
+            node,
+            event,
+            parentNode,
+          }))}
+          onKeyDown={(event) => {
+            if (event.code.toLocaleLowerCase() === "enter") {
+              eventBus.emit(TreeEventKeys.EditKeyEnter, {
+                node,
+                event,
+                parentNode,
+              });
+            }
+          }}
+          defaultValue={name}
+        />
+      );
+
+      useEffect(() => {
+        if (validationMessage && editMode && inputRef.current) {
+          return xbook.popupService.open({
+            target: inputRef.current,
+            content: validationMessage,
+          });
+        }
+        return () => {};
+      }, [validationMessage, editMode]);
 
       return (
         <Flex
@@ -318,7 +394,8 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
                   minW={0}
                   overflow={"hidden"}
                   direction={"row"}
-                  h={36}
+                  h={"36px"}
+                  maxH={"100%"}
                   w="100%"
                   flexGrow={1}
                   align="center"
@@ -350,32 +427,10 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
                     {viewSystem.render("icon-node-type", { node })}
                     <Box w="0.5em"></Box>
                     {editMode ? (
-                      <Input
-                        ref={inputRef}
-                        autoFocus
-                        size={"sm"}
-                        flexGrow={0}
-                        onChange={eventBus.connector(
-                          "editProgress",
-                          (event) => ({
-                            node,
-                            event,
-                          })
-                        )}
-                        onBlur={eventBus.connector("editBlur", (event) => ({
-                          node,
-                          event,
-                        }))}
-                        onKeyDown={(event) => {
-                          if (event.code.toLocaleLowerCase() === "enter") {
-                            eventBus.emit("editKeyEnter", { node, event });
-                          }
-                        }}
-                        defaultValue={name}
-                      />
+                      <>{inputBox}</>
                     ) : (
-                      // <Tooltip label={name}>
                       <Text
+                        fontSize={"1rem"}
                         title={name}
                         textOverflow={"ellipsis"}
                         whiteSpace={"nowrap"}
@@ -383,27 +438,8 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
                       >
                         {name}
                       </Text>
-                      // </Tooltip>
                     )}
                   </Flex>
-                  {/* <Button
-                pl="6px"
-                variant="link"
-                color={"inherit"}
-                leftIcon={
-                  expandable ? (
-                    expanded ? (
-                      viewSystem.render("icon-expanded")
-                    ) : (
-                      viewSystem.render("icon-collapsed")
-                    )
-                  ) : (
-                    <Box w="0.5rem"></Box>
-                  )
-                }
-              >
-              
-              </Button> */}
                   <Box flexGrow={1} />
                   <Flex
                     className="action-box"
@@ -439,10 +475,11 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
                         (a.type === "file" ? 1 : 0) -
                         (b.type === "file" ? 1 : 0)
                     )
-                    .map((node) =>
+                    .map((child) =>
                       viewSystem.renderNode({
-                        node,
+                        node: child,
                         level: level + 1,
+                        parentNode: node,
                       })
                     )}
               </Flex>

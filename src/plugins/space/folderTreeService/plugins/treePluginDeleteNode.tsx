@@ -1,6 +1,6 @@
+import { TreeEventKeys } from "@/plugins/space/folderTreeService/tokens";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreePlugin } from "@/toolkit/components/tree/treePlugins";
-import { AiFillDelete } from "react-icons/ai";
 import xbook from "xbook/index";
 export default createTreePlugin<FolderTreeNode>({
   addOptions() {
@@ -16,16 +16,15 @@ export default createTreePlugin<FolderTreeNode>({
     viewSystem.addNodeMenuItems([
       {
         id: "deleteNode",
+        key: "deleteNode",
         name: "删除",
-        title: "删除",
-        event: "deleteNode",
-        validate: (context) => {
-          return this.options.deletable(context);
-        },
-        icon: <AiFillDelete />,
+        label: "删除",
+        event: TreeEventKeys.DeleteNode.name,
+        when: "level >= 1",
+        icon: "AiFillDelete",
       },
     ]);
-    eventBus.on("deleteNode", async ({ node, event }) => {
+    eventBus.on(TreeEventKeys.DeleteNode, async ({ node, event }) => {
       event.preventDefault();
       event.stopPropagation();
       if (

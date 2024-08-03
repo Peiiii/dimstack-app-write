@@ -60,7 +60,7 @@ export function createFreeEventBus() {
       | bigint
   >(
     key: TypedKey<T> | string,
-    data?: T | ((e: Event) => T),
+    data?: T | ((e: SafeAny) => T),
     stopBubbling: boolean = false
   ) => {
     return (e: SafeAny) => {

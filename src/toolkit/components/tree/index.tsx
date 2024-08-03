@@ -1,11 +1,13 @@
 import { createDataStore, DataStore } from "@/toolkit/factories/dataStore";
 import { createEventBus, EventBus } from "@/toolkit/factories/eventBus";
+import { MenuController, MenuItem } from "@/toolkit/factories/menuController";
 import { createPipeService } from "@/toolkit/factories/pipeService";
 import { createRenderer, Renderer } from "@/toolkit/factories/renderer";
-import { createServiceBus } from "@/toolkit/factories/serviceBus";
-import { TreeDataStore } from "@/toolkit/factories/treeDataStore";
+import { createDecoupledServiceBus } from "@/toolkit/factories/serviceBus";
+import { TreeDataNode, TreeDataStore } from "@/toolkit/factories/treeDataStore";
 import { SafeAny } from "@/toolkit/types";
-import { Box, Button, Flex, IconButton } from "@chakra-ui/react";
+import { parseWhenClause } from "@/toolkit/utils/when-clause";
+import { Box, Flex } from "@chakra-ui/react";
 import { useCallback, useEffect, useMemo } from "react";
 
 // View System
@@ -16,15 +18,29 @@ export type WidgetViewState = {
   expandable: boolean;
   highlight?: boolean;
   loading?: boolean;
+  validationMessage?: string;
+  editingName?: string;
 };
-type NodeMenuItem = {
-  id: string;
-  name: string;
-  title?: string;
+// export type NodeMenuItem = {
+//   id: string;
+//   name: string;
+//   group?: string;
+//   title?: string;
+//   event?: string;
+//   icon?: string;
+//   validate?: (context: { node: any; level: number }) => boolean;
+// };
+
+// export interface NodeMenuItemGroup {
+//   id: string;
+//   name: string;
+//   icon: string;
+//   children: NodeMenuItem[];
+// }
+
+export interface NodeMenuItem extends MenuItem {
   event?: string;
-  icon?: React.ReactElement;
-  validate?: (context: { node: any; level: number }) => boolean;
-};
+}
 
 const createViewSystem = <T,>(
   {
@@ -38,25 +54,53 @@ const createViewSystem = <T,>(
   },
   getContext: () => T
 ) => {
-  const nodeMenuItems: NodeMenuItem[] = [];
+  const menuService = MenuController.create();
+  // const nodeMenuItems: NodeMenuItem[] = [];
+  // const addNodeMenuItems = (menuItems: NodeMenuItem[]) => {
+  //   for (const menuItem of menuItems) {
+  //     const existingItem = nodeMenuItems.find(
+  //       (item) => item.id === menuItem.id
+  //     );
+  //     if (existingItem) {
+  //       Object.assign(existingItem, menuItem);
+  //     } else {
+  //       nodeMenuItems.push(menuItem);
+  //     }
+  //   }
+  // };
+  // const getNodeMenuItems = ({ node, level }) => {
+  //   return nodeMenuItems.filter(
+  //     (item) => !item.validate || item.validate({ node, level })
+  //   );
+  // };
+
+  const { getMenuItems, upsertMenuItem } = menuService;
   const addNodeMenuItems = (menuItems: NodeMenuItem[]) => {
     for (const menuItem of menuItems) {
-      const existingItem = nodeMenuItems.find(
-        (item) => item.id === menuItem.id
-      );
-      if (existingItem) {
-        Object.assign(existingItem, menuItem);
-      } else {
-        nodeMenuItems.push(menuItem);
-      }
+      upsertMenuItem(menuItem);
     }
   };
-  const renderNodeMenuItem = (nodeMenuItem, { node }, simple = false) => {
+  const getNodeMenuItems = ({ node, level }) => {
+    return getMenuItems().filter(
+      (item) =>
+        !item.when ||
+        parseWhenClause(item.when).eval({
+          ...node,
+          level,
+        })
+    );
+  };
+  const renderNodeMenuItem = (
+    nodeMenuItem: NodeMenuItem,
+    { node },
+    simple = false
+  ) => {
+    const { icon, name, title, event } = nodeMenuItem;
     if (simple) {
       return (
         <Flex
           key={nodeMenuItem.id}
-          title={nodeMenuItem.title || nodeMenuItem.name}
+          title={nodeMenuItem.label || nodeMenuItem.name}
           onClick={(e) => {
             if (nodeMenuItem.event) {
               eventBus.emit(nodeMenuItem.event, { node, event: e });
@@ -65,7 +109,7 @@ const createViewSystem = <T,>(
             }
           }}
         >
-          {nodeMenuItem.icon || nodeMenuItem.name || nodeMenuItem.title}
+          {icon ? renderer.render({ type: icon }) : title || name}
         </Flex>
       );
     }
@@ -84,12 +128,20 @@ const createViewSystem = <T,>(
             : undefined
         }
       >
-        {nodeMenuItem.title || nodeMenuItem.name}
-        {nodeMenuItem.icon}
+        {nodeMenuItem.label || nodeMenuItem.name}
+        {icon && renderer.render({ type: icon })}
       </Flex>
     );
   };
-  const renderNode = ({ node, level = 0 }: { node: any; level?: number }) => {
+  const renderNode = ({
+    node,
+    level = 0,
+    parentNode,
+  }: {
+    node: TreeDataNode;
+    level?: number;
+    parentNode?: TreeDataNode;
+  }) => {
     return renderer.render(
       {
         type: "tree-node",
@@ -97,22 +149,19 @@ const createViewSystem = <T,>(
           node,
           level,
           context: getContext(),
+          parentNode,
         },
       },
       node.id
     );
   };
-  const render = (type, props = {}) => {
+  const render = (type: string, props = {}) => {
     return renderer.render({
       type,
       props,
     });
   };
-  const getNodeMenuItems = ({ node, level }) => {
-    return nodeMenuItems.filter(
-      (item) => !item.validate || item.validate({ node, level })
-    );
-  };
+
   type ViewStateProvider = (node?: any, props?: any) => any;
   let defaultViewStatePrider;
   const setDefaultViewStateProvider = (provider: ViewStateProvider) =>
@@ -139,7 +188,7 @@ const createViewSystem = <T,>(
   };
   return viewSystem;
 };
-type ViewSystem = ReturnType<typeof createViewSystem>;
+export type ViewSystem = ReturnType<typeof createViewSystem>;
 // const defaultRenderer = createRenderer();
 
 // Plugin System
@@ -152,7 +201,7 @@ export type WidgetContext<
   // renderer: ReturnType<typeof createRenderer>;
   eventBus: EventBus;
   pipe: ReturnType<typeof createPipeService>;
-  serviceBus: ReturnType<typeof createServiceBus>;
+  serviceBus: ReturnType<typeof createDecoupledServiceBus>;
   viewSystem: ViewSystem;
   options: OptionsType;
 };
@@ -187,7 +236,7 @@ export const Tree = <
   const renderer = useMemo(() => createRenderer(), []);
   const finalEventBus = useMemo(() => eventBus || createEventBus(), [eventBus]);
   const finalServiceBus = useMemo(
-    () => serviceBus || createServiceBus(),
+    () => serviceBus || createDecoupledServiceBus(),
     [serviceBus]
   );
   const finalPipe = useMemo(() => pipe || createPipeService(), [pipe]);

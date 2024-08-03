@@ -8,7 +8,6 @@ import {
   AiFillFolder,
   AiFillFolderOpen,
 } from "react-icons/ai";
-import { FcFile, FcFolder } from "react-icons/fc";
 const getNodeType = (node: FolderTreeNode) => {
   // if (node.id === "root" || !/.+\/.+/.test(node.id)) return "dir";
   if (node.id === "root") return "dir";
@@ -42,7 +41,11 @@ export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
     viewSystem.renderer.register(
       "icon-node-type",
       ({ node }) => {
-        const state = viewSystem.viewStateStore.useRecord(node.id);
+        const state =
+          viewSystem.viewStateStore.useRecord(node.id) ||
+          viewSystem.getDefaultViewState(node);
+        const { editMode, editingName } = state;
+        const name = editMode ? editingName ?? node.name : node.name;
 
         if (getNodeType(node) === "dir") {
           // console.log(
@@ -50,7 +53,7 @@ export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
           //   dataStore.getData(),
           //   "viewStateData:",
           //   viewSystem.viewStateStore.getData()
-          
+
           // );
           return (
             <Icon
@@ -62,18 +65,13 @@ export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
         } else {
           if (getNodeFileType(node) === "file") {
             const isMarkdown =
-              node.name.endsWith(".md") || node.name.endsWith(".markdown");
+              name.endsWith(".md") || name.endsWith(".markdown");
             return (
               <Icon
                 className={"icon file " + (isMarkdown ? "file-markdown" : "")}
                 as={isMarkdown ? AiFillFileMarkdown : AiFillFile}
               />
             );
-            // return (
-            //   <Text as="h3" fontSize={"1.5rem"}>
-            //     {"#"}
-            //   </Text>
-            // );
           } else return <Text as="h3"> </Text>;
         }
       },

@@ -1,17 +1,21 @@
 import { spaceHelper } from "@/helpers/space.helper";
-import { TreeEventKeys } from "@/plugins/space/folderTreeService/tokens";
+import {
+  DocumentTypeEnum,
+  ServicePoints,
+  TreeEventKeys,
+  TreeNodeTypeEnum,
+} from "@/plugins/space/folderTreeService/tokens";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreeHelper } from "@/toolkit/components/tree/treePlugins";
 import { join } from "@/toolkit/utils/path";
 import { nanoid } from "@reduxjs/toolkit";
-import { AiFillFileAdd, AiFillFolderAdd } from "react-icons/ai";
 import { fs } from "xbook/services";
 
 export default createTreeHelper<FolderTreeNode>().createPlugin({
   addOptions() {
     return {
       addable: ({ node }) => {
-        return node.type === "dir";
+        return node.type === TreeNodeTypeEnum.Dir;
       },
     };
   },
@@ -27,45 +31,55 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
     viewSystem.addNodeMenuItems([
       {
         id: "addFile",
+        key: "addFile",
         name: "新建文件",
-        title: "新建文件",
-        event: "addFileAt",
-        validate: ({ node }) => {
-          return node.type === "dir";
-        },
-        // icon: <VscNewFile />,
-        icon: <AiFillFileAdd />,
+        label: "新建文件",
+        event: TreeEventKeys.AddFileAt.name,
+        when: "type === 'dir'",
+        icon: "AiFillFileAdd",
+        group: "add",
       },
       {
         id: "addNode",
+        key: "addNode",
         name: "新建文件夹",
-        title: "新建文件夹",
-        event: "addFolderAt",
-        validate: ({ node }) => {
-          return node.type === "dir";
-        },
-        // icon: <VscNewFolder />,
-        icon: <AiFillFolderAdd />,
+        label: "新建文件夹",
+        event: TreeEventKeys.AddFolderAt.name,
+        when: "type === 'dir'",
+        icon: "AiFillFolderAdd",
+        group: "add",
+      },
+      // 新建markdown文档
+      {
+        id: "addMarkdownDocumnet",
+        key: "addMarkdownDocumnet",
+        label: "新建 Markdown 文档",
+        event: TreeEventKeys.AddMarkdownAt.name,
+        when: "type === 'dir'",
+        icon: "AiFillFileMarkdown",
+        group: "add",
       },
     ]);
 
-    eventBus.on("addFileAt", ({ node }) => {
+    eventBus.on(TreeEventKeys.AddMarkdownAt, ({ node }) => {
+      eventBus.emit(TreeEventKeys.AddFileAt, {
+        node,
+        documentType: DocumentTypeEnum.Markdown,
+      });
+    });
+
+    eventBus.on(TreeEventKeys.AddFileAt, ({ node, documentType }) => {
       const parentId = node.id;
       const parentNode = dataStore.getNode(parentId)!;
       const space = spaceHelper.getStore().getRecord(spaceId)!;
-      // console.log("space:",space,"spaces:",spaceHelper.getStore().getData())
-      console.log("[addFileAt] parentId:", parentId);
       const childId = nanoid();
-      serviceBus.invoke("edit.inputNodeName", {
+      serviceBus.invoke(ServicePoints.EditInputNodeName, {
         parentId,
-        nodeType: "file",
+        defaultName:
+          documentType === DocumentTypeEnum.Markdown ? "Untitled.md" : "",
+        nodeType: TreeNodeTypeEnum.File,
         callback: async (name: string) => {
-          // console.log("[afterInputNodeName]");
           const path = join(parentNode.path!, name);
-          // await fileSystemHelper.service.createFile(
-          //   fileSystemHelper.generateFileId(space?.id, path),
-          //   "# "
-          // );
           fs.writeFile(
             spaceHelper.getUri(space?.id, path),
             new TextEncoder().encode("# "),
@@ -74,37 +88,41 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
               overwrite: true,
             }
           );
-
-          const childNode = { id: childId, type: "file", path, name };
+          const childNode = {
+            id: childId,
+            type: TreeNodeTypeEnum.File,
+            path,
+            name,
+          };
           dataStore.getActions().add({
             node: childNode,
             parentId,
           });
-          console.log(`CreateNode[${path}]`);
-          // xbook.serviceBus.invoke("openerService.open", spaceId, childNode);
           eventBus.emit(TreeEventKeys.NodeClick, { node: childNode });
         },
       });
     });
-    eventBus.on("addFolderAt", ({ node }) => {
+    eventBus.on(TreeEventKeys.AddFolderAt, ({ node }) => {
       const parentId = node.id;
       const parentNode = dataStore.getNode(parentId)!;
       const space = spaceHelper.getStore().getRecord(spaceId)!;
       // console.log("space:",space,"spaces:",spaceHelper.getStore().getData())
       console.log("[addFileAt] parentId:", parentId);
       const childId = nanoid();
-      serviceBus.invoke("edit.inputNodeName", {
+      serviceBus.invoke(ServicePoints.EditInputNodeName, {
         parentId,
-        nodeType: "dir",
+        nodeType: TreeNodeTypeEnum.Dir,
         callback: async (name: string) => {
-          // console.log("[afterInputNodeName]");
           const path = join(parentNode.path!, name);
-          // await fileSystemHelper.service.createDirectory(
-          //   fileSystemHelper.generateFileId(space?.id, path)
-          // );
           await fs.createDirectory(spaceHelper.getUri(space?.id, path));
           dataStore.getActions().add({
-            node: { id: childId, type: "dir", path, name, children: [] },
+            node: {
+              id: childId,
+              type: TreeNodeTypeEnum.Dir,
+              path,
+              name,
+              children: [],
+            },
             parentId,
           });
         },

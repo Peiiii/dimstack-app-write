@@ -77,11 +77,12 @@ export const createRenderer = (registryName: string = "componentRegistry") => {
       getDefaultMiddleware({ serializableCheck: false }),
   });
 
-  const getComponent = (state: ComponentRegistry, name: string) => {
+  const getComponent = (state: ComponentRegistry, name: string) => {    
     const component = state![registryName][name];
     if (component) return component;
     else {
       for (const namePattern in state![registryName]) {
+        
         const matcher = matchPath(name, namePattern);
         if (matcher) {
           return state![registryName][namePattern];

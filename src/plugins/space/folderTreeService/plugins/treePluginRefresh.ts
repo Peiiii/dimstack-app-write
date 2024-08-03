@@ -11,9 +11,9 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
   activate({
     serviceBus,
     dataStore,
-    viewSystem: { viewStateStore },
+    viewSystem: { viewStateStore, renderer, addNodeMenuItems },
     options: { space },
-    eventBus
+    eventBus,
   }) {
     viewStateStore.reduxStore.subscribe(() => {
       const data = viewStateStore.getData();
@@ -120,5 +120,19 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
       console.log("updatedData:", dataStore.getData());
     };
     serviceBus.expose("refresh", deepRefresh);
+    addNodeMenuItems([
+      {
+        id: "refreshNode",
+        key: "refreshNode",
+        event: TreeEventKeys.RefreshNode.name,
+        name: "刷新",
+        label: "刷新",
+        when: "level === 0",
+        icon: "AiOutlineReload",
+      },
+    ]);
+    eventBus.on(TreeEventKeys.RefreshNode, ({ node }) => {
+      deepRefresh(node.id);
+    });
   },
 });

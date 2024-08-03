@@ -51,7 +51,14 @@ export class AuthService {
         setAuthRecords(getAuthRecords().filter((r) => r.id !== id));
       };
       const addRecord = (record: AuthRecord) => {
-        setAuthRecords([...getAuthRecords(), record]);
+        const existed = getAuthRecords().find((r) => r.id === record.id);
+        if (existed) {
+          setAuthRecords(
+            getAuthRecords().map((r) => (r.id === record.id ? record : r))
+          );
+        } else {
+          setAuthRecords([...getAuthRecords(), record]);
+        }
       };
       return { load, onChange, removeRecord, addRecord };
     }

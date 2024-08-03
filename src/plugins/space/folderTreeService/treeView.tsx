@@ -10,9 +10,11 @@ import SideCard from "@/plugins/space/folderTreeService/components/SideCard";
 import { Combobox } from "@/plugins/space/folderTreeService/components/combobox";
 import { SpaceTag } from "@/plugins/space/folderTreeService/components/space-tag";
 import treePluginAddNode from "@/plugins/space/folderTreeService/plugins/treePluginAddNode";
+import treePluginAutoOpenReadme from "@/plugins/space/folderTreeService/plugins/treePluginAutoOpenReadme";
 import treePluginInit from "@/plugins/space/folderTreeService/plugins/treePluginInit";
 import treePluginMigration from "@/plugins/space/folderTreeService/plugins/treePluginMigration";
 import treePluginNodeType from "@/plugins/space/folderTreeService/plugins/treePluginNodeType";
+import treePluginProvideIcons from "@/plugins/space/folderTreeService/plugins/treePluginProvideIcons";
 import treePluginRefresh from "@/plugins/space/folderTreeService/plugins/treePluginRefresh";
 import treePluginRefreshSpaceAuth from "@/plugins/space/folderTreeService/plugins/treePluginRefreshSpaceAuth";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
@@ -23,7 +25,7 @@ import {
   treePluginInitViewTemplate,
 } from "@/toolkit/components/tree/treePlugins";
 import { createDataStore } from "@/toolkit/factories/dataStore";
-import { createServiceBus } from "@/toolkit/factories/serviceBus";
+import { createDecoupledServiceBus } from "@/toolkit/factories/serviceBus";
 import { createTreeDataStore } from "@/toolkit/factories/treeDataStore";
 import { Action } from "@/toolkit/types";
 import { SpaceDef } from "@/toolkit/types/space";
@@ -38,7 +40,7 @@ import treePluginClickNode from "./plugins/treePluginClickNode";
 import treePluginConfig from "./plugins/treePluginConfig";
 import treePluginDeleteNode from "./plugins/treePluginDeleteNode";
 import treePluginEditNode from "./plugins/treePluginEditNode";
-import treePluginAutoOpenReadme from "@/plugins/space/folderTreeService/plugins/treePluginAutoOpenReadme";
+import { treePluginProvideTreeService } from "@/plugins/space/folderTreeService/plugins/treePluginProvideTreeService";
 
 const TreeView = ({ space }: { space: SpaceDef }) => {
   const treeDataStore = useMemo(
@@ -58,7 +60,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
       }),
     [space.id]
   );
-  const serviceBus = useMemo(() => createServiceBus(), []);
+  const serviceBus = useMemo(() => createDecoupledServiceBus(), []);
   // console.log("space.id:",space.id,"dataStoreData:", treeDataStore.getData());
   const viewStateStore = useMemo(
     () =>
@@ -158,6 +160,8 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
             dataStore={treeDataStore}
             viewStateStore={viewStateStore}
             plugins={[
+              treePluginProvideIcons(),
+              treePluginProvideTreeService(),
               treePluginInitViewTemplate<FolderTreeNode>(),
               treePluginExpandTemplate<FolderTreeNode>({
                 defaultExpanded: false,

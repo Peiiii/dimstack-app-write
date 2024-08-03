@@ -1,14 +1,15 @@
-import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import {
-  createTreeHelper,
-  createTreePlugin,
-} from "@/toolkit/components/tree/treePlugins";
+  ServicePoints,
+  TreeEventKeys,
+} from "@/plugins/space/folderTreeService/tokens";
+import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
+import { createTreeHelper } from "@/toolkit/components/tree/treePlugins";
 import { nanoid } from "@reduxjs/toolkit";
-import { AiFillEdit } from "react-icons/ai";
+import xbook from "xbook/index";
 export default createTreeHelper<FolderTreeNode>().createPlugin({
   addOptions() {
     return {
-      editable: ({ level, node }):boolean => false,
+      editable: ({ level, node }): boolean => false,
       renameNode: (() => {}) as (node: FolderTreeNode, name: string) => void,
     };
   },
@@ -16,31 +17,22 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
     viewSystem.addNodeMenuItems([
       {
         id: "editNode",
-        event: "editNode",
+        key: "editNode",
+        event: TreeEventKeys.EditNode.name,
         name: "编辑",
-        title: "编辑",
-        validate: (context) => {
-          return this.options.editable?.(context) || false;
-        },
-        icon: <AiFillEdit />,
+        label: "编辑",
+        icon: "AiFillEdit",
+        when: "level >= 1",
       },
     ]);
-    serviceBus.exposeAt("edit", {
-      inputNodeName: ({
-        parentId,
-        callback,
-        nodeType,
-      }: {
-        parentId: string;
-        callback: (name: string) => void;
-        nodeType: string;
-        validate?: () => boolean;
-      }) => {
+    const treeService = serviceBus.createProxy(ServicePoints.TreeService);
+    serviceBus.expose(
+      ServicePoints.EditInputNodeName,
+      ({ parentId, callback, nodeType, defaultName }) => {
         setTimeout(() => {
           const childId = nanoid();
-          console.log("addNode:", childId, "parentId:", parentId);
           dataStore.getActions().add({
-            node: { id: childId, type: nodeType, name: "" },
+            node: { id: childId, type: nodeType, name: defaultName || "" },
             parentId,
           });
           viewSystem.viewStateStore.getActions().upsert({
@@ -53,16 +45,26 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
           });
           pipe.emit("edit.forInput", true);
           let unlisten;
-          unlisten = eventBus.on("edit.inputResult", (name: string) => {
-            console.log("name:", name);
-            dataStore.getActions().delete({ id: childId });
-            if (name.trim()) callback(name.trim());
-            unlisten();
-          });
+          unlisten = eventBus.on(
+            TreeEventKeys.EditWillFinish,
+            ({ name, node, parentNode }) => {
+              dataStore.getActions().delete({ id: childId });
+              if (
+                name.trim() &&
+                !treeService.validateForEditingName({
+                  name: name.trim(),
+                  node,
+                  parentNode,
+                }).hasError
+              )
+                callback(name.trim());
+              unlisten();
+            }
+          );
         }, 0);
-      },
-    });
-    eventBus.on("editNode", ({ node, event }) => {
+      }
+    );
+    eventBus.on(TreeEventKeys.EditNode, ({ node, event }) => {
       event.preventDefault();
       event.stopPropagation();
       viewSystem.viewStateStore.getActions().upsert({
@@ -71,22 +73,52 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
         editMode: true,
       });
     });
-    eventBus.on("editBlur", ({ node, event }) => {
-      // console.log("editing exit:", event.target.value, "node:", node,"event:",event);
-      // return
+    eventBus.on(TreeEventKeys.EditBlur, ({ node, event, parentNode }) => {
+      eventBus.emit(TreeEventKeys.EditKeyEnter, { node, event, parentNode });
+    });
+    eventBus.on(TreeEventKeys.EditKeyEnter, ({ node, event, parentNode }) => {
       viewSystem.viewStateStore.getActions().upsert({
         ...viewSystem.getViewStateOrDefaultViewState(node.id),
         editMode: false,
       });
       if (pipe.get("edit.forInput")) {
         pipe.emit("edit.forInput", false);
-        eventBus.emit("edit.inputResult", event.target.value);
-      } else if (event.target.value.trim()) {
-        this.options.renameNode!(node, event.target.value.trim());
+        eventBus.emit(TreeEventKeys.EditWillFinish, {
+          name: event.currentTarget.value,
+          node,
+          parentNode,
+        });
+      } else if (event.currentTarget.value.trim()) {
+        const { hasError, message } = treeService.validateForEditingName({
+          name: event.currentTarget.value,
+          node,
+          parentNode,
+        });
+        console.log("hasError", hasError, message);
+
+        if (!hasError) {
+          this.options.renameNode!(node, event.currentTarget.value.trim());
+        } else {
+          xbook.notificationService.error(message);
+        }
       }
     });
-    eventBus.on("editKeyEnter", ({ node, event }) => {
-      eventBus.emit("editBlur", { node, event });
+
+    eventBus.on(TreeEventKeys.EditChange, ({ node, event, parentNode }) => {
+      viewSystem.viewStateStore.getActions().upsert({
+        ...viewSystem.getViewStateOrDefaultViewState(node.id),
+        editingName: event.currentTarget.value,
+      });
+
+      const { message } = treeService.validateForEditingName({
+        name: event.currentTarget.value,
+        parentNode,
+        node,
+      });
+      viewSystem.viewStateStore.getActions().upsert({
+        ...viewSystem.getViewStateOrDefaultViewState(node.id),
+        validationMessage: message,
+      });
     });
   },
 });
