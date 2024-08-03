@@ -1,3 +1,4 @@
+import { parseWhenClause } from "@/toolkit/utils/when-clause";
 import { defineController } from "app-toolkit";
 import { createCustomReactBean } from "rx-bean";
 import { createCRUDActions } from "xbook/utils/create-actions";
@@ -10,10 +11,35 @@ export interface MenuItem {
   icon?: string; // icon-add-file
   group?: string; // operations/add
   when?: string; // fileType === 'dir'
+  validationRules?: {
+    check: string;
+    failMessage: string;
+  }[];
   name?: string;
   title?: string;
   children?: MenuItem[];
 }
+
+export const validateMenuItem = (
+  item: MenuItem,
+  context: Record<string, any>
+) => {
+  const { validationRules } = item;
+  const result = {
+    isValid: true,
+    message: "",
+  };
+  if (!validationRules) return result;
+  for (const rule of validationRules) {
+    const { check, failMessage } = rule;
+    if (!parseWhenClause(check).eval(context)) {
+      result.isValid = false;
+      result.message = failMessage;
+      return result;
+    }
+  }
+  return result;
+};
 
 export const MenuController = defineController(() => {
   const MenuItems = createCustomReactBean(

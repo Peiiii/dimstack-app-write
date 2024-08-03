@@ -1,13 +1,17 @@
 import { createDataStore, DataStore } from "@/toolkit/factories/dataStore";
 import { createEventBus, EventBus } from "@/toolkit/factories/eventBus";
-import { MenuController, MenuItem } from "@/toolkit/factories/menuController";
+import {
+  MenuController,
+  MenuItem,
+  validateMenuItem,
+} from "@/toolkit/factories/menuController";
 import { createPipeService } from "@/toolkit/factories/pipeService";
 import { createRenderer, Renderer } from "@/toolkit/factories/renderer";
 import { createDecoupledServiceBus } from "@/toolkit/factories/serviceBus";
 import { TreeDataNode, TreeDataStore } from "@/toolkit/factories/treeDataStore";
 import { SafeAny } from "@/toolkit/types";
 import { parseWhenClause } from "@/toolkit/utils/when-clause";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, Tooltip } from "@chakra-ui/react";
 import { useCallback, useEffect, useMemo } from "react";
 
 // View System
@@ -55,25 +59,6 @@ const createViewSystem = <T,>(
   getContext: () => T
 ) => {
   const menuService = MenuController.create();
-  // const nodeMenuItems: NodeMenuItem[] = [];
-  // const addNodeMenuItems = (menuItems: NodeMenuItem[]) => {
-  //   for (const menuItem of menuItems) {
-  //     const existingItem = nodeMenuItems.find(
-  //       (item) => item.id === menuItem.id
-  //     );
-  //     if (existingItem) {
-  //       Object.assign(existingItem, menuItem);
-  //     } else {
-  //       nodeMenuItems.push(menuItem);
-  //     }
-  //   }
-  // };
-  // const getNodeMenuItems = ({ node, level }) => {
-  //   return nodeMenuItems.filter(
-  //     (item) => !item.validate || item.validate({ node, level })
-  //   );
-  // };
-
   const { getMenuItems, upsertMenuItem } = menuService;
   const addNodeMenuItems = (menuItems: NodeMenuItem[]) => {
     for (const menuItem of menuItems) {
@@ -92,21 +77,39 @@ const createViewSystem = <T,>(
   };
   const renderNodeMenuItem = (
     nodeMenuItem: NodeMenuItem,
-    { node },
+    { node, level }: { node: TreeDataNode; level: number },
     simple = false
   ) => {
-    const { icon, name, title, event } = nodeMenuItem;
+    const { icon, name, title } = nodeMenuItem;
+    const { isValid, message } = validateMenuItem(nodeMenuItem, {
+      ...node,
+      level,
+    });
+    const disabled = !isValid;
+    console.log(
+      "disabled",
+      disabled,
+      "menuitem",
+      nodeMenuItem,
+      "message",
+      message
+    );
+
     if (simple) {
       return (
         <Flex
           key={nodeMenuItem.id}
           title={nodeMenuItem.label || nodeMenuItem.name}
           onClick={(e) => {
-            if (nodeMenuItem.event) {
+            if (!disabled && nodeMenuItem.event) {
               eventBus.emit(nodeMenuItem.event, { node, event: e });
               e.stopPropagation();
               e.preventDefault();
             }
+          }}
+          style={{
+            cursor: disabled ? "not-allowed" : "pointer",
+            opacity: disabled ? 0.5 : 1,
           }}
         >
           {icon ? renderer.render({ type: icon }) : title || name}
@@ -119,14 +122,19 @@ const createViewSystem = <T,>(
         align={"center"}
         key={nodeMenuItem.id}
         justify="space-between"
+        title={message}
         onClick={
-          nodeMenuItem.event
+          !disabled && nodeMenuItem.event
             ? eventBus.connector(nodeMenuItem.event, (event) => ({
                 node,
                 event,
               }))
             : undefined
         }
+        style={{
+          cursor: disabled ? "not-allowed" : "pointer",
+          opacity: disabled ? 0.5 : 1,
+        }}
       >
         {nodeMenuItem.label || nodeMenuItem.name}
         {icon && renderer.render({ type: icon })}

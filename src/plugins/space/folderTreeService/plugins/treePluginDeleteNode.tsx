@@ -20,7 +20,13 @@ export default createTreePlugin<FolderTreeNode>({
         name: "删除",
         label: "删除",
         event: TreeEventKeys.DeleteNode.name,
-        when: "level >= 1 && type === 'file'",
+        when: "level >= 1",
+        validationRules: [
+          {
+            check: "type !== 'dir'",
+            failMessage: "暂不支持删除文件夹",
+          },
+        ],
         icon: "AiFillDelete",
       },
     ]);

@@ -141,10 +141,12 @@ export const renderMenuEntry = ({
   nodeMenuItems,
   viewSystem,
   node,
+  level,
 }: {
   nodeMenuItems: NodeMenuItem[];
   viewSystem: ViewSystem;
   node: TreeDataNode<any>;
+  level: number;
 }) => {
   let actionBar;
   if (nodeMenuItems.length === 0) actionBar = null;
@@ -178,6 +180,7 @@ export const renderMenuEntry = ({
               .map((nodeMenuItem) =>
                 viewSystem.renderNodeMenuItem(nodeMenuItem, {
                   node,
+                  level,
                 })
               )
               .map((menuItem, index) => (
@@ -191,7 +194,7 @@ export const renderMenuEntry = ({
     actionBar = (
       <Flex flexFlow={"row"} m="0 0.2rem" className="hover-show" gap={"0.2rem"}>
         {nodeMenuItems.map((nodeMenuItem) =>
-          viewSystem.renderNodeMenuItem(nodeMenuItem, { node }, true)
+          viewSystem.renderNodeMenuItem(nodeMenuItem, { node, level }, true)
         )}
       </Flex>
     );
@@ -285,6 +288,7 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
         nodeMenuItems,
         viewSystem,
         node,
+        level,
       });
 
       const classList = ["tree-node"];
