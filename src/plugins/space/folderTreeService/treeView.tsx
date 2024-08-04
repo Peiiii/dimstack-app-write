@@ -115,7 +115,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
           p="10px"
           w="100%"
         >
-          当前平台 {space.platform} 未授权，请
+          当前平台 {space.platform} 未授权或授权已过期，请
           <Link
             color="blue.300"
             onClick={() => {
