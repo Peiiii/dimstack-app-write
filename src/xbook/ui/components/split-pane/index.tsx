@@ -2,7 +2,6 @@ import { css } from "@emotion/css";
 import classNames from "classnames";
 import React, { useCallback, useRef, useState } from "react";
 import "./index.scss";
-import { log } from "console";
 
 const SplitPaneCss = css`
   &.split-pane {
@@ -11,7 +10,7 @@ const SplitPaneCss = css`
     height: 100%;
     .resizer {
       height: 100%;
-      z-index: 999;
+      z-index: 1;
       position: relative;
     }
     .resizer-anchor {

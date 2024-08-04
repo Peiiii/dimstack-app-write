@@ -85,7 +85,7 @@ export const SideCard: FC<{
         {title}
       </Button> */}
         </HStack>
-        <MenuList>
+        <MenuList zIndex={2}>
           {actions.map((a) => {
             const eventMap = {};
             if (a.events && a.id) {
