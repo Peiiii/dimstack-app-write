@@ -1,8 +1,14 @@
+import { Tokens } from "@/constants/tokens";
 import { fileSystemHelper } from "@/helpers/file-system.helper";
 import { spaceHelper } from "@/helpers/space.helper";
-import { TreeEventKeys } from "@/plugins/space/folderTreeService/tokens";
+import {
+  TreeEventKeys,
+  TreeNodeTypeEnum,
+} from "@/plugins/space/folderTreeService/tokens";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
+import { getNodeType } from "@/plugins/space/folderTreeService/utils";
 import { WidgetContext, WidgetViewState } from "@/toolkit/components/tree";
+import { getBaseTreeServiceClass } from "@/toolkit/components/tree/tree.service";
 import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
 import { FileType } from "@/toolkit/vscode/file-system";
 import xbook from "xbook/index";
@@ -12,11 +18,13 @@ export const createTreeService = (
 ) => {
   const {
     dataStore,
-    viewSystem: { viewStateStore, getViewStateOrDefaultViewState },
+    viewSystem,
     options: { space },
     eventBus,
   } = context;
-  class TreeService {
+  const { viewStateStore, getViewStateOrDefaultViewState } = viewSystem;
+  const BaseClass = getBaseTreeServiceClass(context);
+  class TreeService extends BaseClass {
     updateViewState = (
       id: string,
       partialViewState: Partial<WidgetViewState>
@@ -150,10 +158,11 @@ export const createTreeService = (
         loading: true,
       });
       const info = await xbook.fs.readDirectory(uri);
-      viewStateStore.getActions().update({
-        ...viewState,
-        loading: false,
-      });
+      // viewStateStore.getActions().update({
+      //   ...viewState,
+      //   loading: false,
+      // });
+      this.updateViewState(node.id, { loading: false });
 
       const dirInfo = info.map(([name, type]) => {
         return {
@@ -196,6 +205,48 @@ export const createTreeService = (
       eventBus.emit(TreeEventKeys.NodeContentLoaded, {
         node: updatedNode,
       });
+    };
+
+    focusNode = (id: string) => {
+      const node = dataStore.getNode(id)!;
+      if (getNodeType(node) === TreeNodeTypeEnum.File) {
+        viewSystem.viewStateStore.getActions().reduce((data) => {
+          data = data.map((item) => ({ ...item, highlight: false }));
+          const item = data.find((item) => item.id === node.id);
+          if (item) {
+            item.highlight = true;
+          } else {
+            data.push({
+              ...viewSystem.getViewStateOrDefaultViewState(node.id),
+              highlight: true,
+            });
+          }
+          return data;
+        });
+        const pathNodes = this.findPathNodes(node.id, dataStore.getData());
+        if (pathNodes) {
+          viewSystem.viewStateStore.getActions().reduce((data) => {
+            for (const node of pathNodes) {
+              const item = data.find((item) => item.id === node.id);
+              if (item) {
+                item.expanded = true;
+              } else {
+                data.push({
+                  ...viewSystem.getViewStateOrDefaultViewState(node),
+                  expanded: true,
+                });
+              }
+            }
+            return data;
+          });
+        }
+      }
+    };
+
+    openNode = (id: string) => {
+      const node = dataStore.getNode(id)!;
+      const openerService = xbook.serviceBus.createProxy(Tokens.OpenerService);
+      openerService.open(space.id, node);
     };
 
     validateForEditingName = ({

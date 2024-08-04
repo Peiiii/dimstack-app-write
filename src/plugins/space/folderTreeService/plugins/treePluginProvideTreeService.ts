@@ -7,7 +7,7 @@ export const treePluginProvideTreeService = createFolderTreePlugin({
     const { serviceBus } = context;
     const treeService = createTreeService(context);
     serviceBus.registerFromMap(ServicePoints.TreeService, treeService);
-    (window as any
-    ).treeService = treeService;
+    (window as any).treeService = treeService;
+    (window as any).tree = context;
   },
 });

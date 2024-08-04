@@ -11,18 +11,8 @@ import {
   AiFillFolder,
   AiFillFolderOpen,
 } from "react-icons/ai";
-const getNodeType = (node: FolderTreeNode) => {
-  // if (node.id === "root" || !/.+\/.+/.test(node.id)) return "dir";
-  if (node.id === "root") return "dir";
-  else return node.type!;
-};
+import { getNodeFileType, getNodeType } from "../utils";
 
-const getNodeFileType = (_) => {
-  // if (!node.id) return "dir";
-  // if (!/.+\/.+/.test(node.id)) "dir";
-  // else return "file";
-  return "file";
-};
 export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
   activate({ viewSystem, eventBus, dataStore, serviceBus }) {
     const treeService = serviceBus.createProxy(ServicePoints.TreeService);
@@ -40,8 +30,6 @@ export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
       };
     });
 
-    // console.log(`[${spaceId}] treePluginNodeType activating`);
-
     viewSystem.renderer.register(
       "icon-node-type",
       ({ node }) => {
@@ -50,7 +38,6 @@ export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
           viewSystem.getDefaultViewState(node);
         const { editMode, editingName } = state;
         const name = editMode ? editingName ?? node.name : node.name;
-
         if (getNodeType(node) === "dir") {
           return (
             <Icon
@@ -74,46 +61,8 @@ export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
       true
     );
 
-    const focusNode = (node) => {
-      if (getNodeType(node) === "file") {
-        viewSystem.viewStateStore.getActions().reduce((data) => {
-          data = data.map((item) => ({ ...item, highlight: false }));
-          const item = data.find((item) => item.id === node.id);
-          if (item) {
-            item.highlight = true;
-          } else {
-            data.push({
-              ...viewSystem.getDefaultViewState(node),
-              highlight: true,
-            });
-          }
-          return data;
-        });
-        const pathNodes = treeService.findPathNodes(
-          node.id,
-          dataStore.getData()
-        );
-        if (pathNodes) {
-          viewSystem.viewStateStore.getActions().reduce((data) => {
-            for (const node of pathNodes) {
-              const item = data.find((item) => item.id === node.id);
-              if (item) {
-                item.expanded = true;
-              } else {
-                data.push({
-                  ...viewSystem.getDefaultViewState(node),
-                  expanded: true,
-                });
-              }
-              // console.log("pathNodes:", pathNodes, data);
-            }
-            return data;
-          });
-        }
-      }
-    };
     eventBus.on(TreeEventKeys.NodeClick, ({ node }) => {
-      focusNode(node);
+      treeService.focusNode(node.id);
     });
   },
 });

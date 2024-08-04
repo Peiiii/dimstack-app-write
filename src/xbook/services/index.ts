@@ -39,6 +39,7 @@ export default {
   serviceBus,
   commandService,
   eventBus,
+  /** @deprecated */
   pipeService,
   registry,
   pluginService,

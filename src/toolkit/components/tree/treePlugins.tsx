@@ -30,6 +30,8 @@ import { HiOutlineEllipsisVertical } from "react-icons/hi2";
 import xbook from "xbook/index";
 import { NodeMenuItem, ViewSystem, WidgetContext } from ".";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
+import { BaseServicePoints } from "@/toolkit/components/tree/tokens";
+import { getBaseTreeServiceClass } from "@/toolkit/components/tree/tree.service";
 
 export const getCreateTreePlugin = <
   TreeNodeType extends Record<string, SafeAny>
@@ -75,45 +77,22 @@ export const createTreePluginTemplate =
 export const treePluginExpandTemplate = createTreePluginTemplate<{
   id: string;
 }>({
-  addOptions() {
-    return {
-      defaultExpanded: false,
-    };
-  },
   activate({ eventBus, viewSystem, serviceBus, dataStore }) {
-    const toggleNode = ({ node, event }: { node: any; event?: any }) => {
-      if (event) {
-        event.stopPropagation();
-        event.preventDefault();
-      }
-      const viewState =
-        viewSystem.viewStateStore.getRecord(node.id) ||
-        viewSystem.getDefaultViewState(node, {
-          expanded: this.options.defaultExpanded,
-        });
-      viewSystem.viewStateStore
-        .getActions()
-        .upsert({ ...viewState, expanded: !viewState.expanded });
-    };
-    const expandNode = ({ node, event }: { node: any; event?: any }) => {
-      if (event) {
-        event.stopPropagation();
-        event.preventDefault();
-      }
-      const viewState =
-        viewSystem.viewStateStore.getRecord(node.id) ||
-        viewSystem.getDefaultViewState(node, {
-          expanded: this.options.defaultExpanded,
-        });
-      viewSystem.viewStateStore
-        .getActions()
-        .upsert({ ...viewState, expanded: true });
-    };
-    eventBus.on(TreeEventKeys.NodeClick, toggleNode);
-    eventBus.on("node::keydown.enter", toggleNode);
-    serviceBus.expose("expandNode", (id: string) => {
-      expandNode({ node: dataStore.getNode(id)! });
-    });
+    const treeService = serviceBus.createProxy(BaseServicePoints.TreeService);
+    eventBus.on(TreeEventKeys.NodeClick, ({ node: { id } }) =>
+      treeService.toggleNode({ id })
+    );
+    eventBus.on(TreeEventKeys.EditKeyEnter, ({ node: { id } }) =>
+      treeService.toggleNode({ id })
+    );
+  },
+});
+
+export const treePluginProvideBaseTreeService = createTreePluginTemplate({
+  activate(context) {
+    const { serviceBus } = context;
+    const Cls = getBaseTreeServiceClass(context);
+    serviceBus.registerFromMap(BaseServicePoints.TreeService, new Cls());
   },
 });
 
@@ -161,7 +140,6 @@ export const renderMenuEntry = ({
           h="100%"
           className="hover-visible"
           as={Button}
-          // borderRadius={0}
           variant="ghost"
           size="xs"
           mr="0.2rem"

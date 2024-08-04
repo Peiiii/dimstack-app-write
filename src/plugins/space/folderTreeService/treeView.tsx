@@ -19,6 +19,7 @@ import treePluginProvideIcons from "@/plugins/space/folderTreeService/plugins/tr
 import { treePluginProvideTreeService } from "@/plugins/space/folderTreeService/plugins/treePluginProvideTreeService";
 import treePluginRefresh from "@/plugins/space/folderTreeService/plugins/treePluginRefresh";
 import treePluginRefreshSpaceAuth from "@/plugins/space/folderTreeService/plugins/treePluginRefreshSpaceAuth";
+import { ServicePoints } from "@/plugins/space/folderTreeService/tokens";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import ContextProvider from "@/toolkit/components/context";
 import { Tree, WidgetViewState } from "@/toolkit/components/tree";
@@ -31,7 +32,6 @@ import { createDecoupledServiceBus } from "@/toolkit/factories/serviceBus";
 import { createTreeDataStore } from "@/toolkit/factories/treeDataStore";
 import { Action } from "@/toolkit/types";
 import { SpaceDef } from "@/toolkit/types/space";
-import { useAtom } from "@/toolkit/utils/hooks/useAtom";
 import { join } from "@/toolkit/utils/path";
 import { dirname } from "path-browserify";
 import { useEffect, useMemo } from "react";
@@ -42,7 +42,6 @@ import treePluginClickNode from "./plugins/treePluginClickNode";
 import treePluginConfig from "./plugins/treePluginConfig";
 import treePluginDeleteNode from "./plugins/treePluginDeleteNode";
 import treePluginEditNode from "./plugins/treePluginEditNode";
-import { ServicePoints } from "@/plugins/space/folderTreeService/tokens";
 
 const TreeView = ({ space }: { space: SpaceDef }) => {
   const treeDataStore = useMemo(
@@ -75,17 +74,12 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
       }),
     [space.id]
   );
-  const atom = useAtom({ id: `fstree#${space.id}` });
-
   const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
-  const {
-    hasReadPermission: isLogin,
-    hasWritePermission,
-    isExpired,
-  } = spaceService.usePermissions(space.id);
+  const treeService = xbook.serviceBus.createProxy(ServicePoints.TreeService);
+  const { hasReadPermission: isLogin } = spaceService.usePermissions(space.id);
   useEffect(() => {
     xbook.serviceBus.expose(`space-${space.id}.trigger`, () => {
-      serviceBus.invoke("expandNode", "root");
+      treeService;
       serviceBus.invoke(ServicePoints.RefershNode, "root");
     });
   }, []);
@@ -149,25 +143,18 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
         className="fs-tree-container"
         actions={actions}
       >
-        {/* <Box m={2}>
-        <Input size="sm" placeholder="搜索" />
-      </Box> */}
-        {/* <Box h="0.1rem" /> */}
-
         <Box h="0.5rem" flexShrink={0} flexGrow={0} />
         <Box w="100%" className="channel-tree">
           <Tree
             serviceBus={serviceBus}
-            options={{ space }}
+            options={{ space, defaultExpanded: false }}
             dataStore={treeDataStore}
             viewStateStore={viewStateStore}
             plugins={[
               treePluginProvideIcons(),
               treePluginProvideTreeService(),
               treePluginInitViewTemplate<FolderTreeNode>(),
-              treePluginExpandTemplate<FolderTreeNode>({
-                defaultExpanded: false,
-              }),
+              treePluginExpandTemplate<FolderTreeNode>(),
               treePluginRefresh(),
               treePluginInit(),
               treePluginClickNode(),
@@ -177,10 +164,6 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
                 },
                 renameNode: async (node, name) => {
                   const newPath = join(dirname(node.path!), name);
-                  // await fileSystemHelper.service.rename(
-                  //   fileSystemHelper.generateFileId(space.id, node.path!),
-                  //   fileSystemHelper.generateFileId(space.id!, newPath)
-                  // );
                   await fs.rename(
                     spaceHelper.getUri(space.id, node.path!),
                     spaceHelper.getUri(space.id, newPath),
@@ -188,24 +171,15 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
                       overwrite: false,
                     }
                   );
-                  // console.log("updateNode:", partialNode);
                   treeDataStore.getActions().delete({ id: node.id });
-                  // console.log("add:",)
                   const parentPath = dirname(node.path!);
                   const parentId = fileSystemHelper.isRootPath(parentPath)
                     ? "root"
                     : parentPath;
-                  // console.log("parent:", parentId, parentPath, "newPath:", newPath);
                   treeDataStore.getActions().add({
                     node: { ...node, id: newPath, path: newPath, name },
                     parentId,
                   });
-                  // console.log(
-                  //   "data after rename:",
-                  //   treeDataStore.getNode(newPath)
-                  // );
-
-                  // fileSystemHelper.createFile(fileSystemHelper.createFileId(space.id,));
                 },
               }),
               treePluginAddNode({
