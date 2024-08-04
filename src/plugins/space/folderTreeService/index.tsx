@@ -108,7 +108,6 @@ export const folderTreeService = createPlugin({
         xbook.eventBus.on(EventKeys.ActivityBar.ActivityClicked(id), () => {
           xbook.layoutService.sidebar.setView(id);
         });
-        // console.log("compoenents:", xbook.componentService.getComponents());
       },
       focus: (id: string) => {
         xbook.layoutService.activityBar.showActivity(id);

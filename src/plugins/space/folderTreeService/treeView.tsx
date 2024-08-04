@@ -11,10 +11,12 @@ import { Combobox } from "@/plugins/space/folderTreeService/components/combobox"
 import { SpaceTag } from "@/plugins/space/folderTreeService/components/space-tag";
 import treePluginAddNode from "@/plugins/space/folderTreeService/plugins/treePluginAddNode";
 import treePluginAutoOpenReadme from "@/plugins/space/folderTreeService/plugins/treePluginAutoOpenReadme";
+import { treePluginHideDirKeepFile } from "@/plugins/space/folderTreeService/plugins/treePluginHideDirKeepFile";
 import treePluginInit from "@/plugins/space/folderTreeService/plugins/treePluginInit";
 import treePluginMigration from "@/plugins/space/folderTreeService/plugins/treePluginMigration";
 import treePluginNodeType from "@/plugins/space/folderTreeService/plugins/treePluginNodeType";
 import treePluginProvideIcons from "@/plugins/space/folderTreeService/plugins/treePluginProvideIcons";
+import { treePluginProvideTreeService } from "@/plugins/space/folderTreeService/plugins/treePluginProvideTreeService";
 import treePluginRefresh from "@/plugins/space/folderTreeService/plugins/treePluginRefresh";
 import treePluginRefreshSpaceAuth from "@/plugins/space/folderTreeService/plugins/treePluginRefreshSpaceAuth";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
@@ -40,7 +42,7 @@ import treePluginClickNode from "./plugins/treePluginClickNode";
 import treePluginConfig from "./plugins/treePluginConfig";
 import treePluginDeleteNode from "./plugins/treePluginDeleteNode";
 import treePluginEditNode from "./plugins/treePluginEditNode";
-import { treePluginProvideTreeService } from "@/plugins/space/folderTreeService/plugins/treePluginProvideTreeService";
+import { ServicePoints } from "@/plugins/space/folderTreeService/tokens";
 
 const TreeView = ({ space }: { space: SpaceDef }) => {
   const treeDataStore = useMemo(
@@ -84,13 +86,13 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
   useEffect(() => {
     xbook.serviceBus.expose(`space-${space.id}.trigger`, () => {
       serviceBus.invoke("expandNode", "root");
-      serviceBus.invoke("refresh", "root");
+      serviceBus.invoke(ServicePoints.RefershNode, "root");
     });
   }, []);
 
   useEffect(() => {
     if (isLogin) {
-      serviceBus.invoke("refresh", "root");
+      serviceBus.invoke(ServicePoints.RefershNode, "root");
     }
   }, [isLogin]);
 
@@ -215,15 +217,6 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
                 deletable: ({ node }) => {
                   return node.type === "file";
                 },
-                deleteNode: ({ id, path }: FolderTreeNode) => {
-                  // console.log("deleteNode:", id);
-                  treeDataStore.getActions().delete({ id });
-                  // console.log("nodes:", treeDataStore.getData());
-                  // fileSystemHelper.service.delete(
-                  //   fileSystemHelper.generateFileId(space.id, path!)
-                  // );
-                  fs.delete(spaceHelper.getUri(space.id, path!));
-                },
               }),
               treePluginConfig({
                 rootId: "",
@@ -232,6 +225,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
               treePluginMigration(),
               treePluginRefreshSpaceAuth(),
               treePluginAutoOpenReadme(),
+              treePluginHideDirKeepFile(),
             ]}
           />
         </Box>

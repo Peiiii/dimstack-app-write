@@ -1,4 +1,7 @@
-import { TreeEventKeys } from "@/plugins/space/folderTreeService/tokens";
+import {
+  ServicePoints,
+  TreeEventKeys,
+} from "@/plugins/space/folderTreeService/tokens";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreePlugin } from "@/toolkit/components/tree/treePlugins";
 import xbook from "xbook/index";
@@ -12,7 +15,8 @@ export default createTreePlugin<FolderTreeNode>({
       deleteNode: () => {},
     };
   },
-  activate({ viewSystem, eventBus }) {
+  activate({ viewSystem, eventBus, serviceBus }) {
+    const treeService = serviceBus.createProxy(ServicePoints.TreeService);
     viewSystem.addNodeMenuItems([
       {
         id: "deleteNode",
@@ -24,13 +28,13 @@ export default createTreePlugin<FolderTreeNode>({
         validationRules: [
           {
             check: "type !== 'dir'",
-            failMessage: "暂不支持删除文件夹",
+            failMessage: "删除文件夹中全部文件后，文件夹会自动删除",
           },
         ],
         icon: "AiFillDelete",
       },
     ]);
-    eventBus.on(TreeEventKeys.DeleteNode, async ({ node, event }) => {
+    eventBus.on(TreeEventKeys.DeleteNode, async ({ node, event, }) => {
       event.preventDefault();
       event.stopPropagation();
       if (
@@ -38,7 +42,7 @@ export default createTreePlugin<FolderTreeNode>({
           title: "你确定要删除该文件吗？",
         })
       ) {
-        this.options.deleteNode(node);
+        await treeService.deleteNode(node);
       }
     });
   },

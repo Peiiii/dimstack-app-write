@@ -1,4 +1,7 @@
-import { TreeEventKeys } from "@/plugins/space/folderTreeService/tokens";
+import {
+  HookPoints,
+  TreeEventKeys,
+} from "@/plugins/space/folderTreeService/tokens";
 import { nameSorter } from "@/toolkit/components/tree/utils";
 import {
   PluginInitializationConfiguration,
@@ -26,6 +29,7 @@ import { AiOutlineLoading } from "react-icons/ai";
 import { HiOutlineEllipsisVertical } from "react-icons/hi2";
 import xbook from "xbook/index";
 import { NodeMenuItem, ViewSystem, WidgetContext } from ".";
+import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 
 export const getCreateTreePlugin = <
   TreeNodeType extends Record<string, SafeAny>
@@ -205,7 +209,7 @@ export const renderMenuEntry = ({
 export const treePluginInitViewTemplate = createTreePluginTemplate<{
   id: string;
 }>({
-  activate({ viewSystem }) {
+  activate({ viewSystem, hookRegistry }) {
     // Initial View System
     const IconCollapsed = ChevronRightIcon;
     const IconExpanded = ChevronDownIcon;
@@ -360,6 +364,11 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
         return () => {};
       }, [validationMessage, editMode]);
 
+      const filterUsingHooks = (nodes: TreeDataNode<FolderTreeNode>[]) => {
+        const hooks = hookRegistry.getHooks(HookPoints.FilterNodes);
+        return hooks.reduce((acc, hook) => hook(acc), nodes);
+      };
+
       return (
         <Flex
           w="100%"
@@ -472,20 +481,21 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
                 w="calc(100% - 0.5rem)"
               >
                 {children &&
-                  [...children]
-                    .sort(nameSorter)
-                    .sort(
-                      (a, b) =>
-                        (a.type === "file" ? 1 : 0) -
-                        (b.type === "file" ? 1 : 0)
-                    )
-                    .map((child) =>
-                      viewSystem.renderNode({
-                        node: child,
-                        level: level + 1,
-                        parentNode: node,
-                      })
-                    )}
+                  filterUsingHooks(
+                    [...children]
+                      .sort(nameSorter)
+                      .sort(
+                        (a, b) =>
+                          (a.type === "file" ? 1 : 0) -
+                          (b.type === "file" ? 1 : 0)
+                      )
+                  ).map((child) =>
+                    viewSystem.renderNode({
+                      node: child,
+                      level: level + 1,
+                      parentNode: node,
+                    })
+                  )}
               </Flex>
             </Flex>
           </Flex>

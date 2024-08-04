@@ -1,4 +1,7 @@
-import { TreeEventKeys } from "@/plugins/space/folderTreeService/tokens";
+import {
+  ServicePoints,
+  TreeEventKeys,
+} from "@/plugins/space/folderTreeService/tokens";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreePlugin } from "@/toolkit/components/tree/treePlugins";
 import { Icon, Text } from "@chakra-ui/react";
@@ -21,7 +24,8 @@ const getNodeFileType = (_) => {
   return "file";
 };
 export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
-  activate({ viewSystem, eventBus, dataStore }) {
+  activate({ viewSystem, eventBus, dataStore, serviceBus }) {
+    const treeService = serviceBus.createProxy(ServicePoints.TreeService);
     viewSystem.setDefaultViewStateProvider(({ id }, props) => {
       let expandable;
       const node = dataStore.getNode(id)!;
@@ -48,20 +52,12 @@ export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
         const name = editMode ? editingName ?? node.name : node.name;
 
         if (getNodeType(node) === "dir") {
-          // console.log(
-          //   `[${spaceId}] dataStore.data:`,
-          //   dataStore.getData(),
-          //   "viewStateData:",
-          //   viewSystem.viewStateStore.getData()
-
-          // );
           return (
             <Icon
               className="icon dir"
               as={state?.expanded ? AiFillFolderOpen : AiFillFolder}
             />
           );
-          // return <Text as="h3">{"#"}</Text>;
         } else {
           if (getNodeFileType(node) === "file") {
             const isMarkdown =
@@ -77,35 +73,8 @@ export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
       },
       true
     );
-    const findPathNodes = (path: string, root) => {
-      const nodes: any[] = [];
-      const parts = path.split("/");
-      let currentNode = root;
-      nodes.push(currentNode);
-      const prevPath = "";
-      const joinPath = (a, b) => {
-        return [a, b].filter((x) => x).join("/");
-      };
-      for (const key of parts) {
-        const currentPath = joinPath(prevPath, key);
-        if (currentPath === path) {
-          break;
-        }
-        if (!currentNode.children) {
-          return undefined;
-        }
-        for (const node of currentNode.children) {
-          if (node.id === currentPath) {
-            nodes.push(node);
-            currentNode = node;
-            break;
-          }
-        }
-      }
-      return nodes;
-    };
+
     const focusNode = (node) => {
-      // console.log("focusNode: ", node);
       if (getNodeType(node) === "file") {
         viewSystem.viewStateStore.getActions().reduce((data) => {
           data = data.map((item) => ({ ...item, highlight: false }));
@@ -120,7 +89,10 @@ export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
           }
           return data;
         });
-        const pathNodes = findPathNodes(node.id, dataStore.getData());
+        const pathNodes = treeService.findPathNodes(
+          node.id,
+          dataStore.getData()
+        );
         if (pathNodes) {
           viewSystem.viewStateStore.getActions().reduce((data) => {
             for (const node of pathNodes) {

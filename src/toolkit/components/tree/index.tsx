@@ -1,5 +1,6 @@
 import { createDataStore, DataStore } from "@/toolkit/factories/dataStore";
 import { createEventBus, EventBus } from "@/toolkit/factories/eventBus";
+import { HookRegistry } from "@/toolkit/factories/hook-registry";
 import {
   MenuController,
   MenuItem,
@@ -11,7 +12,7 @@ import { createDecoupledServiceBus } from "@/toolkit/factories/serviceBus";
 import { TreeDataNode, TreeDataStore } from "@/toolkit/factories/treeDataStore";
 import { SafeAny } from "@/toolkit/types";
 import { parseWhenClause } from "@/toolkit/utils/when-clause";
-import { Box, Flex, Tooltip } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { useCallback, useEffect, useMemo } from "react";
 
 // View System
@@ -86,15 +87,6 @@ const createViewSystem = <T,>(
       level,
     });
     const disabled = !isValid;
-    console.log(
-      "disabled",
-      disabled,
-      "menuitem",
-      nodeMenuItem,
-      "message",
-      message
-    );
-
     if (simple) {
       return (
         <Flex
@@ -210,6 +202,7 @@ export type WidgetContext<
   eventBus: EventBus;
   pipe: ReturnType<typeof createPipeService>;
   serviceBus: ReturnType<typeof createDecoupledServiceBus>;
+  hookRegistry: ReturnType<typeof HookRegistry.create>;
   viewSystem: ViewSystem;
   options: OptionsType;
 };
@@ -235,6 +228,7 @@ export const Tree = <
   pipe,
   serviceBus,
   options = {} as OptionsType,
+  hookRegistry,
 }: {
   plugins?: WidgetPlugin<T, OptionsType>[];
 } & Partial<Exclude<WidgetContext<T, OptionsType>, "dataStore">> &
@@ -255,6 +249,7 @@ export const Tree = <
       dataStore,
       options,
       pipe: finalPipe,
+      hookRegistry: finalHookRegistry,
       serviceBus: finalServiceBus,
     };
   }, [finalEventBus, dataStore, options, finalPipe, finalServiceBus]);
@@ -275,6 +270,11 @@ export const Tree = <
         getContext
       ),
     [finalEventBus, viewSystem, dataStore, renderer]
+  );
+
+  const finalHookRegistry = useMemo(
+    () => hookRegistry || HookRegistry.create(),
+    [hookRegistry]
   );
 
   useEffect(() => {

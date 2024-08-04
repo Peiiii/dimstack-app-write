@@ -2,8 +2,6 @@ import { ITreeService } from "@/plugins/space/folderTreeService/services/tree.se
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
 import { typedKey } from "@/toolkit/utils/typedKey";
-import { Input } from "@chakra-ui/react";
-import { Delete } from "lucide-react";
 
 export const TreeEventKeys = {
   NodeContentLoaded: "NodeContentLoaded",
@@ -54,11 +52,6 @@ export const TreeEventKeys = {
   }>("refreshNode"),
 };
 
-export enum DocumentTypeEnum {
-  PlainText = "plainText",
-  Markdown = "markdown",
-}
-
 export const ServicePoints = {
   TreeService: typedKey<ITreeService>("treeService"),
   EditInputNodeName: typedKey<
@@ -75,9 +68,22 @@ export const ServicePoints = {
       void
     ]
   >("edit.inputNodeName"),
+  RefershNode: typedKey<[[string], void]>("refreshNode"),
+};
+
+export const HookPoints = {
+  FilterNodes:
+    typedKey<
+      (nodes: TreeDataNode<FolderTreeNode>[]) => TreeDataNode<FolderTreeNode>[]
+    >("filterNodes"),
 };
 
 export enum TreeNodeTypeEnum {
   File = "file",
   Dir = "dir",
+}
+
+export enum DocumentTypeEnum {
+  PlainText = "plainText",
+  Markdown = "markdown",
 }

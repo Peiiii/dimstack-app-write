@@ -1,11 +1,203 @@
+import { fileSystemHelper } from "@/helpers/file-system.helper";
+import { spaceHelper } from "@/helpers/space.helper";
+import { TreeEventKeys } from "@/plugins/space/folderTreeService/tokens";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
-import { WidgetContext } from "@/toolkit/components/tree";
+import { WidgetContext, WidgetViewState } from "@/toolkit/components/tree";
 import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
+import { FileType } from "@/toolkit/vscode/file-system";
+import xbook from "xbook/index";
 
 export const createTreeService = (
   context: WidgetContext<TreeDataNode<FolderTreeNode>>
 ) => {
+  const {
+    dataStore,
+    viewSystem: { viewStateStore, getViewStateOrDefaultViewState },
+    options: { space },
+    eventBus,
+  } = context;
   class TreeService {
+    updateViewState = (
+      id: string,
+      partialViewState: Partial<WidgetViewState>
+    ) => {
+      viewStateStore.getActions().update({
+        ...getViewStateOrDefaultViewState(id),
+        ...partialViewState,
+      });
+    };
+
+    deleteNode = async (node: FolderTreeNode) => {
+      const { id, path } = node;
+      this.updateViewState(id, { loading: true });
+      try {
+        await xbook.fs.delete(spaceHelper.getUri(space.id, path!));
+        dataStore.getActions().delete({ id });
+      } catch (e) {
+      } finally {
+        if (viewStateStore.getRecord(id)) {
+          this.updateViewState(id, { loading: false });
+        }
+      }
+      // 如果父节点下没有子节点了，刷新祖父节点，因为父节点可能已经被删除
+      const parentNode = this.findParentNode(path!);
+      if (parentNode && parentNode.children?.length === 0) {
+        const grandParentNode = this.findParentNode(parentNode.path!);
+        if (grandParentNode) {
+          this.deepRefresh(grandParentNode.id);
+        }
+      }
+    };
+
+    getNodeIdFromPath = (path: string) => {
+      if (path === "/" || path === "") return "root";
+      return path;
+    };
+
+    findParentNode = (path: string) => {
+      const pathNodes = this.findPathNodes(path, dataStore.getData());
+      return pathNodes?.[pathNodes.length - 1];
+    };
+
+    findPathNodes = (
+      targetPath: string,
+      root?: TreeDataNode<FolderTreeNode>
+    ) => {
+      const nodes: any[] = [];
+      root = root || dataStore.getData();
+      const parts = targetPath.split("/").filter((x) => x);
+      let currentNode = root;
+      nodes.push(currentNode);
+      let prevPath = "";
+      const joinPath = (a: string, b: string) => {
+        return [a, b].filter((x) => x).join("/");
+      };
+      const samePath = (a: string, b: string) => {
+        // slash
+        // slash slash
+        [a, b] = [a, b].map((x) => (x.endsWith("/") ? x.slice(0, -1) : x));
+        // start slash
+        [a, b] = [a, b].map((x) => (x.startsWith("/") ? x.slice(1) : x));
+        return a === b;
+      };
+      for (const key of parts) {
+        const currentPath = joinPath(prevPath, key);
+        console.log("key:", key, "currentPath:", currentPath);
+
+        if (samePath(currentPath, targetPath)) {
+          break;
+        }
+        if (!currentNode.children) {
+          return undefined;
+        }
+        for (const node of currentNode.children) {
+          if (samePath(node.path!, currentPath)) {
+            nodes.push(node);
+            currentNode = node;
+            prevPath = currentPath;
+            break;
+          }
+        }
+      }
+      return nodes;
+    };
+
+    /** 暂未使用 */
+    shallowRefresh = async (id: string) => {
+      const node = dataStore.getNode(id)!;
+      const oldNode = dataStore.getNode(node.id)!;
+      const info = await fileSystemHelper.service.readDirectory(
+        fileSystemHelper.generateFileId(
+          space.id,
+          node.id === "root" ? "/" : node.path!
+        )
+      );
+      dataStore.getActions().update({
+        node: {
+          ...node,
+          children: info
+            .map((child) => ({
+              ...oldNode.children?.find((c) => c.path == child.path),
+              ...child,
+            }))
+            .map((child) => ({
+              ...child,
+              id: child.path,
+            })),
+        },
+      });
+      console.log("updatedData:", dataStore.getData());
+    };
+
+    readTreeReferToViewState = async (
+      spaceId: string,
+      node: TreeDataNode<FolderTreeNode>
+    ): Promise<TreeDataNode<FolderTreeNode>> => {
+      const oldNode = dataStore.getNode(node.id)!;
+      const viewState = viewStateStore.getData().find((v) => v.id === node.id);
+      if (!viewState || !viewState.expanded) return node;
+
+      const uri = spaceHelper.getUri(
+        spaceId,
+        node.id === "root" ? "/" : node.path!
+      );
+
+      let parentPath = node.id === "root" ? "/" : node.path!;
+      parentPath = parentPath.endsWith("/") ? parentPath : parentPath + "/";
+
+      viewStateStore.getActions().update({
+        ...viewState,
+        loading: true,
+      });
+      const info = await xbook.fs.readDirectory(uri);
+      viewStateStore.getActions().update({
+        ...viewState,
+        loading: false,
+      });
+
+      const dirInfo = info.map(([name, type]) => {
+        return {
+          id: `${parentPath}${name}`,
+          name,
+          path: `${parentPath}${name}`,
+          type: (type === FileType.Directory
+            ? "dir"
+            : type === FileType.File
+            ? "file"
+            : "file") as "dir" | "file",
+        };
+      });
+
+      return {
+        ...node,
+        children: await Promise.all(
+          dirInfo
+            .map((child) => ({
+              ...oldNode.children?.find((c) => c.path == child.path),
+              ...child,
+            }))
+            .map((child) => ({
+              ...child,
+              id: child.path,
+            }))
+            .map((child) =>
+              child.type === "dir"
+                ? this.readTreeReferToViewState(spaceId, child)
+                : child
+            )
+        ),
+      };
+    };
+
+    deepRefresh = async (id: string) => {
+      const node = dataStore.getNode(id)!;
+      const updatedNode = await this.readTreeReferToViewState(space.id, node);
+      dataStore.getActions().update({ node: updatedNode });
+      eventBus.emit(TreeEventKeys.NodeContentLoaded, {
+        node: updatedNode,
+      });
+    };
+
     validateForEditingName = ({
       name: tryName,
       parentNode,
