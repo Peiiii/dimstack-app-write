@@ -43,6 +43,10 @@
         transition: height 0.3s ease-out;
       }
 
+      .tree-node-children-list.level-0 {
+        border-left: none;
+      }
+
       .tree-node-children-list-expanded {
       }
       .tree-node-children-list-collapsed {

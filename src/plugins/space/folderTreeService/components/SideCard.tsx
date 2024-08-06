@@ -112,8 +112,9 @@ export const SideCard: FC<{
           w="100%"
           height={"100%"}
           overflowX={"hidden"}
-          overflowY="auto"
-          className="scroll scroll-7 "
+          // overflowY="auto"
+          // className="scroll scroll-7 "
+          className="flex-container-limited"
           gap={0}
         >
           {children}

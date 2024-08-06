@@ -40,7 +40,6 @@
   min-width: 0 !important;
 }
 
-
 .draggable {
   cursor: pointer;
 
@@ -49,4 +48,10 @@
     opacity: 0;
     background-color: var(--primary-color);
   }
+}
+
+.flex-container-limited {
+  flex-grow: 1;
+  display: flex;
+  overflow: hidden;
 }

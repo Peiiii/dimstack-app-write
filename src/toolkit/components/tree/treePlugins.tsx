@@ -2,6 +2,9 @@ import {
   HookPoints,
   TreeEventKeys,
 } from "@/plugins/space/folderTreeService/tokens";
+import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
+import { BaseServicePoints } from "@/toolkit/components/tree/tokens";
+import { getBaseTreeServiceClass } from "@/toolkit/components/tree/tree.service";
 import { nameSorter } from "@/toolkit/components/tree/utils";
 import {
   PluginInitializationConfiguration,
@@ -24,14 +27,11 @@ import {
 } from "@chakra-ui/react";
 import { css, keyframes } from "@emotion/css";
 import classNames from "classnames";
-import { useEffect, useRef } from "react";
+import { FC, useEffect, useRef } from "react";
 import { AiOutlineLoading } from "react-icons/ai";
 import { HiOutlineEllipsisVertical } from "react-icons/hi2";
 import xbook from "xbook/index";
 import { NodeMenuItem, ViewSystem, WidgetContext } from ".";
-import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
-import { BaseServicePoints } from "@/toolkit/components/tree/tokens";
-import { getBaseTreeServiceClass } from "@/toolkit/components/tree/tree.service";
 
 export const getCreateTreePlugin = <
   TreeNodeType extends Record<string, SafeAny>
@@ -187,7 +187,8 @@ export const renderMenuEntry = ({
 export const treePluginInitViewTemplate = createTreePluginTemplate<{
   id: string;
 }>({
-  activate({ viewSystem, hookRegistry }) {
+  activate({ viewSystem, hookRegistry, dataStore, eventBus }) {
+    const { renderer } = viewSystem;
     // Initial View System
     const IconCollapsed = ChevronRightIcon;
     const IconExpanded = ChevronDownIcon;
@@ -237,8 +238,95 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
       const { id } = node;
       const nodeData = dataStore.useNode(id) as TreeDataNode;
       if (!nodeData) return null;
-      const { name, children } = nodeData;
+      const { children } = nodeData;
+      const viewState =
+        viewSystem.viewStateStore.useRecord(id) ||
+        viewSystem.getDefaultViewState({ id });
 
+      const { expanded, highlight } = viewState;
+      return (
+        <Flex
+          w="100%"
+          direction={"column"}
+          // overflow={"hidden"}
+          className="tree-node-wrapper"
+        >
+          <Flex
+            direction={"row"}
+            w="100%"
+            align={"center"}
+            overflow={"hidden"}
+            className={classNames({
+              "tree-node": true,
+              "tree-node-highlight": highlight,
+              "tree-root-node": level === 0,
+              [`level-${level}`]: true,
+            })}
+          >
+            {level > 1 && (
+              <Box className="placeholder" w={3} flexShrink={0} flexGrow={0} />
+            )}
+            <Flex
+              className="tree-node-content"
+              flexFlow={"column"}
+              h="100%"
+              flexGrow={1}
+              align={"center"}
+              overflow={"hidden"}
+            >
+              {renderer.render({
+                type: "tree-node-header",
+                props: {
+                  node,
+                  level,
+                  parentNode,
+                },
+              })}
+              {renderer.render({
+                type: "tree-node-list",
+                props: {
+                  nodes: children,
+                  expanded,
+                  parentNode: node,
+                  level,
+                },
+              })}
+            </Flex>
+          </Flex>
+        </Flex>
+      );
+    };
+
+    const TreeNodeActionBar: FC<{
+      node: TreeDataNode;
+      level: number;
+    }> = ({ node, level }) => {
+      const nodeMenuItems = viewSystem.getNodeMenuItems({ node, level });
+      const actionBar = renderMenuEntry({
+        nodeMenuItems,
+        viewSystem,
+        node,
+        level,
+      });
+      return actionBar;
+    };
+
+    renderer.register("tree-node-action-bar", TreeNodeActionBar);
+
+    const TreeNodeHeader = ({
+      node,
+      level,
+      parentNode,
+    }: {
+      node: TreeDataNode;
+      level: number;
+      context: WidgetContext<any>;
+      parentNode?: TreeDataNode;
+    }) => {
+      const { id } = node;
+      const nodeData = dataStore.useNode(id) as TreeDataNode;
+      if (!nodeData) return null;
+      const { name } = nodeData;
       const viewState =
         viewSystem.viewStateStore.useRecord(id) ||
         viewSystem.getDefaultViewState({ id });
@@ -260,22 +348,10 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
         expanded,
         editMode,
         expandable,
-        highlight,
         loading,
         validationMessage,
         editingName,
       } = viewState;
-      const nodeMenuItems = viewSystem.getNodeMenuItems({ node, level });
-      const actionBar = renderMenuEntry({
-        nodeMenuItems,
-        viewSystem,
-        node,
-        level,
-      });
-
-      const classList = ["tree-node"];
-      if (level === 0) classList.push("tree-root-node");
-      if (highlight) classList.push("tree-node-highlight");
 
       const leftExtra = (
         <>
@@ -342,144 +418,146 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
         return () => {};
       }, [validationMessage, editMode]);
 
+      return (
+        <Flex
+          className={classNames({
+            "tree-node-content-top": true,
+            [css`
+              margin-left: 0.5rem;
+              /* margin-right: 0.5rem; */
+            `]: level === 0,
+          })}
+          flexFlow={"row"}
+          // w="100%"
+          h="2rem"
+          mt="2px"
+          mb="2px"
+          // flexGrow={1}
+          alignSelf={"stretch"}
+          align={"center"}
+          overflow={"hidden"}
+        >
+          <Flex
+            minW={0}
+            overflow={"hidden"}
+            direction={"row"}
+            h={"36px"}
+            maxH={"100%"}
+            w="100%"
+            flexGrow={1}
+            align="center"
+            onClick={eventBus.connector(TreeEventKeys.NodeClick, (event) => ({
+              node,
+              event,
+            }))}
+            tabIndex={-1}
+            onKeyDown={(e) => {
+              if (e.code.toLowerCase() === "enter") {
+                eventBus.emit("node::keydown.enter", { node, event: e });
+              }
+            }}
+            className={"hover-action tree-node-header"}
+          >
+            <Flex
+              direction={"row"}
+              // pl="6px"
+              align="center"
+              overflow={"hidden"}
+              className="hover-action"
+            >
+              <Flex pr="0.5rem" alignItems={"center"}>
+                {leftExtra}
+              </Flex>
+              {viewSystem.render("icon-node-type", { node })}
+              <Box w="0.5em"></Box>
+              {editMode ? (
+                <>{inputBox}</>
+              ) : (
+                <Text
+                  fontSize={"1rem"}
+                  title={name}
+                  textOverflow={"ellipsis"}
+                  whiteSpace={"nowrap"}
+                  overflow={"hidden"}
+                >
+                  {name}
+                </Text>
+              )}
+            </Flex>
+            <Box flexGrow={1} />
+            <Flex
+              className="action-box"
+              align={"center"}
+              justify={"center"}
+              h="100%"
+            >
+              {renderer.render({
+                type: "tree-node-action-bar",
+                props: {
+                  node,
+                  level,
+                },
+              })}
+            </Flex>
+          </Flex>
+
+          <Box w="0.5rem" flexShrink={0} />
+        </Flex>
+      );
+    };
+    renderer.register("tree-node-header", TreeNodeHeader);
+
+    const TreeNodeList: FC<{
+      nodes: TreeDataNode<FolderTreeNode>[];
+      expanded: boolean;
+      parentNode?: TreeDataNode<FolderTreeNode>;
+      level: number;
+    }> = ({ expanded, nodes, parentNode, level }) => {
       const filterUsingHooks = (nodes: TreeDataNode<FolderTreeNode>[]) => {
         const hooks = hookRegistry.getHooks(HookPoints.FilterNodes);
         return hooks.reduce((acc, hook) => hook(acc), nodes);
       };
-
       return (
         <Flex
-          w="100%"
+          // w="100%"
           direction={"column"}
-          overflow={"hidden"}
-          className="tree-node-wrapper"
+          // overflow={"hidden"}
+          ml="0.5rem"
+          className={classNames({
+            [`level-${level}`]: true,
+            "tree-node-children-list": true,
+            "tree-node-children-list-expanded": expanded,
+            "tree-node-children-list-collapsed": !expanded,
+            [css`
+              height: ${nodes?.length ? `auto` : "0"};
+            `]: expanded,
+            [css`
+              flex-grow: 1;
+              overflow-y: auto;
+              max-height: 100%;
+            `]: level === 0,
+          })}
+          w="calc(100% - 0.5rem)"
         >
-          <Flex
-            direction={"row"}
-            w="100%"
-            align={"center"}
-            overflow={"hidden"}
-            className={classList.join(" ")}
-          >
-            <Box className="placeholder" w={3} flexShrink={0} flexGrow={0} />
-            <Flex
-              className="tree-node-content"
-              flexFlow={"column"}
-              h="100%"
-              flexGrow={1}
-              align={"center"}
-              overflow={"hidden"}
-            >
-              <Flex
-                className="tree-node-content-top"
-                flexFlow={"row"}
-                w="100%"
-                h="2rem"
-                mt="2px"
-                mb="2px"
-                // flexGrow={1}
-                align={"center"}
-                overflow={"hidden"}
-              >
-                <Flex
-                  minW={0}
-                  overflow={"hidden"}
-                  direction={"row"}
-                  h={"36px"}
-                  maxH={"100%"}
-                  w="100%"
-                  flexGrow={1}
-                  align="center"
-                  onClick={eventBus.connector(
-                    TreeEventKeys.NodeClick,
-                    (event) => ({
-                      node,
-                      event,
-                    })
-                  )}
-                  tabIndex={-1}
-                  onKeyDown={(e) => {
-                    if (e.code.toLowerCase() === "enter") {
-                      eventBus.emit("node::keydown.enter", { node, event: e });
-                    }
-                  }}
-                  className={"hover-action tree-node-header"}
-                >
-                  <Flex
-                    direction={"row"}
-                    pl="6p"
-                    align="center"
-                    overflow={"hidden"}
-                    className="hover-action"
-                  >
-                    <Flex pr="0.5rem" alignItems={"center"}>
-                      {leftExtra}
-                    </Flex>
-                    {viewSystem.render("icon-node-type", { node })}
-                    <Box w="0.5em"></Box>
-                    {editMode ? (
-                      <>{inputBox}</>
-                    ) : (
-                      <Text
-                        fontSize={"1rem"}
-                        title={name}
-                        textOverflow={"ellipsis"}
-                        whiteSpace={"nowrap"}
-                        overflow={"hidden"}
-                      >
-                        {name}
-                      </Text>
-                    )}
-                  </Flex>
-                  <Box flexGrow={1} />
-                  <Flex
-                    className="action-box"
-                    align={"center"}
-                    justify={"center"}
-                    h="100%"
-                  >
-                    {actionBar}
-                  </Flex>
-                </Flex>
-                <Box w="0.5rem" flexShrink={0} />
-              </Flex>
-              <Flex
-                // w="100%"
-                direction={"column"}
-                overflow={"hidden"}
-                ml="0.5rem"
-                className={classNames({
-                  "tree-node-children-list": true,
-                  "tree-node-children-list-expanded": expanded,
-                  "tree-node-children-list-collapsed": !expanded,
-                  [css`
-                    height: ${children?.length ? `auto` : "0"};
-                  `]: expanded,
-                })}
-                w="calc(100% - 0.5rem)"
-              >
-                {children &&
-                  filterUsingHooks(
-                    [...children]
-                      .sort(nameSorter)
-                      .sort(
-                        (a, b) =>
-                          (a.type === "file" ? 1 : 0) -
-                          (b.type === "file" ? 1 : 0)
-                      )
-                  ).map((child) =>
-                    viewSystem.renderNode({
-                      node: child,
-                      level: level + 1,
-                      parentNode: node,
-                    })
-                  )}
-              </Flex>
-            </Flex>
-          </Flex>
+          {nodes &&
+            filterUsingHooks(
+              [...nodes]
+                .sort(nameSorter)
+                .sort(
+                  (a, b) =>
+                    (a.type === "file" ? 1 : 0) - (b.type === "file" ? 1 : 0)
+                )
+            ).map((child) =>
+              viewSystem.renderNode({
+                node: child,
+                level: level + 1,
+                parentNode,
+              })
+            )}
         </Flex>
       );
     };
+    renderer.register("tree-node-list", TreeNodeList);
     viewSystem.renderer.register("tree-node", TreeNode);
   },
 });

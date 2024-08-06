@@ -34,7 +34,7 @@ import { Action } from "@/toolkit/types";
 import { SpaceDef } from "@/toolkit/types/space";
 import { join } from "@/toolkit/utils/path";
 import { dirname } from "path-browserify";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AiOutlineLink } from "react-icons/ai";
 import xbook from "xbook/index";
 import { fs } from "xbook/services";
@@ -75,27 +75,24 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
     [space.id]
   );
   const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
-  const treeService = xbook.serviceBus.createProxy(ServicePoints.TreeService);
+  const treeService = serviceBus.createProxy(ServicePoints.TreeService);
   const { hasReadPermission: isLogin } = spaceService.usePermissions(space.id);
+  const [pluginsLoaded, setPluginsLoaded] = useState(false);
   useEffect(() => {
     xbook.serviceBus.expose(`space-${space.id}.trigger`, () => {
-      treeService;
-      serviceBus.invoke(ServicePoints.RefershNode, "root");
+      treeService.deepRefresh("root");
+      treeService.expandNode({ id: "root" });
     });
   }, []);
 
   useEffect(() => {
-    if (isLogin) {
-      serviceBus.invoke(ServicePoints.RefershNode, "root");
+    if (isLogin && pluginsLoaded) {
+      treeService.deepRefresh("root");
+      treeService.expandNode({ id: "root" });
     }
-  }, [isLogin]);
-
+  }, [isLogin, pluginsLoaded]);
   const [actions] = useStateFromRegistry<Action[]>("space.actions", []);
-
-  // console.log("actions: ", actions);
-
   const spaces = spaceService.useSpaces();
-
   return (
     <ContextProvider space={space}>
       {!isLogin && (
@@ -144,12 +141,13 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
         actions={actions}
       >
         <Box h="0.5rem" flexShrink={0} flexGrow={0} />
-        <Box w="100%" className="channel-tree">
+        <Box w="100%" className="channel-tree flex-container-limited flex-col">
           <Tree
             serviceBus={serviceBus}
             options={{ space, defaultExpanded: false }}
             dataStore={treeDataStore}
             viewStateStore={viewStateStore}
+            onPluginsLoaded={() => setPluginsLoaded(true)}
             plugins={[
               treePluginProvideIcons(),
               treePluginProvideTreeService(),
