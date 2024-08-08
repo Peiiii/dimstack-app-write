@@ -22,27 +22,29 @@ const getSpaceInfoObservableFromRoute = () => {
 
 export const bindSpaceWithRoute = createPlugin({
   initilize(xbook) {
-    const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
-    const routeSpace$ = getSpaceInfoObservableFromRoute();
-    routeSpace$.subscribe((spaceInfo) => {
-      if (!spaceInfo) return;
-      const { platform, owner, repo } = spaceInfo;
-      spaceService.focusSpace(
-        spaceHelper.generateSpaceId(platform, owner, repo)
+    setTimeout(() => {
+      const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
+      const routeSpace$ = getSpaceInfoObservableFromRoute();
+      routeSpace$.subscribe((spaceInfo) => {
+        if (!spaceInfo) return;
+        const { platform, owner, repo } = spaceInfo;
+        spaceService.focusSpace(
+          spaceHelper.generateSpaceId(platform, owner, repo)
+        );
+      });
+
+      const space$ = createObservableFromExternalStore(
+        () => spaceService.getFocusedSpace(),
+        (callback) => spaceService.getFocusedSpace$().subscribe(callback)
       );
-    });
 
-    const space$ = createObservableFromExternalStore(
-      () => spaceService.getFocusedSpace(),
-      (callback) => spaceService.getFocusedSpace$().subscribe(callback)
-    );
-
-    space$.subscribe((space) => {
-      if (!space) return;
-      const { platform, owner, repo } = space;
-      const path = `/#/https://${platform}.com/${owner}/${repo}`;
-      if (window.location.pathname === path) return;
-      window.history.pushState(null, "", path);
-    });
+      space$.subscribe((space) => {
+        if (!space) return;
+        const { platform, owner, repo } = space;
+        const path = `/#/https://${platform}.com/${owner}/${repo}`;
+        if (window.location.pathname === path) return;
+        window.history.pushState(null, "", path);
+      });
+    }, 500);
   },
 });
