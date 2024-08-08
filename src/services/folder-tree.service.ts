@@ -30,6 +30,13 @@ export class FolderTreeService {
   getCurrentViewId = () => {
     return xbook.layoutService.sidebar.getCurrentView()?.id;
   };
+  useCurrentViewId = () => {
+    return xbook.layoutService.sidebar.useCurrentView()?.id;
+  };
+  onCurrentViewIdChanged = (callback: (id: string | undefined) => void) => {
+    xbook.layoutService.sidebar.subscribeActiveViewId(callback);
+  };
+  getCurrentViewId$ = () => xbook.layoutService.sidebar.ActiveViewId$;
   remove = (id: string) => {
     xbook.layoutService.activityBar.removeActivity(id);
     xbook.layoutService.sidebar.removeView(id);

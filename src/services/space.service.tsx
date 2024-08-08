@@ -4,8 +4,10 @@ import Auth from "@/plugins/space/spaceService/Auth";
 import { ISpaceService } from "@/services/space.service.interface";
 import { DataStore, createDataStore } from "@/toolkit/factories/dataStore";
 import { SpaceDef } from "@/toolkit/types/space";
+import { createObservableFromExternalStore } from "@/toolkit/utils/rx-utils";
 import { refreshGiteeAccessToken } from "libs/gitee-api";
 import { useEffect, useState } from "react";
+import { combineLatest, switchMap } from "rxjs";
 import xbook from "xbook/index";
 
 export class SpaceService implements ISpaceService {
@@ -181,6 +183,33 @@ export class SpaceService implements ISpaceService {
     if (id) {
       return this.spaceStore.getRecord(id);
     }
+  };
+
+  useFocusedSpace = () => {
+    const folderTreeService = xbook.serviceBus.createProxy(
+      Tokens.FolderTreeService
+    );
+    const id = folderTreeService.useCurrentViewId();
+    const space = this.spaceStore.getRecord(id);
+    return space;
+  };
+
+  getFocusedSpace$ = () => {
+    const folderTreeService = xbook.serviceBus.createProxy(
+      Tokens.FolderTreeService
+    );
+    return folderTreeService.getCurrentViewId$().pipe(
+      switchMap((id) => {
+        return createObservableFromExternalStore(
+          () => this.spaceStore.getRecord(id),
+          (callback) => {
+            return this.spaceStore.reduxStore.subscribe(() => {
+              callback(this.spaceStore.getRecord(id));
+            });
+          }
+        );
+      })
+    );
   };
 
   parseRepoUrl = (url: string) => {

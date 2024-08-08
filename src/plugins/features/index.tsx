@@ -6,7 +6,7 @@ export default createPlugin({
   initilize(xbook) {
     xbook.pluginService.use([
       provideCommonTextFileOpener,
-      // bindSpaceWithRoute
+      bindSpaceWithRoute
     ]);
   },
 });

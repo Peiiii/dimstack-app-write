@@ -26,7 +26,12 @@ export const SidebarController = defineController(() => {
       return {};
     }
   );
-  const { setActiveViewId, getActiveViewId } = ActiveViewId;
+  const {
+    setActiveViewId,
+    getActiveViewId,
+    useActiveViewId,
+    subscribeActiveViewId,
+  } = ActiveViewId;
   const ViewList = createCustomReactBean("ViewList", [] as View[], (bean) => {
     withCache(bean, cache);
     const { setViewList, getViewList, ViewList$ } = bean;
@@ -76,6 +81,7 @@ export const SidebarController = defineController(() => {
       showView,
       hideView,
       useView,
+      useActiveViewId,
     };
   });
   const Visible = createCustomReactBean("Visible", true, (bean) => {
