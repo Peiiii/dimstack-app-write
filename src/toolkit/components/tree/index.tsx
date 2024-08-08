@@ -12,7 +12,7 @@ import { createDecoupledServiceBus } from "@/toolkit/factories/serviceBus";
 import { TreeDataNode, TreeDataStore } from "@/toolkit/factories/treeDataStore";
 import { SafeAny } from "@/toolkit/types";
 import { parseWhenClause } from "@/toolkit/utils/when-clause";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, space } from "@chakra-ui/react";
 import { css } from "@emotion/css";
 import classNames from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";

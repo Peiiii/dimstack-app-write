@@ -166,7 +166,7 @@ export const renderMenuEntry = ({
                 })
               )
               .map((menuItem, index) => (
-                <MenuItem key={index}>{menuItem}</MenuItem>
+                <MenuItem key={menuItem.key}>{menuItem}</MenuItem>
               ))}
           </MenuList>
         </Portal>
@@ -250,6 +250,7 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
           direction={"column"}
           // overflow={"hidden"}
           className="tree-node-wrapper"
+          key={id}
         >
           <Flex
             direction={"row"}
@@ -274,23 +275,29 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
               align={"center"}
               overflow={"hidden"}
             >
-              {renderer.render({
-                type: "tree-node-header",
-                props: {
-                  node,
-                  level,
-                  parentNode,
+              {renderer.render(
+                {
+                  type: "tree-node-header",
+                  props: {
+                    node,
+                    level,
+                    parentNode,
+                  },
                 },
-              })}
-              {renderer.render({
-                type: "tree-node-list",
-                props: {
-                  nodes: children,
-                  expanded,
-                  parentNode: node,
-                  level,
+                0
+              )}
+              {renderer.render(
+                {
+                  type: "tree-node-list",
+                  props: {
+                    nodes: children,
+                    expanded,
+                    parentNode: node,
+                    level,
+                  },
                 },
-              })}
+                1
+              )}
             </Flex>
           </Flex>
         </Flex>

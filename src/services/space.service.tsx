@@ -8,7 +8,7 @@ import { refreshGiteeAccessToken } from "libs/gitee-api";
 import { useEffect, useState } from "react";
 import xbook from "xbook/index";
 
-export class SpaceServiceImpl implements ISpaceService {
+export class SpaceService implements ISpaceService {
   spaceStore = createDataStore<SpaceDef>({
     initialState: [],
     persistConfig: {
@@ -34,6 +34,10 @@ export class SpaceServiceImpl implements ISpaceService {
   getSpaceStore(): DataStore<SpaceDef> {
     return this.spaceStore;
   }
+
+  getSpaces = () => {
+    return this.spaceStore.getData();
+  };
 
   constructor() {
     xbook.registry.set("spaceStore", this.spaceStore);
@@ -160,14 +164,20 @@ export class SpaceServiceImpl implements ISpaceService {
   };
 
   focusSpace = (spaceId: string) => {
-    xbook.serviceBus.invoke("folderTreeService.focus", spaceId);
+    const folderTreeService = xbook.serviceBus.createProxy(
+      Tokens.FolderTreeService
+    );
+    folderTreeService.focus(spaceId);
     setTimeout(() => {
       xbook.serviceBus.invoke(`space-${spaceId}.trigger`);
     }, 100);
   };
 
   getFocusedSpace = () => {
-    const id = xbook.serviceBus.invoke("folderTreeService.getCurrentViewId");
+    const folderTreeService = xbook.serviceBus.createProxy(
+      Tokens.FolderTreeService
+    );
+    const id = folderTreeService.getCurrentViewId();
     if (id) {
       return this.spaceStore.getRecord(id);
     }
@@ -294,4 +304,4 @@ export class SpaceServiceImpl implements ISpaceService {
 
 // export const spaceService = createSpaceService();
 
-// export const spaceService = new SpaceServiceImpl();
+// export const spaceService = new SpaceService();

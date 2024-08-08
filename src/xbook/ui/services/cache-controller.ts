@@ -21,7 +21,9 @@ export const CacheController = defineController(
           : (storageProvider.get(finalKey) as T),
         (bean) => {
           BeanReflector.getObservable(bean).subscribe((value) => {
-            storageProvider.setItem(finalKey, value);
+            console.log("storageProvider", storageProvider);
+
+            storageProvider.set(finalKey, value);
           });
           storageProvider.subscribe?.(finalKey, (value) => {
             BeanReflector.getSetter(bean)(value as T);

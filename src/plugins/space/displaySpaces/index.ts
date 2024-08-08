@@ -1,7 +1,8 @@
-import { spaceHelper } from "@/helpers/space.helper";
-import { createPlugin } from "xbook/common/createPlugin";
-import { SpaceDef } from "@/toolkit/types/space";
 import { EventKeys } from "@/constants/eventKeys";
+import { Tokens } from "@/constants/tokens";
+import { spaceHelper } from "@/helpers/space.helper";
+import { SpaceDef } from "@/toolkit/types/space";
+import { createPlugin } from "xbook/common/createPlugin";
 
 export default createPlugin({
   initilize(xbook) {
@@ -20,16 +21,13 @@ export default createPlugin({
       // );
       // console.log("spaceAdded:", spacesAdded);
       prevSpaces = spaces;
-      spacesAddedOrUpdated.forEach((space) => {
-        // console.log("space:", space);
-        xbook.serviceBus.invoke("folderTreeService.add", space);
+      const folderTreeService = xbook.serviceBus.createProxy(Tokens.FolderTreeService);
+      spacesAddedOrUpdated.forEach((space) => {;
+        folderTreeService.add(space);
       });
       spacesRemoved.forEach((space) => {
-        xbook.serviceBus.invoke("folderTreeService.remove", space.id);
+        folderTreeService.remove(space.id);
       });
-      // spacesAdded.forEach((space) => {
-      //   xbook.serviceBus.invoke("folderTreeService.focus", space.id);
-      // });
     });
     xbook.eventBus.on(
       EventKeys.ActivityBar.DragItem,
