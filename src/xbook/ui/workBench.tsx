@@ -5,7 +5,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { device } from "xbook/common/device";
 import { createDeferredComponentProxy } from "xbook/hooks/useDeferredComponentProxy";
-import { componentService } from "./componentService";
+import { componentService, PresetComponents } from "./componentService";
 import "./styles/globals.scss";
 
 type CosutomComponentTypes =
@@ -20,6 +20,7 @@ export type Layout = {
     | "column"
     | "element"
     | "SplitPane.Horizontal"
+    | PresetComponents
     | CosutomComponentTypes;
   props?: Record<string, unknown>;
   children?: Layout[];

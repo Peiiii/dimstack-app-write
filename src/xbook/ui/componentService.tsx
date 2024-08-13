@@ -8,6 +8,7 @@ import { createSidebar } from "./sidebar";
 import { createStatusBar } from "./statusBar";
 import { createTitleBar } from "./titleBar";
 import { createActivityBar } from "./activiti-bar";
+import { SideResizer } from "xbook/ui/side-resizer";
 export const activityBar = createActivityBar();
 export const statusBar = createStatusBar();
 export const titleBar = createTitleBar();
@@ -57,6 +58,10 @@ componentService.register("column", ({ children, ...rest }) => (
   </Box>
 ));
 
+export enum PresetComponents {
+  SideResizer = "sideResizer",
+}
+
 componentService.register("activityBar", () => {
   return activityBar.instance;
 });
@@ -72,5 +77,6 @@ componentService.register("titleBar", () => {
 componentService.register("pageBox", () => {
   return pageBox.instance;
 });
-componentService.register("SplitPane.Horizontal", SplitPane.Horizontal);
+// componentService.register("SplitPane.Horizontal", SplitPane.Horizontal);
 // componentService.register("SplitPane.Horizontal", SplitPaneV2.Horizontal);
+componentService.register(PresetComponents.SideResizer, SideResizer);

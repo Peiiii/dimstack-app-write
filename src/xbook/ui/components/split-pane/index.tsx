@@ -1,6 +1,6 @@
 import { css } from "@emotion/css";
 import classNames from "classnames";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import "./index.scss";
 
 const SplitPaneCss = css`
@@ -85,6 +85,7 @@ const SplitPane = {
     maxLeftWidth = 800,
     toggleLeftComponent,
     enableToggleLeft,
+    leftHidden:controlledLeftHidden
   }: {
     children: [React.ReactNode, React.ReactNode];
     resizable?: boolean;
@@ -94,6 +95,7 @@ const SplitPane = {
     maxLeftWidth?: number;
     toggleLeftComponent?: React.ReactNode;
     enableToggleLeft?: boolean;
+    leftHidden?: boolean;
   }) => {
     const [left, right] = children;
     const resizer = useRef<HTMLDivElement>(null);
@@ -101,6 +103,11 @@ const SplitPane = {
     const leftEl = useRef<HTMLDivElement>(null);
     const rightEl = useRef<HTMLDivElement>(null);
     const [leftHidden, setLeftHidden] = useState(false);
+    useEffect(() => {
+      if(controlledLeftHidden !== undefined){
+        setLeftHidden(controlledLeftHidden);
+      }
+    }, [controlledLeftHidden]);
     const data = useRef({
       startX: 0,
       startY: 0,

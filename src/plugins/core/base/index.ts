@@ -12,6 +12,7 @@ import { createPlugin } from "xbook/common/createPlugin";
 import { device } from "xbook/common/device";
 import "./css/themes/markdown/github.css";
 import { Layout } from "xbook/ui/workBench";
+import { PresetComponents } from "xbook/ui/componentService";
 
 const MobileLayout: Layout = {
   type: "column",
@@ -94,7 +95,8 @@ const PCLayout: Layout = {
               type: "row",
               children: [
                 {
-                  type: "SplitPane.Horizontal",
+                  // type: "SplitPane.Horizontal",
+                  type: PresetComponents.SideResizer,
                   props:{
                     // id: "sidebarResizer"
                   },
@@ -171,7 +173,8 @@ export default createPlugin({
       xbook.commandService.registerCommand("client:toggleHome", () => {
         xbook.layoutService.sidebar.toggle();
         xbook.layoutService.activityBar.toggle();
-        xbook.serviceBus.invoke("sidebarResizer.toggleResizable")
+        // xbook.serviceBus.invoke("sidebarResizer.toggleResizable")
+        xbook.serviceBus.invoke("sideResizer.toggleLeft");
       });
 
       xbook.commandService.registerCommand("client:toChatPage", () => {

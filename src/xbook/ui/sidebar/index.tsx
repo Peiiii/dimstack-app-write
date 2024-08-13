@@ -39,6 +39,8 @@ export const createSidebar = (): {
         }
       }
     }, [isFullwidth]);
+    console.log("sidebar visible", visible);
+
     return (
       <>
         {
