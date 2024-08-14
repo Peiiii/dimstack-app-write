@@ -171,7 +171,7 @@ export default createPlugin({
       xbook.layoutService.sidebar.setFullwidth(false);
       xbook.layoutService.activityBar.show();
       xbook.commandService.registerCommand("client:toggleHome", () => {
-        xbook.layoutService.sidebar.toggle();
+        // xbook.layoutService.sidebar.toggle();
         xbook.layoutService.activityBar.toggle();
         // xbook.serviceBus.invoke("sidebarResizer.toggleResizable")
         xbook.serviceBus.invoke("sideResizer.toggleLeft");

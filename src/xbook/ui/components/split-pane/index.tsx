@@ -85,7 +85,7 @@ const SplitPane = {
     maxLeftWidth = 800,
     toggleLeftComponent,
     enableToggleLeft,
-    leftHidden:controlledLeftHidden
+    leftHidden: controlledLeftHidden,
   }: {
     children: [React.ReactNode, React.ReactNode];
     resizable?: boolean;
@@ -104,7 +104,7 @@ const SplitPane = {
     const rightEl = useRef<HTMLDivElement>(null);
     const [leftHidden, setLeftHidden] = useState(false);
     useEffect(() => {
-      if(controlledLeftHidden !== undefined){
+      if (controlledLeftHidden !== undefined) {
         setLeftHidden(controlledLeftHidden);
       }
     }, [controlledLeftHidden]);
@@ -217,17 +217,16 @@ const SplitPane = {
           [SplitPaneCss]: true,
         })}
       >
-        {!leftHidden && (
-          <div
-            className="left pane scroll scroll-7"
-            ref={leftEl}
-            style={{
-              ...(resizable ? { width: leftWidth } : { width: 0 }),
-            }}
-          >
-            <div className="left-inner-wrapper scroll scroll-8"> {left}</div>
-          </div>
-        )}
+        <div
+          className={classNames("left pane scroll scroll-7")}
+          ref={leftEl}
+          style={{
+            ...(resizable && !leftHidden ? { width: leftWidth } : { width: 0 }),
+          }}
+        >
+          <div className="left-inner-wrapper scroll scroll-8"> {left}</div>
+        </div>
+
         <div className="resizer-wrapper" ref={resizerWrapper}>
           <div className="resizer-anchor">
             <div
