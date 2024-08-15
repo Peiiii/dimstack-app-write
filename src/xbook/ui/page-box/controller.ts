@@ -9,7 +9,6 @@ import {
 import {
   BehaviorSubject,
   Observable,
-  ReplaySubject,
   combineLatest,
   distinctUntilChanged,
   map,
@@ -19,7 +18,7 @@ import {
 import "simplebar-react/dist/simplebar.min.css";
 import { VisibilityControl } from "xbook/hooks/proxiedControls";
 import { commandService } from "xbook/services/commandService";
-import { CacheController } from "../services/cache-controller";
+import { CacheController, withCache } from "../services/cache-controller";
 
 export type PageDescriptor = {
   id: string;
@@ -50,8 +49,6 @@ export type IPageAction = {
 };
 
 // const cache = cacheService.space("pageBox", "localStorage");
-
-
 
 const cache = CacheController.create({
   scope: "pageBox",
@@ -110,14 +107,13 @@ export const PageBoxController = defineController(() => {
     getPageList,
     setPageList,
     usePageList,
+    subscribePageList,
     PageList$: pageList$,
   } = createCustomReactBean(
     "PageList",
     loadPageList() as PageDescriptor[],
-    ({ PageList$: pageList$ }) => {
-      pageList$.pipe(distinctUntilChanged()).subscribe((pageList) => {
-        cache.set("pageList", pageList);
-      });
+    (bean) => {
+      withCache(bean, cache);
     }
   );
 
@@ -161,6 +157,19 @@ export const PageBoxController = defineController(() => {
     if (!exists) pageList.push(page);
     if (show) {
       pageList.forEach((p) => (p.active = p.id === page.id ? true : false));
+    }
+    setPageList(pageList.slice());
+  };
+  const addPages = (pages: PageDescriptor[]) => {
+    const pageList = getPageList().slice();
+    for (const page of pages) {
+      let exists = false;
+      for (const p of pageList) {
+        if (p.id === page.id) {
+          exists = true;
+        }
+      }
+      if (!exists) pageList.push(page);
     }
     setPageList(pageList.slice());
   };
@@ -264,6 +273,7 @@ export const PageBoxController = defineController(() => {
 
   return {
     addPage,
+    addPages,
     removePage,
     showPage,
     updatePage,
@@ -286,6 +296,7 @@ export const PageBoxController = defineController(() => {
     getPageList,
     setPageList,
     usePageList,
+    subscribePageList,
     minTabWidth,
     maxTabWidth,
     ...PageActions,
