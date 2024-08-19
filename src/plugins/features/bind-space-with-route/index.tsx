@@ -3,6 +3,9 @@ import { spaceHelper } from "@/helpers/space.helper";
 import { createObservableFromExternalStore } from "@/toolkit/utils/rx-utils";
 import { BehaviorSubject } from "rxjs";
 import { createPlugin } from "xbook/common/createPlugin";
+import { createHashHistory } from "history";
+
+const history = createHashHistory();
 
 const parseSpaceInfoFromRoute = () => {
   const hash = window.location.hash;
@@ -41,7 +44,7 @@ export const bindSpaceWithRoute = createPlugin({
       space$.subscribe((space) => {
         if (!space) return;
         const { platform, owner, repo } = space;
-        const path = `/#/https://${platform}.com/${owner}/${repo}`;
+        const path = `/${location.search}#/https://${platform}.com/${owner}/${repo}`;
         if (window.location.pathname === path) return;
         window.history.pushState(null, "", path);
       });

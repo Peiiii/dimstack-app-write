@@ -1,5 +1,6 @@
 import { Tokens } from "@/constants/tokens";
 import { IAuthProvider } from "@/services/auth.service.interface";
+import { updateSearchParams } from "@/toolkit/utils/url";
 import { GithubAuthInfo } from "libs/github-api";
 import history from "xbook/common/history";
 import xbook from "xbook/index";
@@ -70,9 +71,8 @@ export const createOAuthCallbackTask = ({
         const newQuery = { ...history.location.query };
         delete newQuery["code"];
         history.push(
-          history.createHref({
-            pathname: history.location.pathname,
-            query: newQuery,
+          updateSearchParams(location.href, {
+            code: null,
           })
         );
       }
