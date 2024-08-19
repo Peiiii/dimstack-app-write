@@ -54,6 +54,7 @@ export function Combobox(props: {
       </PopoverTrigger>
       <PopoverContent className="w-[220px] p-0">
         <Command
+          defaultValue={value}
           filter={(value, search) => {
             const item = options.find((item) => item.value === value);
             if (!item) return 0;
@@ -67,7 +68,7 @@ export function Combobox(props: {
             className="h-9"
             onValueChange={(v) => {}}
           />
-          <CommandEmpty>No framework found.</CommandEmpty>
+          <CommandEmpty>未找到</CommandEmpty>
           <CommandGroup>
             <CommandList>
               {options.map((item) => (

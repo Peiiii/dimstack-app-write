@@ -136,7 +136,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
                   spaceService.focusSpace(value);
                 }
               }}
-              placeholder="search repo"
+              placeholder="搜索"
             />
           </>
         }
