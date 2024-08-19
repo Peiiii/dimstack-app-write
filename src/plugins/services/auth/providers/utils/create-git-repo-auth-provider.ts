@@ -73,6 +73,7 @@ export const createOAuthCallbackTask = ({
         history.push(
           updateSearchParams(location.href, {
             code: null,
+            platform: null,
           })
         );
       }
