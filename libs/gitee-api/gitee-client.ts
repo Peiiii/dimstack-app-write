@@ -133,7 +133,6 @@ export const createGiteeClient = ({
     Object.keys(data).forEach((key) => {
       formData.append(key, data[key]);
     });
-    console.log("formdata:", data);
     return axios.request({
       method: method as any,
       url,

@@ -59,7 +59,6 @@ const PageBox = ({
   const routeHistory = useMemoryHistory(defaultActivePath);
   const [currentPath, setCurrentPath] = useState(defaultActivePath);
   // const [currentChildPath,setCurrentChildPath]=useState("");
-  console.log("history:", routeHistory.index, routeHistory.location.pathname);
   useEffect(() => {
     return routeHistory.listen((e) => {
       setCurrentPath(e.location.pathname);

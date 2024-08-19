@@ -6,6 +6,7 @@ import {
   createReactBean,
   withUseHook,
 } from "rx-bean";
+import { createNestedBean } from "rx-nested-bean";
 import {
   BehaviorSubject,
   Observable,
@@ -48,11 +49,15 @@ export type IPageAction = {
   when?: (() => Observable<boolean>) | Observable<boolean>;
 };
 
-// const cache = cacheService.space("pageBox", "localStorage");
-
 const cache = CacheController.create({
   scope: "pageBox",
   storage: "localStorage",
+});
+
+export const PageBoxControllerV2 = defineController(() => {
+  const bean = createNestedBean({
+    tarBarWidth: 10000,
+  });
 });
 
 export const PageBoxController = defineController(() => {
@@ -250,14 +255,9 @@ export const PageBoxController = defineController(() => {
         createBeanFromObservable(
           "ActivePageActions",
           combineLatest([bean.PageActions$, enabledMap$]).pipe(
-            tap(([actions, enabledMap]) => {
-              console.log("allPageActions", actions);
-              console.log("enabledMap", enabledMap);
-            }),
             map(([actions, enabledMap]) =>
               actions.filter((action) => enabledMap[action.id] === true)
-            ),
-            tap((actions) => console.log("activePageActions", actions))
+            )
           ),
           [] as IPageAction[]
         )

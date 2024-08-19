@@ -168,7 +168,6 @@ export const createPageBox = (): {
         }),
       [pageList]
     );
-    // console.log("pageList:", JSON.stringify(pageList));
     return (
       <PageBoxController.Provider value={pageBoxController}>
         <VStack

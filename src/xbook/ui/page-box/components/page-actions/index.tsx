@@ -35,7 +35,6 @@ export const PageActions = () => {
   const controller = PageBoxController.useExistingInstance()!;
   const { useActivePageActions } = controller;
   const activePageActions = useActivePageActions();
-  console.log("activePageActions", activePageActions);
 
   return (
     <div

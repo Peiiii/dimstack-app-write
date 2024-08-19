@@ -25,6 +25,7 @@ export const createSidebar = (): {
     const visible = useVisible();
     const isFullwidth = useFullwidth();
     const viewList = useViewList();
+
     const activeViewId = useActiveViewId();
     const options = {};
     if (isMobile) {
@@ -39,7 +40,6 @@ export const createSidebar = (): {
         }
       }
     }, [isFullwidth]);
-    console.log("sidebar visible", visible);
 
     return (
       <>

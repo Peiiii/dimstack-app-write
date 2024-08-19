@@ -8,7 +8,6 @@ export default createPlugin({
   initilize(xbook) {
     let prevSpaces: SpaceDef[] = [];
     xbook.pipeService.on("spaceStore.spaces", (spaces: SpaceDef[]) => {
-      console.log("prevSpaces:", prevSpaces, "spaces:", spaces);
       const prevIds = prevSpaces.map((p) => p.id);
       const ids = spaces.map((s) => s.id);
       const spacesAdded = spaces.filter((s) => !prevIds.includes(s.id));

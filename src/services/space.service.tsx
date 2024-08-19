@@ -7,7 +7,7 @@ import { SpaceDef } from "@/toolkit/types/space";
 import { createObservableFromExternalStore } from "@/toolkit/utils/rx-utils";
 import { refreshGiteeAccessToken } from "libs/gitee-api";
 import { useEffect, useState } from "react";
-import { combineLatest, switchMap } from "rxjs";
+import { switchMap } from "rxjs";
 import xbook from "xbook/index";
 
 export class SpaceService implements ISpaceService {
@@ -87,6 +87,46 @@ export class SpaceService implements ISpaceService {
     // if (!space.auth) return false;
     const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
     return authService.hasReadPermission(space.platform, space.owner);
+  };
+
+  useAutoRefreshAuth = (spaceId: string, maxRetry = 1) => {
+    const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
+    const space = this.spaceStore.getRecord(spaceId);
+    const existingAuthRecord = authService.getAnyAuthInfo(
+      space?.platform || ""
+    );
+    const authRecord = authService.useAuthRecord(
+      authService.generateAuthId({
+        platform: existingAuthRecord?.platform || "",
+        username: existingAuthRecord?.username || "",
+      })
+    );
+    console.log("authRecord:", authRecord);
+
+    const [retryCount, setRetryCount] = useState(0);
+    useEffect(() => {
+      if (
+        !authService.isSessionValid(
+          authRecord?.platform || "",
+          authRecord?.username || ""
+        )
+      ) {
+        if (retryCount < maxRetry) {
+          authService
+            .tryRefreshAuthInfo(
+              authRecord?.platform || "",
+              authRecord?.username || ""
+            )
+            .then((res) => {
+              setRetryCount(retryCount + 1);
+            })
+            .catch((err) => {
+              console.log("tryRefreshAuthInfo error:", err);
+              setRetryCount(retryCount + 1);
+            });
+        }
+      }
+    }, [authRecord]);
   };
 
   usePermissions = (spaceId: string) => {

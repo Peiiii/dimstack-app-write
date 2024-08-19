@@ -73,7 +73,6 @@ const PowerForm = <T extends { [k: string]: SafeAny }>({
   //     console.log();
   //   })
   //   atom?.on("ddd",()=>{})
-  console.log("formData:", formData);
   return (
     <>
       {fieldList

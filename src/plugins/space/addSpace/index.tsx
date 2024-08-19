@@ -16,7 +16,8 @@ import {
   Text,
   Wrap,
 } from "@chakra-ui/react";
-import { useContext, useState } from "react";
+import { css } from "@emotion/css";
+import { Fragment, useContext, useState } from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { createPlugin } from "xbook/common/createPlugin";
 import xbook from "xbook/index";
@@ -32,22 +33,31 @@ const AddSpaceView = () => {
   ];
   return (
     <>
-      <Text color="gray" wordBreak={"break-all"} mb="1em">
-        请输入你的Gitee/Github仓库链接。示例：
-        {recommendUrls.map((u) => (
-          <Wrap>
-            <Text as="a">{u}</Text>
-            <Link
-              color="blue.500"
-              onClick={() => {
-                setUrl(u);
-              }}
-            >
-              填入
-            </Link>
-          </Wrap>
-        ))}
-      </Text>
+      <div
+        className={css`
+          margin-bottom: 1em;
+        `}
+      >
+        <Text color="gray" wordBreak={"break-all"}>
+          请输入你的Gitee/Github仓库链接。示例：
+        </Text>
+        <Wrap>
+          {recommendUrls.map((u) => (
+            <Fragment key={u}>
+              {" "}
+              <Text as="a">{u}</Text>
+              <Link
+                color="blue.500"
+                onClick={() => {
+                  setUrl(u);
+                }}
+              >
+                填入
+              </Link>
+            </Fragment>
+          ))}
+        </Wrap>
+      </div>
       <InputGroup>
         <Input
           placeholder="请输入链接"

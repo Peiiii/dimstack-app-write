@@ -66,8 +66,6 @@ export const TextFileView: React.FC<{
   uri: string;
 }> = ({ uri }) => {
   uri = uri.replace("::", ":/xxx.com");
-  console.log("TextFileView", uri);
-
   const [{ data }] = useResource(() =>
     xbook.fs
       .readFile(Uri.parse(uri))

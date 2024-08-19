@@ -3,7 +3,7 @@ import { AuthInfo, IAuthProvider } from "@/services/auth.service.interface";
 import { tryParseJSON } from "@/toolkit/utils/common";
 import { useState } from "react";
 import { createCustomReactBean } from "rx-bean";
-import { Subject, skip } from "rxjs";
+import { Subject, distinctUntilChanged, map, skip } from "rxjs";
 import xbook from "xbook/index";
 
 export interface AuthRecord extends AuthInfo {
@@ -11,17 +11,8 @@ export interface AuthRecord extends AuthInfo {
 }
 
 export class AuthService {
-  // private authInfoMap: { [platform: string]: { [username: string]: AuthInfo } };
   private storageKey = "authInfo-v2";
   private authProviders: IAuthProvider[] = [];
-  private authChange$ = new Subject<
-    | Partial<{
-        [platform: string]: {
-          [username: string]: AuthInfo;
-        };
-      }>
-    | undefined
-  >();
   private authProvidersChange$ = new Subject<IAuthProvider[]>();
   private AuthRecords = createCustomReactBean(
     "AuthRecords",
@@ -60,7 +51,25 @@ export class AuthService {
           setAuthRecords([...getAuthRecords(), record]);
         }
       };
-      return { load, onChange, removeRecord, addRecord };
+      const getRecord = (id: string) => {
+        return getAuthRecords().find((r) => r.id === id);
+      };
+
+      const useRecord = (id: string) => {
+        const [record, setRecord] = useState(getRecord(id));
+        useSubscribeObservable(
+          () =>
+            AuthRecords$.pipe(
+              map((records) => records.find((r) => r.id === id)),
+              distinctUntilChanged()
+            ),
+          (data) => {
+            setRecord(data);
+          }
+        );
+        return record;
+      };
+      return { load, onChange, removeRecord, addRecord, getRecord, useRecord };
     }
   );
   getAuthRecords = this.AuthRecords.getAuthRecords;
@@ -70,17 +79,23 @@ export class AuthService {
   removeAuthRecord = this.AuthRecords.removeRecord;
   onAuthRecordsChange = this.AuthRecords.onChange;
   addAuthRecord = this.AuthRecords.addRecord;
+  getAuthRecord = this.AuthRecords.getRecord;
+  useAuthRecord = this.AuthRecords.useRecord;
 
   saveAuthInfo = (authInfo: AuthInfo) => {
     this.addAuthRecord({
       ...authInfo,
-      id: `${authInfo.platform}-${authInfo.username}`,
+      id: this.generateAuthId(authInfo),
     });
+  };
+
+  generateAuthId = (authInfo: { platform: string; username: string }) => {
+    return `${authInfo.platform}-${authInfo.username}`;
   };
 
   getAnyAuthInfo = (
     platform: string,
-    username: string
+    username?: string
   ): AuthInfo | undefined => {
     return this.getAuthRecords().find((r) => r.platform === platform);
   };
@@ -117,6 +132,11 @@ export class AuthService {
     return !!authInfo && this.checkSessionValid(authInfo);
   };
 
+  isSessionValid = (platform: string, username: string): boolean => {
+    const authInfo = this.getAuthInfo(platform, username);
+    return this.checkSessionValid(authInfo);
+  };
+
   private checkSessionValid(authInfo?: AuthInfo) {
     if (!authInfo || !authInfo.accessToken) {
       return false;
@@ -127,6 +147,29 @@ export class AuthService {
     } else
       return (authInfo.createdAt + authInfo.expirationTime) * 1000 > Date.now();
   }
+
+  tryRefreshAuthInfo = async (platform: string, username: string) => {
+    const authInfo = this.getAuthInfo(platform, username);
+    if (!authInfo) {
+      return;
+    }
+    const authProvider = this.authProviders.find(
+      (p) => p.platform === platform
+    );
+    if (!authProvider) {
+      return;
+    }
+    if (!authProvider.refresh) {
+      return;
+    }
+    if (!authInfo.refreshToken) {
+      return;
+    }
+    return await authProvider.refresh({
+      ...authInfo,
+      refreshToken: authInfo.refreshToken,
+    });
+  };
 
   hasWritePermission = (platform: string, username: string): boolean => {
     const authInfo = this.getAuthInfo(platform, username);

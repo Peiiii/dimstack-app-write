@@ -1,0 +1,70 @@
+// export type INestedBean<T> = {
+//   get: () => T;
+//   set: (value: T) => void;
+// };
+
+// export type INestedBeanOptions<T extends Record<string, any>, TExtra> = {
+//   tree: T;
+//   enhancer?: (bean: INestedBean<T>) => TExtra;
+// };
+
+const exampleBeanOptions = {
+  tree: {
+    tabBarWidth: {
+      tree: 10000,
+      enhancer: (bean) => {
+        return {
+          getTabBarWidth: bean.get,
+          setTabBarWidth: bean.set,
+        };
+      },
+    },
+    pagination: {
+      tree: {
+        page: 1,
+        pageSize: {
+          tree: 10,
+          enhancer: (bean) => {
+            return {
+              getPageSize: bean.get,
+              setPageSize: bean.set,
+            };
+          },
+        },
+      },
+      enhancer: (bean) => {
+        return {
+          getPage: bean.get,
+          setPage: bean.set,
+          getPageSize: bean.get,
+          setPageSize: bean.set,
+        };
+      },
+    },
+    activities: {
+      tree: [],
+      enhancer: (bean) => {
+        return {
+          getActivities: bean.get,
+          setActivities: bean.set,
+        };
+      },
+    },
+  },
+  enhancer: (bean) => {
+    bean.namespaces.activities.set([]);
+    return {
+      getState: bean.get,
+    };
+  },
+};
+
+const createNestedBean =(options)=>{
+    // not implemented
+    return 0 as any;
+}
+
+const bean = createNestedBean(exampleBeanOptions);
+
+console.log(bean.namespaces.tabBarWidth.getTabBarWidth()); // 10000
+console.log(bean.getState()); // { tabBarWidth: 10000, pagination: { page: 1, pageSize: 10 }, activities: [] }

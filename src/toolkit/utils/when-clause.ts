@@ -115,7 +115,7 @@ function applyOperator(operator: string, left: any, right?: any): boolean {
 }
 
 // 测试函数
-function test() {
+export function test() {
   const whenClause = "a && b == 'test'";
   const context = {
     a: true,
@@ -128,4 +128,4 @@ function test() {
   console.log("Evaluation:", parsed.eval(context));
 }
 
-test();
+// test();

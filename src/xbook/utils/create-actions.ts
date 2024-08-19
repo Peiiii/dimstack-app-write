@@ -21,8 +21,8 @@ export const createCRUDActions = <T>(
     return data.slice();
   };
   const remove = (data, id) => {
-    data.filter((record) => record[primaryKey] !== id);
-    return data;
+    const newData = data.filter((record) => record[primaryKey] !== id);
+    return newData;
   };
 
   return {

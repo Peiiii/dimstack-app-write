@@ -93,6 +93,9 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
   }, [isLogin, pluginsLoaded]);
   const [actions] = useStateFromRegistry<Action[]>("space.actions", []);
   const spaces = spaceService.useSpaces();
+  spaceService.useAutoRefreshAuth(space.id);
+  console.log("space:", space);
+  
   return (
     <ContextProvider space={space}>
       {!isLogin && (
