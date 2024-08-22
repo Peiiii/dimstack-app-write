@@ -1,4 +1,6 @@
 import { Box } from "@chakra-ui/react";
+import { css } from "@emotion/react";
+import classNames from "classnames";
 import { ReactNode, useEffect } from "react";
 import { componentService } from "xbook/ui/componentService";
 import { SidebarController } from "xbook/ui/sidebar/controller";
@@ -49,9 +51,19 @@ export const createSidebar = (): {
             {...options}
             overflow={"hidden"}
             flexGrow={1}
-            className={
-              "sidebar sidebarV2 " + (visible ? "" : "width-collapsed")
-            }
+            className={classNames(
+              "sidebar sidebarV2 " + (visible ? "" : "width-collapsed"),
+              css`
+                & {
+                  .view.active {
+                    visibility: visible;
+                  }
+                  .view.non-active {
+                    visibility: hidden;
+                  }
+                }
+              `
+            )}
           >
             {viewList.map((view) => {
               const { id, viewData } = view;
@@ -61,8 +73,10 @@ export const createSidebar = (): {
                   h="100%"
                   key={id}
                   m="0 !important"
-                  className="view"
-                  display={activeViewId === id ? "block" : "none"}
+                  className={classNames("view", {
+                    active: activeViewId === id,
+                    "non-active": activeViewId !== id,
+                  })}
                 >
                   {visible && componentService.render(viewData)}
                 </Box>

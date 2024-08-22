@@ -15,9 +15,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/toolkit/utils/shadcn-utils";
 import { SafeAny } from "@/toolkit/types";
-import { space } from "@chakra-ui/react";
+import { cn } from "@/toolkit/utils/shadcn-utils";
 
 export function Combobox(props: {
   options?: { value: string; label: React.ReactNode; data?: SafeAny }[];
@@ -42,15 +41,6 @@ export function Combobox(props: {
             : placeholder}
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
-        {/* <div
-          className="
-        flex items-center justify-start w-[200px] h-9 px-2  rounded-md cursor-pointer"
-        >
-          {value
-            ? options.find((framework) => framework.value === value)?.label
-            : placeholder}
-          <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </div> */}
       </PopoverTrigger>
       <PopoverContent className="w-[220px] p-0">
         <Command
