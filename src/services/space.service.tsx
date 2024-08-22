@@ -34,9 +34,9 @@ export class SpaceService implements ISpaceService {
     return spaces;
   };
 
-  getSpaceStore(): DataStore<SpaceDef> {
+  getSpaceStore = (): DataStore<SpaceDef> => {
     return this.spaceStore;
-  }
+  };
 
   getSpaces = () => {
     return this.spaceStore.getData();
