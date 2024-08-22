@@ -1,3 +1,4 @@
+import { pluginAddInitialIndexedDbSpace } from "@/plugins/features/add-initial-indexed-db-space";
 import { bindSpaceWithRoute } from "@/plugins/features/bind-space-with-route";
 import provideCommonTextFileOpener from "@/plugins/features/provide-common-text-file-opener";
 import { ShowCurrentSpacePagesOnly } from "@/plugins/features/show-current-space-pages-only";
@@ -9,6 +10,7 @@ export default createPlugin({
       provideCommonTextFileOpener,
       bindSpaceWithRoute,
       ShowCurrentSpacePagesOnly,
+      pluginAddInitialIndexedDbSpace,
     ]);
   },
 });

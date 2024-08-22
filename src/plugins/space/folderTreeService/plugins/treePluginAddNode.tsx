@@ -7,7 +7,7 @@ import {
 } from "@/plugins/space/folderTreeService/tokens";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreeHelper } from "@/toolkit/components/tree/treePlugins";
-import { join } from "@/toolkit/utils/path";
+import { joinPath } from "@/toolkit/utils/path";
 import { nanoid } from "@reduxjs/toolkit";
 import { fs } from "xbook/services";
 
@@ -79,8 +79,8 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
           documentType === DocumentTypeEnum.Markdown ? "Untitled.md" : "",
         nodeType: TreeNodeTypeEnum.File,
         callback: async (name: string) => {
-          const path = join(parentNode.path!, name);
-          fs.writeFile(
+          const path = joinPath(parentNode.path!, name);
+          await fs.writeFile(
             spaceHelper.getUri(space?.id, path),
             new TextEncoder().encode("# "),
             {
@@ -88,6 +88,8 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
               overwrite: true,
             }
           );
+          console.log("[addFileAt] parentId:", parentId, "path:", path);
+
           const childNode = {
             id: childId,
             type: TreeNodeTypeEnum.File,
@@ -113,7 +115,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
         parentId,
         nodeType: TreeNodeTypeEnum.Dir,
         callback: async (name: string) => {
-          const path = join(parentNode.path!, name);
+          const path = joinPath(parentNode.path!, name);
           await fs.createDirectory(spaceHelper.getUri(space?.id, path));
           dataStore.getActions().add({
             node: {

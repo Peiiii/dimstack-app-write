@@ -20,13 +20,24 @@ export default createPlugin({
       // );
       // console.log("spaceAdded:", spacesAdded);
       prevSpaces = spaces;
-      const folderTreeService = xbook.serviceBus.createProxy(Tokens.FolderTreeService);
-      spacesAddedOrUpdated.forEach((space) => {;
+      const folderTreeService = xbook.serviceBus.createProxy(
+        Tokens.FolderTreeService
+      );
+      spacesAddedOrUpdated.forEach((space) => {
         folderTreeService.add(space);
       });
       spacesRemoved.forEach((space) => {
         folderTreeService.remove(space.id);
       });
+
+      if (
+        !xbook.layoutService.sidebar
+          .getViewList()
+          .some((v) => v.id === xbook.layoutService.sidebar.getActiveViewId())
+      ) {
+        const firstId = xbook.layoutService.sidebar.getViewList()[0].id;
+        if (firstId) xbook.layoutService.sidebar.setActiveViewId(firstId);
+      }
     });
     xbook.eventBus.on(
       EventKeys.ActivityBar.DragItem,

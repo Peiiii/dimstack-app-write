@@ -69,7 +69,6 @@ export const createDataStore = <T extends { [k: string]: any }>({
       reduce: (state, action) => {
         state.data = action.payload(state.data);
       },
-     
       update: (state, action) => {
         // transforms(state);
         const record = action.payload;

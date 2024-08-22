@@ -32,7 +32,7 @@ import { createDecoupledServiceBus } from "@/toolkit/factories/serviceBus";
 import { createTreeDataStore } from "@/toolkit/factories/treeDataStore";
 import { Action } from "@/toolkit/types";
 import { SpaceDef } from "@/toolkit/types/space";
-import { join } from "@/toolkit/utils/path";
+import { joinPath } from "@/toolkit/utils/path";
 import { dirname } from "path-browserify";
 import { useEffect, useMemo, useState } from "react";
 import { AiOutlineLink } from "react-icons/ai";
@@ -164,7 +164,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
                   return level !== 0 && node.type === "file";
                 },
                 renameNode: async (node, name) => {
-                  const newPath = join(dirname(node.path!), name);
+                  const newPath = joinPath(dirname(node.path!), name);
                   await fs.rename(
                     spaceHelper.getUri(space.id, node.path!),
                     spaceHelper.getUri(space.id, newPath),

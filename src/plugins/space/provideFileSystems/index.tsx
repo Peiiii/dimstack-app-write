@@ -1,5 +1,6 @@
 import { Tokens } from "@/constants/tokens";
 import { GitRepoFileSystemProvider } from "@/services/gite-repo-file-system.provider";
+import { IndexedDBFileSystemProvider } from "@/services/indexed-db-file-system.provider";
 import { createGiteeClient } from "libs/gitee-api";
 import { createGithubClient } from "libs/github-api";
 import { createPlugin } from "xbook/common/createPlugin";
@@ -10,7 +11,14 @@ export const AddFileSystemProviderForEachSpace = createPlugin({
     const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
     spaceService.subscribeSpaces((spaces) => {
       spaces.forEach((space) => {
-        if (space.platform === "gitee") {
+        if (space.platform === "idb") {
+          xbook.fs.registerProvider(
+            space.id,
+            space.id,
+            new IndexedDBFileSystemProvider(),
+            { overwrite: true }
+          );
+        } else if (space.platform === "gitee") {
           xbook.fs.registerProvider(
             space.id,
             space.id,

@@ -24,6 +24,8 @@
     "@radix-ui/react-popover": "^1.1.1",
     "@radix-ui/react-slot": "^1.1.0",
     "@reduxjs/toolkit": "^1.9.5",
+    "@zenfs/core": "^0.16.3",
+    "@zenfs/dom": "^0.2.14",
     "add": "^2.0.6",
     "app-toolkit": "workspace:*",
     "class-variance-authority": "^0.7.0",

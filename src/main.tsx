@@ -28,12 +28,14 @@ xbook.pluginService.use([
   spaceServiceModule,
   displaySpaces,
   // listenGiteeLoginCallback,
+
   /** basic */
   fileSystemService,
   folderTreeService,
   AddFileSystemProviderForEachSpace,
   commonServiceProviders,
   asyncPluginService,
+
   /** features */
   features,
 

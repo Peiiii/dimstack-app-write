@@ -3,6 +3,7 @@ import { spaceHelper } from "@/helpers/space.helper";
 import Auth from "@/plugins/space/spaceService/Auth";
 import { ISpaceService } from "@/services/space.service.interface";
 import { DataStore, createDataStore } from "@/toolkit/factories/dataStore";
+import { AnyFunction } from "@/toolkit/types";
 import { SpaceDef } from "@/toolkit/types/space";
 import { createObservableFromExternalStore } from "@/toolkit/utils/rx-utils";
 import { refreshGiteeAccessToken } from "libs/gitee-api";
@@ -39,6 +40,10 @@ export class SpaceService implements ISpaceService {
 
   getSpaces = () => {
     return this.spaceStore.getData();
+  };
+
+  onLoad = (func: AnyFunction) => {
+    return this.spaceStore.on("load", func);
   };
 
   constructor() {
@@ -136,6 +141,12 @@ export class SpaceService implements ISpaceService {
         hasReadPermission: false,
         hasWritePermission: false,
       };
+    if (["idb"].includes(space.platform)) {
+      return {
+        hasReadPermission: true,
+        hasWritePermission: true,
+      };
+    }
     // if (!space.auth) return false;
     const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
     const [hasReadPermission, setHasReadPermission] = useState<boolean>(
@@ -174,30 +185,28 @@ export class SpaceService implements ISpaceService {
   };
 
   addSpace = (
-    {
-      platform,
-      owner,
-      repo,
-    }: {
+    spaceInfo: {
       platform: string;
       owner: string;
       repo: string;
     },
     options?: {
       focus?: boolean;
+      silent?: boolean;
     }
   ): SpaceDef => {
+    const { platform, owner, repo } = spaceInfo;
     const spaceStore = this.spaceStore;
     const id = spaceHelper.generateSpaceId(platform, owner, repo);
-    const { focus } = options || {};
+    const { focus, silent } = options || {};
     const existingSpace = spaceStore.getRecord(id);
     spaceStore.waitUtilLoaded(() => {
-      spaceStore.getActions().upsert({ platform, owner, repo, id });
+      spaceStore.getActions().upsert({ ...spaceInfo, id });
     });
     if (!existingSpace) {
-      xbook.notificationService.success("成功添加空间");
+      if (!silent) xbook.notificationService.success("成功添加空间");
     } else {
-      xbook.notificationService.success("空间已存在");
+      if (!silent) xbook.notificationService.success("空间已存在");
     }
     if (focus) {
       this.focusSpace(id);

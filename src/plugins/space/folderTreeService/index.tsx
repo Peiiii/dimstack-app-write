@@ -35,7 +35,6 @@ export const folderTreeService = createPlugin({
     ]);
 
     xbook.eventBus.on<any>("space.delete::Click", ({ context }) => {
-      xbook.layoutService.sidebar.removeView(context.space.id);
       spaceHelper.getStore().getActions().delete(context.space.id);
     });
 
