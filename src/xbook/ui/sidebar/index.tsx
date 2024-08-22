@@ -1,5 +1,5 @@
 import { Box } from "@chakra-ui/react";
-import { css } from "@emotion/react";
+import { css } from "@emotion/css";
 import classNames from "classnames";
 import { ReactNode, useEffect } from "react";
 import { componentService } from "xbook/ui/componentService";
@@ -56,9 +56,14 @@ export const createSidebar = (): {
               css`
                 & {
                   .view.active {
+                    /* display: block; */
                     visibility: visible;
                   }
-                  .view.non-active {
+                  .view.nonActive {
+                    /* display: none; */
+                    position: absolute;
+                    left: -99999999px;
+                    top: -99999999px;
                     visibility: hidden;
                   }
                 }
@@ -75,7 +80,7 @@ export const createSidebar = (): {
                   m="0 !important"
                   className={classNames("view", {
                     active: activeViewId === id,
-                    "non-active": activeViewId !== id,
+                    nonActive: activeViewId !== id,
                   })}
                 >
                   {visible && componentService.render(viewData)}
