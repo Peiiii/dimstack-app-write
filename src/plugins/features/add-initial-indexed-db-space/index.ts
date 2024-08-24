@@ -37,6 +37,13 @@ export const pluginAddInitialIndexedDbSpace = createPlugin({
         if (!isIndexedDbReadMeFileInitialized) {
           const content = `# Welcome to your new IndexedDB space`;
           const path = "/README.md";
+          let fileExists;
+          try {
+            await xbook.fs.readFile(spaceHelper.getUri(space.id, path));
+            fileExists = true;
+          } catch (error) {
+            fileExists = false;
+          }
           const uint = new TextEncoder().encode(content);
           await xbook.fs.writeFile(spaceHelper.getUri(space.id, path), uint, {
             overwrite: true,
