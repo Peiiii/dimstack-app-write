@@ -35,7 +35,7 @@ export default createPlugin({
           .getViewList()
           .some((v) => v.id === xbook.layoutService.sidebar.getActiveViewId())
       ) {
-        const firstId = xbook.layoutService.sidebar.getViewList()[0].id;
+        const firstId = xbook.layoutService.sidebar.getViewList()[0]?.id;
         if (firstId) xbook.layoutService.sidebar.setActiveViewId(firstId);
       }
     });

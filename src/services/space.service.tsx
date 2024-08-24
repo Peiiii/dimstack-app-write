@@ -180,6 +180,19 @@ export class SpaceService implements ISpaceService {
     return this.spaceStore.getRecord(spaceId);
   };
 
+  getSpaceByInfo = (spaceInfo: {
+    platform: string;
+    owner: string;
+    repo: string;
+  }) => {
+    const id = spaceHelper.generateSpaceId(
+      spaceInfo.platform,
+      spaceInfo.owner,
+      spaceInfo.repo
+    );
+    return this.spaceStore.getRecord(id);
+  };
+
   updateSpace = (space: SpaceDef) => {
     this.spaceStore.getActions().update(space);
   };
