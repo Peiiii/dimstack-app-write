@@ -1,4 +1,10 @@
-import { type } from "os";
+
+
+export enum TreeNodeTypeEnum {
+  FILE  = "file",
+  DIR = "dir"
+
+}
 
 export type FolderTreeNode = {
   id: string;

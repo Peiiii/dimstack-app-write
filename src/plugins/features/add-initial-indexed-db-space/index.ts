@@ -1,3 +1,4 @@
+import { EventKeys } from "@/constants/eventKeys";
 import { Tokens } from "@/constants/tokens";
 import { spaceHelper } from "@/helpers/space.helper";
 import { createPlugin } from "xbook/common/createPlugin";
@@ -31,9 +32,13 @@ export const pluginAddInitialIndexedDbSpace = createPlugin({
         silent: true,
       });
       const space = spaceService.getSpaceByInfo(defaultSpaceConfig);
+      console.log("space", space);
+      
       if (space) {
         const state = cache.get(space.id, getDefaultSpaceState());
         const { isIndexedDbReadMeFileInitialized } = state;
+        console.log("isIndexedDbReadMeFileInitialized", isIndexedDbReadMeFileInitialized);
+        
         if (!isIndexedDbReadMeFileInitialized) {
           const content = `# Welcome to your new IndexedDB space`;
           const path = "/README.md";
@@ -52,6 +57,11 @@ export const pluginAddInitialIndexedDbSpace = createPlugin({
           cache.set(space.id, {
             ...cache.get(space.id, getDefaultSpaceState()),
             isIndexedDbReadMeFileInitialized: true,
+          });
+          console.log("emit ReadMeFileInitialized:", space.id);
+          
+          xbook.eventBus.emit(EventKeys.ReadMeFileInitialized, {
+            spaceId: space.id,
           });
         }
       }

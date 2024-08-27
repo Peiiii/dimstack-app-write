@@ -10,6 +10,7 @@ import { getNodeType } from "@/plugins/space/folderTreeService/utils";
 import { WidgetContext, WidgetViewState } from "@/toolkit/components/tree";
 import { getBaseTreeServiceClass } from "@/toolkit/components/tree/tree.service";
 import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
+import { SpaceDef } from "@/toolkit/types/space";
 import { FileType } from "@/toolkit/vscode/file-system";
 import xbook from "xbook/index";
 
@@ -25,6 +26,10 @@ export const createTreeService = (
   const { viewStateStore, getViewStateOrDefaultViewState } = viewSystem;
   const BaseClass = getBaseTreeServiceClass(context);
   class TreeService extends BaseClass {
+    getSpace = (): SpaceDef => {
+      return space;
+    };
+
     updateViewState = (
       id: string,
       partialViewState: Partial<WidgetViewState>
@@ -114,16 +119,37 @@ export const createTreeService = (
     shallowRefresh = async (id: string) => {
       const node = dataStore.getNode(id)!;
       const oldNode = dataStore.getNode(node.id)!;
-      const info = await fileSystemHelper.service.readDirectory(
-        fileSystemHelper.generateFileId(
-          space.id,
-          node.id === "root" ? "/" : node.path!
-        )
+
+     this.updateViewState(id, { loading: true });
+      const uri = spaceHelper.getUri(
+        space.id,
+        node.id === "root" ? "/" : node.path!
       );
+      const info = await xbook.fs.readDirectory(uri);
+      this.updateViewState(id, { loading: false });
+
+      console.log("readDirectory:", id, info);
+
+      let parentPath = node.id === "root" ? "/" : node.path!;
+      parentPath = parentPath.endsWith("/") ? parentPath : parentPath + "/";
+
+      const dirInfo = info.map(([name, type]) => {
+        return {
+          id: `${parentPath}${name}`,
+          name,
+          path: `${parentPath}${name}`,
+          type: (type === FileType.Directory
+            ? "dir"
+            : type === FileType.File
+            ? "file"
+            : "file") as "dir" | "file",
+        };
+      });
+
       dataStore.getActions().update({
         node: {
           ...node,
-          children: info
+          children: dirInfo
             .map((child) => ({
               ...oldNode.children?.find((c) => c.path == child.path),
               ...child,
@@ -247,6 +273,22 @@ export const createTreeService = (
       const node = dataStore.getNode(id)!;
       const openerService = xbook.serviceBus.createProxy(Tokens.OpenerService);
       openerService.open(space.id, node);
+    };
+
+    getReadMeFileNode = () => {
+      const rootNode = dataStore.getData();
+      if (!rootNode || !rootNode.children) {
+        return;
+      }
+
+      // 在根目录下查找 README 文件
+      const readmeFile = rootNode.children.find(
+        (node) =>
+          node.type === TreeNodeTypeEnum.File &&
+          node.name.toLowerCase() === "readme.md"
+      );
+
+      return readmeFile;
     };
 
     validateForEditingName = ({

@@ -13,4 +13,7 @@ export const EventKeys = {
     ShortcutClicked: (id: string) => typedKey(`shortcut:${id}:clicked`),
   },
   FileSaved: typedKey("FileSaved"),
+  ReadMeFileInitialized: typedKey<{
+    spaceId: string
+  }>("ReadMeFileInitialized"),
 };
