@@ -3,6 +3,7 @@ import { Tokens } from "@/constants/tokens";
 import { spaceHelper } from "@/helpers/space.helper";
 import { createPlugin } from "xbook/common/createPlugin";
 import { CacheController } from "xbook/ui/services/cache-controller";
+import readMeContent from "./readme.md?raw";
 
 const cache = CacheController.create({
   scope: "spaceStateCache",
@@ -40,7 +41,8 @@ export const pluginAddInitialIndexedDbSpace = createPlugin({
         console.log("isIndexedDbReadMeFileInitialized", isIndexedDbReadMeFileInitialized);
         
         if (!isIndexedDbReadMeFileInitialized) {
-          const content = `# Welcome to your new IndexedDB space`;
+          // const content = `# Welcome to your new IndexedDB space`;
+          const content = readMeContent;
           const path = "/README.md";
           let fileExists;
           try {

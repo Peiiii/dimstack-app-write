@@ -27,6 +27,7 @@
     "@zenfs/core": "^0.16.3",
     "@zenfs/dom": "^0.2.14",
     "add": "^2.0.6",
+    "ali-oss": "^6.21.0",
     "app-toolkit": "workspace:*",
     "class-variance-authority": "^0.7.0",
     "classnames": "^2.5.1",
