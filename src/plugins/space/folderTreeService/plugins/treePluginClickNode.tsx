@@ -13,6 +13,7 @@ export default createTreePlugin<FolderTreeNode>({
     eventBus.on(
       TreeEventKeys.NodeClick,
       async ({ node }: { node: FolderTreeNode }) => {
+        treeService.focusNode(node.id);
         if (node.id === "root" || node.type === TreeNodeTypeEnum.Dir) {
           return await serviceBus.invoke(ServicePoints.RefershNode, node.id);
         } else {

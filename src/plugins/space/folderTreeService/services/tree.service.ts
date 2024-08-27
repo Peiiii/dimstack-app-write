@@ -243,7 +243,7 @@ export const createTreeService = (
             item.highlight = true;
           } else {
             data.push({
-              ...viewSystem.getViewStateOrDefaultViewState(node.id),
+              ...viewSystem.getDefaultViewState(node),
               highlight: true,
             });
           }
@@ -258,7 +258,7 @@ export const createTreeService = (
                 item.expanded = true;
               } else {
                 data.push({
-                  ...viewSystem.getViewStateOrDefaultViewState(node),
+                  ...viewSystem.getDefaultViewState(node),
                   expanded: true,
                 });
               }

@@ -7,19 +7,16 @@ export const treePluginForIndexedDbSpace = createFolderTreePlugin({
   activate: ({ serviceBus }) => {
     const treeService = serviceBus.createProxy(ServicePoints.TreeService);
     xbook.eventBus.on(EventKeys.ReadMeFileInitialized, async ({ spaceId }) => {
-      console.log(
-        "on ReadMeFileInitialized",
-        spaceId,
-        "current space",
-        treeService.getSpace().id
-      );
-
       if (spaceId === treeService.getSpace().id) {
         await treeService.shallowRefresh("root");
         const node = treeService.getReadMeFileNode();
-        console.log("node", node);
-
-        if (node) treeService.openNode(node.id);
+        if (node) {
+          // wait for the markdown editor to be registered
+         setTimeout(() => {
+          treeService.openNode(node.id);
+          treeService.focusNode(node.id);
+          }, 1000);
+        };
       }
     });
   },

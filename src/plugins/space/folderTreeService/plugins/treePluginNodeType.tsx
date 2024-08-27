@@ -60,10 +60,6 @@ export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
       },
       true
     );
-
-    eventBus.on(TreeEventKeys.NodeClick, ({ node }) => {
-      treeService.focusNode(node.id);
-    });
   },
 });
 
