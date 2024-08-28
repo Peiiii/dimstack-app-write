@@ -1,10 +1,9 @@
 import { Tokens } from "@/constants/tokens";
-import { TextFileView } from "@/plugins/features/provide-common-text-file-opener/components/text-file-view";
-import { COMMON_TEXT_FILE_EXTENSIONS } from "@/plugins/features/provide-common-text-file-opener/constants";
+import { TextFileView } from "@/plugins/features/providers/provide-common-text-file-opener/components/text-file-view";
+import { COMMON_TEXT_FILE_EXTENSIONS } from "@/plugins/features/providers/provide-common-text-file-opener/constants";
 import { VscOpenPreview } from "react-icons/vsc";
 import { map } from "rxjs";
 import { createPlugin } from "xbook/common/createPlugin";
-
 
 export default createPlugin({
   addComponents(xbook) {
@@ -37,10 +36,13 @@ export default createPlugin({
       icon: "vsc-open-preview",
       onClick({ page }) {
         if (page.viewData) {
+          // const markdownEditorView = "tiptap-editor";
+          const markdownEditorView = "milkdown-editor";
+          const plainTextView = "text-file-view";
           const nextViewType =
-            page.viewData.type === "text-file-view"
-              ? "tiptap-editor"
-              : "text-file-view";
+            page.viewData.type === plainTextView
+              ? markdownEditorView
+              : plainTextView;
           xbook.layoutService.pageBox.updatePage({
             id: page.id,
             viewData: {

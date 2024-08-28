@@ -67,7 +67,6 @@ const AddSpaceView = () => {
         />
         <InputRightAddon
           onClick={() => {
-            console.log("url:", url);
             const { platform, owner, repo } = spaceService.parseRepoUrl(url);
             if (!(platform && owner && repo)) {
               xbook.notificationService.error("输入链接格式不符!");
@@ -171,7 +170,7 @@ export const addGiteeSpace = createPlugin({
                         colorScheme="blue"
                         onClick={() => {
                           const data = atom.invoke("getData");
-                          // console.log(data);
+                          
 
                           spaceService.addSpace(
                             {

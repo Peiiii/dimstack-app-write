@@ -99,7 +99,6 @@ export const PageBoxController = defineController(() => {
     return () => {};
   };
 
-  console.log("rendering pageBox...");
   const loadPageList = () => {
     const pageList: PageDescriptor[] = cache.get("pageList", []);
     return pageList
@@ -200,7 +199,6 @@ export const PageBoxController = defineController(() => {
     setPageList(pageList.map((p) => (p.id === id ? { ...p, ...page } : p)));
   };
   const showPage = (id: string) => {
-    console.log("showPage:", id);
     const pageList = getPageList().slice();
     for (const p of pageList) {
       if (p.id === id) {

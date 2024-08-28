@@ -16,7 +16,6 @@ const makeQuery = () => {
         search.push(`${key}=${query[key]}`);
       });
       const searchString = "?" + search.join("&&");
-      console.log(searchString);
       realLocation.search = searchString;
       return true;
     },

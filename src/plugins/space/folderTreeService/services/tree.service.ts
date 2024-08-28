@@ -95,7 +95,6 @@ export const createTreeService = (
       };
       for (const key of parts) {
         const currentPath = joinPath(prevPath, key);
-        console.log("key:", key, "currentPath:", currentPath);
 
         if (samePath(currentPath, targetPath)) {
           break;
@@ -128,8 +127,6 @@ export const createTreeService = (
       const info = await xbook.fs.readDirectory(uri);
       this.updateViewState(id, { loading: false });
 
-      console.log("readDirectory:", id, info);
-
       let parentPath = node.id === "root" ? "/" : node.path!;
       parentPath = parentPath.endsWith("/") ? parentPath : parentPath + "/";
 
@@ -160,7 +157,6 @@ export const createTreeService = (
             })),
         },
       });
-      console.log("updatedData:", dataStore.getData());
     };
 
     readTreeReferToViewState = async (

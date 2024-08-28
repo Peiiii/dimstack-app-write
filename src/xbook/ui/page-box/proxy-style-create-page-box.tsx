@@ -71,7 +71,6 @@ export const createPageBox = () =>
         [tabBarWidth]
       );
 
-      console.log("rendering pageBox...");
       const loadPageList = useCallback(() => {
         const pageList: PageDescriptor[] = cache.get("pageList", []);
 
@@ -139,7 +138,6 @@ export const createPageBox = () =>
           );
         };
         const showPage = (id: string) => {
-          console.log("showPage:", id);
           setPageList((pageList) => {
             for (const p of pageList) {
               if (p.id === id) {
@@ -282,7 +280,7 @@ export const createPageBox = () =>
           }),
         [pageList]
       );
-      // console.log("pageList:", JSON.stringify(pageList));
+      
       return (
         <VStack
           w="100%"

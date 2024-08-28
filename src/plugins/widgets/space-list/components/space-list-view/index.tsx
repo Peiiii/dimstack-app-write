@@ -23,7 +23,6 @@ export const SpaceListView = () => {
   useEffect(() => {
     if (ref.current) {
       ref.current.click();
-      console.log("ref.current:", ref.current, "click");
     }
   }, []);
 

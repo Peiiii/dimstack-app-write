@@ -72,7 +72,6 @@ const IntegrationList: React.FC<IntegrationPanelProps> = ({
 const IntegrationPanel: React.FC = () => {
   const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
   const authRecords = authService.useAuthRecords();
-  console.log("[IntegrationPanel] authRecords", authRecords);
 
   const integrations: Integration[] = useMemo(
     () =>

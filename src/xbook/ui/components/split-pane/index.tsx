@@ -154,18 +154,6 @@ const SplitPane = {
           leftEl.current.style.pointerEvents = "none";
           rightEl.current.style.userSelect = "none";
           rightEl.current.style.pointerEvents = "none";
-          console.log(
-            "dx:",
-            dx,
-            "newLeftWidth:",
-            newLeftWidth,
-            "newLeftWidthPercent:",
-            newLeftWidthPercent,
-            "newRightWidthPercent:",
-            newRightWidthPercent,
-            "parentWidth:",
-            parentWidth
-          );
         }
       },
       [resizer, resizerWrapper, leftEl, rightEl, minLeftWidth, maxLeftWidth]

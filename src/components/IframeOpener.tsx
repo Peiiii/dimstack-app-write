@@ -13,9 +13,7 @@ export default ({
   const ref = useRef<HTMLIFrameElement>(null);
   useEffect(() => {
     if (ref.current) {
-      console.log("[parent] iframe mounted.");
       ref.current!.onload = () => {
-        console.log("[parent] I will post a message.");
         const fid = fileSystemHelper.generateFileId(spaceId, path);
         fileSystemHelper.service.read(fid).then((content) => {
           ref.current!.contentWindow?.postMessage(

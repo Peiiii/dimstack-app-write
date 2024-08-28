@@ -32,23 +32,6 @@ export class OpenerService implements IOpenerService {
       .sort((a, b) => (a.priority || 0) - (b.priority || 0))
       .reverse()
       .find((opener) => this.match(opener, file.path!.split("/").pop()!));
-    console.log(
-      "open file:",
-      file.path,
-      file,
-      "openers:",
-      this.openers,
-      "matched opener:",
-      opener,
-      "spaceId:",
-      spaceId,
-      "file:",
-      file,
-      "file.path:",
-      file.path,
-      "file.path!.split:",
-      file.path!.split("/").pop()!
-    );
 
     if (opener) {
       opener.init(

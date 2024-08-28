@@ -105,8 +105,6 @@ export const createModalForm = <T extends FormDataDefinition>({
       onFinish(autoFill(data));
       onClose();
     };
-    // console.log("render modal form")
-    console.log(fieldList);
     return (
       <ChakraProvider>
         <Modal
@@ -130,7 +128,6 @@ export const createModalForm = <T extends FormDataDefinition>({
                       currentValue === undefined
                         ? undefined
                         : options.findIndex((op) => op.value === currentValue);
-                    console.log("defaultValueIndex: ", defaultIndex);
                     return (
                       <FormControl key={name}>
                         <FormLabel>{title}</FormLabel>
@@ -139,7 +136,6 @@ export const createModalForm = <T extends FormDataDefinition>({
                           onChange={(e) => {
                             const index = e.target.value;
                             const value = options[index].value;
-                            console.log("index:", index, "value:", value);
                             setData({ ...data, [name]: value });
                           }}
                           defaultValue={defaultIndex || undefined}

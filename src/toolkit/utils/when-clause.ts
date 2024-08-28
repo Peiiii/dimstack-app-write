@@ -123,9 +123,6 @@ export function test() {
   };
 
   const parsed = parseWhenClause(whenClause);
-
-  console.log("Dependencies:", parsed.dependencies);
-  console.log("Evaluation:", parsed.eval(context));
 }
 
 // test();

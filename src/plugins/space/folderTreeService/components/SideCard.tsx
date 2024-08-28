@@ -98,7 +98,7 @@ export const SideCard: FC<{
                     }))
               );
             }
-            // console.log("eventMap:", eventMap);
+            
             return (
               <MenuItem key={a.title} icon={a.icon} {...eventMap}>
                 {a.title}

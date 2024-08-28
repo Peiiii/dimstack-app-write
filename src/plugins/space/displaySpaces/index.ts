@@ -18,7 +18,6 @@ export default createPlugin({
       // const spacesUpdated = spacesAddedOrUpdated.filter(
       //   (s) => !spacesAdded.includes(s)
       // );
-      // console.log("spaceAdded:", spacesAdded);
       prevSpaces = spaces;
       const folderTreeService = xbook.serviceBus.createProxy(
         Tokens.FolderTreeService
@@ -59,7 +58,6 @@ export default createPlugin({
           } else {
             res = [...before, source, target, ...middle, ...after];
           }
-          console.log("spaceDataChange:", data.length, "=>", res.length);
           return res;
         });
       }

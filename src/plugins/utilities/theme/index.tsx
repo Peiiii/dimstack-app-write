@@ -11,7 +11,7 @@ export default createPlugin({
       description: "黑夜/白天",
       menuItems: ["Dark", "Light"],
       icon: (props) => {
-        // console.log("theme:",props)
+        
         const { colorMode, toggleColorMode } = useColorMode();
         useEffect(() => {
           const themeColor = colorMode === "light" ? "#f8f8f8" : "#2e2e2e";

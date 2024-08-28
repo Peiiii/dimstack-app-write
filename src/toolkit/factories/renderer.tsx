@@ -61,7 +61,6 @@ export const createRenderer = (registryName: string = "componentRegistry") => {
     reducers: {
       register(state, action) {
         const { name, component, override } = action.payload;
-        // console.log("register", name)
         if (state[name] && !override) return;
         state[name] = component;
       },
@@ -131,7 +130,7 @@ export const createRenderer = (registryName: string = "componentRegistry") => {
     const Component = useComponent(type);
     if (!Component) {
       // requestComponent(type);
-      // console.log("components:", store.getState());
+      
 
       const NotFoundComponent =
         getComponent(store.getState(), "NotFoundComponent") ||

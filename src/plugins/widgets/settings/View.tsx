@@ -3,7 +3,6 @@ import store from "./store";
 
 export default () => {
   const settingEntries = store.useData();
-  console.log(settingEntries);
   return (
     <>
       <VStack w="100%">

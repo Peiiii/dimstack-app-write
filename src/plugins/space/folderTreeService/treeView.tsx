@@ -63,7 +63,6 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
     [space.id]
   );
   const serviceBus = useMemo(() => createDecoupledServiceBus(), []);
-  // console.log("space.id:",space.id,"dataStoreData:", treeDataStore.getData());
   const viewStateStore = useMemo(
     () =>
       createDataStore<WidgetViewState>({
@@ -94,9 +93,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
   }, [isLogin, pluginsLoaded]);
   const [actions] = useStateFromRegistry<Action[]>("space.actions", []);
   const spaces = spaceService.useSpaces();
-  spaceService.useAutoRefreshAuth(space.id);
-  console.log("space:", space);
-  
+  spaceService.useAutoRefreshAuth(space.id);  
   return (
     <ContextProvider space={space}>
       {!isLogin && (

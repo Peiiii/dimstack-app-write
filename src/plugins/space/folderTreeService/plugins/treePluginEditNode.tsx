@@ -94,8 +94,6 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
           node,
           parentNode,
         });
-        console.log("hasError", hasError, message);
-
         if (!hasError) {
           this.options.renameNode!(node, event.currentTarget.value.trim());
         } else {

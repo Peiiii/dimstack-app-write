@@ -79,7 +79,6 @@ export const createDataStore = <T extends { [k: string]: any }>({
         if (oldRecord) {
           Object.assign(oldRecord, record);
         }
-        // console.log("updated:", oldRecord);
       },
       clear: (state) => {
         state.data.splice(0, state.data.length);
@@ -91,10 +90,7 @@ export const createDataStore = <T extends { [k: string]: any }>({
         const _record = state.data.find(
           (record) => record[primaryKey] === action.payload
         )!;
-        console.log("state:", [...state.data]);
-        console.log("find_record:", action.payload, _record);
         const index = state.data.indexOf(_record);
-        console.log("deleted:", index);
         if (index !== -1) {
           state.data.splice(index, 1);
         }
@@ -177,15 +173,12 @@ export const createDataStore = <T extends { [k: string]: any }>({
   }
 
   const useData = () => {
-    // console.log(store.getState)
     return useSelectedState(store, (state) => {
-      // console.log(store.getState());
       return state![name].data as T[];
     }) as T[];
   };
   const useRecord = (id: string) => {
     return useSelectedState(store, (state) => {
-      // console.log(store.getState());
       return (state![name].data as T[]).find((item) => item[primaryKey] === id);
     }) as T | undefined;
   };
@@ -214,7 +207,7 @@ export const createDataStore = <T extends { [k: string]: any }>({
         // if(args.length===0)args=[undefined];
         const action = slice.actions[actionName](...args);
         store.dispatch(action);
-        // console.log("dispatching action :", action);
+        
         notifyObservers(action);
       };
     }

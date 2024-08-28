@@ -104,16 +104,16 @@ export const createTreeDataStore = <T extends { [k: string]: any }>({
         }
       },
       delete: (state, action) => {
-        // console.log("action:",action)
+        
         const { id } = action.payload || {};
         if (!id) return;
         const findAndDelete = (parent: TreeDataNode<T>, id: string) => {
-          // console.log("parent:",parent)
+          
           if (parent.children) {
             const index = parent.children.findIndex(
               (node) => node[primaryKey] === id
             );
-            // console.log("foundNode：",index)
+            
             if (index !== -1) {
               parent.children.splice(index, 1);
               return true;
@@ -164,7 +164,7 @@ export const createTreeDataStore = <T extends { [k: string]: any }>({
     const nextState = store.getState();
     const differences = diff(prevState, nextState);
     if (differences) {
-      // console.log("State changed:", differences);
+      
       // 调用监听函数
       changeMonifierList.forEach((changeMonifier) => {
         changeMonifier(differences);

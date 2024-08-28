@@ -69,10 +69,6 @@ const PowerForm = <T extends { [k: string]: SafeAny }>({
       });
     }
   }, [atom, formData, setFormData]);
-  //   atom?.on("change",(data)=>{
-  //     console.log();
-  //   })
-  //   atom?.on("ddd",()=>{})
   return (
     <>
       {fieldList
@@ -80,12 +76,6 @@ const PowerForm = <T extends { [k: string]: SafeAny }>({
         .map(({ title, name, select }) => {
           if (select) {
             const { options } = select;
-            // const currentValue = formData[name];
-            // const defaultIndex =
-            //   currentValue === undefined
-            //     ? undefined
-            //     : options.findIndex((op) => op.value === currentValue);
-            // console.log("defaultValueIndex: ", defaultIndex);
             return (
               <FormControl key={name}>
                 <FormLabel>{title}</FormLabel>
@@ -94,12 +84,9 @@ const PowerForm = <T extends { [k: string]: SafeAny }>({
                   value={formData[name]}
                   onChange={(e) => {
                     const value = e.target.value;
-                    // const value = options[index].value;
-                    // console.log("index:", index, "value:", value);
                     setFormData({ ...formData, [name]: value });
                     atom?.emit("valueChange", { ...formData, [name]: value });
                   }}
-                  //   defaultValue={defaultIndex || undefined}
                 >
                   {options.map(({ value, render, label }, index) => {
                     return (

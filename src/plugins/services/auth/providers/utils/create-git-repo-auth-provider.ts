@@ -158,7 +158,6 @@ export const createGitRepoAuthProvider = ({
       //     clientId: appInfo.clientId,
       //   });
       const url = getLoginUrl();
-      console.log("url to redirect: " + url);
       window.open(url, "_self");
     },
   };

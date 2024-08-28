@@ -88,8 +88,6 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
               overwrite: true,
             }
           );
-          console.log("[addFileAt] parentId:", parentId, "path:", path);
-
           const childNode = {
             id: childId,
             type: TreeNodeTypeEnum.File,
@@ -108,9 +106,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
       const parentId = node.id;
       const parentNode = dataStore.getNode(parentId)!;
       const space = spaceHelper.getStore().getRecord(spaceId)!;
-      // console.log("space:",space,"spaces:",spaceHelper.getStore().getData())
-      console.log("[addFileAt] parentId:", parentId);
-      const childId = nanoid();
+            const childId = nanoid();
       serviceBus.invoke(ServicePoints.EditInputNodeName, {
         parentId,
         nodeType: TreeNodeTypeEnum.Dir,

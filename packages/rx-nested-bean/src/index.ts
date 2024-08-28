@@ -126,7 +126,7 @@ const setNodeData = (
   ) => {
     if (data !== prevData) {
       subscriberNode.$.next(data);
-      // console.log("notify Node:", data, subscriberNode);
+      
     }
     Object.entries(subscriberNode.children).forEach(([key, child]) => {
       notify(child, data?.[key], prevData?.[key]);
@@ -188,7 +188,7 @@ const setNodeData = (
     // from the upper level to the lower level, notify the subscribers
     for (let i = 0; i < changedListWithNewData.length; i += 1) {
       const [subscriberNode, newData] = changedListWithNewData[i];
-      // console.log("notify:", i, subscriberNode, newData);
+      
 
       if (subscriberNode) {
         // notify the subscriber from the upper level to the lower level
@@ -488,7 +488,7 @@ export const defineBean = <
     const renderingTasks: RenderingTask[] = [];
     const cleanupTasks: CleanupTask[] = [];
     // eventBus.event$.subscribe(({ key, payload }) => {
-    //   // console.log("event$", key, payload);
+    //   
     //   staticEventBus.emit(key, payload);
     // });
     // we don't need to unsubscribe , because it will be unsubscribed when the eventBus is recycled

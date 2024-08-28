@@ -24,7 +24,6 @@ function createLogger(options: LoggerOptions = {}): Logger {
       ["DEBUG", "INFO", "WARNING", "ERROR"].indexOf(defaultLevel)
     ) {
       const formattedMessage = format(level, message);
-      console.log(formattedMessage);
     }
   }
 

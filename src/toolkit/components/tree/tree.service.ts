@@ -14,9 +14,7 @@ export const getBaseTreeServiceClass = (
       if (event) {
         event.stopPropagation();
         event.preventDefault();
-      }
-      console.log("toggleNode:", id);
-      
+      }      
       const node = dataStore.getNode(id);
       const viewState =
         viewSystem.viewStateStore.getRecord(id) ||

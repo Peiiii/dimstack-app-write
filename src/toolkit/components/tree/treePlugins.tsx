@@ -344,8 +344,6 @@ export const treePluginInitViewTemplate = createTreePluginTemplate<{
           // 设置光标位置到[name].[ext]的.[ext]之前，也就是最后一个点之前（如果存在点的话）
           const dotIndex = name.lastIndexOf(".");
           if (dotIndex > 0) {
-            console.log("inputRef.current:", inputRef.current);
-
             inputRef.current?.setSelectionRange(0, dotIndex);
           }
         }

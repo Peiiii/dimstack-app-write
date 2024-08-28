@@ -23,7 +23,7 @@ export const listenGiteeLoginCallback = createPlugin({
           const spaceId = xbook.cacheService
             .space("tmp", "localStorage")
             .get("authSpaceId");
-          // console.log("Space:", spaceId, "auth:", auth);
+          
           if (spaceId) {
             const spaceStore = xbook.registry.get(
               "spaceStore"

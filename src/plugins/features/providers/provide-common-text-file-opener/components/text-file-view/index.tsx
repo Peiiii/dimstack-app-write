@@ -74,8 +74,6 @@ export const TextFileView: React.FC<{
   const suffix = uri.split(".").pop();
   const htmlContentRef = React.useRef<string | null>(data || null);
   const onSave = (content: string) => {
-    console.log("onSave", content);
-
     xbook.fs
       .writeFile(Uri.parse(uri), new TextEncoder().encode(content), {
         overwrite: true,

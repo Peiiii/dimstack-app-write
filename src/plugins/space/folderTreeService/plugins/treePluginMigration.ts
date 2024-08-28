@@ -20,7 +20,6 @@ export default createTreePlugin<FolderTreeNode>({
     setTimeout(() => {
       const rootNode = dataStore.getData();
       dataStore.getActions().init(fixId(rootNode));
-      console.log("rootNode:", dataStore.getData());
     }, 0);
   },
 });

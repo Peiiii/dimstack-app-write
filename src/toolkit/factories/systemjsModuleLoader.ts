@@ -33,9 +33,17 @@ export const createSystemjsModuleLoader = () => {
     return (await window.System.import(url)).default;
   };
   const isInitialized = () => initialized;
+
+  const requireInitilized = (callback: () => void) => {
+    if (!initialized) {
+      init();
+    }
+    callback();
+  };
   return {
     init,
     load,
     isInitialized,
+    requireInitilized,
   };
 };

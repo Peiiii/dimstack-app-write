@@ -65,6 +65,3 @@ const createNestedBean =(options)=>{
 }
 
 const bean = createNestedBean(exampleBeanOptions);
-
-console.log(bean.namespaces.tabBarWidth.getTabBarWidth()); // 10000
-console.log(bean.getState()); // { tabBarWidth: 10000, pagination: { page: 1, pageSize: 10 }, activities: [] }

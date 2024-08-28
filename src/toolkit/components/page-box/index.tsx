@@ -107,7 +107,6 @@ const PageBox = ({
   }
   const focusPath = (childPath: string) => {
     const child = searchNodeInTree(tree, childPath);
-    console.log("currentChild:", child);
     if (child && !child.view) {
       routeHistory.push(childPath);
     }

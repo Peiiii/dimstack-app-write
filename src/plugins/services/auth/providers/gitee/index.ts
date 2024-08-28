@@ -25,8 +25,6 @@ export default createPlugin({
           getAccessToken: () => accessToken,
         });
         const user = await client.User.getInfo();
-        console.log("user", user);
-
         return {
           username: user.data?.name,
           response: user,

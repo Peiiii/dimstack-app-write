@@ -283,9 +283,6 @@ export const Tree = <
 
   useEffect(() => {
     const context = getContext();
-    console.log(
-      `[${options.space.id}|${context.options.space.id}] plugin activating`
-    );
     for (const plugin of plugins) {
       plugin.activate?.(getContext());
     }

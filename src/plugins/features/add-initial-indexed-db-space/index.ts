@@ -33,12 +33,10 @@ export const pluginAddInitialIndexedDbSpace = createPlugin({
         silent: true,
       });
       const space = spaceService.getSpaceByInfo(defaultSpaceConfig);
-      console.log("space", space);
       
       if (space) {
         const state = cache.get(space.id, getDefaultSpaceState());
         const { isIndexedDbReadMeFileInitialized } = state;
-        console.log("isIndexedDbReadMeFileInitialized", isIndexedDbReadMeFileInitialized);
         
         if (!isIndexedDbReadMeFileInitialized) {
           // const content = `# Welcome to your new IndexedDB space`;
@@ -60,7 +58,6 @@ export const pluginAddInitialIndexedDbSpace = createPlugin({
             ...cache.get(space.id, getDefaultSpaceState()),
             isIndexedDbReadMeFileInitialized: true,
           });
-          console.log("emit ReadMeFileInitialized:", space.id);
           
           xbook.eventBus.emit(EventKeys.ReadMeFileInitialized, {
             spaceId: space.id,
