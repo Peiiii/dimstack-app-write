@@ -1,7 +1,7 @@
 import base from "@/plugins/core/base";
 import features from "@/plugins/features";
 import migrations from "@/plugins/migrations";
-import asyncPluginService from "@/plugins/services/asyncPluginService";
+import asyncPluginService from "@/plugins/features/providers/provide-tiptap-editor";
 import authService from "@/plugins/services/auth";
 import commonServiceProviders from "@/plugins/services/common-service-providers";
 import fileSystemService from "@/plugins/services/fileSystemService";
@@ -34,7 +34,6 @@ xbook.pluginService.use([
   folderTreeService,
   AddFileSystemProviderForEachSpace,
   commonServiceProviders,
-  asyncPluginService,
 
   /** features */
   features,

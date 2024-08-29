@@ -1,7 +1,5 @@
 import { EventKeys } from "@/constants/eventKeys";
 import { systemjsModuleService } from "@/services/systemjsModuleService";
-import { Button, Card, Input, InputGroup } from "@chakra-ui/react";
-import { VscExtensions } from "react-icons/vsc";
 import "systemjs/dist/extras/amd";
 import "systemjs/dist/system.min";
 import { createPlugin } from "xbook/common/createPlugin";
@@ -48,25 +46,25 @@ export default createPlugin({
     //   name: "Plugins",
     //   icon: VscExtensions,
     // });
-    xbook.componentService.register("pluginsPanel", () => {
-      return (
-        <Card>
-          <InputGroup>
-            <Input placeholder="请输入关键词搜索插件" />
-            <Button colorScheme="blue">搜索</Button>
-          </InputGroup>
-        </Card>
-      );
-    });
+    // xbook.componentService.register("pluginsPanel", () => {
+    //   return (
+    //     <Card>
+    //       <InputGroup>
+    //         <Input placeholder="请输入关键词搜索插件" />
+    //         <Button colorScheme="blue">搜索</Button>
+    //       </InputGroup>
+    //     </Card>
+    //   );
+    // });
 
-    xbook.eventBus.on(EventKeys.ActivityBar.ActivityClicked("plugins"), () => {
-      xbook.layoutService.sidebar.addView({
-        id: "plugins",
-        viewData: {
-          type: "pluginsPanel",
-        },
-      });
-      xbook.layoutService.sidebar.setView("plugins");
-    });
+    // xbook.eventBus.on(EventKeys.ActivityBar.ActivityClicked("plugins"), () => {
+    //   xbook.layoutService.sidebar.addView({
+    //     id: "plugins",
+    //     viewData: {
+    //       type: "pluginsPanel",
+    //     },
+    //   });
+    //   xbook.layoutService.sidebar.setView("plugins");
+    // });
   },
 });

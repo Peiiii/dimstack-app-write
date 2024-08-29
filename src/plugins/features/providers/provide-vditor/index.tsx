@@ -4,6 +4,8 @@ import { fileSystemHelper } from "@/helpers/file-system.helper";
 import { useEfffectOnce } from "@/hooks/use-efffect-once";
 import { systemjsModuleService } from "@/services/systemjsModuleService";
 import { SafeAny } from "@/toolkit/types";
+import { css } from "@emotion/css";
+import { nanoid } from "nanoid";
 import { useEffect, useRef, useState } from "react";
 import "systemjs/dist/extras/amd";
 import "systemjs/dist/system.min";
@@ -26,12 +28,12 @@ declare global {
 //   const url = "data:text/javascript;base64," + btoa(str);
 //   return import(url);
 // };
-export const provideMilkdownEditor = createPlugin({
+export const provideVditor = createPlugin({
   async initilize(xbook) {
     systemjsModuleService.requireInitilized(() => {
       systemjsModuleService
-        .load("https://apps.eiooie.com/milkdown-editor/lib/index.umd.js" as any)
-        .then(({ Editor, utils }) => {
+        .load("https://apps.eiooie.com/vditor-module/lib/index.umd.js" as any)
+        .then(({ Vditor }) => {
           //   xbook.pluginService.use(plugin);
 
           const MilkdownEditor = (props: { uri: string }) => {
@@ -41,17 +43,19 @@ export const provideMilkdownEditor = createPlugin({
             const ref = useRef<HTMLDivElement>(null);
             const [editor, setEditor] = useState<SafeAny>();
             const [loaded, setLoaded] = useState(false);
+            const idRef = useRef(nanoid());
 
             useEfffectOnce(() => {
-              const ed = new Editor({
-                root: ref.current,
-                defaultValue: "",
-              });
-              ed.create().then(() => {
-                setEditor(ed);
+              const vditor = new Vditor(idRef.current, {
+                mode: "wysiwyg",
+                height: "100%",
+                after: () => {
+                  vditor.setValue("");
+                  setEditor(vditor);
+                },
               });
               return () => {
-                ed.destroy();
+                vditor.destroy();
               };
             });
 
@@ -60,33 +64,38 @@ export const provideMilkdownEditor = createPlugin({
 
               if (editor) {
                 fileSystemHelper.service.read(uri).then((content) => {
-                    console.log("content", content);
-                  editor?.editor?.action(utils.replaceAll(content));
+                  editor.setValue(content);
                   setLoaded(true);
                 });
               }
             }, [uri, editor]);
 
-            useEffect(()=>{
-              if(loaded){
+            useEffect(() => {
+              if (loaded) {
                 // ctrl + s || cmd + s
                 ref.current?.addEventListener("keydown", (e) => {
-                  if (
-                    (e.ctrlKey || e.metaKey) &&
-                    e.key.toLowerCase() === "s"
-                  ) {
+                  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
                     e.preventDefault();
                     fileSystemHelper.service
-                      .write(uri, editor?.getMarkdown())
+                      .write(uri, editor?.getValue())
                       .then(() => {
                         xbook.eventBus.emit(EventKeys.FileSaved);
                       });
                   }
                 });
               }
-            },[loaded,editor])
+            }, [loaded, editor]);
 
-            return <div ref={ref} />;
+            return (
+              <div
+                className={css`
+                  width: 100%;
+                  height: 100%;
+                `}
+              >
+                <div ref={ref} id={idRef.current} />
+              </div>
+            );
           };
           xbook.componentService.register("milkdown-editor", MilkdownEditor);
           xbook.componentService.register("tiptap-editor", MilkdownEditor);
@@ -101,7 +110,7 @@ export const provideMilkdownEditor = createPlugin({
                 id: uri,
                 title: uri,
                 viewData: {
-                  type: "milkdown-editor",
+                  type: "veditor",
                   props: {
                     uri,
                   },
