@@ -49,11 +49,13 @@ export const pluginAddInitialIndexedDbSpace = createPlugin({
           } catch (error) {
             fileExists = false;
           }
-          const uint = new TextEncoder().encode(content);
-          await xbook.fs.writeFile(spaceHelper.getUri(space.id, path), uint, {
-            overwrite: true,
-            create: true,
-          });
+          if (!fileExists) {
+            const uint = new TextEncoder().encode(content);
+            await xbook.fs.writeFile(spaceHelper.getUri(space.id, path), uint, {
+              overwrite: true,
+              create: true,
+            });
+          }
           cache.set(space.id, {
             ...cache.get(space.id, getDefaultSpaceState()),
             isIndexedDbReadMeFileInitialized: true,

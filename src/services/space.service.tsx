@@ -202,6 +202,7 @@ export class SpaceService implements ISpaceService {
     },
     options?: {
       focus?: boolean;
+      /** @description 不弹出提示消息 */
       silent?: boolean;
     }
   ): SpaceDef => {
