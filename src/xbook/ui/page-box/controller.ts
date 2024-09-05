@@ -160,9 +160,17 @@ export const PageBoxController = defineController(() => {
     }
     if (!exists) pageList.push(page);
     if (show) {
-      pageList.forEach((p) => (p.active = p.id === page.id ? true : false));
-    }
-    setPageList(pageList.slice());
+      // pageList.forEach((p) => (p.active = p.id === page.id ? true : false));
+      setPageList(
+        pageList.map((p) => {
+          if (p.id === page.id) {
+            return { ...page, active: true };
+          } else {
+            return { ...p, active: false };
+          }
+        })
+      );
+    } else setPageList(pageList.slice());
   };
   const addPages = (pages: PageDescriptor[]) => {
     const pageList = getPageList().slice();
