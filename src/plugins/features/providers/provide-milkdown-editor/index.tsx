@@ -90,6 +90,8 @@ export const provideMilkdownEditor = createPlugin({
           };
           xbook.componentService.register("milkdown-editor", MilkdownEditor);
           xbook.componentService.register("tiptap-editor", MilkdownEditor);
+          xbook.componentService.register("vditor", MilkdownEditor);
+          xbook.componentService.register("markdown-editor", MilkdownEditor);
           const openerService = xbook.serviceBus.createProxy(
             Tokens.OpenerService
           );

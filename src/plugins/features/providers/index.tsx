@@ -8,9 +8,9 @@ export const pluginForProviders = createPlugin({
     initilize(xbook) {
         xbook.pluginService.use([
             provideCommonTextFileOpener,
-            // provideTiptapEditor,
+            provideTiptapEditor,
             // provideMilkdownEditor,
-            provideVditor,
+            // provideVditor,
         ])
     },
 });
