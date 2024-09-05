@@ -36,7 +36,7 @@ export const provideVditor = createPlugin({
         .then(({ Vditor }) => {
           //   xbook.pluginService.use(plugin);
 
-          const MilkdownEditor = (props: { uri: string }) => {
+          const MarkdownEditor = (props: { uri: string }) => {
             const { uri } = props;
             console.log("uri", uri);
 
@@ -97,8 +97,10 @@ export const provideVditor = createPlugin({
               </div>
             );
           };
-          xbook.componentService.register("milkdown-editor", MilkdownEditor);
-          xbook.componentService.register("tiptap-editor", MilkdownEditor);
+          xbook.componentService.register("milkdown-editor", MarkdownEditor);
+          xbook.componentService.register("tiptap-editor", MarkdownEditor);
+          xbook.componentService.register("veditor", MarkdownEditor);
+          xbook.componentService.register("markdown-editor", MarkdownEditor);
           const openerService = xbook.serviceBus.createProxy(
             Tokens.OpenerService
           );
@@ -110,7 +112,7 @@ export const provideVditor = createPlugin({
                 id: uri,
                 title: uri,
                 viewData: {
-                  type: "veditor",
+                  type: "vditor",
                   props: {
                     uri,
                   },
