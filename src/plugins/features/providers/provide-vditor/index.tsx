@@ -99,7 +99,7 @@ export const provideVditor = createPlugin({
           };
           xbook.componentService.register("milkdown-editor", MarkdownEditor);
           xbook.componentService.register("tiptap-editor", MarkdownEditor);
-          xbook.componentService.register("veditor", MarkdownEditor);
+          xbook.componentService.register("vditor", MarkdownEditor);
           xbook.componentService.register("markdown-editor", MarkdownEditor);
           const openerService = xbook.serviceBus.createProxy(
             Tokens.OpenerService
