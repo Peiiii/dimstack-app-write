@@ -126,6 +126,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
               options={spaces.map((space) => ({
                 value: space.id,
                 label: <SpaceTag space={space} />,
+                title: `${space.owner}/${space.repo}`,
                 data: space,
               }))}
               value={spaceService.getFocusedSpace()?.id}

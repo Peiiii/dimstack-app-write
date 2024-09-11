@@ -40,7 +40,7 @@ export const SideCard: FC<{
           flexShrink={0}
           className="header"
         >
-          <Flex pl="0.6rem" align={"center"} w="100%">
+          <Flex  align={"center"} w="100%" mt="1rem">
             <Tooltip label={title}>
               <>
                 {/* <AiOutlineHome />
