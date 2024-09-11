@@ -51,6 +51,10 @@ export const TreeEventKeys = {
   RefreshNode: typedKey<{
     node: TreeDataNode<FolderTreeNode>;
   }>("refreshNode"),
+  KeydownEnter: typedKey<{
+    node: TreeDataNode<FolderTreeNode>;
+    event: React.KeyboardEvent<HTMLInputElement>;
+  }>("keydownEnter"),
 };
 
 export const ServicePoints = {

@@ -1,3 +1,4 @@
+import { TreeContext } from "@/toolkit/components/tree/tokens";
 import { createDataStore, DataStore } from "@/toolkit/factories/dataStore";
 import { createEventBus, EventBus } from "@/toolkit/factories/eventBus";
 import { HookRegistry } from "@/toolkit/factories/hook-registry";
@@ -12,10 +13,10 @@ import { createDecoupledServiceBus } from "@/toolkit/factories/serviceBus";
 import { TreeDataNode, TreeDataStore } from "@/toolkit/factories/treeDataStore";
 import { SafeAny } from "@/toolkit/types";
 import { parseWhenClause } from "@/toolkit/utils/when-clause";
-import { Box, Flex, space } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { css } from "@emotion/css";
 import classNames from "classnames";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 
 // View System
 export type WidgetViewState = {
@@ -299,66 +300,52 @@ export const Tree = <
     (viewStateStore?.useRecord(rootNode.id) as WidgetViewState) || {};
   const { expanded } = rootViewState;
 
-  return (
-    <Box
-      className={classNames(
-        "tree overflow-y-hidden flex-container-limited flex-col",
-        css``
-      )}
-    >
-      {/* {finalViewSystem.renderNode({
-        node: rootNode,
-        level: 0,
-      })} */}
+  const context = useMemo(() => getContext(), [getContext]);
 
-      {/* {renderer.render({
-        type: "tree-node-header",
-        props: {
-          node: rootNode,
-          level: 0,
-          parentNode: undefined,
-        },
-      })} */}
-      <div
+  return (
+    <TreeContext.Provider value={context}>
+      <Box
         className={classNames(
-          "w-full py-1 px-2 cursor-pointer hover:bg-gray-200 flex justify-between"
+          "tree overflow-y-hidden flex-container-limited flex-col",
+          css``
         )}
-        onClick={() => {
-          // viewStateStore?.getActions().upsert({
-          //   ...rootViewState,
-          //   expanded: !rootViewState.expanded,
-          // });
-        }}
       >
-        目录
-        <div className="h-full flex items-center hover-show">
+        <div
+          className={classNames(
+            "w-full py-1 px-2 cursor-pointer hover:bg-gray-200 flex justify-between"
+          )}
+        >
+          目录
+          <div className="h-full flex items-center hover-show">
+            {renderer.render({
+              type: "tree-node-action-bar",
+              props: {
+                node: rootNode,
+                level: 0,
+              },
+            })}
+          </div>
+        </div>
+        <div
+          className={classNames(
+            `max-h-full h-full transition-all flex-grow flex-col overflow-y-auto scroll scroll-7`,
+            {
+              [`h-0 max-h-0`]: !expanded,
+            }
+          )}
+        >
           {renderer.render({
-            type: "tree-node-action-bar",
+            type: "tree-node-list",
             props: {
-              node: rootNode,
+              nodes: rootNode.children,
               level: 0,
+              parentNode: rootNode,
+              expanded: rootViewState.expanded,
             },
           })}
         </div>
-      </div>
-      <div
-        className={classNames(
-          `max-h-full h-full transition-all flex-grow flex-col overflow-y-auto scroll scroll-7`,
-          {
-            [`h-0 max-h-0`]: !expanded,
-          }
-        )}
-      >
-        {renderer.render({
-          type: "tree-node-list",
-          props: {
-            nodes: rootNode.children,
-            level: 0,
-            parentNode: rootNode,
-            expanded: rootViewState.expanded,
-          },
-        })}
-      </div>
-    </Box>
+      </Box>
+      )
+    </TreeContext.Provider>
   );
 };

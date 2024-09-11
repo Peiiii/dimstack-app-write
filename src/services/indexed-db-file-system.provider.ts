@@ -81,9 +81,9 @@ export class IndexedDBFileSystemProvider implements FileSystemProvider {
         await fs.stat(encodeURI(newUri.path));
         throw new Error("EEXIST");
       } catch (e: any) {
-        if (e.message !== "ENOENT") {
-          throw e;
-        }
+        // if (e.message !== "ENOENT") {
+        //   throw e;
+        // }
       }
     }
     await fs.rename(encodeURI(oldUri.path), encodeURI(newUri.path));
