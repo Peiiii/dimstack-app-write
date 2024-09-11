@@ -1,69 +1,11 @@
-import { TreeEventKeys } from "@/plugins/space/folderTreeService/tokens";
+import { InputBox } from "@/toolkit/components/tree/components/TreeNodeHeader/components/InputBox";
+import { LeftExtra } from "@/toolkit/components/tree/components/TreeNodeHeader/components/LeftExtra";
+import { useNodeEventHandlers } from "@/toolkit/components/tree/components/TreeNodeHeader/hooks/use-node-event-handlers";
 import { useTreeContext } from "@/toolkit/components/tree/tokens";
 import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
-import { Input, Box, Text } from "@chakra-ui/react";
+import { Text } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
 import xbook from "xbook/index";
-
-// InputBox 组件
-const InputBox = ({ inputRef, value, name, parentNode, eventBus, node }) => (
-  <input
-    ref={inputRef}
-    type="text"
-    autoFocus
-    value={value}
-    onChange={eventBus.connector(TreeEventKeys.EditChange, (event) => ({
-      node,
-      event,
-      parentNode,
-    }))}
-    onBlur={eventBus.connector(TreeEventKeys.EditBlur, (event) => ({
-      node,
-      event,
-      parentNode,
-    }))}
-    onKeyDown={(event) => {
-      if (event.code.toLowerCase() === "enter") {
-        eventBus.emit(TreeEventKeys.EditKeyEnter, {
-          node,
-          event,
-          parentNode,
-        });
-      }
-    }}
-    defaultValue={name}
-    className="w-full text-base pl-0 bg-white border border-gray-300 focus:border-blue-400 focus:ring-1 focus:ring-blue-200 focus:outline-none rounded-sm px-2 py-1"
-    placeholder="Enter node name..."
-  />
-);
-
-// LeftExtra 组件
-const LeftExtra = ({ viewState, viewSystem }) => {
-  if (viewState.loading) {
-    return viewSystem.render("icon-loading");
-  }
-  if (viewState.expandable) {
-    return viewState.expanded
-      ? viewSystem.render("icon-expanded")
-      : viewSystem.render("icon-collapsed");
-  }
-  return <Box className="invisible">{viewSystem.render("icon-collapsed")}</Box>;
-};
-
-// 事件处理的 hooks
-const useNodeEventHandlers = (node, eventBus, parentNode) => {
-  const handleNodeClick = (event) => {
-    eventBus.emit(TreeEventKeys.NodeClick, { node, event });
-  };
-
-  const handleKeyDown = (event) => {
-    if (event.code.toLowerCase() === "enter") {
-      eventBus.emit(TreeEventKeys.KeydownEnter, { node, event });
-    }
-  };
-
-  return { handleNodeClick, handleKeyDown };
-};
 
 export const TreeNodeHeader = ({
   node,
@@ -88,7 +30,6 @@ export const TreeNodeHeader = ({
 
   const { handleNodeClick, handleKeyDown } = useNodeEventHandlers(
     node,
-    eventBus,
     parentNode
   );
 
