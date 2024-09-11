@@ -43,15 +43,15 @@ export function Combobox(props: {
           className={cn(
             "flex w-full h-10 justify-start items-center flex-shrink overflow-hidden ml-1 px-1 py-1", // 按钮高度和布局
             !open && "bg-transparent", // 默认背景透明
-            "hover:bg-gray-200", // 悬停背景
+            "hover:bg-gray-200 dark:hover:bg-gray-600", // 悬停背景：亮色和暗黑模式分别适配
             "focus:ring-0 focus:border-0" // 去除焦点边框
           )}
         >
           {/* 容器：图标和文字 */}
           <div className="flex items-center space-x-2">
             {/* 左侧圆角矩形图标，动态显示用户名的首字母 */}
-            <div className="flex items-center justify-center w-7 h-7 bg-teal-200 rounded-md">
-              <span className="text-black font-semibold text-lg">
+            <div className="flex items-center justify-center w-7 h-7 bg-teal-200 dark:bg-teal-500 rounded-md">
+              <span className="text-black dark:text-white font-semibold text-lg">
                 {selectedItem?.title?.charAt(0).toUpperCase()}{" "}
                 {/* 动态获取首字母 */}
               </span>
@@ -62,8 +62,8 @@ export function Combobox(props: {
               className={cn(
                 "truncate", // 防止溢出
                 value
-                  ? "font-semibold text-base text-gray-800"
-                  : "text-gray-400" // 加粗文本
+                  ? "font-semibold text-base text-gray-800 dark:text-gray-200"
+                  : "text-gray-400 dark:text-gray-500" // 加粗文本
               )}
             >
               {selectedItem?.label || placeholder}{" "}
@@ -72,10 +72,10 @@ export function Combobox(props: {
           </div>
 
           {/* 下拉图标 */}
-          <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50 text-gray-500 dark:text-gray-300" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[220px] p-0">
+      <PopoverContent className="w-[220px] p-0 dark:bg-gray-800 dark:border-gray-700">
         <Command
           defaultValue={value}
           filter={(value, search) => {
@@ -88,16 +88,17 @@ export function Combobox(props: {
         >
           <CommandInput
             placeholder={placeholder}
-            className="h-9"
+            className="h-9 dark:bg-gray-800 dark:text-gray-200"
             onValueChange={(v) => {}}
           />
-          <CommandEmpty>未找到</CommandEmpty>
+          <CommandEmpty className="dark:text-gray-400">未找到</CommandEmpty>
           <CommandGroup>
             <CommandList>
               {options.map((item) => (
                 <CommandItem
                   key={item.value}
                   value={item.value}
+                  className="dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
                   onSelect={(currentValue) => {
                     onChange?.(
                       currentValue === value ? undefined : currentValue
@@ -109,7 +110,9 @@ export function Combobox(props: {
                   <CheckIcon
                     className={cn(
                       "ml-auto h-4 w-4",
-                      value === item.value ? "opacity-100" : "opacity-0"
+                      value === item.value
+                        ? "opacity-100 dark:text-gray-200"
+                        : "opacity-0"
                     )}
                   />
                 </CommandItem>

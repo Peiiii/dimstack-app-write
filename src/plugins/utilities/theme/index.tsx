@@ -11,15 +11,25 @@ export default createPlugin({
       description: "黑夜/白天",
       menuItems: ["Dark", "Light"],
       icon: (props) => {
-        
         const { colorMode, toggleColorMode } = useColorMode();
+
+        // 处理 TailwindCSS 的 dark 模式适配
         useEffect(() => {
           const themeColor = colorMode === "light" ? "#f8f8f8" : "#2e2e2e";
           const meta = document.querySelector(`meta[name="theme-color"]`);
           if (meta) {
             meta.setAttribute("content", themeColor);
           }
-        }, [colorMode, toggleColorMode]);
+
+          // 为 TailwindCSS 添加或移除 dark 类
+          const rootElement = document.documentElement;
+          if (colorMode === "dark") {
+            rootElement.classList.add('dark');
+          } else {
+            rootElement.classList.remove('dark');
+          }
+        }, [colorMode]);
+
         return (
           <>
             {colorMode === "light" ? (
@@ -32,18 +42,28 @@ export default createPlugin({
       },
       widget: () => {
         const { colorMode, toggleColorMode } = useColorMode();
+
+        // 同样在 widget 里处理 TailwindCSS 的 dark 模式适配
         useEffect(() => {
           const themeColor = colorMode === "light" ? "#f8f8f8" : "#2e2e2e";
           const meta = document.querySelector(`meta[name="theme-color"]`);
           if (meta) {
             meta.setAttribute("content", themeColor);
           }
-          
-        }, [colorMode, toggleColorMode]);
+
+          // 为 TailwindCSS 添加或移除 dark 类
+          const rootElement = document.documentElement;
+          if (colorMode === "dark") {
+            rootElement.classList.add('dark');
+          } else {
+            rootElement.classList.remove('dark');
+          }
+        }, [colorMode]);
+
         return (
-         <Button onClick={()=>{
-          toggleColorMode();
-         }}>切换</Button>
+          <Button onClick={toggleColorMode}>
+            {colorMode === "light" ? "切换到暗黑模式" : "切换到明亮模式"}
+          </Button>
         );
       },
     });
