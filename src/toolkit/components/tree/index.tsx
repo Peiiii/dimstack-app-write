@@ -345,7 +345,6 @@ export const Tree = <
           })}
         </div>
       </Box>
-      )
     </TreeContext.Provider>
   );
 };
