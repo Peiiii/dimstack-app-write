@@ -1,9 +1,10 @@
+import { ProgressBar } from "@/components/progress-bar";
 import { InputBox } from "@/toolkit/components/tree/components/TreeNodeHeader/components/InputBox";
 import { LeftExtra } from "@/toolkit/components/tree/components/TreeNodeHeader/components/LeftExtra";
 import { useNodeEventHandlers } from "@/toolkit/components/tree/components/TreeNodeHeader/hooks/use-node-event-handlers";
 import { useTreeContext } from "@/toolkit/components/tree/tokens";
 import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
-import { Text, Flex, Box } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
 import xbook from "xbook/index";
 
@@ -11,10 +12,12 @@ export const TreeNodeHeader = ({
   node,
   level,
   parentNode,
+  dragPosition, // 添加这个参数
 }: {
   node: TreeDataNode;
   level: number;
   parentNode?: TreeDataNode;
+  dragPosition?: "before" | "inside" | "after" | null;
 }) => {
   const { viewSystem, dataStore, eventBus } = useTreeContext();
   const nodeData = dataStore.useNode(node.id);
@@ -59,14 +62,23 @@ export const TreeNodeHeader = ({
         level === 0 ? "ml-2" : ""
       }`}
       width="100%"
+      position="relative"
     >
+      {dragPosition === "before" && (
+        <Box className="h-0.5  bg-blue-500  absolute top-0 left-0 right-0" /> // 修改这行
+      )}
       <Flex
         className="min-w-0 h-9 mr-2 max-h-full w-full items-center overflow-hidden hover-action tree-node-header"
         onClick={handleNodeClick}
         tabIndex={-1}
         onKeyDown={handleKeyDown}
+        position="relative" // 添加这行
       >
-        <Flex className="items-center overflow-hidden pr-2 hover-action" minWidth="0" flex="1">
+        <Flex
+          className="items-center overflow-hidden pr-2 hover-action"
+          minWidth="0"
+          flex="1"
+        >
           <LeftExtra viewState={viewState} viewSystem={viewSystem} />
           <Box flexShrink={0}>
             {viewState.loading
@@ -91,13 +103,19 @@ export const TreeNodeHeader = ({
             )}
           </Box>
         </Flex>
-        <Flex className="action-box items-center justify-center h-full" flexShrink={0}>
+        <Flex
+          className="action-box items-center justify-center h-full"
+          flexShrink={0}
+        >
           {renderer.render({
             type: "tree-node-action-bar",
             props: { node, level },
           })}
         </Flex>
       </Flex>
+      {dragPosition === "after" && (
+        <Box className="h-0.5  bg-blue-500 absolute bottom-0 left-0 right-0" /> // 修改这行
+      )}
     </Flex>
   );
 };

@@ -14,7 +14,7 @@ export const getBaseTreeServiceClass = (
       if (event) {
         event.stopPropagation();
         event.preventDefault();
-      }      
+      }
       const node = dataStore.getNode(id);
       const viewState =
         viewSystem.viewStateStore.getRecord(id) ||
@@ -41,6 +41,10 @@ export const getBaseTreeServiceClass = (
         .getActions()
         .upsert({ ...viewState, expanded: true });
     };
+
+    async moveNode(node: TreeDataNode<any>, targetNode: TreeDataNode<any>) {
+      throw new Error("not implemented");
+    }
   };
 };
 

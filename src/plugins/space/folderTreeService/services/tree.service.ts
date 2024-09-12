@@ -12,6 +12,9 @@ import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
 import { SpaceDef } from "@/toolkit/types/space";
 import { FileType } from "@/toolkit/vscode/file-system";
 import xbook from "xbook/index";
+import { dirname, join } from "path-browserify";
+import { fs } from "xbook/services";
+import { joinPath } from "@/toolkit/utils/path";
 
 export const createTreeService = (
   context: WidgetContext<TreeDataNode<FolderTreeNode>>
@@ -309,6 +312,141 @@ export const createTreeService = (
         }
       }
       return result;
+    };
+
+    moveNode = async (
+      node: TreeDataNode<FolderTreeNode>,
+      targetNode: TreeDataNode<FolderTreeNode>
+    ) => {
+      if (targetNode.type !== "dir") {
+        throw new Error("Target node must be a directory");
+      }
+
+      const oldPath = node.path!;
+      const newPath = join(targetNode.path!, node.name);
+
+      if (oldPath === newPath) {
+        return; // Node is already in the target location
+      }
+
+      // Check if a node with the same name already exists in the target directory
+      const exist = targetNode.children?.find((n) => n.name === node.name);
+      if (exist) {
+        throw new Error(
+          "A node with the same name already exists in the target directory"
+        );
+      }
+
+      try {
+        // Move the file or directory
+        await fs.rename(
+          spaceHelper.getUri(this.getSpace().id, oldPath),
+          spaceHelper.getUri(this.getSpace().id, newPath),
+          { overwrite: false }
+        );
+
+        // Update data store
+        dataStore.getActions().delete({ id: node.id });
+        dataStore.getActions().add({
+          node: { ...node, id: newPath, path: newPath },
+          parentId: targetNode.id,
+        });
+
+        // Refresh the source and target directories
+        await this.deepRefresh(dirname(oldPath));
+        await this.deepRefresh(targetNode.id);
+
+        // Emit an event to notify about the node movement
+        eventBus.emit(TreeEventKeys.NodeMoved, {
+          node: { ...node, id: newPath, path: newPath },
+          oldPath,
+          newPath,
+          targetNode,
+        });
+      } catch (error) {
+        console.error("Error moving node:", error);
+        throw error;
+      }
+    };
+
+    moveNodeRelative = async (
+      node: TreeDataNode<FolderTreeNode>,
+      referenceNode: TreeDataNode<FolderTreeNode>,
+      position: "before" | "after" | "inside"
+    ) => {
+      const sourceParentNode = this.findParentNode(node.path!);
+      const targetParentNode = position === "inside" ? referenceNode : this.findParentNode(referenceNode.path!);
+
+      if (!sourceParentNode || !targetParentNode) {
+        throw new Error("Source or target parent node not found");
+      }
+
+      const newPath = position === "inside" 
+        ? joinPath(referenceNode.path!, node.name)
+        : joinPath(dirname(referenceNode.path!), node.name);
+
+      const isSameDirectory = sourceParentNode.id === targetParentNode.id;
+
+      try {
+        if (isSameDirectory && position !== "inside") {
+          // If in the same directory, just update the order
+          const parentChildren = [...(sourceParentNode.children || [])];
+          const nodeIndex = parentChildren.findIndex(child => child.id === node.id);
+          const referenceIndex = parentChildren.findIndex(child => child.id === referenceNode.id);
+          
+          if (nodeIndex !== -1 && referenceIndex !== -1) {
+            const [movedNode] = parentChildren.splice(nodeIndex, 1);
+            const insertIndex = position === "before" ? referenceIndex : referenceIndex + 1;
+            parentChildren.splice(insertIndex, 0, movedNode);
+            
+            dataStore.getActions().update({
+              node: { ...sourceParentNode, children: parentChildren }
+            });
+          }
+        } else {
+          // If moving to a different directory or inside a directory, perform file system operation and update data store
+          await fs.rename(
+            spaceHelper.getUri(this.getSpace().id, node.path!),
+            spaceHelper.getUri(this.getSpace().id, newPath),
+            { overwrite: false }
+          );
+
+          dataStore.getActions().delete({ id: node.id });
+          const updatedNode = { ...node, path: newPath, id: newPath };
+          dataStore.getActions().add({
+            node: updatedNode,
+            parentId: targetParentNode.id
+          });
+
+          // If moving inside, expand the target directory
+          if (position === "inside") {
+            this.updateViewState(targetParentNode.id, { expanded: true });
+          }
+        }
+
+        // Refresh the affected parts of the tree
+        await this.deepRefresh(sourceParentNode.id);
+        if (!isSameDirectory || position === "inside") {
+          await this.deepRefresh(targetParentNode.id);
+        }
+
+        // Emit an event to notify about the node movement
+        eventBus.emit(TreeEventKeys.NodeMoved, {
+          node: isSameDirectory && position !== "inside" ? node : { ...node, path: newPath, id: newPath },
+          oldPath: node.path,
+          newPath: isSameDirectory && position !== "inside" ? node.path : newPath,
+          targetNode: targetParentNode,
+        });
+
+      } catch (error) {
+        console.error("Error moving node:", error);
+        throw error;
+      }
+    };
+
+    // Add this method to your service
+    updateNode = (id: string, updates: Partial<TreeDataNode<FolderTreeNode>>) => {
+      dataStore.getActions().update({ node: { id, ...updates } });
     };
   }
   return new TreeService();

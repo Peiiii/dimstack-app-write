@@ -1,9 +1,10 @@
+import React, { useState } from "react";
 import { WidgetContext } from "@/toolkit/components/tree";
 import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
 import { Box, Flex } from "@chakra-ui/react";
 import classNames from "classnames";
-
 import { TreeContext } from "@/toolkit/components/tree/tokens";
+import { TreeEventKeys } from "@/plugins/space/folderTreeService/tokens";
 
 export const TreeNode = ({
   node,
@@ -26,15 +27,70 @@ export const TreeNode = ({
     viewSystem.viewStateStore.useRecord(id) ||
     viewSystem.getDefaultViewState({ id });
 
-  const { expanded, highlight } = viewState;
+  const { expanded, highlight, isDragOver } = viewState;
+  const [dragPosition, setDragPosition] = useState<
+    "before" | "inside" | "after" | null
+  >(null);
+
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    console.log("handleDragStart", id, "element:", e);
+    // e.preventDefault();
+    e.stopPropagation();
+    e.dataTransfer.setData("text/plain", id);
+    eventBus.emit(TreeEventKeys.DragStart, { node: nodeData, event: e });
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    // console.log("handleDragOver", id, "element:", e);
+
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    const rect = e.currentTarget.getBoundingClientRect();
+    const y = e.clientY - rect.top;
+    if (y < rect.height * 0.25) {
+      setDragPosition("before");
+    } else if (y > rect.height * 0.75) {
+      setDragPosition("after");
+    } else {
+      setDragPosition("inside");
+    }
+    eventBus.emit(TreeEventKeys.DragOver, { node: nodeData, event: e });
+  };
+
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    eventBus.emit(TreeEventKeys.DragEnter, { node: nodeData, event: e });
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    setDragPosition(null);
+    eventBus.emit(TreeEventKeys.DragLeave, { node: nodeData, event: e });
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if (dragPosition) {
+      eventBus.emit(TreeEventKeys.Drop, {
+        node: nodeData,
+        event: e,
+        position: dragPosition,
+      });
+    }
+    setDragPosition(null);
+  };
+
   return (
     <TreeContext.Provider value={context}>
       <Flex
         w="100%"
         direction={"column"}
-        // overflow={"hidden"}
-        className="tree-node-wrapper"
+        className="tree-node-wrapper relative"
         key={id}
+        draggable={true}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
       >
         <Flex
           direction={"row"}
@@ -45,6 +101,10 @@ export const TreeNode = ({
             "tree-node": true,
             "tree-node-highlight": highlight,
             "tree-root-node": level === 0,
+            "bg-gray-200 dark:bg-gray-700 bg-opacity-50 dark:bg-opacity-50":
+              isDragOver,
+            "outline outline-2 outline-blue-500 dark:outline-blue-400":
+              isDragOver && dragPosition === "inside",
             [`level-${level}`]: true,
           })}
         >
@@ -66,6 +126,7 @@ export const TreeNode = ({
                   node,
                   level,
                   parentNode,
+                  dragPosition, // 添加这行
                 },
               },
               0

@@ -28,6 +28,7 @@ export type WidgetViewState = {
   loading?: boolean;
   validationMessage?: string;
   editingName?: string;
+  isDragOver?: boolean;
 };
 // export type NodeMenuItem = {
 //   id: string;

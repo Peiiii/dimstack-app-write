@@ -43,6 +43,7 @@ import treePluginConfig from "./plugins/treePluginConfig";
 import treePluginDeleteNode from "./plugins/treePluginDeleteNode";
 import treePluginEditNode from "./plugins/treePluginEditNode";
 import { treePluginForIndexedDbSpace } from "@/plugins/space/folderTreeService/plugins/treePluginForIndexedDbSpace";
+import treePluginDragAndDrop from "@/plugins/space/folderTreeService/plugins/treePluginDragAndDrop";
 
 const TreeView = ({ space }: { space: SpaceDef }) => {
   const treeDataStore = useMemo(
@@ -196,11 +197,13 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
                 rootId: "",
               }),
               treePluginNodeType(),
+              treePluginDragAndDrop(),
               treePluginMigration(),
               treePluginRefreshSpaceAuth(),
               treePluginAutoOpenReadme(),
               treePluginHideDirKeepFile(),
               treePluginForIndexedDbSpace(),
+            
             ]}
           />
         </Box>
