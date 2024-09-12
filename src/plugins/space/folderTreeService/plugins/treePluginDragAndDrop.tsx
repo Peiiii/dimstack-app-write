@@ -38,19 +38,27 @@ export const treePluginDragAndDrop = createTreePlugin<FolderTreeNode>({
       const draggedNode = dataStore.getNode(draggedNodeId);
 
       if (draggedNode && node.id !== draggedNode.id) {
-        // 根据position决定如何移动节点
-        if (position === "inside" && node.type === "dir") {
-          await treeService.moveNode(draggedNode, node);
-        } else if (position === "before" || position === "after") {
-          //   const parentNode = dataStore.getParent(node.id);
-          const parentNode = treeService.findParentNode(node.id);
-          if (parentNode) {
-            await treeService.moveNodeRelative(draggedNode, node, position);
-          }
-        }
+        try {
+          treeService.updateViewState(draggedNode.id, { loading: true });
+          treeService.updateViewState(node.id, { loading: true });
 
-        // 刷新视图
-        treeService.deepRefresh(node.id);
+          if (position === "inside" && node.type === "dir") {
+            await treeService.moveNode(draggedNode, node);
+          } else if (position === "before" || position === "after") {
+            const parentNode = treeService.findParentNode(node.id);
+            if (parentNode) {
+              await treeService.moveNodeRelative(draggedNode, node, position);
+            }
+          }
+
+          // 刷新视图
+          await treeService.deepRefresh(node.id);
+        } catch (error) {
+          console.error("Error during drag and drop:", error);
+        } finally {
+          treeService.updateViewState(draggedNode.id, { loading: false });
+          treeService.updateViewState(node.id, { loading: false });
+        }
       }
 
       treeService.updateViewState(node.id, { isDragOver: false });
