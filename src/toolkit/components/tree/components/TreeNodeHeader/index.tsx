@@ -3,7 +3,7 @@ import { LeftExtra } from "@/toolkit/components/tree/components/TreeNodeHeader/c
 import { useNodeEventHandlers } from "@/toolkit/components/tree/components/TreeNodeHeader/hooks/use-node-event-handlers";
 import { useTreeContext } from "@/toolkit/components/tree/tokens";
 import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
-import { Text } from "@chakra-ui/react";
+import { Text, Flex, Box } from "@chakra-ui/react";
 import { useEffect, useRef } from "react";
 import xbook from "xbook/index";
 
@@ -54,45 +54,50 @@ export const TreeNodeHeader = ({
   }, [viewState.validationMessage, viewState.editMode]);
 
   return (
-    <div
-      className={`tree-node-content-top flex flex-row h-8 mt-0.5 mb-0.5 self-stretch items-center overflow-hidden ${
+    <Flex
+      className={`tree-node-content-top h-8 mt-0.5 mb-0.5 items-center overflow-hidden ${
         level === 0 ? "ml-2" : ""
       }`}
+      width="100%"
     >
-      <div
-        className="flex min-w-0 flex-row h-9 max-h-full w-full flex-grow items-center overflow-hidden hover-action tree-node-header"
+      <Flex
+        className="min-w-0 h-9 max-h-full w-full items-center overflow-hidden hover-action tree-node-header"
         onClick={handleNodeClick}
         tabIndex={-1}
         onKeyDown={handleKeyDown}
       >
-        <div className="flex flex-row items-center overflow-hidden pr-2 hover-action">
+        <Flex className="items-center overflow-hidden pr-2 hover-action" minWidth="0" flex="1">
           <LeftExtra viewState={viewState} viewSystem={viewSystem} />
-          {viewSystem.render("icon-node-type", { node })}
-          <div className="w-2" />
-          {viewState.editMode ? (
-            <InputBox
-              inputRef={inputRef}
-              value={viewState.editingName}
-              name={name}
-              parentNode={parentNode}
-              eventBus={eventBus}
-              node={node}
-            />
-          ) : (
-            <Text fontSize="1rem" title={name} className="truncate">
-              {name}
-            </Text>
-          )}
-        </div>
-        <div className="flex-grow" />
-        <div className="action-box flex items-center justify-center h-full">
+          <Box flexShrink={0}>
+            {viewState.loading
+              ? viewSystem.render("icon-loading", { size: "1rem" })
+              : viewSystem.render("icon-node-type", { node })}
+          </Box>
+          <Box width="0.5rem" flexShrink={0} />
+          <Box minWidth="0" flex="1">
+            {viewState.editMode ? (
+              <InputBox
+                inputRef={inputRef}
+                value={viewState.editingName}
+                name={name}
+                parentNode={parentNode}
+                eventBus={eventBus}
+                node={node}
+              />
+            ) : (
+              <Text fontSize="1rem" title={name} isTruncated>
+                {name}
+              </Text>
+            )}
+          </Box>
+        </Flex>
+        <Flex className="action-box items-center justify-center h-full" flexShrink={0}>
           {renderer.render({
             type: "tree-node-action-bar",
             props: { node, level },
           })}
-        </div>
-      </div>
-      <div className="w-2" />
-    </div>
+        </Flex>
+      </Flex>
+    </Flex>
   );
 };

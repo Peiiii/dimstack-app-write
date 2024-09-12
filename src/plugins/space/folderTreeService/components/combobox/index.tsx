@@ -41,16 +41,16 @@ export function Combobox(props: {
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "flex w-full h-10 justify-start items-center flex-shrink overflow-hidden ml-1 px-1 py-1", // 按钮高度和布局
+            "flex w-full h-10 justify-start items-center flex-shrink overflow-hidden ml-1 px-1 py-1",
             !open && "bg-transparent", // 默认背景透明
             "hover:bg-gray-200 dark:hover:bg-gray-600", // 悬停背景：亮色和暗黑模式分别适配
             "focus:ring-0 focus:border-0" // 去除焦点边框
           )}
         >
           {/* 容器：图标和文字 */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 min-w-0 flex-grow">
             {/* 左侧圆角矩形图标，动态显示用户名的首字母 */}
-            <div className="flex items-center justify-center w-7 h-7 bg-teal-200 dark:bg-teal-500 rounded-md">
+            <div className="flex-shrink-0 flex items-center justify-center w-7 h-7 bg-teal-200 dark:bg-teal-500 rounded-md">
               <span className="text-black dark:text-white font-semibold text-lg">
                 {selectedItem?.title?.charAt(0).toUpperCase()}{" "}
                 {/* 动态获取首字母 */}
@@ -60,7 +60,7 @@ export function Combobox(props: {
             {/* 显示用户名或占位符 */}
             <span
               className={cn(
-                "truncate", // 防止溢出
+                "truncate flex-grow min-w-0", // 添加 flex-grow min-w-0
                 value
                   ? "font-semibold text-base text-gray-800 dark:text-gray-200"
                   : "text-gray-400 dark:text-gray-500" // 加粗文本

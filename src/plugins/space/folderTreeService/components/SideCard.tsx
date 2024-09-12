@@ -43,8 +43,6 @@ export const SideCard: FC<{
           <Flex  align={"center"} w="100%" mt="1rem">
             <Tooltip label={title}>
               <>
-                {/* <AiOutlineHome />
-              <Box w="0.3em"/> */}
                 {typeof title === "string" ? (
                   <Text
                     as="b"
