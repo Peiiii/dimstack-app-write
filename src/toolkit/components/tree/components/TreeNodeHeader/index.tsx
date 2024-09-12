@@ -61,7 +61,7 @@ export const TreeNodeHeader = ({
       width="100%"
     >
       <Flex
-        className="min-w-0 h-9 max-h-full w-full items-center overflow-hidden hover-action tree-node-header"
+        className="min-w-0 h-9 mr-2 max-h-full w-full items-center overflow-hidden hover-action tree-node-header"
         onClick={handleNodeClick}
         tabIndex={-1}
         onKeyDown={handleKeyDown}
