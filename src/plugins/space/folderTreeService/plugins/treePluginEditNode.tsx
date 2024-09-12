@@ -73,7 +73,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
     eventBus.on(TreeEventKeys.EditBlur, ({ node, event, parentNode }) => {
       eventBus.emit(TreeEventKeys.EditKeyEnter, { node, event, parentNode });
     });
-    eventBus.on(TreeEventKeys.EditKeyEnter, ({ node, event, parentNode }) => {
+    eventBus.on(TreeEventKeys.EditKeyEnter, async ({ node, event, parentNode }) => {
       treeService.updateViewState(node.id, {
         editMode: false,
       });
@@ -91,7 +91,24 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
           parentNode,
         });
         if (!hasError) {
-          this.options.renameNode!(node, event.currentTarget.value.trim());
+          const newName = event.currentTarget.value.trim();
+          
+          // Set loading state
+          treeService.updateViewState(node.id, { loading: true });
+
+          try {
+            await this.options.renameNode!(node, newName);
+            
+            // Update node with new name
+            dataStore.getActions().update({
+              node: { ...node, name: newName },
+            });
+          } catch (error) {
+            xbook.notificationService.error("Failed to rename node");
+          } finally {
+            // Remove loading state
+            treeService.updateViewState(node.id, { loading: false });
+          }
         } else {
           xbook.notificationService.error(message);
         }

@@ -9,6 +9,7 @@ import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreeHelper } from "@/toolkit/components/tree/treePlugins";
 import { joinPath } from "@/toolkit/utils/path";
 import { nanoid } from "@reduxjs/toolkit";
+import xbook from "xbook/index";
 import { fs } from "xbook/services";
 
 export default createTreeHelper<FolderTreeNode>().createPlugin({
@@ -75,30 +76,44 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
       const childId = nanoid();
       serviceBus.invoke(TreeServicePoints.EditInputNodeName, {
         parentId,
-        defaultName:
-          documentType === DocumentTypeEnum.Markdown ? "Untitled.md" : "",
+        defaultName: documentType === DocumentTypeEnum.Markdown ? "Untitled.md" : "",
         nodeType: TreeNodeTypeEnum.File,
         callback: async (name: string) => {
           const path = joinPath(parentNode.path!, name);
-          await fs.writeFile(
-            spaceHelper.getUri(space?.id, path),
-            new TextEncoder().encode("# "),
-            {
-              create: true,
-              overwrite: true,
-            }
-          );
           const childNode = {
             id: childId,
             type: TreeNodeTypeEnum.File,
             path,
             name,
           };
+          
+          // Add the node with loading state
           dataStore.getActions().add({
-            node: childNode,
+            node: { ...childNode, loading: true },
             parentId,
           });
-          eventBus.emit(TreeEventKeys.NodeClick, { node: childNode });
+
+          try {
+            await fs.writeFile(
+              spaceHelper.getUri(space?.id, path),
+              new TextEncoder().encode("# "),
+              {
+                create: true,
+                overwrite: true,
+              }
+            );
+
+            // Update the node to remove loading state
+            dataStore.getActions().update({
+              node: childNode,
+            });
+
+            eventBus.emit(TreeEventKeys.NodeClick, { node: childNode });
+          } catch (error) {
+            // If there's an error, remove the node
+            dataStore.getActions().delete({ id: childId });
+            xbook.notificationService.error("Failed to create file");
+          }
         },
       });
     });
