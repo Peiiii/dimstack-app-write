@@ -57,7 +57,7 @@ export const TreeEventKeys = {
   }>("keydownEnter"),
 };
 
-export const ServicePoints = {
+export const TreeServicePoints = {
   TreeService: typedKey<ITreeService>("treeService"),
   EditInputNodeName: typedKey<
     [

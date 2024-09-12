@@ -19,7 +19,7 @@ import treePluginProvideIcons from "@/plugins/space/folderTreeService/plugins/tr
 import { treePluginProvideTreeService } from "@/plugins/space/folderTreeService/plugins/treePluginProvideTreeService";
 import treePluginRefresh from "@/plugins/space/folderTreeService/plugins/treePluginRefresh";
 import treePluginRefreshSpaceAuth from "@/plugins/space/folderTreeService/plugins/treePluginRefreshSpaceAuth";
-import { ServicePoints } from "@/plugins/space/folderTreeService/tokens";
+import { TreeServicePoints } from "@/plugins/space/folderTreeService/tokens";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import ContextProvider from "@/toolkit/components/context";
 import { Tree, WidgetViewState } from "@/toolkit/components/tree";
@@ -75,7 +75,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
     [space.id]
   );
   const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
-  const treeService = serviceBus.createProxy(ServicePoints.TreeService);
+  const treeService = serviceBus.createProxy(TreeServicePoints.TreeService);
   const { hasReadPermission: isLogin } = spaceService.usePermissions(space.id);
   const [pluginsLoaded, setPluginsLoaded] = useState(false);
   useEffect(() => {

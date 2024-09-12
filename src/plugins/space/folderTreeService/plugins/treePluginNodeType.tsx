@@ -1,5 +1,5 @@
 import {
-  ServicePoints,
+  TreeServicePoints,
   TreeEventKeys,
 } from "@/plugins/space/folderTreeService/tokens";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
@@ -15,7 +15,7 @@ import { getNodeFileType, getNodeType } from "../utils";
 
 export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
   activate({ viewSystem, eventBus, dataStore, serviceBus }) {
-    const treeService = serviceBus.createProxy(ServicePoints.TreeService);
+    const treeService = serviceBus.createProxy(TreeServicePoints.TreeService);
     viewSystem.setDefaultViewStateProvider(({ id }, props) => {
       let expandable;
       const node = dataStore.getNode(id)!;

@@ -1,10 +1,13 @@
-import { TreeEventKeys } from "@/plugins/space/folderTreeService/tokens";
+import {
+  TreeServicePoints,
+  TreeEventKeys,
+} from "@/plugins/space/folderTreeService/tokens";
 import { createTreePluginTemplate } from "@/toolkit/components/tree/plugin";
 
 export const treePluginEditNodeTemplate = createTreePluginTemplate<{
   id: string;
 }>({
-  activate({ viewSystem, eventBus }) {
+  activate({ viewSystem, eventBus, serviceBus }) {
     viewSystem.addNodeMenuItems([
       {
         id: "editNode",
@@ -15,10 +18,9 @@ export const treePluginEditNodeTemplate = createTreePluginTemplate<{
         when: "level >= 1",
       },
     ]);
-    eventBus.on(TreeEventKeys.EditNode, ({ node }) => {
-      viewSystem.viewStateStore.getActions().upsert({
-        ...(viewSystem.viewStateStore.getRecord(node.id) ||
-          viewSystem.getDefaultViewState(node, { expanded: false })),
+    const treeService = serviceBus.createProxy(TreeServicePoints.TreeService);    
+    eventBus.on(TreeEventKeys.EditNode, ({ node }) => {      
+      treeService.updateViewState(node.id, {
         editMode: true,
       });
     });

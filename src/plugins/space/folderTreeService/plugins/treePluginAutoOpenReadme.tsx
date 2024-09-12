@@ -1,5 +1,5 @@
 import {
-  ServicePoints,
+  TreeServicePoints,
   TreeEventKeys,
   TreeNodeTypeEnum,
 } from "@/plugins/space/folderTreeService/tokens";
@@ -17,7 +17,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
       space: { platform, owner, repo },
     },
   }) {
-    const treeService = serviceBus.createProxy(ServicePoints.TreeService);
+    const treeService = serviceBus.createProxy(TreeServicePoints.TreeService);
     eventBus.on(TreeEventKeys.TreeOpened, () => {
       // 自动打开README.md，如果存在的话
       const rootNode = dataStore.getData();

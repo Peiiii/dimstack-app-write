@@ -1,7 +1,7 @@
 import { spaceHelper } from "@/helpers/space.helper";
 import {
   DocumentTypeEnum,
-  ServicePoints,
+  TreeServicePoints,
   TreeEventKeys,
   TreeNodeTypeEnum,
 } from "@/plugins/space/folderTreeService/tokens";
@@ -73,7 +73,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
       const parentNode = dataStore.getNode(parentId)!;
       const space = spaceHelper.getStore().getRecord(spaceId)!;
       const childId = nanoid();
-      serviceBus.invoke(ServicePoints.EditInputNodeName, {
+      serviceBus.invoke(TreeServicePoints.EditInputNodeName, {
         parentId,
         defaultName:
           documentType === DocumentTypeEnum.Markdown ? "Untitled.md" : "",
@@ -107,7 +107,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
       const parentNode = dataStore.getNode(parentId)!;
       const space = spaceHelper.getStore().getRecord(spaceId)!;
             const childId = nanoid();
-      serviceBus.invoke(ServicePoints.EditInputNodeName, {
+      serviceBus.invoke(TreeServicePoints.EditInputNodeName, {
         parentId,
         nodeType: TreeNodeTypeEnum.Dir,
         callback: async (name: string) => {

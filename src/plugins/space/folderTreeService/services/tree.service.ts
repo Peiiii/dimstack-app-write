@@ -1,5 +1,4 @@
 import { Tokens } from "@/constants/tokens";
-import { fileSystemHelper } from "@/helpers/file-system.helper";
 import { spaceHelper } from "@/helpers/space.helper";
 import {
   TreeEventKeys,
@@ -34,7 +33,7 @@ export const createTreeService = (
       id: string,
       partialViewState: Partial<WidgetViewState>
     ) => {
-      viewStateStore.getActions().update({
+      viewStateStore.getActions().upsert({
         ...getViewStateOrDefaultViewState(id),
         ...partialViewState,
       });
@@ -119,7 +118,7 @@ export const createTreeService = (
       const node = dataStore.getNode(id)!;
       const oldNode = dataStore.getNode(node.id)!;
 
-     this.updateViewState(id, { loading: true });
+      this.updateViewState(id, { loading: true });
       const uri = spaceHelper.getUri(
         space.id,
         node.id === "root" ? "/" : node.path!

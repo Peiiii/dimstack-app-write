@@ -1,5 +1,5 @@
 import {
-  ServicePoints,
+  TreeServicePoints,
   TreeEventKeys,
 } from "@/plugins/space/folderTreeService/tokens";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
@@ -16,7 +16,7 @@ export default createTreePlugin<FolderTreeNode>({
     };
   },
   activate({ viewSystem, eventBus, serviceBus }) {
-    const treeService = serviceBus.createProxy(ServicePoints.TreeService);
+    const treeService = serviceBus.createProxy(TreeServicePoints.TreeService);
     viewSystem.addNodeMenuItems([
       {
         id: "deleteNode",

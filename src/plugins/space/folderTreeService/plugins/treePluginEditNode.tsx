@@ -1,5 +1,5 @@
 import {
-  ServicePoints,
+  TreeServicePoints,
   TreeEventKeys,
 } from "@/plugins/space/folderTreeService/tokens";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
@@ -25,24 +25,23 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
         when: "level >= 1",
       },
     ]);
-    const treeService = serviceBus.createProxy(ServicePoints.TreeService);
+    const treeService = serviceBus.createProxy(TreeServicePoints.TreeService);
     serviceBus.expose(
-      ServicePoints.EditInputNodeName,
+      TreeServicePoints.EditInputNodeName,
       ({ parentId, callback, nodeType, defaultName }) => {
         setTimeout(() => {
           const childId = nanoid();
+          const newNode = { id: childId, type: nodeType, name: defaultName || "" };
           dataStore.getActions().add({
-            node: { id: childId, type: nodeType, name: defaultName || "" },
+            node: newNode,
             parentId,
           });
-          viewSystem.viewStateStore.getActions().upsert({
-            ...viewSystem.getViewStateOrDefaultViewState(parentId),
+          treeService.updateViewState(parentId, {
             expanded: true,
-          });
-          viewSystem.viewStateStore.getActions().upsert({
-            ...viewSystem.getViewStateOrDefaultViewState(childId),
+          });          
+          treeService.updateViewState(childId, {
             editMode: true,
-          });
+          });          
           pipe.emit("edit.forInput", true);
           let unlisten;
           unlisten = eventBus.on(
@@ -63,13 +62,11 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
           );
         }, 0);
       }
-    );
+    );    
     eventBus.on(TreeEventKeys.EditNode, ({ node, event }) => {
       event.preventDefault();
       event.stopPropagation();
-      viewSystem.viewStateStore.getActions().upsert({
-        ...(viewSystem.viewStateStore.getRecord(node.id) ||
-          viewSystem.getDefaultViewState(node)),
+      treeService.updateViewState(node.id, {
         editMode: true,
       });
     });
@@ -77,8 +74,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
       eventBus.emit(TreeEventKeys.EditKeyEnter, { node, event, parentNode });
     });
     eventBus.on(TreeEventKeys.EditKeyEnter, ({ node, event, parentNode }) => {
-      viewSystem.viewStateStore.getActions().upsert({
-        ...viewSystem.getViewStateOrDefaultViewState(node.id),
+      treeService.updateViewState(node.id, {
         editMode: false,
       });
       if (pipe.get("edit.forInput")) {
@@ -103,8 +99,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
     });
 
     eventBus.on(TreeEventKeys.EditChange, ({ node, event, parentNode }) => {
-      viewSystem.viewStateStore.getActions().upsert({
-        ...viewSystem.getViewStateOrDefaultViewState(node.id),
+      treeService.updateViewState(node.id, {
         editingName: event.currentTarget.value,
       });
 
@@ -113,8 +108,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
         parentNode,
         node,
       });
-      viewSystem.viewStateStore.getActions().upsert({
-        ...viewSystem.getViewStateOrDefaultViewState(node.id),
+      treeService.updateViewState(node.id, {
         validationMessage: message,
       });
     });

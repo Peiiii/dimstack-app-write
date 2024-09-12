@@ -1,7 +1,7 @@
 import { fileSystemHelper } from "@/helpers/file-system.helper";
 import { spaceHelper } from "@/helpers/space.helper";
 import {
-  ServicePoints,
+  TreeServicePoints,
   TreeEventKeys,
 } from "@/plugins/space/folderTreeService/tokens";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
@@ -18,13 +18,13 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
     options: { space },
     eventBus,
   }) {
-    const treeService = serviceBus.createProxy(ServicePoints.TreeService);
+    const treeService = serviceBus.createProxy(TreeServicePoints.TreeService);
     viewStateStore.reduxStore.subscribe(() => {
       const data = viewStateStore.getData();
     });
     /** read children only when expanded */
 
-    serviceBus.expose(ServicePoints.RefershNode, treeService.deepRefresh);
+    serviceBus.expose(TreeServicePoints.RefershNode, treeService.deepRefresh);
     addNodeMenuItems([
       {
         id: "refreshNode",
