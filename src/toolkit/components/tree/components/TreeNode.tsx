@@ -33,8 +33,6 @@ export const TreeNode = ({
   >(null);
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
-    console.log("handleDragStart", id, "element:", e);
-    // e.preventDefault();
     e.stopPropagation();
     e.dataTransfer.setData("text/plain", id);
     eventBus.emit(TreeEventKeys.DragStart, { node: nodeData, event: e });
@@ -42,7 +40,7 @@ export const TreeNode = ({
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     // console.log("handleDragOver", id, "element:", e);
-
+    e.stopPropagation();
     e.preventDefault();
     e.dataTransfer.dropEffect = "move";
     const rect = e.currentTarget.getBoundingClientRect();
@@ -58,16 +56,19 @@ export const TreeNode = ({
   };
 
   const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    e.stopPropagation();
     eventBus.emit(TreeEventKeys.DragEnter, { node: nodeData, event: e });
   };
 
   const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.stopPropagation();
     setDragPosition(null);
     eventBus.emit(TreeEventKeys.DragLeave, { node: nodeData, event: e });
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
+    e.stopPropagation();
     if (dragPosition) {
       eventBus.emit(TreeEventKeys.Drop, {
         node: nodeData,

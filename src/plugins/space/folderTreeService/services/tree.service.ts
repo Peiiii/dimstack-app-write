@@ -369,83 +369,200 @@ export const createTreeService = (
       }
     };
 
+    handleDrop = async (
+      draggedNode: TreeDataNode<FolderTreeNode>,
+      targetNode: TreeDataNode<FolderTreeNode>,
+      position: "before" | "after" | "inside"
+    ) => {
+      if (draggedNode.id === targetNode.id) {
+        return; // 不能移动到自身
+      }
+
+      try {
+        await this.moveNodeRelative(draggedNode, targetNode, position);
+      } catch (error) {
+        console.error("Error during drag and drop:", error);
+        throw error;
+      } finally {
+        this.updateViewState(targetNode.id, { isDragOver: false });
+      }
+    };
+
     moveNodeRelative = async (
       node: TreeDataNode<FolderTreeNode>,
       referenceNode: TreeDataNode<FolderTreeNode>,
       position: "before" | "after" | "inside"
     ) => {
       const sourceParentNode = this.findParentNode(node.path!);
-      const targetParentNode = position === "inside" ? referenceNode : this.findParentNode(referenceNode.path!);
+      const targetParentNode =
+        position === "inside"
+          ? referenceNode
+          : this.findParentNode(referenceNode.path!);
 
       if (!sourceParentNode || !targetParentNode) {
         throw new Error("Source or target parent node not found");
       }
 
-      const newPath = position === "inside" 
-        ? joinPath(referenceNode.path!, node.name)
-        : joinPath(dirname(referenceNode.path!), node.name);
+      if (position === "inside" && referenceNode.type !== "dir") {
+        console.warn("Reference node must be a directory");
+      }
 
       const isSameDirectory = sourceParentNode.id === targetParentNode.id;
-
+      const needsFileSystemOperation =
+        !isSameDirectory || position === "inside";
       try {
-        if (isSameDirectory && position !== "inside") {
-          // If in the same directory, just update the order
-          const parentChildren = [...(sourceParentNode.children || [])];
-          const nodeIndex = parentChildren.findIndex(child => child.id === node.id);
-          const referenceIndex = parentChildren.findIndex(child => child.id === referenceNode.id);
-          
-          if (nodeIndex !== -1 && referenceIndex !== -1) {
-            const [movedNode] = parentChildren.splice(nodeIndex, 1);
-            const insertIndex = position === "before" ? referenceIndex : referenceIndex + 1;
-            parentChildren.splice(insertIndex, 0, movedNode);
-            
-            dataStore.getActions().update({
-              node: { ...sourceParentNode, children: parentChildren }
-            });
-          }
-        } else {
-          // If moving to a different directory or inside a directory, perform file system operation and update data store
-          await fs.rename(
-            spaceHelper.getUri(this.getSpace().id, node.path!),
-            spaceHelper.getUri(this.getSpace().id, newPath),
-            { overwrite: false }
-          );
-
-          dataStore.getActions().delete({ id: node.id });
-          const updatedNode = { ...node, path: newPath, id: newPath };
-          dataStore.getActions().add({
-            node: updatedNode,
-            parentId: targetParentNode.id
-          });
-
-          // If moving inside, expand the target directory
+        if (needsFileSystemOperation) {
+          this.setLoadingState(node.id, true);
           if (position === "inside") {
-            this.updateViewState(targetParentNode.id, { expanded: true });
+            this.setLoadingState(referenceNode.id, true);
           }
         }
 
-        // Refresh the affected parts of the tree
-        await this.deepRefresh(sourceParentNode.id);
-        if (!isSameDirectory || position === "inside") {
-          await this.deepRefresh(targetParentNode.id);
+        if (isSameDirectory && position !== "inside") {
+          await this.reorderInSameDirectory(
+            sourceParentNode,
+            node,
+            referenceNode,
+            position
+          );
+        } else {
+          await this.moveToNewLocation(
+            node,
+            targetParentNode,
+            position === "inside" ? referenceNode : undefined
+          );
         }
-
-        // Emit an event to notify about the node movement
-        eventBus.emit(TreeEventKeys.NodeMoved, {
-          node: isSameDirectory && position !== "inside" ? node : { ...node, path: newPath, id: newPath },
-          oldPath: node.path,
-          newPath: isSameDirectory && position !== "inside" ? node.path : newPath,
-          targetNode: targetParentNode,
-        });
-
-      } catch (error) {
-        console.error("Error moving node:", error);
-        throw error;
+        this.emitNodeMovedEvent(
+          node,
+          isSameDirectory
+            ? node.path!
+            : this.getNewPath(node, targetParentNode, position, referenceNode),
+          isSameDirectory,
+          position,
+          targetParentNode
+        );
+      } finally {
+        if (needsFileSystemOperation) {
+          this.setLoadingState(node.id, false);
+          if (position === "inside") {
+            this.setLoadingState(referenceNode.id, false);
+          }
+        }
+        await this.refreshAffectedNodes(
+          sourceParentNode,
+          targetParentNode,
+          needsFileSystemOperation
+        );
       }
     };
 
+    private setLoadingState(nodeId: string, isLoading: boolean) {
+      this.updateViewState(nodeId, { loading: isLoading });
+    }
+
+    private async reorderInSameDirectory(
+      sourceParentNode: TreeDataNode<FolderTreeNode>,
+      node: TreeDataNode<FolderTreeNode>,
+      referenceNode: TreeDataNode<FolderTreeNode>,
+      position: "before" | "after"
+    ) {
+      const parentChildren = [...(sourceParentNode.children || [])];
+      const nodeIndex = parentChildren.findIndex(
+        (child) => child.id === node.id
+      );
+      const referenceIndex = parentChildren.findIndex(
+        (child) => child.id === referenceNode.id
+      );
+
+      if (nodeIndex !== -1 && referenceIndex !== -1) {
+        const [movedNode] = parentChildren.splice(nodeIndex, 1);
+        const insertIndex =
+          position === "before" ? referenceIndex : referenceIndex + 1;
+        parentChildren.splice(insertIndex, 0, movedNode);
+
+        dataStore.getActions().update({
+          node: { ...sourceParentNode, children: parentChildren },
+        });
+      }
+    }
+
+    private async moveToNewLocation(
+      node: TreeDataNode<FolderTreeNode>,
+      targetParentNode: TreeDataNode<FolderTreeNode>,
+      insideNode?: TreeDataNode<FolderTreeNode>
+    ) {
+      const newPath = this.getNewPath(
+        node,
+        targetParentNode,
+        insideNode ? "inside" : "after",
+        insideNode
+      );
+      await fs.rename(
+        spaceHelper.getUri(this.getSpace().id, node.path!),
+        spaceHelper.getUri(this.getSpace().id, newPath),
+        { overwrite: false }
+      );
+
+      dataStore.getActions().delete({ id: node.id });
+      const updatedNode = { ...node, path: newPath, id: newPath };
+      dataStore.getActions().add({
+        node: updatedNode,
+        parentId: targetParentNode.id,
+      });
+
+      this.updateViewState(targetParentNode.id, { expanded: true });
+    }
+
+    private async refreshAffectedNodes(
+      sourceParentNode: TreeDataNode<FolderTreeNode>,
+      targetParentNode: TreeDataNode<FolderTreeNode>,
+      needsFileSystemOperation: boolean
+    ) {
+      if (needsFileSystemOperation) {
+        await this.deepRefresh(sourceParentNode.id);
+        if (sourceParentNode.id !== targetParentNode.id) {
+          await this.deepRefresh(targetParentNode.id);
+        }
+      }
+    }
+
+    // move的辅助函数
+    private getNewPath(
+      node: TreeDataNode<FolderTreeNode>,
+      targetParentNode: TreeDataNode<FolderTreeNode>,
+      position: "before" | "after" | "inside",
+      referenceNode?: TreeDataNode<FolderTreeNode>
+    ) {
+      if (position === "inside" && referenceNode) {
+        return joinPath(referenceNode.path!, node.name);
+      }
+      return joinPath(targetParentNode.path!, node.name);
+    }
+
+    // move的辅助函数
+    private emitNodeMovedEvent(
+      node: TreeDataNode<FolderTreeNode>,
+      newPath: string,
+      isSameDirectory: boolean,
+      position: "before" | "after" | "inside",
+      targetParentNode: TreeDataNode<FolderTreeNode>
+    ) {
+      eventBus.emit(TreeEventKeys.NodeMoved, {
+        node:
+          isSameDirectory && position !== "inside"
+            ? node
+            : { ...node, path: newPath, id: newPath },
+        oldPath: node.path,
+        newPath: newPath,
+        targetNode: targetParentNode,
+      });
+    }
+
     // Add this method to your service
-    updateNode = (id: string, updates: Partial<TreeDataNode<FolderTreeNode>>) => {
+    updateNode = (
+      id: string,
+      updates: Partial<TreeDataNode<FolderTreeNode>>
+    ) => {
       dataStore.getActions().update({ node: { id, ...updates } });
     };
   }

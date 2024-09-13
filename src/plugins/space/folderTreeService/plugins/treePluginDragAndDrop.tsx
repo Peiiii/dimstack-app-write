@@ -34,34 +34,12 @@ export const treePluginDragAndDrop = createTreePlugin<FolderTreeNode>({
 
     // 更新放置事件处理
     eventBus.on(TreeEventKeys.Drop, async ({ node, event, position }) => {
+      treeService.updateViewState(node.id, { isDragOver: false });
       const draggedNodeId = event.dataTransfer.getData("text");
       const draggedNode = dataStore.getNode(draggedNodeId);
-
-      if (draggedNode && node.id !== draggedNode.id) {
-        try {
-          treeService.updateViewState(draggedNode.id, { loading: true });
-          treeService.updateViewState(node.id, { loading: true });
-
-          if (position === "inside" && node.type === "dir") {
-            await treeService.moveNode(draggedNode, node);
-          } else if (position === "before" || position === "after") {
-            const parentNode = treeService.findParentNode(node.id);
-            if (parentNode) {
-              await treeService.moveNodeRelative(draggedNode, node, position);
-            }
-          }
-
-          // 刷新视图
-          await treeService.deepRefresh(node.id);
-        } catch (error) {
-          console.error("Error during drag and drop:", error);
-        } finally {
-          treeService.updateViewState(draggedNode.id, { loading: false });
-          treeService.updateViewState(node.id, { loading: false });
-        }
+      if (draggedNode) {        
+        await treeService.handleDrop(draggedNode, node, position);
       }
-
-      treeService.updateViewState(node.id, { isDragOver: false });
     });
   },
 });
