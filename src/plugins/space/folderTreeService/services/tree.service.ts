@@ -405,6 +405,7 @@ export const createTreeService = (
 
       if (position === "inside" && referenceNode.type !== "dir") {
         console.warn("Reference node must be a directory");
+        return;
       }
 
       const isSameDirectory = sourceParentNode.id === targetParentNode.id;
