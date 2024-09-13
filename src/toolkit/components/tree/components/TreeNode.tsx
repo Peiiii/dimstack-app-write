@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import { TreeEventKeys } from "@/plugins/space/folderTreeService/tokens";
+import {
+  FolderTreeNode,
+  TreeNodeTypeEnum,
+} from "@/plugins/space/folderTreeService/types";
 import { WidgetContext } from "@/toolkit/components/tree";
+import { TreeContext } from "@/toolkit/components/tree/tokens";
 import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
 import { Box, Flex } from "@chakra-ui/react";
 import classNames from "classnames";
-import { TreeContext } from "@/toolkit/components/tree/tokens";
-import { TreeEventKeys } from "@/plugins/space/folderTreeService/tokens";
+import React, { useState } from "react";
 
 export const TreeNode = ({
   node,
@@ -12,7 +16,7 @@ export const TreeNode = ({
   context,
   parentNode,
 }: {
-  node: TreeDataNode;
+  node: TreeDataNode<FolderTreeNode>;
   level: number;
   context: WidgetContext<any>;
   parentNode?: TreeDataNode;
@@ -79,6 +83,8 @@ export const TreeNode = ({
     setDragPosition(null);
   };
 
+  const draggable = node.type !== TreeNodeTypeEnum.DIR;
+
   return (
     <TreeContext.Provider value={context}>
       <Flex
@@ -86,7 +92,7 @@ export const TreeNode = ({
         direction={"column"}
         className="tree-node-wrapper relative"
         key={id}
-        draggable={true}
+        draggable={draggable}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDragEnter={handleDragEnter}
