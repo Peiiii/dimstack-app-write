@@ -1,3 +1,5 @@
+import { RepoResponse } from "libs/repo";
+
 export type Method =
   | "get"
   | "post"
@@ -36,8 +38,6 @@ export type FileItemResponse = {
   sha: string;
   data: any;
 };
-
-
 
 export type FileResponse = FileItemResponse & {
   content: string;
@@ -92,7 +92,7 @@ export type GiteeClient = {
     getList: (options: {
       page?: number;
       per_page?: number;
-    }) => Promise<ApiResponse<any>>;
+    }) => Promise<ApiResponse<RepoResponse[]>>;
     delete: (options: {
       owner: string;
       repo: string;

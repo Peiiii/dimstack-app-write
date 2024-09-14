@@ -1,101 +1,12 @@
 import { EventKeys } from "@/constants/eventKeys";
-import { Tokens } from "@/constants/tokens";
 import { spaceHelper } from "@/helpers/space.helper";
-import PageBox from "@/toolkit/components/page-box";
-import PowerForm, { PowerFormAtom } from "@/toolkit/components/power-form";
-import { createAtom } from "@/toolkit/factories/atom";
-import {
-  Alert,
-  AlertIcon,
-  Button,
-  Flex,
-  Input,
-  InputGroup,
-  InputRightAddon,
-  Link,
-  Text,
-  Wrap,
-} from "@chakra-ui/react";
-import { css } from "@emotion/css";
-import { Fragment, useContext, useState } from "react";
+import { AddSpaceDialog } from "@/plugins/space/addSpace/components/add-space-diaglog";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { createPlugin } from "xbook/common/createPlugin";
-import xbook from "xbook/index";
-import { ModalActionContext } from "xbook/services/modalService";
-
-const AddSpaceView = () => {
-  const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
-  const [url, setUrl] = useState("");
-  const modal = useContext(ModalActionContext)!;
-  const recommendUrls = [
-    "https://gitee.com/liyupi/code-roadmap",
-    "https://github.com/ruanyf/weekly",
-  ];
-  return (
-    <>
-      <div
-        className={css`
-          margin-bottom: 1em;
-        `}
-      >
-        <Text color="gray" wordBreak={"break-all"}>
-          请输入你的Gitee/Github仓库链接。示例：
-        </Text>
-        <Wrap>
-          {recommendUrls.map((u) => (
-            <Fragment key={u}>
-              {" "}
-              <Text as="a">{u}</Text>
-              <Link
-                color="blue.500"
-                onClick={() => {
-                  setUrl(u);
-                }}
-              >
-                填入
-              </Link>
-            </Fragment>
-          ))}
-        </Wrap>
-      </div>
-      <InputGroup>
-        <Input
-          placeholder="请输入链接"
-          autoFocus
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-        />
-        <InputRightAddon
-          onClick={() => {
-            const { platform, owner, repo } = spaceService.parseRepoUrl(url);
-            if (!(platform && owner && repo)) {
-              xbook.notificationService.error("输入链接格式不符!");
-            } else {
-              spaceService.addSpace(
-                {
-                  platform,
-                  owner,
-                  repo,
-                },
-                {
-                  focus: true,
-                }
-              );
-              modal.close();
-            }
-          }}
-        >
-          一键添加
-        </InputRightAddon>
-      </InputGroup>
-    </>
-  );
-};
 
 export const addGiteeSpace = createPlugin({
   initilize(xbook) {
     const id = "addGiteeRepo";
-    const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
     xbook.componentService.register("AiOutlinePlusCircle", AiOutlinePlusCircle);
     xbook.layoutService.activityBar.addActivity(
       {
@@ -108,113 +19,12 @@ export const addGiteeSpace = createPlugin({
       true
     );
     xbook.eventBus.on(EventKeys.ActivityBar.ActivityClicked(id), () => {
-      const atom: PowerFormAtom<{
-        platform: string;
-        owner: string;
-        repo: string;
-      }> = createAtom();
-      const pageBox = (
-        <PageBox
-          defaultActivePath="/"
-          config={{
-            id: "root",
-            // title: "添加空间",
-            children: [
-              {
-                id: "addFromUrl",
-                title: "从URL添加",
-                height: "320px",
-                view: <AddSpaceView />,
-              },
-              {
-                id: "custom",
-                title: "自定义添加",
-                height: "320px",
-                view: (
-                  <>
-                    <PowerForm<{
-                      platform: string;
-                      owner: string;
-                      repo: string;
-                    }>
-                      atom={atom}
-                      fields={[
-                        {
-                          name: "platform",
-                          title: "平台",
-                          select: {
-                            options: [
-                              { value: "github", label: "GitHub" },
-                              { value: "gitee", label: "Gitee" },
-                            ],
-                          },
-                          required: true,
-                        },
-                        {
-                          name: "owner",
-                          title: "所有者",
-                          required: true,
-                        },
-                        {
-                          name: "repo",
-                          title: "仓库名",
-                          required: true,
-                        },
-                      ]}
-                      defaultData={{
-                        platform: "gitee",
-                      }}
-                    />
-                    <Flex justify={"flex-end"} gap={"1em"}>
-                      <Button
-                        colorScheme="blue"
-                        onClick={() => {
-                          const data = atom.invoke("getData");
-                          
-
-                          spaceService.addSpace(
-                            {
-                              ...data,
-                            },
-                            {
-                              focus: true,
-                            }
-                          );
-                          modal.close();
-                        }}
-                      >
-                        创建
-                      </Button>
-                      <Button onClick={() => modal.close()}>取消</Button>
-                    </Flex>
-                  </>
-                ),
-              },
-            ],
-          }}
-        />
-      );
-      const modal = xbook.modalService.createModal({
+     xbook.modalService.open({
         title: "添加空间",
-        width: "600px",
-        content: (
-          <>
-            <Alert status="info">
-              <AlertIcon />
-              1.
-              您可以将Gitee/Github仓库添加为空间，添加后，还需进行授权的操作才可正常使用。
-              <br />
-              2.
-              授权后，如果是你的仓库，你可以对仓库进行编辑。如果是别人的仓库，你只能查看。
-              <br />
-              3. 编辑文件后，可以通过快捷键Ctrl+S或Cmd+S保存文件。
-            </Alert>
-            {pageBox}
-          </>
-        ),
+        width: "760px",
+        content: <AddSpaceDialog />,
         footer: false,
       });
-      modal.open();
     });
     spaceHelper.getStore().waitUtilLoaded(() => {
       if (spaceHelper.getStore().getData().length === 0) {

@@ -17,19 +17,23 @@ export default createPlugin({
       },
       true
     );
+
+    const openAuthManage = () => {
+      xbook.modalService.open({
+        content: <IntegrationPanel />,
+        //   closeIcon: false,
+        footer: false,
+        modalBodyClassName: css`
+          padding: 0 !important;
+        `,
+        autoFocus: false,
+      });
+    };
+
+    xbook.eventBus.on(EventKeys.RequestAuthManage, openAuthManage);
     xbook.eventBus.on(
       EventKeys.ActivityBar.ActivityClicked("integrations"),
-      () => {
-        xbook.modalService.open({
-          content: <IntegrationPanel />,
-          //   closeIcon: false,
-          footer: false,
-          modalBodyClassName: css`
-            padding: 0 !important;
-          `,
-          autoFocus: false,
-        });
-      }
+      openAuthManage
     );
   },
 });

@@ -59,16 +59,19 @@ const PowerForm = <T extends { [k: string]: SafeAny }>({
 
   useEffect(() => {
     if (atom) {
-      atom.expose("getData", () => formData);
-      atom.expose("setData", (keyOrData, value) => {
-        if (typeof keyOrData === "string") {
-          setFormData({ ...formData, [keyOrData]: value });
-        } else {
-          setFormData(keyOrData as Partial<T>);
-        }
+      atom.expose({
+        getData: () => formData,
+        setData: (keyOrData, value) => {
+          if (typeof keyOrData === "string") {
+            setFormData({ ...formData, [keyOrData]: value });
+          } else {
+            setFormData(keyOrData as Partial<T>);
+          }
+        },
       });
     }
   }, [atom, formData, setFormData]);
+
   return (
     <>
       {fieldList
@@ -112,7 +115,6 @@ const PowerForm = <T extends { [k: string]: SafeAny }>({
                       [name]: e.target.value,
                     });
                   }}
-                  //   defaultValue={formData[name] || ""}
                   placeholder={title}
                 />
               </FormControl>

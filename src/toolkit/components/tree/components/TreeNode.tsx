@@ -83,7 +83,8 @@ export const TreeNode = ({
     setDragPosition(null);
   };
 
-  const draggable = node.type !== TreeNodeTypeEnum.DIR;
+  // const draggable = node.type !== TreeNodeTypeEnum.DIR;
+  const draggable = true;
 
   return (
     <TreeContext.Provider value={context}>

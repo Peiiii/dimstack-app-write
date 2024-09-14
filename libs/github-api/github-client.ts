@@ -1,6 +1,7 @@
 import { Base64 } from "js-base64";
-import { FileHelper, Method } from "libs/git-client.types";
+import { ApiResponse, FileHelper, Method } from "libs/git-client.types";
 import { GithubAuthInfo } from "libs/github-api/github-fs";
+import { RepoResponse } from "libs/repo";
 import { Octokit } from "octokit";
 import axios from "redaxios";
 // type Method =
@@ -126,8 +127,8 @@ export const getGithubAccessToken = async ({
   clientId,
   clientSecret,
   redirectUri,
-  // repository_id,
-}: {
+}: // repository_id,
+{
   code: string;
   clientId: string;
   clientSecret: string;
@@ -293,9 +294,15 @@ export const createGithubClient = ({
       };
       return submitForm(URLBuilder.createRepo(), data);
     },
-    getList: async ({ page = 1, per_page = 20 }) => {
+    getList: async ({
+      page = 1,
+      per_page = 20,
+    }): Promise<ApiResponse<RepoResponse[]>> => {
       return axios.get(URLBuilder.getRepoList(), {
         params: prepareParams({ page, per_page }),
+        headers: {
+          Authorization: `Bearer ${getAccessToken()}`,
+        },
       });
     },
     delete: async ({ owner, repo }) => {

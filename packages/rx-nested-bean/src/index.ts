@@ -6,10 +6,12 @@ import React, {
   EffectCallback,
   MutableRefObject,
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
+  useSyncExternalStore,
 } from "react";
 import { BehaviorSubject, Observable } from "rxjs";
 
@@ -126,7 +128,6 @@ const setNodeData = (
   ) => {
     if (data !== prevData) {
       subscriberNode.$.next(data);
-      
     }
     Object.entries(subscriberNode.children).forEach(([key, child]) => {
       notify(child, data?.[key], prevData?.[key]);
@@ -188,7 +189,6 @@ const setNodeData = (
     // from the upper level to the lower level, notify the subscribers
     for (let i = 0; i < changedListWithNewData.length; i += 1) {
       const [subscriberNode, newData] = changedListWithNewData[i];
-      
 
       if (subscriberNode) {
         // notify the subscriber from the upper level to the lower level
@@ -251,7 +251,7 @@ const useNodeData = (
   //   },
   //   [$]
   // );
-  // useSyncExternalStore not supported by react 16
+  // // useSyncExternalStore not supported by react 16
   //   const state = useSyncExternalStore(subscribe, $.getValue.bind($));
   const [state, setState] = useState(() => $.getValue());
   useEffect(() => {
@@ -260,6 +260,22 @@ const useNodeData = (
     });
     return () => sub.unsubscribe();
   }, [$]);
+
+  useEffect(() => {
+    console.log("$ changed");
+  }, [$]);
+
+  useEffect(() => {
+    console.log("dataTree changed:", dataTree);
+  }, [dataTree]);
+
+  useEffect(() => {
+    console.log("controlTree changed:", controlTree);
+  }, [controlTree]);
+
+  useEffect(() => {
+    console.log("path changed:", path);
+  }, [path]);
 
   // useEffect(() => {
   //   // skip 会有问题，如果useEffect之前，$在其它地方被修改了，那么那次修改就会被skip掉
@@ -488,7 +504,7 @@ export const defineBean = <
     const renderingTasks: RenderingTask[] = [];
     const cleanupTasks: CleanupTask[] = [];
     // eventBus.event$.subscribe(({ key, payload }) => {
-    //   
+    //
     //   staticEventBus.emit(key, payload);
     // });
     // we don't need to unsubscribe , because it will be unsubscribed when the eventBus is recycled

@@ -46,7 +46,7 @@ const PageBox = ({
   config: PageBoxConfig;
   onPageChange?: Function;
   defaultActivePath: string;
-  atom?: Atom<{ services: { goTo: (...args: any[]) => any } }>;
+  atom?: Atom<{ services: { goTo: (...args: any[]) => any }; events: {} }>;
 }) => {
   let {
     // title,

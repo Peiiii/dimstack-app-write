@@ -2,6 +2,7 @@ import { typedKey } from "@/toolkit/utils/typedKey";
 
 export const EventKeys = {
   RequestRedirectAuthPage: typedKey<string>("requestRedirectAuthPage"),
+  RequestAuthManage: typedKey<string>("requestAuthManage"),
   ActivityBar: {
     DragItem: typedKey<{
       prevIndex: number;
