@@ -31,17 +31,21 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
       ({ parentId, callback, nodeType, defaultName }) => {
         setTimeout(() => {
           const childId = nanoid();
-          const newNode = { id: childId, type: nodeType, name: defaultName || "" };
+          const newNode = {
+            id: childId,
+            type: nodeType,
+            name: defaultName || "",
+          };
           dataStore.getActions().add({
             node: newNode,
             parentId,
           });
           treeService.updateViewState(parentId, {
             expanded: true,
-          });          
+          });
           treeService.updateViewState(childId, {
             editMode: true,
-          });          
+          });
           pipe.emit("edit.forInput", true);
           let unlisten;
           unlisten = eventBus.on(
@@ -62,7 +66,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
           );
         }, 0);
       }
-    );    
+    );
     eventBus.on(TreeEventKeys.EditNode, ({ node, event }) => {
       event.preventDefault();
       event.stopPropagation();
@@ -73,47 +77,50 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
     eventBus.on(TreeEventKeys.EditBlur, ({ node, event, parentNode }) => {
       eventBus.emit(TreeEventKeys.EditKeyEnter, { node, event, parentNode });
     });
-    eventBus.on(TreeEventKeys.EditKeyEnter, async ({ node, event, parentNode }) => {
-      treeService.updateViewState(node.id, {
-        editMode: false,
-      });
-      if (pipe.get("edit.forInput")) {
-        pipe.emit("edit.forInput", false);
-        eventBus.emit(TreeEventKeys.EditWillFinish, {
-          name: event.currentTarget.value,
-          node,
-          parentNode,
+    eventBus.on(
+      TreeEventKeys.EditKeyEnter,
+      async ({ node, event, parentNode }) => {
+        treeService.updateViewState(node.id, {
+          editMode: false,
         });
-      } else if (event.currentTarget.value.trim()) {
-        const { hasError, message } = treeService.validateForEditingName({
-          name: event.currentTarget.value,
-          node,
-          parentNode,
-        });
-        if (!hasError) {
-          const newName = event.currentTarget.value.trim();
-          
-          // Set loading state
-          treeService.updateViewState(node.id, { loading: true });
+        const newName = event.currentTarget.value.trim();
+        if (pipe.get("edit.forInput")) {
+          pipe.emit("edit.forInput", false);
+          eventBus.emit(TreeEventKeys.EditWillFinish, {
+            name: event.currentTarget.value,
+            node,
+            parentNode,
+          });
+        } else if (newName === node.name) {
+        } else if (newName) {
+          const { hasError, message } = treeService.validateForEditingName({
+            name: newName,
+            node,
+            parentNode,
+          });
+          if (!hasError) {
+            // Set loading state
+            treeService.updateViewState(node.id, { loading: true });
 
-          try {
-            await this.options.renameNode!(node, newName);
-            
-            // Update node with new name
-            dataStore.getActions().update({
-              node: { ...node, name: newName },
-            });
-          } catch (error) {
-            xbook.notificationService.error("Failed to rename node");
-          } finally {
-            // Remove loading state
-            treeService.updateViewState(node.id, { loading: false });
+            try {
+              await this.options.renameNode!(node, newName);
+
+              // Update node with new name
+              dataStore.getActions().update({
+                node: { ...node, name: newName },
+              });
+            } catch (error) {
+              xbook.notificationService.error("Failed to rename node");
+            } finally {
+              // Remove loading state
+              treeService.updateViewState(node.id, { loading: false });
+            }
+          } else {
+            xbook.notificationService.error(message);
           }
-        } else {
-          xbook.notificationService.error(message);
         }
       }
-    });
+    );
 
     eventBus.on(TreeEventKeys.EditChange, ({ node, event, parentNode }) => {
       treeService.updateViewState(node.id, {
