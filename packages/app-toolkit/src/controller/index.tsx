@@ -1,12 +1,18 @@
 import { SafeAny } from "@/toolkit/types";
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 
-export const defineController = <TResult, TParams extends SafeAny[]>(
-  hookCreate: (...params: TParams) => TResult,
+export const defineController = <
+  TResult,
+  TParams extends SafeAny[],
+  TIsHook extends true | false = false
+>(
+  maybeHookCreate: (...params: TParams) => TResult,
   {
     extraContext,
+    isHook,
   }: {
     extraContext?: React.Context<any>;
+    isHook?: TIsHook;
   } = {}
 ) => {
   const Context = React.createContext<TResult | undefined>(undefined);
@@ -30,9 +36,13 @@ export const defineController = <TResult, TParams extends SafeAny[]>(
     );
   };
   return {
-    useInstace: hookCreate,
+    useInstace: isHook
+      ? maybeHookCreate
+      : (...params: TParams) => useMemo(() => maybeHookCreate(...params), []),
     Provider,
     useExistingInstance: () => useContext(Context) as TResult | undefined,
-    create: hookCreate,
+    create: (isHook ? undefined : maybeHookCreate) as TIsHook extends true
+      ? undefined
+      : (...params: TParams) => TResult,
   };
 };

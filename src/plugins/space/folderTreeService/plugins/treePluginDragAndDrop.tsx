@@ -27,6 +27,14 @@ export const treePluginDragAndDrop = createTreePlugin<FolderTreeNode>({
       }
     });
 
+    eventBus.on(TreeEventKeys.DragOver, ({ node, event }) => {
+      if (node.type === "dir") {
+        if (!treeService.getViewState(node.id).isDragOver) {
+          treeService.updateViewState(node.id, { isDragOver: true });
+        }
+      }
+    });
+
     // 添加拖拽离开事件处理
     eventBus.on(TreeEventKeys.DragLeave, ({ node, event }) => {
       treeService.updateViewState(node.id, { isDragOver: false });
@@ -37,7 +45,7 @@ export const treePluginDragAndDrop = createTreePlugin<FolderTreeNode>({
       treeService.updateViewState(node.id, { isDragOver: false });
       const draggedNodeId = event.dataTransfer.getData("text");
       const draggedNode = dataStore.getNode(draggedNodeId);
-      if (draggedNode) {        
+      if (draggedNode) {
         await treeService.handleDrop(draggedNode, node, position);
       }
     });

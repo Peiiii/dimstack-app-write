@@ -42,6 +42,10 @@ export const createTreeService = (
       });
     };
 
+    getViewState = (id: string) => {
+      return getViewStateOrDefaultViewState(id);
+    };
+
     deleteNode = async (node: FolderTreeNode) => {
       const { id, path } = node;
       this.updateViewState(id, { loading: true });

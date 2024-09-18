@@ -9,3 +9,12 @@ export const joinPath = (...parts: string[]) => {
   }
   return prev;
 };
+
+export const isAnsestorPathOf = (path: string, base: string) => {
+  const pathParts = path.split("/");
+  const baseParts = base.split("/");
+  if (pathParts.length <= baseParts.length) return false;
+  return pathParts
+    .slice(0, baseParts.length)
+    .every((part, index) => part === baseParts[index]);
+};

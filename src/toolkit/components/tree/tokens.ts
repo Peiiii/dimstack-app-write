@@ -1,4 +1,3 @@
-import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { WidgetContext } from "@/toolkit/components/tree";
 import { IBaseTreeService } from "@/toolkit/components/tree/tree.service";
 import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
@@ -8,6 +7,12 @@ import { createContext, useContext } from "react";
 
 export const BaseServicePoints = {
   TreeService: typedKey<IBaseTreeService>("treeService"),
+};
+
+export const TreeRegistryKeys = {
+  DraggedNodeInfo: typedKey<{
+    nodeId: string;
+  }>("draggedNodeInfo"),
 };
 
 export const TreeContext = createContext<WidgetContext<TreeDataNode>>(

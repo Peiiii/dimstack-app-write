@@ -8,6 +8,7 @@ import {
   validateMenuItem,
 } from "@/toolkit/factories/menuController";
 import { createPipeService } from "@/toolkit/factories/pipeService";
+import { createRegistry } from "@/toolkit/factories/registry";
 import { createRenderer, Renderer } from "@/toolkit/factories/renderer";
 import { createDecoupledServiceBus } from "@/toolkit/factories/serviceBus";
 import { TreeDataNode, TreeDataStore } from "@/toolkit/factories/treeDataStore";
@@ -207,6 +208,7 @@ export type WidgetContext<
   pipe: ReturnType<typeof createPipeService>;
   serviceBus: ReturnType<typeof createDecoupledServiceBus>;
   hookRegistry: ReturnType<typeof HookRegistry.create>;
+  registry: ReturnType<typeof createRegistry>;
   viewSystem: ViewSystem;
   options: OptionsType;
 };
@@ -233,6 +235,7 @@ export const Tree = <
   serviceBus,
   options = {} as OptionsType,
   hookRegistry,
+  registry,
   onPluginsLoaded,
 }: {
   plugins?: WidgetPlugin<T, OptionsType>[];
@@ -256,6 +259,7 @@ export const Tree = <
       options,
       pipe: finalPipe,
       hookRegistry: finalHookRegistry,
+      registry: finalRegistry,
       serviceBus: finalServiceBus,
     };
   }, [finalEventBus, dataStore, options, finalPipe, finalServiceBus]);
@@ -281,6 +285,11 @@ export const Tree = <
   const finalHookRegistry = useMemo(
     () => hookRegistry || HookRegistry.create(),
     [hookRegistry]
+  );
+
+  const finalRegistry = useMemo(
+    () => registry || createRegistry({}),
+    [registry]
   );
 
   useEffect(() => {

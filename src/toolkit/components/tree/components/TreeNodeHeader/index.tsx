@@ -5,6 +5,7 @@ import { useNodeEventHandlers } from "@/toolkit/components/tree/components/TreeN
 import { useTreeContext } from "@/toolkit/components/tree/tokens";
 import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
 import { Box, Flex, Text } from "@chakra-ui/react";
+import classNames from "classnames";
 import { useEffect, useRef } from "react";
 import xbook from "xbook/index";
 
@@ -13,11 +14,15 @@ export const TreeNodeHeader = ({
   level,
   parentNode,
   dragPosition, // 添加这个参数
+  isDragOver,
+  canDrop,
 }: {
   node: TreeDataNode;
   level: number;
   parentNode?: TreeDataNode;
   dragPosition?: "before" | "inside" | "after" | null;
+  isDragOver?: boolean;
+  canDrop?: boolean;
 }) => {
   const { viewSystem, dataStore, eventBus } = useTreeContext();
   const nodeData = dataStore.useNode(node.id);
@@ -68,11 +73,26 @@ export const TreeNodeHeader = ({
         <Box className="h-0.5  bg-blue-500  absolute top-0 left-0 right-0" /> // 修改这行
       )}
       <Flex
-        className="min-w-0 h-9 mr-2 max-h-full w-full items-center overflow-hidden hover-action tree-node-header"
+        className={classNames(
+          "min-w-0 h-9 mr-2 max-h-full w-full items-center overflow-hidden hover-action tree-node-header",
+          {
+            "can-drop": isDragOver && canDrop,
+          }
+        )}
         onClick={handleNodeClick}
         tabIndex={-1}
         onKeyDown={handleKeyDown}
         position="relative" // 添加这行
+        border={
+          isDragOver && canDrop && dragPosition === "inside"
+            ? "1px solid blue"
+            : "none"
+        }
+        bg={
+          isDragOver && canDrop && dragPosition === "inside"
+            ? "blue"
+            : "transparent"
+        }
       >
         <Flex
           className="items-center overflow-hidden pr-2 hover-action"

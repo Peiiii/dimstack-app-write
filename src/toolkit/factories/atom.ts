@@ -1,5 +1,5 @@
 import { createConstraintEventBus } from "@/toolkit/factories/eventBus/constraintEventBus";
-import { createRegistry } from "@/toolkit/factories/registry";
+import { createTypedRegistry } from "@/toolkit/factories/registry";
 import { createServiceBus } from "@/toolkit/factories/serviceBus";
 import { nanoid } from "@reduxjs/toolkit";
 
@@ -20,7 +20,7 @@ export const createAtom = <T extends AtomSpec = AtomSpec>(
   let { id } = props || {};
   id = id || nanoid();
   const eventBus = createConstraintEventBus<T["events"]>();
-  const registry = createRegistry<Record<string, any>>();
+  const registry = createTypedRegistry<Record<string, any>>({});
   const serviceBus = createServiceBus<T["services"]>();
   return {
     id,
@@ -30,8 +30,6 @@ export const createAtom = <T extends AtomSpec = AtomSpec>(
     invoke: serviceBus.invoke,
     get: registry.get,
     set: registry.set,
-    waitAvailable: registry.waitAvailable,
-    subscribe: registry.subscribe,
   };
 };
 

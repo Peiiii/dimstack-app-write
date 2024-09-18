@@ -7,7 +7,7 @@ import {
 import { EventKeys } from "@/constants/eventKeys";
 import { Tokens } from "@/constants/tokens";
 import { useSubscribeObservable } from "@/hooks/use-subscribe-observable";
-import { Alert, AlertIcon, Button, Flex, Link } from "@chakra-ui/react";
+import { Alert, AlertIcon, Button, Flex } from "@chakra-ui/react";
 import { defineController } from "app-toolkit";
 import { createGiteeClient } from "libs/gitee-api";
 import { createGithubClient } from "libs/github-api";
@@ -23,30 +23,34 @@ export type SpaceFormData = {
   owner: string;
 };
 
-export const SpaceFormController = defineController(() =>
-  useMemo(
-    () =>
-      createFormBean<SpaceFormData>({
-        platform: {
-          value: "gitee",
-          title: "平台",
-          options: [
-            { value: "github", label: "GitHub" },
-            { value: "gitee", label: "Gitee" },
-          ],
-        },
-        repo: {
-          value: "",
-          title: "仓库名",
-          options: [],
-        },
-        owner: {
-          value: "",
-          title: "拥有者",
-        },
-      }),
-    []
-  )
+export const SpaceFormController = defineController(
+  () =>
+    useMemo(
+      () =>
+        createFormBean<SpaceFormData>({
+          platform: {
+            value: "gitee",
+            title: "平台",
+            options: [
+              { value: "github", label: "GitHub" },
+              { value: "gitee", label: "Gitee" },
+            ],
+          },
+          repo: {
+            value: "",
+            title: "仓库名",
+            options: [],
+          },
+          owner: {
+            value: "",
+            title: "拥有者",
+          },
+        }),
+      []
+    ),
+  {
+    isHook: true,
+  }
 );
 
 const { FormItemSelect } = getFormItemComponents<SpaceFormData>();

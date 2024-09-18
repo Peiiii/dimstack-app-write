@@ -1,14 +1,10 @@
-import { TreeEventKeys } from "@/plugins/space/folderTreeService/tokens";
-import {
-  FolderTreeNode,
-  TreeNodeTypeEnum,
-} from "@/plugins/space/folderTreeService/types";
+import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { WidgetContext } from "@/toolkit/components/tree";
+import { useDragDrop } from "@/toolkit/components/tree/components/hooks/use-drag-drop";
 import { TreeContext } from "@/toolkit/components/tree/tokens";
 import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
 import { Box, Flex } from "@chakra-ui/react";
 import classNames from "classnames";
-import React, { useState } from "react";
 
 export const TreeNode = ({
   node,
@@ -18,13 +14,13 @@ export const TreeNode = ({
 }: {
   node: TreeDataNode<FolderTreeNode>;
   level: number;
-  context: WidgetContext<any>;
+  context: WidgetContext<TreeDataNode<FolderTreeNode>>;
   parentNode?: TreeDataNode;
 }) => {
   const { dataStore, viewSystem, eventBus } = context;
   const { renderer } = viewSystem;
   const { id } = node;
-  const nodeData = dataStore.useNode(id) as TreeDataNode;
+  const nodeData = dataStore.useNode(id) as TreeDataNode<FolderTreeNode>;
   if (!nodeData) return null;
   const { children } = nodeData;
   const viewState =
@@ -32,58 +28,17 @@ export const TreeNode = ({
     viewSystem.getDefaultViewState({ id });
 
   const { expanded, highlight, isDragOver } = viewState;
-  const [dragPosition, setDragPosition] = useState<
-    "before" | "inside" | "after" | null
-  >(null);
 
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-    e.dataTransfer.setData("text/plain", id);
-    eventBus.emit(TreeEventKeys.DragStart, { node: nodeData, event: e });
-  };
+  const {
+    dragPosition,
+    canDrop,
+    handleDragStart,
+    handleDragOver,
+    handleDragEnter,
+    handleDragLeave,
+    handleDrop,
+  } = useDragDrop(nodeData, dataStore, eventBus);
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    // console.log("handleDragOver", id, "element:", e);
-    e.stopPropagation();
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-    const rect = e.currentTarget.getBoundingClientRect();
-    const y = e.clientY - rect.top;
-    if (y < rect.height * 0.25) {
-      setDragPosition("before");
-    } else if (y > rect.height * 0.75) {
-      setDragPosition("after");
-    } else {
-      setDragPosition("inside");
-    }
-    eventBus.emit(TreeEventKeys.DragOver, { node: nodeData, event: e });
-  };
-
-  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-    eventBus.emit(TreeEventKeys.DragEnter, { node: nodeData, event: e });
-  };
-
-  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-    setDragPosition(null);
-    eventBus.emit(TreeEventKeys.DragLeave, { node: nodeData, event: e });
-  };
-
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (dragPosition) {
-      eventBus.emit(TreeEventKeys.Drop, {
-        node: nodeData,
-        event: e,
-        position: dragPosition,
-      });
-    }
-    setDragPosition(null);
-  };
-
-  // const draggable = node.type !== TreeNodeTypeEnum.DIR;
   const draggable = true;
 
   return (
@@ -91,7 +46,9 @@ export const TreeNode = ({
       <Flex
         w="100%"
         direction={"column"}
-        className="tree-node-wrapper relative"
+        className={classNames("tree-node-wrapper relative", {
+          "cursor-no-drop": !canDrop && isDragOver,
+        })}
         key={id}
         draggable={draggable}
         onDragStart={handleDragStart}
@@ -110,9 +67,11 @@ export const TreeNode = ({
             "tree-node-highlight": highlight,
             "tree-root-node": level === 0,
             "bg-gray-200 dark:bg-gray-700 bg-opacity-50 dark:bg-opacity-50":
-              isDragOver,
+              isDragOver && canDrop,
             "outline outline-2 outline-blue-500 dark:outline-blue-400":
-              isDragOver && dragPosition === "inside",
+              isDragOver && dragPosition === "inside" && canDrop,
+            "outline outline-2 outline-red-500 dark:outline-red-400":
+              isDragOver && dragPosition === "inside" && !canDrop, // 添加不可拖放时的红色边框
             [`level-${level}`]: true,
           })}
         >
@@ -135,6 +94,8 @@ export const TreeNode = ({
                   level,
                   parentNode,
                   dragPosition, // 添加这行
+                  isDragOver,
+                  canDrop,
                 },
               },
               0
