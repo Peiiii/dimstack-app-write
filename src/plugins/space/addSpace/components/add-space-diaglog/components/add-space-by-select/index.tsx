@@ -146,9 +146,9 @@ export const AddSpaceBySelect = () => {
 
   // platform 未登录提示
   const noLoginNotice = !isLogin && (
-    <Alert status="warning">
+    <Alert status="warning" className="mb-2 mt-2">
       <AlertIcon />
-      未授权，请先授权，
+      {platform} 未授权，请先授权，
       <a
         onClick={() => {
           xbook.eventBus.emit(EventKeys.RequestAuthManage);
@@ -176,6 +176,7 @@ export const AddSpaceBySelect = () => {
               spaceService.addSpace(
                 {
                   ...data,
+                  repo: data.repo.toLowerCase(),
                 },
                 {
                   focus: true,

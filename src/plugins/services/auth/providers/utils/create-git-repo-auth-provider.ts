@@ -127,14 +127,17 @@ export const createGitRepoAuthProvider = ({
       });
     },
     getLoginUrl,
-    authenticate: async (username?: string, repo?: string) => {
+    authenticate: async (options) => {
       // 弹窗询问用户是否确定跳转到对应平台的登录页面
-      const userConfirmation = await xbook.modalService.confirm({
-        title: "即将跳转",
-        description: `是否确定跳转到${platform}登录页面？`,
-      });
-      if (!userConfirmation) {
-        return; // 用户取消认证
+      const { username, repo, needConfirm } = options || {};
+      if (needConfirm) {
+        const userConfirmation = await xbook.modalService.confirm({
+          title: "即将跳转",
+          description: `是否确定跳转到${platform}登录页面？`,
+        });
+        if (!userConfirmation) {
+          return; // 用户取消认证
+        }
       }
       localStorage.setItem("authRepo", repo || "");
       localStorage.setItem("authOwner", username || "");

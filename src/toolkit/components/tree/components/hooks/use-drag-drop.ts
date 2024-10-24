@@ -29,7 +29,7 @@ export const useDragDrop = (
       if (node.type !== TreeNodeTypeEnum.DIR) {
         return false;
       }
-      console.log("draggedNode", draggedNode, "dragData", dragData);
+      // console.log("draggedNode", draggedNode, "dragData", dragData);
       if (draggedNode?.type === TreeNodeTypeEnum.DIR) {
         // 暂时不支持目录拖拽
         return false;

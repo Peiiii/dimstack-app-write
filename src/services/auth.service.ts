@@ -106,7 +106,13 @@ export class AuthService {
     );
   };
 
-  authenticate = async (platform: string, username?: string, repo?: string) => {
+  authenticate = async (options: {
+    platform: string;
+    username?: string;
+    repo?: string;
+    needConfirm?: boolean;
+  }) => {
+    const { platform, username, repo, needConfirm } = options;
     const authProvider = this.authProviders.find(
       (p) => p.platform === platform
     );
@@ -114,7 +120,7 @@ export class AuthService {
       xbook.notificationService.error("不支持的平台:" + platform);
       return;
     }
-    await authProvider.authenticate(username, repo);
+    await authProvider.authenticate({ username, repo, needConfirm });
   };
 
   registerAuthProvider = (provider: IAuthProvider) => {

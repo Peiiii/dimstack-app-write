@@ -15,7 +15,11 @@ export default createPlugin({
       const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
       const space = spaceService.getSpace(spaceId);
       if (!space) return;
-      authService.authenticate(space.platform, space.owner, space.repo);
+      authService.authenticate({
+        platform: space.platform,
+        username: space.owner,
+        repo: space.repo,
+      });
     });
     xbook.pluginService.use(gitee);
     xbook.pluginService.use(github);

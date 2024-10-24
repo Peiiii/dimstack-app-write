@@ -1,5 +1,6 @@
 import { Tokens } from "@/constants/tokens";
 import React, { useMemo } from "react";
+import { AiOutlineLink } from "react-icons/ai";
 import xbook from "xbook/index";
 
 interface Integration {
@@ -15,6 +16,7 @@ interface IntegrationOption {
   name: string;
   buttonLabel: string;
   link: string;
+  willRedirect?: boolean;
 }
 
 interface IntegrationPanelProps {
@@ -40,9 +42,10 @@ const IntegrationList: React.FC<IntegrationPanelProps> = ({
             onClick={() => {
               onAddIntegration(option.id);
             }}
-            className="bg-blue-500 text-white p-2 rounded w-full mb-2"
+            className="bg-blue-500 text-white p-2 rounded w-full mb-2 flex justify-center items-center gap-2"
           >
             {option.buttonLabel}
+            {option.willRedirect && <AiOutlineLink />}
           </button>
         ))}
       </div>
@@ -107,9 +110,13 @@ const IntegrationPanel: React.FC = () => {
           name: provider.name || provider.platform,
           buttonLabel: `授权 ${provider.name || provider.platform}`,
           link: "",
+          willRedirect: true,
         }))}
         onAddIntegration={(id) => {
-          authService.authenticate(id);
+          authService.authenticate({
+            platform: id,
+            needConfirm: true,
+          });
         }}
         onRemoveIntegration={(id) => {
           authService.removeAuthRecord(id);

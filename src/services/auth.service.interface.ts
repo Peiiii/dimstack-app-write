@@ -21,6 +21,8 @@ export type AuthInfo = {
 //   // isExpired: (platform: string, username: string) => boolean;
 //   onAuthChange: (callback: () => void) => void;
 // };
+
+
 export type IAuthProvider = {
   id: string;
   platform: string;
@@ -28,7 +30,11 @@ export type IAuthProvider = {
   description?: string;
   title?: string;
   getLoginUrl: () => string;
-  authenticate: (username?: string, repo?: string) => Promise<void>;
+  authenticate: (options?: {
+    username?: string;
+    repo?: string;
+    needConfirm?: boolean;
+  }) => Promise<void>;
   refresh?: (params: {
     platform: string;
     username: string;
