@@ -42,13 +42,15 @@ export const TreeNodeHeader = ({
   );
 
   useEffect(() => {
-    if (viewState.editMode && inputRef.current) {
-      inputRef.current.focus();
-      const dotIndex = name.lastIndexOf(".");
-      if (dotIndex > 0) {
-        inputRef.current.setSelectionRange(0, dotIndex);
+    setTimeout(() => {
+      if (viewState.editMode && inputRef.current) {
+        inputRef.current.focus();
+        const dotIndex = name.lastIndexOf(".");
+        if (dotIndex > 0) {
+          inputRef.current.setSelectionRange(0, dotIndex);
+        }
       }
-    }
+    });
   }, [viewState.editMode, name]);
 
   useEffect(() => {

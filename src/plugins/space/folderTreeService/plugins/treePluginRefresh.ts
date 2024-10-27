@@ -34,6 +34,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
         label: "刷新",
         when: "level === 0 || type === 'dir'",
         icon: "AiOutlineReload",
+        group: "more",
       },
     ]);
     eventBus.on(TreeEventKeys.RefreshNode, ({ node }) => {

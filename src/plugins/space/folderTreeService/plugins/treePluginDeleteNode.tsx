@@ -1,6 +1,6 @@
 import {
-  TreeServicePoints,
   TreeEventKeys,
+  TreeServicePoints,
 } from "@/plugins/space/folderTreeService/tokens";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreePlugin } from "@/toolkit/components/tree/treePlugins";
@@ -17,12 +17,14 @@ export default createTreePlugin<FolderTreeNode>({
   },
   activate({ viewSystem, eventBus, serviceBus }) {
     const treeService = serviceBus.createProxy(TreeServicePoints.TreeService);
+
     viewSystem.addNodeMenuItems([
       {
         id: "deleteNode",
         key: "deleteNode",
         name: "删除",
         label: "删除",
+        group: "more",
         event: TreeEventKeys.DeleteNode.name,
         when: "level >= 1",
         validationRules: [
@@ -34,9 +36,9 @@ export default createTreePlugin<FolderTreeNode>({
         icon: "AiFillDelete",
       },
     ]);
-    eventBus.on(TreeEventKeys.DeleteNode, async ({ node, event, }) => {
-      event.preventDefault();
-      event.stopPropagation();
+    eventBus.on(TreeEventKeys.DeleteNode, async ({ node, event }) => {
+      // event.preventDefault();
+      // event.stopPropagation();
       if (
         await xbook.modalService.confirm({
           title: "你确定要删除该文件吗？",

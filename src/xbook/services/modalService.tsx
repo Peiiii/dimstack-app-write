@@ -187,6 +187,7 @@ export const createModalService = () => {
           resolve(false);
           modal.close();
         },
+        autoFocus: true,
       });
       modal.open();
     });

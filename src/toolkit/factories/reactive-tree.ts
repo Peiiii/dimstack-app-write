@@ -1,4 +1,5 @@
-import { Subject } from "rxjs";
+import { BehaviorSubject, defer, finalize, Observable, Subject } from "rxjs";
+import { shareReplay } from "rxjs/operators";
 
 export type ITreeNode<T> = {
   id: string;
@@ -9,19 +10,30 @@ export type ITreeNodeWithChildren<T> = ITreeNode<T> & {
   children?: ITreeNodeWithChildren<T>[];
 };
 
-export interface IReactiveTree<T> {
+interface IReactiveTree<T> {
   getNode(id: string): ITreeNode<T> | undefined;
   getParentNode(id: string): ITreeNode<T> | undefined;
   getChildrenIds(id: string): string[];
   getSubTree(id: string): ITreeNodeWithChildren<T> | undefined;
+  /** @deprecated use getNode$ instead */
   observeNode(
     id: string,
     callback: (node: ITreeNode<T> | undefined) => void
   ): () => void;
+  /** @deprecated use getChildrenIds$ instead */
   observeChildrenIds(id: string, callback: (ids: string[]) => void): () => void;
+  getNodeObservable(id: string): Observable<ITreeNode<T> | undefined>;
+  getChildrenIdsObservable(id: string): Observable<string[]>;
   updateNode(node: ITreeNode<T>): boolean;
-  addNode(parentId: string, node: ITreeNode<T>): void;
+  addNode(parentId: string, ...nodes: ITreeNode<T>[]): void;
   removeNode(id: string): void;
+  initSubTree(
+    parentId: string | undefined,
+    tree: ITreeNodeWithChildren<T>,
+    options?: {
+      overwrite?: boolean;
+    }
+  ): void;
 }
 
 export class ReactiveTree<T> implements IReactiveTree<T> {
@@ -32,20 +44,33 @@ export class ReactiveTree<T> implements IReactiveTree<T> {
   private childrenSubjects = new Map<string, Subject<string[]>>();
 
   constructor(tree: ITreeNodeWithChildren<T>) {
-    this.initTree(tree);
+    this.initSubTree(undefined, tree);
   }
 
-  private initTree = (tree: ITreeNodeWithChildren<T>, parentId?: string) => {
+  initSubTree = (
+    parentId: string | undefined,
+    tree: ITreeNodeWithChildren<T>,
+    options?: {
+      overwrite?: boolean;
+    }
+  ) => {
+    const { overwrite } = options || {};
+    if (!overwrite && this.nodeMap.has(tree.id)) {
+      throw new Error(`Node ${tree.id} already exists`);
+    }
     this.nodeMap.set(tree.id, {
       id: tree.id,
       data: tree.data,
     });
     if (parentId) {
       this.child2Parent[tree.id] = parentId;
+      this.parent2Children[parentId] = [
+        ...(this.parent2Children[parentId] || []),
+        tree.id,
+      ];
     }
     if (tree.children) {
-      this.parent2Children[tree.id] = tree.children.map((child) => child.id);
-      tree.children.forEach((child) => this.initTree(child, tree.id));
+      tree.children.forEach((child) => this.initSubTree(tree.id, child));
     }
   };
 
@@ -55,13 +80,87 @@ export class ReactiveTree<T> implements IReactiveTree<T> {
     return parentId ? this.getNode(parentId) : undefined;
   };
   getChildrenIds = (id: string) => this.parent2Children[id] || [];
-  getSubTree = (id: string) => {
+  getSubTree = (id: string): ITreeNodeWithChildren<T> | undefined => {
     const node = this.getNode(id);
     if (!node) return undefined;
     const childrenIds = this.getChildrenIds(id);
-    const children = childrenIds.map((childId) => this.getSubTree(childId));
+    const children = childrenIds.map((childId) => this.getSubTree(childId)!);
     return { ...node, children };
   };
+
+  private createObservableOfSubject = <T>(options: {
+    topic: string;
+    getSubject: (topic: string) => Subject<T> | undefined;
+    setSubject: (topic: string, subject: Subject<T>) => void;
+    removeSubject: (topic: string) => void;
+    emitCurrentValueOnSubscribe?: boolean;
+    getCurrentValue?: () => T;
+  }): Observable<T> => {
+    const {
+      topic,
+      getSubject,
+      setSubject,
+      removeSubject,
+      emitCurrentValueOnSubscribe,
+      getCurrentValue,
+    } = options;
+
+    return defer(() => {
+      let subject = getSubject(topic);
+      if (!subject) {
+        if (emitCurrentValueOnSubscribe && getCurrentValue) {
+          subject = new BehaviorSubject<T>(getCurrentValue());
+        } else {
+          subject = new Subject<T>();
+        }
+        setSubject(topic, subject);
+      }
+      return subject.asObservable();
+    }).pipe(
+      shareReplay({
+        bufferSize: 1,
+        refCount: true,
+      }),
+      finalize(() => {
+        const subject = getSubject(topic);
+        if (subject && !subject.observed) {
+          removeSubject(topic);
+        }
+      })
+    );
+  };
+
+  getNodeObservable(
+    id: string,
+    options?: {
+      emitCurrentValueOnSubscribe?: boolean;
+    }
+  ): Observable<ITreeNode<T> | undefined> {
+    return this.createObservableOfSubject({
+      topic: id,
+      getSubject: (topic) => this.nodeSubjects.get(topic),
+      setSubject: (topic, subject) => this.nodeSubjects.set(topic, subject),
+      removeSubject: (topic) => this.nodeSubjects.delete(topic),
+      emitCurrentValueOnSubscribe: options?.emitCurrentValueOnSubscribe,
+      getCurrentValue: () => this.getNode(id),
+    });
+  }
+
+  getChildrenIdsObservable(
+    id: string,
+    options?: {
+      emitCurrentValueOnSubscribe?: boolean;
+    }
+  ): Observable<string[]> {
+    return this.createObservableOfSubject({
+      topic: id,
+      getSubject: (topic) => this.childrenSubjects.get(topic),
+      setSubject: (topic, subject) => this.childrenSubjects.set(topic, subject),
+      removeSubject: (topic) => this.childrenSubjects.delete(topic),
+      emitCurrentValueOnSubscribe: options?.emitCurrentValueOnSubscribe,
+      getCurrentValue: () => this.getChildrenIds(id),
+    });
+  }
 
   observeNode = (
     id: string,
@@ -115,17 +214,36 @@ export class ReactiveTree<T> implements IReactiveTree<T> {
     return true;
   };
 
-  addNode = (parentId: string, node: ITreeNode<T>) => {
+  addNode = (parentId: string, ...nodes: ITreeNode<T>[]) => {
     const parentNode = this.getNode(parentId);
     if (!parentNode) return;
-    this.nodeMap.set(node.id, node);
-    this.child2Parent[node.id] = parentId;
+    nodes.forEach((node) => {
+      this.nodeMap.set(node.id, node);
+      this.child2Parent[node.id] = parentId;
+    });
+
     this.parent2Children[parentId] = [
       ...(this.parent2Children[parentId] || []),
-      node.id,
+      ...nodes.map((node) => node.id),
     ];
-    this.nodeSubjects.get(parentId)?.next(parentNode);
+    nodes.forEach((node) => {
+      this.nodeSubjects.get(node.id)?.next(node);
+    });
     this.childrenSubjects.get(parentId)?.next(this.getChildrenIds(parentId));
+  };
+
+  sortChildren = (id: string, compareFn: (a: string, b: string) => number) => {
+    const childrenIds = this.getChildrenIds(id);
+    const sortedChildren = childrenIds.sort(compareFn);
+    this.parent2Children[id] = sortedChildren;
+    this.childrenSubjects.get(id)?.next(sortedChildren);
+  };
+
+  sortSubTree = (id: string, compareFn: (a: string, b: string) => number) => {
+    this.sortChildren(id, compareFn);
+    this.getChildrenIds(id).forEach((childId) =>
+      this.sortSubTree(childId, compareFn)
+    );
   };
 
   removeNode = (id: string) => {

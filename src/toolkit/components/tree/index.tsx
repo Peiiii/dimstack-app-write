@@ -1,23 +1,19 @@
+import { prepareMenuService } from "@/toolkit/components/tree/menu-v2.service";
 import { TreeContext } from "@/toolkit/components/tree/tokens";
 import { createDataStore, DataStore } from "@/toolkit/factories/dataStore";
 import { createEventBus, EventBus } from "@/toolkit/factories/eventBus";
 import { HookRegistry } from "@/toolkit/factories/hook-registry";
-import {
-  MenuController,
-  MenuItem,
-  validateMenuItem,
-} from "@/toolkit/factories/menuController";
 import { createPipeService } from "@/toolkit/factories/pipeService";
 import { createRegistry } from "@/toolkit/factories/registry";
 import { createRenderer, Renderer } from "@/toolkit/factories/renderer";
 import { createDecoupledServiceBus } from "@/toolkit/factories/serviceBus";
 import { TreeDataNode, TreeDataStore } from "@/toolkit/factories/treeDataStore";
 import { SafeAny } from "@/toolkit/types";
-import { parseWhenClause } from "@/toolkit/utils/when-clause";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { css } from "@emotion/css";
 import classNames from "classnames";
 import { useCallback, useEffect, useMemo } from "react";
+export type { NodeMenuItem } from "./menu-v2.service";
 
 // View System
 export type WidgetViewState = {
@@ -31,26 +27,6 @@ export type WidgetViewState = {
   editingName?: string;
   isDragOver?: boolean;
 };
-// export type NodeMenuItem = {
-//   id: string;
-//   name: string;
-//   group?: string;
-//   title?: string;
-//   event?: string;
-//   icon?: string;
-//   validate?: (context: { node: any; level: number }) => boolean;
-// };
-
-// export interface NodeMenuItemGroup {
-//   id: string;
-//   name: string;
-//   icon: string;
-//   children: NodeMenuItem[];
-// }
-
-export interface NodeMenuItem extends MenuItem {
-  event?: string;
-}
 
 const createViewSystem = <T,>(
   {
@@ -64,80 +40,8 @@ const createViewSystem = <T,>(
   },
   getContext: () => T
 ) => {
-  const menuService = MenuController.create();
-  const { getMenuItems, upsertMenuItem } = menuService;
-  const addNodeMenuItems = (menuItems: NodeMenuItem[]) => {
-    for (const menuItem of menuItems) {
-      upsertMenuItem(menuItem);
-    }
-  };
-  const getNodeMenuItems = ({ node, level }) => {
-    return getMenuItems().filter(
-      (item) =>
-        !item.when ||
-        parseWhenClause(item.when).eval({
-          ...node,
-          level,
-        })
-    );
-  };
-  const renderNodeMenuItem = (
-    nodeMenuItem: NodeMenuItem,
-    { node, level }: { node: TreeDataNode; level: number },
-    simple = false
-  ) => {
-    const { icon, name, title } = nodeMenuItem;
-    const { isValid, message } = validateMenuItem(nodeMenuItem, {
-      ...node,
-      level,
-    });
-    const disabled = !isValid;
-    if (simple) {
-      return (
-        <Flex
-          key={nodeMenuItem.id}
-          title={nodeMenuItem.label || nodeMenuItem.name}
-          onClick={(e) => {
-            if (!disabled && nodeMenuItem.event) {
-              eventBus.emit(nodeMenuItem.event, { node, event: e });
-              e.stopPropagation();
-              e.preventDefault();
-            }
-          }}
-          style={{
-            cursor: disabled ? "not-allowed" : "pointer",
-            opacity: disabled ? 0.5 : 1,
-          }}
-        >
-          {icon ? renderer.render({ type: icon }) : title || name}
-        </Flex>
-      );
-    }
-    return (
-      <Flex
-        w="100%"
-        align={"center"}
-        key={nodeMenuItem.id}
-        justify="space-between"
-        title={message}
-        onClick={
-          !disabled && nodeMenuItem.event
-            ? eventBus.connector(nodeMenuItem.event, (event) => ({
-                node,
-                event,
-              }))
-            : undefined
-        }
-        style={{
-          cursor: disabled ? "not-allowed" : "pointer",
-          opacity: disabled ? 0.5 : 1,
-        }}
-      >
-        {nodeMenuItem.label || nodeMenuItem.name}
-        {icon && renderer.render({ type: icon })}
-      </Flex>
-    );
-  };
+  const { addNodeMenuItems, getNodeMenuItems, renderNodeMenuItem } =
+    prepareMenuService({ eventBus, renderer });
   const renderNode = ({
     node,
     level = 0,

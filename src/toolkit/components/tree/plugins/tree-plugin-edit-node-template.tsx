@@ -16,6 +16,7 @@ export const treePluginEditNodeTemplate = createTreePluginTemplate<{
         name: "编辑",
         label: "编辑",
         when: "level >= 1",
+        group: "more",
       },
     ]);
     const treeService = serviceBus.createProxy(TreeServicePoints.TreeService);    

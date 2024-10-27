@@ -18,6 +18,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
       {
         id: "editNode",
         key: "editNode",
+        group: "more",
         event: TreeEventKeys.EditNode.name,
         name: "编辑",
         label: "编辑",
@@ -68,8 +69,8 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
       }
     );
     eventBus.on(TreeEventKeys.EditNode, ({ node, event }) => {
-      event.preventDefault();
-      event.stopPropagation();
+      // event.preventDefault();
+      // event.stopPropagation();
       treeService.updateViewState(node.id, {
         editMode: true,
       });

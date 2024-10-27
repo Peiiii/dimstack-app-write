@@ -8,7 +8,10 @@ import { AiOutlineLoading } from "react-icons/ai";
 import { HiOutlineEllipsisVertical } from "react-icons/hi2";
 
 import { TreeNode } from "@/toolkit/components/tree/components/TreeNode";
-import { TreeNodeActionBar } from "@/toolkit/components/tree/components/TreeNodeActionBar";
+import {
+  TreeNodeActionBar,
+  TreeNodeActions,
+} from "@/toolkit/components/tree/components/TreeNodeActionBar";
 import { TreeNodeHeader } from "@/toolkit/components/tree/components/TreeNodeHeader";
 import { TreeNodeList } from "@/toolkit/components/tree/components/TreeNodeList";
 import {
@@ -32,8 +35,13 @@ export const renderMenuEntry = ({
   level: number;
 }) => {
   let actionBar;
+  const useV2Menu = true;
   if (nodeMenuItems.length === 0) actionBar = null;
-  else if (nodeMenuItems.length >= 3) {
+  else if (useV2Menu) {
+    actionBar = (
+      <TreeNodeActions menuItems={nodeMenuItems} node={node} level={level} />
+    );
+  } else if (nodeMenuItems.length >= 3) {
     actionBar = (
       <Menu>
         <MenuButton
