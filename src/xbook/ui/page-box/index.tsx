@@ -11,7 +11,11 @@ import {
   forwardRef,
 } from "@chakra-ui/react";
 import { ReactNode, useEffect, useMemo, useRef } from "react";
-import { AiOutlineMenu, AiOutlineMenuFold } from "react-icons/ai";
+import {
+  AiOutlineClose,
+  AiOutlineMenu,
+  AiOutlineMenuFold,
+} from "react-icons/ai";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
 import { device } from "xbook/common/device";
@@ -92,6 +96,41 @@ export const createPageBox = (): {
                 onClose={() => {
                   proxy.removePage(id);
                 }}
+                actions={[
+                  {
+                    label: "关闭右侧标签页",
+                    icon: AiOutlineClose,
+                    onClick: () => {
+                      const currentIndex = pageList.findIndex(
+                        (page) => page.id === id
+                      );
+                      const rightPages = pageList.slice(currentIndex + 1);
+                      rightPages.forEach((page) => proxy.removePage(page.id));
+                    },
+                  },
+                  {
+                    label: "关闭左侧标签页",
+                    icon: AiOutlineClose,
+                    onClick: () => {
+                      const currentIndex = pageList.findIndex(
+                        (page) => page.id === id
+                      );
+                      const leftPages = pageList.slice(0, currentIndex);
+                      leftPages.forEach((page) => proxy.removePage(page.id));
+                    },
+                  },
+                  {
+                    label: "关闭其它标签页",
+                    icon: AiOutlineClose,
+                    onClick: () => {
+                      pageList.forEach((page) => {
+                        if (page.id !== id) {
+                          proxy.removePage(page.id);
+                        }
+                      });
+                    },
+                  },
+                ]}
               />
             </DragSortItem>
           );

@@ -7,6 +7,7 @@ import "./css/scroll.scss";
 import "./css/themes/discord-light.scss";
 import "./css/themes/dark.scss";
 import "./css/themes/light.scss";
+import "./css/globals.scss";
 
 import { createPlugin } from "xbook/common/createPlugin";
 import { device } from "xbook/common/device";

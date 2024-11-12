@@ -6,6 +6,9 @@ import { typedKey } from "@/toolkit/utils/typedKey";
 export const TreeEventKeys = {
   NodeContentLoaded: "NodeContentLoaded",
   TreeOpened: "TreeOpened",
+  CopyFilePath: typedKey<{
+    node: TreeDataNode<FolderTreeNode>;
+  }>("copyFilePath"),
   NodeClick: typedKey<{
     node: TreeDataNode<FolderTreeNode>;
     event?: React.MouseEvent<HTMLDivElement>;

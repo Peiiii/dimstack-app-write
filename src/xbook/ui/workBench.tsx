@@ -1,10 +1,12 @@
+import { Toaster } from "@/components/ui/toaster";
 import { Flex } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { device } from "xbook/common/device";
 import { createDeferredComponentProxy } from "xbook/hooks/useDeferredComponentProxy";
+import { workbenchService } from "xbook/services";
 import { componentService, PresetComponents } from "./componentService";
 import "./styles/globals.scss";
 
@@ -87,6 +89,7 @@ export type Layout = {
 //     },
 //   ],
 // };
+
 export const createWorkbench = () => {
   return createDeferredComponentProxy<{
     setLayout: (layout: Layout | ((Layout) => Layout)) => void;
@@ -102,8 +105,14 @@ export const createWorkbench = () => {
         setLayout,
       });
     }, [proxy, setLayout]);
+    const { useReactEntries } = workbenchService;
+    const reactEntries = useReactEntries();
     return (
       <DndProvider backend={device.isMobile() ? TouchBackend : HTML5Backend}>
+        {reactEntries.map((entry) => (
+          <Fragment key={entry.id}>{entry.reactNode}</Fragment>
+        ))}
+        {/* <Toaster /> */}
         <Flex
           className={`workbench ${device.isMobile() ? "mobile" : "pc"}`}
           w="100%"

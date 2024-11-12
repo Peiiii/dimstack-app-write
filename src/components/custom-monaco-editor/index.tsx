@@ -11,9 +11,13 @@ type Props = {
   language: string;
   onChange?: (value: string) => void;
   keyBindings?: KeyBinding[];
+  theme?: string;
+  options?: monaco.editor.IStandaloneEditorConstructionOptions;
+  onMount?: () => void;
 };
 
 export const CustomMonacoEditor = (props: Props) => {
+  const { theme = "vs-dark", options: monacoOptions, onMount } = props;
   const editorRef = React.useRef<monaco.editor.IStandaloneCodeEditor | null>(
     null
   );
@@ -24,7 +28,11 @@ export const CustomMonacoEditor = (props: Props) => {
     editorRef.current = monaco.editor.create(containerRef.current, {
       value: props.value,
       language: props.language,
+      theme,
+      ...monacoOptions,
     });
+
+    onMount?.();
 
     const changeModelContentSubscription =
       editorRef.current.onDidChangeModelContent(() => {

@@ -12,17 +12,18 @@ export const AddFileSystemProviderForEachSpace = createPlugin({
     spaceService.subscribeSpaces((spaces) => {
       spaces.forEach((space) => {
         if (space.platform === "idb") {
-          xbook.fs.registerProvider(
-            space.id,
-            space.id,
-            new IndexedDBFileSystemProvider(),
-            { overwrite: true }
-          );
+          xbook.fs.registerProvider({
+            id: space.id,
+            scheme: space.id,
+            provider: new IndexedDBFileSystemProvider(),
+            authority: space.id,
+            options: { overwrite: true },
+          });
         } else if (space.platform === "gitee") {
-          xbook.fs.registerProvider(
-            space.id,
-            space.id,
-            new GitRepoFileSystemProvider(
+          xbook.fs.registerProvider({
+            id: space.id,
+            scheme: space.id,
+            provider: new GitRepoFileSystemProvider(
               createGiteeClient({
                 getAccessToken: () =>
                   authService.getAnyAuthInfo(space.platform, space.owner)
@@ -31,13 +32,13 @@ export const AddFileSystemProviderForEachSpace = createPlugin({
               space.owner,
               space.repo
             ),
-            { overwrite: true }
-          );
+            options: { overwrite: true },
+          });
         } else {
-          xbook.fs.registerProvider(
-            space.id,
-            space.id,
-            new GitRepoFileSystemProvider(
+          xbook.fs.registerProvider({
+            id: space.id,
+            scheme: space.id,
+            provider: new GitRepoFileSystemProvider(
               createGithubClient({
                 getAccessToken: () =>
                   authService.getAnyAuthInfo(space.platform, space.owner)
@@ -46,8 +47,8 @@ export const AddFileSystemProviderForEachSpace = createPlugin({
               space.owner,
               space.repo
             ),
-            { overwrite: true }
-          );
+            options: { overwrite: true },
+          });
         }
       });
     });

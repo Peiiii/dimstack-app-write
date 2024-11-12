@@ -14,6 +14,7 @@ export { registry as registryService } from "./registry";
 export { serviceBus } from "./serviceBus";
 export { shortcutService } from "./shortcutService";
 export { taskService } from "./taskService";
+export { workbenchService } from "./workbench.service";
 
 import { commandService } from "./commandService";
 import { eventBus } from "./eventBus";
@@ -32,6 +33,7 @@ import { pluginService } from "./pluginService";
 import { popupService } from "./popupService";
 import { registry } from "./registry";
 import { shortcutService } from "./shortcutService";
+import { workbenchService } from "./workbench.service";
 
 export default {
   logService,
@@ -51,4 +53,5 @@ export default {
   componentService,
   shortcutService,
   popupService,
+  workbenchService,
 };

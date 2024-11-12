@@ -1,3 +1,4 @@
+import { pluginCore } from "@/plugins/core";
 import base from "@/plugins/core/base";
 import features from "@/plugins/features";
 import migrations from "@/plugins/migrations";
@@ -21,7 +22,7 @@ if (urlParams.has("testMode")) {
   });
 }
 xbook.pluginService.use([
-  base,
+  pluginCore,
   // asyncPluginService,
   authService,
   spaceServiceModule,

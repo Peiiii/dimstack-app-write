@@ -13,7 +13,7 @@ import { join } from "path-browserify";
 import { createPlugin } from "xbook/common/createPlugin";
 import xbook from "xbook/index";
 import { fs } from "xbook/services";
-const SEPERATOR = "::";
+const SEPERATOR = ":";
 
 const getSpaceWithAuth = (spaceId: string): SpaceDef | undefined => {
   const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
@@ -89,11 +89,12 @@ export default createPlugin({
       "fileSystemService",
       {
         open: async (spaceId, path) => {
-          return `${spaceId}${SEPERATOR}${path}`;
+          return spaceHelper.getUri(spaceId, path).toString();
         },
         read: async (fid: string) => {
-          const [spaceId, path] = fid.split(SEPERATOR);
-          const uint = await fs.readFile(spaceHelper.getUri(spaceId, path));
+          const uri = spaceHelper.parseUri(fid);
+          console.log("read", uri);
+          const uint = await fs.readFile(uri);
           return new TextDecoder().decode(uint);
           // const space = getSpaceWithAuth(spaceId)!;
           // return await getFileContent(space, path);
@@ -104,9 +105,9 @@ export default createPlugin({
         //   return await getDirectoryContent(space, path);
         // },
         write: async (fid: string, content: string) => {
-          const [spaceId, path] = fid.split(SEPERATOR);
+          const uri = spaceHelper.parseUri(fid);
           const uint = new TextEncoder().encode(content);
-          return await fs.writeFile(spaceHelper.getUri(spaceId, path), uint, {
+          return await fs.writeFile(uri, uint, {
             overwrite: true,
             create: true,
           });

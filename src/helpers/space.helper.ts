@@ -36,12 +36,36 @@ const createSpaceHelper = () => {
   const generateSpaceId = (platform: string, owner: string, repo: string) => {
     return generateHash(`${platform}:${owner}:${repo}`);
   };
-  const getUri = (spaceId: string, path: string) => {
+  const getUri = (
+    spaceId: string,
+    path: string,
+    extraOptions?: { authority?: string }
+  ) => {
     return new Uri({
       scheme: spaceId,
+      authority: extraOptions?.authority ?? "no-authority",
       path,
     });
   };
-  return { getStore, useSpaces, generateSpaceId, getUri, generateHash };
+  const parseUri = (uri: string) => {
+    return Uri.parse(uri);
+  };
+  const getSpaceIdFromUri = (uri: string) => {
+    return Uri.parse(uri).scheme;
+  };
+  const getInSpacePathFromUri = (uri: string) => {
+    const parsed = Uri.parse(uri);
+    return parsed.path;
+  };
+  return {
+    getStore,
+    useSpaces,
+    generateSpaceId,
+    getUri,
+    generateHash,
+    parseUri,
+    getSpaceIdFromUri,
+    getInSpacePathFromUri,
+  };
 };
 export const spaceHelper = createSpaceHelper();

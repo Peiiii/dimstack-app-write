@@ -12,6 +12,7 @@ import { Uri } from "@/toolkit/vscode/uri";
 interface FileSystemProviderEntry {
   id: string;
   scheme: string;
+  authority?: string;
   provider: FileSystemProvider;
   disposable: Disposable;
 }
@@ -24,20 +25,23 @@ export class FileSystemService {
     return this.onDidChangeFileEmitter.event;
   }
 
-  registerProvider(
-    id: string,
-    scheme: string,
-    provider: FileSystemProvider,
+  registerProvider(registerOptions: {
+    id: string;
+    scheme: string;
+    provider: FileSystemProvider;
+    authority?: string;
     options: {
       overwrite?: boolean;
-    } = {}
-  ): Disposable {
+    };
+  }): Disposable {
+    const { id, scheme, provider, authority, options } = registerOptions;
     const disposable = new Disposable(() => {
       this.unregisterProvider(id);
     });
     const entry: FileSystemProviderEntry = {
       id,
       scheme,
+      authority,
       provider,
       disposable,
     };
@@ -64,8 +68,19 @@ export class FileSystemService {
     }
   }
 
-  private getProvider(scheme: string): FileSystemProvider | undefined {
-    const entry = this.providers.find((entry) => entry.scheme === scheme);
+  private getProvider(uri: Uri): FileSystemProvider | undefined {
+    const entry = this.providers.find((entry) => {
+      if (entry.scheme && entry.scheme !== uri.scheme) {
+        return false;
+      }
+      // example: space-vfs://spaceId/path
+      // example: space-vfs://spaceId/path/to/file.md
+      // github-vfs://
+      if (entry.authority && entry.authority !== uri.authority) {
+        return false;
+      }
+      return true;
+    });
     return entry?.provider;
   }
 
@@ -73,7 +88,7 @@ export class FileSystemService {
     uri: Uri,
     options: { recursive: boolean; excludes: string[] }
   ): Disposable {
-    const provider = this.getProvider(uri.scheme);
+    const provider = this.getProvider(uri);
     if (provider) {
       if (!provider.watch) {
         throw new Error(
@@ -86,7 +101,7 @@ export class FileSystemService {
   }
 
   async stat(uri: Uri): Promise<FileStat> {
-    const provider = this.getProvider(uri.scheme);
+    const provider = this.getProvider(uri);
     if (provider) {
       const result = await provider.stat(uri);
       return Promise.resolve(result);
@@ -95,7 +110,7 @@ export class FileSystemService {
   }
 
   async readDirectory(uri: Uri): Promise<[string, FileType][]> {
-    const provider = this.getProvider(uri.scheme);
+    const provider = this.getProvider(uri);
     if (provider) {
       const result = await provider.readDirectory(uri);
       return Array.isArray(result) ? result : Promise.resolve(result);
@@ -104,7 +119,7 @@ export class FileSystemService {
   }
 
   async createDirectory(uri: Uri): Promise<void> {
-    const provider = this.getProvider(uri.scheme);
+    const provider = this.getProvider(uri);
     if (provider) {
       await provider.createDirectory(uri);
     } else {
@@ -113,7 +128,7 @@ export class FileSystemService {
   }
 
   async readFile(uri: Uri): Promise<Uint8Array> {
-    const provider = this.getProvider(uri.scheme);
+    const provider = this.getProvider(uri);
     if (provider) {
       const result = await provider.readFile(uri);
       return result instanceof Uint8Array ? result : Promise.resolve(result);
@@ -126,7 +141,7 @@ export class FileSystemService {
     content: Uint8Array,
     options: { create: boolean; overwrite: boolean }
   ): Promise<void> {
-    const provider = this.getProvider(uri.scheme);
+    const provider = this.getProvider(uri);
     if (provider) {
       await provider.writeFile(uri, content, options);
     } else {
@@ -135,7 +150,7 @@ export class FileSystemService {
   }
 
   async delete(uri: Uri, options?: { recursive: boolean }): Promise<void> {
-    const provider = this.getProvider(uri.scheme);
+    const provider = this.getProvider(uri);
     if (provider) {
       await provider.delete(uri, options);
     } else {
@@ -148,7 +163,7 @@ export class FileSystemService {
     newUri: Uri,
     options: { overwrite: boolean }
   ): Promise<void> {
-    const provider = this.getProvider(oldUri.scheme);
+    const provider = this.getProvider(oldUri);
     if (provider) {
       await provider.rename(oldUri, newUri, options);
     } else {
