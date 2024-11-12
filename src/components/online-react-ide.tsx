@@ -1,23 +1,21 @@
-import React, { useState, useEffect, useRef, lazy } from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useEffect, useRef, useState } from "react";
 
-const hajackDefine = () => {
-  const systemJsDefine = (window as any).define;
-  (window as any).define = null;
-  return () => {
-    (window as any).define = systemJsDefine;
-  };
-};
+// const hajackDefine = () => {
+//   const systemJsDefine = (window as any).define;
+//   (window as any).define = null;
+//   return () => {
+//     (window as any).define = systemJsDefine;
+//   };
+// };
 
-const restoreDefine = hajackDefine();
+// const restoreDefine = hajackDefine();
 
-const MonacoEditor = lazy(() => import("@monaco-editor/react"));
-
-import * as Babel from "@babel/standalone";
 import { CustomMonacoEditor } from "@/components/custom-monaco-editor";
+import * as Babel from "@babel/standalone";
 
 export function OnlineReactIde() {
   const [code, setCode] = useState(`
@@ -64,7 +62,8 @@ export default function App() {
   const executeCode = () => {
     if (iframeRef.current) {
       const iframe = iframeRef.current;
-      const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+      const iframeDoc =
+        iframe.contentDocument || iframe.contentWindow?.document;
 
       if (iframeDoc) {
         iframeDoc.open();
@@ -127,8 +126,8 @@ export default function App() {
         <CardTitle>Online React IDE</CardTitle>
       </CardHeader>
       <CardContent className="p-0 h-[calc(100%-4rem)]">
-        <Tabs 
-          defaultValue="editor" 
+        <Tabs
+          defaultValue="editor"
           className="w-full h-full flex flex-col"
           onValueChange={setActiveTab}
         >
@@ -141,11 +140,11 @@ export default function App() {
             </TabsTrigger>
           </TabsList>
           <div className="flex-grow overflow-hidden">
-            <TabsContent 
-              value="editor" 
-              className="h-full" 
+            <TabsContent
+              value="editor"
+              className="h-full"
               forceMount
-              style={{ display: activeTab === 'editor' ? 'block' : 'none' }}
+              style={{ display: activeTab === "editor" ? "block" : "none" }}
             >
               <div className="relative h-full">
                 <CustomMonacoEditor
@@ -157,20 +156,20 @@ export default function App() {
                     minimap: { enabled: false },
                     fontSize: 14,
                   }}
-                  onMount={() => {
-                    restoreDefine();
-                  }}
+                  // onMount={() => {
+                  //   restoreDefine();
+                  // }}
                 />
                 <div className="absolute bottom-4 right-4">
                   <Button onClick={executeCode}>Run Code</Button>
                 </div>
               </div>
             </TabsContent>
-            <TabsContent 
-              value="preview" 
-              className="h-full" 
+            <TabsContent
+              value="preview"
+              className="h-full"
               forceMount
-              style={{ display: activeTab === 'preview' ? 'block' : 'none' }}
+              style={{ display: activeTab === "preview" ? "block" : "none" }}
             >
               <iframe
                 ref={iframeRef}
