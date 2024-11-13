@@ -1,10 +1,11 @@
 export class AIService {
   private apiKey: string;
-  private model = "gpt-3.5-turbo";
+  private model: string;
   private baseUrl = "https://api.openai.com/v1/chat/completions";
 
-  constructor(apiKey: string) {
+  constructor(apiKey: string, model: string = "gpt-3.5-turbo") {
     this.apiKey = apiKey;
+    this.model = model;
   }
 
   private async callAPI(messages: Array<{ role: string; content: string }>) {
@@ -45,12 +46,12 @@ export class AIService {
     ]);
   }
 
-  async generateDivergentOptions(currentScene: string, history: string[]) {
+  async generateDivergentOptions(scene: string, history: string[]) {
     const historyContext = history.length 
       ? "之前的情节：\n" + history.join("\n") + "\n\n"
       : "";
     
-    const prompt = `${historyContext}当前情节：${currentScene}
+    const prompt = `${historyContext}当前情节：${scene}
     
 请提供3个合理的剧情发展方向：
 1. 每个方向都要简短但具体

@@ -1,11 +1,14 @@
-import { provideAppAIStoryCards } from "@/plugins/features/providers/provide-apps/provide-app-ai-story-cards";
+import { provideAppAIStoryCards } from "./provide-app-ai-story-cards";
+import { provideStreamingNote } from "./provide-streaming-note";
+import { provideZenNotes } from "./provide-zen-notes";
 import { createPlugin } from "xbook/common/createPlugin";
 
 export const provideApps = createPlugin({
   initilize(xbook) {
     xbook.pluginService.use([
       provideAppAIStoryCards,
-      //  provideReactIDE
+      provideStreamingNote,
+      provideZenNotes,
     ]);
   },
 });

@@ -9,9 +9,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { Eye, EyeOff } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AIService } from "../services/ai-service";
 
@@ -33,6 +40,14 @@ interface ConversationItem {
   content: string;
 }
 
+const AI_MODELS = [
+  { id: "gpt-4o", name: "GPT-4O" },
+  { id: "gpt-4o-mini", name: "GPT-4O Mini" },
+  { id: "gpt-4", name: "GPT-4" },
+  { id: "gpt-4-turbo-preview", name: "GPT-4 Turbo" },
+  { id: "gpt-3.5-turbo", name: "GPT-3.5 Turbo" },
+] as const;
+
 export default function Component({ saveData, loadData }: AppProps) {
   const [input, setInput] = useState("");
   const [apiKey, setApiKey] = useState("");
@@ -41,7 +56,12 @@ export default function Component({ saveData, loadData }: AppProps) {
   const [selectedDirection, setSelectedDirection] = useState(null);
   const [furtherDescription, setFurtherDescription] = useState("");
   const { toast } = useToast();
-  const aiService = useMemo(() => new AIService(apiKey), [apiKey]);
+  const [selectedModel, setSelectedModel] = useState<string>("gpt4o-mini");
+  const [showApiKey, setShowApiKey] = useState(false);
+  const aiService = useMemo(
+    () => new AIService(apiKey, selectedModel),
+    [apiKey, selectedModel]
+  );
   const lastCardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -51,6 +71,7 @@ export default function Component({ saveData, loadData }: AppProps) {
         if (savedData) {
           setConversation(savedData.conversation || []);
           setApiKey(savedData.apiKey || "");
+          setSelectedModel(savedData.selectedModel || "gpt4o-mini");
         }
       } catch (error) {
         console.error("Error loading data:", error);
@@ -64,22 +85,21 @@ export default function Component({ saveData, loadData }: AppProps) {
     loadSavedData();
   }, []);
 
-  const handleSave = async () => {
-    try {
-      await saveData({ conversation, apiKey });
-      toast({
-        title: "保存成功",
-        description: "数据已成功保存",
-      });
-    } catch (error) {
-      console.error("Error saving data:", error);
-      toast({
-        title: "保存数据失败",
-        description: "无法保存当前数据，请检查您的存储设置。",
-        variant: "destructive",
-      });
-    }
-  };
+  // 添加自动保存功能
+  useEffect(() => {
+    const autoSave = async () => {
+      try {
+        await saveData({ conversation, apiKey, selectedModel });
+        console.log('Auto saved successfully');
+      } catch (error) {
+        console.error('Auto save failed:', error);
+      }
+    };
+
+    // 使用防抖来避免频繁保存
+    const timeoutId = setTimeout(autoSave, 1000);
+    return () => clearTimeout(timeoutId);
+  }, [conversation, apiKey, selectedModel, saveData]);
 
   const generateCards = async () => {
     if (!apiKey) {
@@ -228,7 +248,9 @@ export default function Component({ saveData, loadData }: AppProps) {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-slate-700 leading-relaxed whitespace-pre-line">{item.content}</p>
+              <p className="text-slate-700 leading-relaxed whitespace-pre-line">
+                {item.content}
+              </p>
             </CardContent>
           </Card>
         );
@@ -313,22 +335,9 @@ export default function Component({ saveData, loadData }: AppProps) {
     }
   }, [conversation]);
 
-  // Add keyboard shortcut handler
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-        e.preventDefault(); // Prevent browser's default save action
-        handleSave();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [conversation, apiKey]); // Dependencies for handleSave
-
   // 处理回车键发送
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       if (selectedDirection) {
         startNewRound();
@@ -350,12 +359,40 @@ export default function Component({ saveData, loadData }: AppProps) {
       {/* Bottom input area (not fixed anymore) */}
       <div className="relative bottom-0 left-0 right-0 bg-white border-t shadow-lg p-4">
         <div className="max-w-3xl mx-auto space-y-3">
-          <Input
-            type="password"
-            placeholder="输入OpenAI API密钥"
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
-          />
+          <div className="flex space-x-2">
+            <div className="relative flex-1">
+              <Input
+                type={showApiKey ? "text" : "password"}
+                placeholder="输入OpenAI API密钥"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+              />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute right-2 top-1/2 -translate-y-1/2"
+                onClick={() => setShowApiKey(!showApiKey)}
+              >
+                {showApiKey ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+            <Select value={selectedModel} onValueChange={setSelectedModel}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="选择模型" />
+              </SelectTrigger>
+              <SelectContent>
+                {AI_MODELS.map((model) => (
+                  <SelectItem key={model.id} value={model.id}>
+                    {model.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
           {selectedDirection ? (
             <div className="space-y-2">
@@ -396,10 +433,6 @@ export default function Component({ saveData, loadData }: AppProps) {
               </Button>
             </div>
           )}
-
-          <Button onClick={handleSave} variant="outline" className="w-full">
-            保存对话
-          </Button>
         </div>
       </div>
     </div>

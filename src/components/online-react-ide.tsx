@@ -41,15 +41,15 @@ export default function App() {
   const [activeTab, setActiveTab] = useState("editor");
 
   const compileCode = (sourceCode: string) => {
-    try {
-      const output = Babel.transform(sourceCode, {
-        presets: ["react"],
-      }).code;
-      setCompiledCode(output || "");
-      setError(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
-    }
+    // try {
+    //   const output = Babel.transform(sourceCode, {
+    //     presets: ["react"],
+    //   }).code;
+    //   setCompiledCode(output || "");
+    //   setError(null);
+    // } catch (err) {
+    //   setError(err instanceof Error ? err.message : String(err));
+    // }
   };
 
   const handleEditorChange = (value: string | undefined) => {

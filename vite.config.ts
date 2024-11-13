@@ -33,6 +33,7 @@ export default defineConfig({
     ],
   },
   build: {
+    minify: false,
     outDir: "dist/",
     rollupOptions: {
       input: {
