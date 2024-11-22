@@ -112,7 +112,7 @@ export const createWorkbench = () => {
         {reactEntries.map((entry) => (
           <Fragment key={entry.id}>{entry.reactNode}</Fragment>
         ))}
-        {/* <Toaster /> */}
+        <Toaster />
         <Flex
           className={`workbench ${device.isMobile() ? "mobile" : "pc"}`}
           w="100%"

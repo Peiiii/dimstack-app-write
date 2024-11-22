@@ -57,6 +57,9 @@ const createSpaceHelper = () => {
     const parsed = Uri.parse(uri);
     return parsed.path;
   };
+  const getFileName = (uri: string) => {
+    return getInSpacePathFromUri(uri).split("/").pop();
+  };
   return {
     getStore,
     useSpaces,
@@ -66,6 +69,7 @@ const createSpaceHelper = () => {
     parseUri,
     getSpaceIdFromUri,
     getInSpacePathFromUri,
+    getFileName
   };
 };
 export const spaceHelper = createSpaceHelper();

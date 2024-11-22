@@ -67,6 +67,8 @@
     "react-error-boundary": "^4.0.11",
     "react-icons": "^4.10.1",
     "react-redux": "^8.1.2",
+    "react-to-print": "^3.0.2",
+    "reactflow": "^11.11.4",
     "redaxios": "^0.5.1",
     "redux-persist": "^6.0.0",
     "redux-persist-pouchdb": "^0.2.1",
