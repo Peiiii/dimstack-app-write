@@ -94,6 +94,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
           });
 
           try {
+            console.log("writeFile", spaceHelper.getUri(space?.id, path));
             await fs.writeFile(
               spaceHelper.getUri(space?.id, path),
               new TextEncoder().encode("# "),
@@ -103,11 +104,13 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
               }
             );
 
+            console.log("writeFile success");
             // Update the node to remove loading state
             dataStore.getActions().update({
               node: childNode,
             });
 
+            console.log("emit NodeClick");
             eventBus.emit(TreeEventKeys.NodeClick, { node: childNode });
           } catch (error) {
             // If there's an error, remove the node

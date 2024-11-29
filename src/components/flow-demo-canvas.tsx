@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from "react";
 import ReactFlow, {
   Background,
   Controls,
@@ -8,10 +8,10 @@ import ReactFlow, {
   Connection,
   useNodesState,
   useEdgesState,
-} from 'reactflow';
-import 'reactflow/dist/style.css';
-import { Button } from './ui/button';
-import { Card } from './ui/card';
+} from "reactflow";
+import "reactflow/dist/style.css";
+import { Button } from "./ui/button";
+import { Card } from "./ui/card";
 
 interface FlowDemoProps {
   saveData: (data: any) => Promise<void>;
@@ -20,27 +20,27 @@ interface FlowDemoProps {
 
 const initialNodes: Node[] = [
   {
-    id: '1',
-    type: 'input',
-    data: { label: 'Input Node' },
+    id: "1",
+    type: "input",
+    data: { label: "Input Node" },
     position: { x: 250, y: 25 },
   },
   {
-    id: '2',
-    data: { label: 'Default Node' },
+    id: "2",
+    data: { label: "Default Node" },
     position: { x: 100, y: 125 },
   },
   {
-    id: '3',
-    type: 'output',
-    data: { label: 'Output Node' },
+    id: "3",
+    type: "output",
+    data: { label: "Output Node" },
     position: { x: 250, y: 250 },
   },
 ];
 
 const initialEdges: Edge[] = [
-  { id: 'e1-2', source: '1', target: '2' },
-  { id: 'e2-3', source: '2', target: '3' },
+  { id: "e1-2", source: "1", target: "2" },
+  { id: "e2-3", source: "2", target: "3" },
 ];
 
 export function FlowDemoCanvas({ saveData, loadData }: FlowDemoProps) {
@@ -66,7 +66,7 @@ export function FlowDemoCanvas({ saveData, loadData }: FlowDemoProps) {
     const autoSave = async () => {
       try {
         await saveData({ nodes, edges });
-        console.log('Auto saved successfully');
+        console.log("Auto saved successfully");
       } catch (error) {
         console.error("Auto save failed:", error);
       }
@@ -88,6 +88,7 @@ export function FlowDemoCanvas({ saveData, loadData }: FlowDemoProps) {
       position: { x: Math.random() * 500, y: Math.random() * 500 },
     };
     setNodes((nds) => [...nds, newNode]);
+    return newNode;
   };
 
   return (
@@ -110,4 +111,4 @@ export function FlowDemoCanvas({ saveData, loadData }: FlowDemoProps) {
       </ReactFlow>
     </div>
   );
-} 
+}

@@ -43,7 +43,7 @@ const createSpaceHelper = () => {
   ) => {
     return new Uri({
       scheme: spaceId,
-      authority: extraOptions?.authority ?? "no-authority",
+      authority: extraOptions?.authority,
       path,
     });
   };
@@ -69,7 +69,7 @@ const createSpaceHelper = () => {
     parseUri,
     getSpaceIdFromUri,
     getInSpacePathFromUri,
-    getFileName
+    getFileName,
   };
 };
 export const spaceHelper = createSpaceHelper();

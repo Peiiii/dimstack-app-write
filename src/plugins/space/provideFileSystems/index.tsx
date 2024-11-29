@@ -16,7 +16,7 @@ export const AddFileSystemProviderForEachSpace = createPlugin({
             id: space.id,
             scheme: space.id,
             provider: new IndexedDBFileSystemProvider(),
-            authority: space.id,
+            // authority: space.id,
             options: { overwrite: true },
           });
         } else if (space.platform === "gitee") {
