@@ -65,7 +65,8 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
               unlisten();
             }
           );
-        }, 0);
+          // TODO(优化): 延迟300ms，点击菜单新建文件等场景下，会存在自动聚焦。此处延迟，避免其它元素的自动聚焦导致输入框被blur
+        }, 300);
       }
     );
     eventBus.on(TreeEventKeys.EditNode, ({ node, event }) => {
