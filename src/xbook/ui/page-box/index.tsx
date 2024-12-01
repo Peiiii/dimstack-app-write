@@ -25,6 +25,7 @@ import { PageActions } from "xbook/ui/page-box/components/page-actions";
 import { PageBoxController } from "xbook/ui/page-box/controller";
 import { componentService } from "../componentService";
 import { Tab, TabIconButton } from "../components/tab";
+import { CommandKeys } from "xbook/constants/tokens";
 
 export const createPageBox = (): {
   proxy: ReturnType<typeof PageBoxController.create>;
@@ -234,7 +235,7 @@ export const createPageBox = (): {
                 <TabIconButton
                   className="tab-bar-left-extra"
                   onClick={() => {
-                    commandService.executeCommand("client:toggleHome");
+                    commandService.executeCommand(CommandKeys.ToggleHome);
                   }}
                 >
                   <Icon fontSize={"lg"} as={AiOutlineMenuFold} />

@@ -23,6 +23,7 @@ import { commandService } from "xbook/services/commandService";
 import { DragSortItem, moveItem } from "xbook/ui/components/DragSort";
 import { componentService } from "../componentService";
 import { Tab, TabIconButton } from "../components/tab";
+import { CommandKeys } from "xbook/constants/tokens";
 
 export type PageDescriptor = {
   id: string;
@@ -149,7 +150,7 @@ export const createPageBox = () =>
             return pageList.slice();
           });
           proxy.show();
-          commandService.executeCommandOnReady("client:toChatPage");
+          commandService.executeCommandOnReady(CommandKeys.ToChatPage);
         };
         const hideTabBar = () => {
           setTabBarVisible(false);
@@ -307,7 +308,7 @@ export const createPageBox = () =>
                 <TabIconButton
                   className="tab-bar-left-extra"
                   onClick={() => {
-                    commandService.executeCommand("client:toggleHome");
+                    commandService.executeCommand(CommandKeys.ToggleHome);
                   }}
                 >
                   <Icon fontSize={"lg"} as={AiOutlineMenuFold} />

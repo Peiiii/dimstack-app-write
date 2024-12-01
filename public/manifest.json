@@ -1,6 +1,7 @@
 {
-    "name": "Write",
-    "short_name": "Write",
+    "name": "GitNote",
+    "short_name": "GitNote",
+    "description": "基于 Git 的智能笔记协作平台",
     "display": "standalone",
     "start_url": "/",
     "scope": "/",

@@ -14,6 +14,7 @@ import { device } from "xbook/common/device";
 import "./css/themes/markdown/github.css";
 import { Layout } from "xbook/ui/workBench";
 import { PresetComponents } from "xbook/ui/componentService";
+import { CommandKeys } from "xbook/constants/tokens";
 
 const MobileLayout: Layout = {
   type: "column",
@@ -98,7 +99,7 @@ const PCLayout: Layout = {
                 {
                   // type: "SplitPane.Horizontal",
                   type: PresetComponents.SideResizer,
-                  props:{
+                  props: {
                     // id: "sidebarResizer"
                   },
                   children: [
@@ -132,6 +133,11 @@ const PCLayout: Layout = {
     },
   ],
 };
+
+const CacheKeys = {
+  Initialized: "initialized:20241201",
+};
+
 export default createPlugin({
   initilize(xbook) {
     (window as any).xbook = xbook;
@@ -142,24 +148,43 @@ export default createPlugin({
       // xbook.layoutService.sidebar.hide();
       // xbook.layoutService.activityBar.hide();
       // xbook.layoutService.sidebar.setFullwidth(false);
-      if (!cache.get("initialized", false)) {
+      if (!cache.get(CacheKeys.Initialized, false)) {
         xbook.layoutService.sidebar.show();
         xbook.layoutService.activityBar.show();
         xbook.layoutService.pageBox.hide();
-        cache.set("initialized", import.meta.env.DEV ? false : true);
+        console.log(
+          "initialize mobile layout:",
+          "sidebar:",
+          xbook.layoutService.sidebar.getVisible(),
+          "activityBar:",
+          xbook.layoutService.activityBar.getVisible(),
+          "pageBox:",
+          xbook.layoutService.pageBox.getVisible()
+        );
+        // cache.set("initialized", import.meta.env.DEV ? false : true);
+        cache.set(CacheKeys.Initialized, true);
       }
 
-      xbook.commandService.registerCommand("client:toggleHome", () => {
+      xbook.commandService.registerCommand(CommandKeys.ToggleHome, () => {
         // xbook.layoutService.pageBox.showPage("home");
-        xbook.layoutService.sidebar.toggle();
         // xbook.layoutService.sidebar.toggle();
-        // xbook.layoutService.sidebar.setFullwidth(
-        //   !xbook.layoutService.sidebar.getFullwidth()
-        // );
-        xbook.layoutService.activityBar.toggle();
-        xbook.layoutService.pageBox.toggle();
+        // // xbook.layoutService.sidebar.toggle();
+        // // xbook.layoutService.sidebar.setFullwidth(
+        // //   !xbook.layoutService.sidebar.getFullwidth()
+        // // );
+        // xbook.layoutService.activityBar.toggle();
+        // xbook.layoutService.pageBox.toggle();
+        if (xbook.layoutService.sidebar.getVisible()) {
+          xbook.layoutService.sidebar.hide();
+          xbook.layoutService.activityBar.hide();
+          xbook.layoutService.pageBox.show();
+        } else {
+          xbook.layoutService.sidebar.show();
+          xbook.layoutService.activityBar.show();
+          xbook.layoutService.pageBox.hide();
+        }
       });
-      xbook.commandService.registerCommand("client:toChatPage", () => {
+      xbook.commandService.registerCommand(CommandKeys.ToChatPage, () => {
         xbook.layoutService.pageBox.show();
         xbook.layoutService.sidebar.hide();
         xbook.layoutService.activityBar.hide();
@@ -171,14 +196,14 @@ export default createPlugin({
       xbook.layoutService.sidebar.show();
       xbook.layoutService.sidebar.setFullwidth(false);
       xbook.layoutService.activityBar.show();
-      xbook.commandService.registerCommand("client:toggleHome", () => {
+      xbook.commandService.registerCommand(CommandKeys.ToggleHome, () => {
         // xbook.layoutService.sidebar.toggle();
         xbook.layoutService.activityBar.toggle();
         // xbook.serviceBus.invoke("sidebarResizer.toggleResizable")
         xbook.serviceBus.invoke("sideResizer.toggleLeft");
       });
 
-      xbook.commandService.registerCommand("client:toChatPage", () => {
+      xbook.commandService.registerCommand(CommandKeys.ToChatPage, () => {
         // xbook.layoutService.workbench.toggleSplitable();
       });
     }

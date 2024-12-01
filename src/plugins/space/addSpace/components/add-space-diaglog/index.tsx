@@ -1,51 +1,47 @@
 import { AddSpaceBySelect } from "@/plugins/space/addSpace/components/add-space-diaglog/components/add-space-by-select";
 import { AddSpaceForm } from "@/plugins/space/addSpace/components/add-space-diaglog/components/add-space-form";
 import { AddSpaceFromUrl } from "@/plugins/space/addSpace/components/add-space-diaglog/components/add-space-from-url";
-import PageBox from "@/toolkit/components/page-box";
-import { Alert, AlertIcon } from "@chakra-ui/react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AlertCircle } from "lucide-react";
 
 export const AddSpaceDialog = () => {
-  const pageBox = (
-    <PageBox
-      defaultActivePath="/"
-      config={{
-        id: "root",
-        children: [
-          {
-            id: "selectRepo",
-            title: "选择账号下仓库",
-            height: "320px",
-            view: <AddSpaceBySelect />,
-          },
-          {
-            id: "addFromUrl",
-            title: "从URL添加",
-            height: "320px",
-            view: <AddSpaceFromUrl />,
-          },
-          {
-            id: "custom",
-            title: "指定所有者和仓库",
-            height: "320px",
-            view: <AddSpaceForm />,
-          },
-        ],
-      }}
-    />
-  );
   return (
-    <>
-      <Alert status="info">
-        <AlertIcon />
-        1.
-        您可以将Gitee/Github仓库添加为空间，添加后，还需进行授权的操作才可正常使用。
-        <br />
-        2.
-        授权后，如果是你的仓库，你可以对仓库进行编辑。如果是别人的仓库，你只能查看。
-        <br />
-        3. 编辑文件后，可以通过快捷键Ctrl+S或Cmd+S保存文件。
+    <div className="space-y-6">
+      <Alert>
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>欢迎使用 GitNote!</AlertTitle>
+        <AlertDescription>
+          <div className="space-y-2 mt-2">
+            <p>
+              1. 您可以将 GitHub/Gitee 仓库添加为知识空间，添加后需要进行授权才能正常使用
+            </p>
+            <p>
+              2. 授权后，您可以编辑自己的仓库内容，或查看他人的公开仓库
+            </p>
+            <p>
+              3. 使用快捷键 Ctrl+S 或 Cmd+S 可以快速保存文件
+            </p>
+          </div>
+        </AlertDescription>
       </Alert>
-      {pageBox}
-    </>
+
+      <Tabs defaultValue="select" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="select">选择账号下仓库</TabsTrigger>
+          <TabsTrigger value="url">从URL添加</TabsTrigger>
+          <TabsTrigger value="custom">指定所有者和仓库</TabsTrigger>
+        </TabsList>
+        <TabsContent value="select">
+          <AddSpaceBySelect />
+        </TabsContent>
+        <TabsContent value="url">
+          <AddSpaceFromUrl />
+        </TabsContent>
+        <TabsContent value="custom">
+          <AddSpaceForm />
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 };

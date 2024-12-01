@@ -1,13 +1,8 @@
 import { Tokens } from "@/constants/tokens";
-import {
-  Input,
-  InputGroup,
-  InputRightAddon,
-  Link,
-  Text,
-  Wrap,
-} from "@chakra-ui/react";
-import { css } from "@emotion/css";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Fragment, useContext, useState } from "react";
 import xbook from "xbook/index";
 import { ModalActionContext } from "xbook/services/modalService";
@@ -20,63 +15,51 @@ export const AddSpaceFromUrl = () => {
     "https://gitee.com/liyupi/code-roadmap",
     "https://github.com/ruanyf/weekly",
   ];
+
   return (
-    <>
-      <div
-        className={css`
-          margin-bottom: 1em;
-        `}
-      >
-        <Text color="gray" wordBreak={"break-all"}>
-          请输入你的Gitee/Github仓库链接。示例：
-        </Text>
-        <Wrap>
+    <div className="space-y-4">
+      <div className="text-sm text-muted-foreground">
+        <p>请输入你的 Gitee/Github 仓库链接。示例：</p>
+        <div className="flex flex-wrap gap-2 mt-2">
           {recommendUrls.map((u) => (
-            <Fragment key={u}>
-              {" "}
-              <Text as="a">{u}</Text>
-              <Link
-                color="blue.500"
-                onClick={() => {
-                  setUrl(u);
-                }}
+            <div key={u} className="flex items-center gap-2">
+              <span className="text-sm">{u}</span>
+              <Button
+                variant="link"
+                className="h-auto p-0"
+                onClick={() => setUrl(u)}
               >
                 填入
-              </Link>
-            </Fragment>
+              </Button>
+            </div>
           ))}
-        </Wrap>
+        </div>
       </div>
-      <InputGroup>
+
+      <div className="flex gap-2">
         <Input
           placeholder="请输入链接"
           autoFocus
           value={url}
           onChange={(e) => setUrl(e.target.value)}
         />
-        <InputRightAddon
+        <Button
           onClick={() => {
             const { platform, owner, repo } = spaceService.parseRepoUrl(url);
             if (!(platform && owner && repo)) {
               xbook.notificationService.error("输入链接格式不符!");
             } else {
               spaceService.addSpace(
-                {
-                  platform,
-                  owner,
-                  repo,
-                },
-                {
-                  focus: true,
-                }
+                { platform, owner, repo },
+                { focus: true }
               );
               modal.close();
             }
           }}
         >
           一键添加
-        </InputRightAddon>
-      </InputGroup>
-    </>
+        </Button>
+      </div>
+    </div>
   );
 };

@@ -20,6 +20,7 @@ import "simplebar-react/dist/simplebar.min.css";
 import { VisibilityControl } from "xbook/hooks/proxiedControls";
 import { commandService } from "xbook/services/commandService";
 import { CacheController, withCache } from "../services/cache-controller";
+import { CommandKeys } from "xbook/constants/tokens";
 
 export type PageDescriptor = {
   id: string;
@@ -217,7 +218,7 @@ export const PageBoxController = defineController(() => {
     }
     setPageList(pageList.slice());
     show();
-    commandService.executeCommandOnReady("client:toChatPage");
+    commandService.executeCommandOnReady(CommandKeys.ToChatPage);
   };
   const hideTabBar = () => {
     setTabBarVisible(false);

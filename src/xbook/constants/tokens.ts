@@ -5,3 +5,9 @@ export const HookPoints = {
   PageFilter:
     typedKey<(pages: PageDescriptor[]) => PageDescriptor[]>("PageFilter"),
 };
+
+
+export enum CommandKeys {
+  ToggleHome = "client:toggleHome",
+  ToChatPage = "client:toChatPage",
+}

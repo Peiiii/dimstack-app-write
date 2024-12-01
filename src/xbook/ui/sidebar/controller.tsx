@@ -13,7 +13,7 @@ type View = {
 };
 
 const cache = CacheController.create({
-  scope: "pageBox",
+  scope: "sidebar",
   storage: "localStorage",
 });
 
