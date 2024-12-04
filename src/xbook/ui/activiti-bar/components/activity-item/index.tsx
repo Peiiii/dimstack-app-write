@@ -14,6 +14,7 @@ const ActivityItem = ({
   showActivity,
   iconFontSize,
   textFontSize,
+  isExpanded,
 }: {
   activity: IActivityItem;
   index: number;
@@ -23,6 +24,7 @@ const ActivityItem = ({
   showActivity: any;
   iconFontSize: string;
   textFontSize: string;
+  isExpanded: boolean;
 }) => {
   const { icon = "AiFillFolder", name, id, unselectable: disableSelect } = activity;
   const IconComponent = componentService.useComponent(icon) || AiFillFolder;
@@ -39,41 +41,37 @@ const ActivityItem = ({
   return (
     <DragSortItem key={id} id={id} index={index} moveItem={moveItem}>
       <Stack
-        direction={crossDirection}
+        direction="row"
         {...props}
         className={className}
         key={id}
-        maxW={"100%"}
+        maxW={isExpanded ? "150px" : "48px"}
         overflow={"hidden"}
         m="0 !important"
         marginInlineStart={"10px"}
-        justify={"center"}
+        justify={isExpanded ? "flex-start" : "center"}
         align="center"
+        p={isExpanded ? "0 10px" : "0"}
       >
-        <VStack
-          maxW={"100%"}
-          gap={0}
-          overflow={"hidden"}
-          title={name}
-          onClick={() => showActivity(id)}
-        >
-          <Icon
-            className="icon"
-            as={IconComponent as As}
-            fontSize={iconFontSize}
-          ></Icon>
+        <Icon
+          className="icon"
+          as={IconComponent as As}
+          fontSize={iconFontSize}
+          flexShrink={0}
+        />
+        {isExpanded && (
           <Text
             m="0 !important"
             fontSize={textFontSize}
             className="activity-text text"
-            maxW={"100%"}
-            p="0px 4px"
             overflow={"hidden"}
             whiteSpace={"nowrap"}
+            textOverflow={"ellipsis"}
+            ml={2}
           >
-            {name.slice(0, 2).toUpperCase()}
+            {name}
           </Text>
-        </VStack>
+        )}
       </Stack>
     </DragSortItem>
   );

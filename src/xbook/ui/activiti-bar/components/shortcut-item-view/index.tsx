@@ -25,12 +25,14 @@ export const ShortcutItemView = ({
   isMobile,
   iconFontSize,
   textFontSize,
+  isExpanded,
 }: {
   direction: string;
   shortcut: IShortcutItem;
   isMobile?: boolean;
   iconFontSize?: string;
   textFontSize?: string;
+  isExpanded: boolean;
 }) => {
   const { id, icon, name, hasPopover } = shortcut;
   const IconComponent = componentService.useComponent(
@@ -43,7 +45,41 @@ export const ShortcutItemView = ({
   } else {
     props["h"] = "100%";
   }
-  const classList: string[] = ["activity", "shortcut"];
+
+  const content = (
+    <Stack
+      direction="row"
+      spacing={2}
+      maxW={"100%"}
+      overflow={"hidden"}
+      align="center"
+      justify={isExpanded ? "flex-start" : "center"}
+      p={isExpanded ? "0 10px" : "0"}
+      onClick={() => {
+        eventBus.emit(EventKeys.Shortcut.ShortcutClicked(id));
+      }}
+    >
+      <Icon
+        as={IconComponent as As}
+        fontSize={iconFontSize}
+        title={name}
+        flexShrink={0}
+      />
+      {isExpanded && (
+        <Text
+          m="0 !important"
+          fontSize={textFontSize}
+          className="shortcut-text text"
+          overflow={"hidden"}
+          whiteSpace={"nowrap"}
+          textOverflow={"ellipsis"}
+          ml={2}
+        >
+          {name}
+        </Text>
+      )}
+    </Stack>
+  );
 
   return hasPopover ? (
     <Popover
@@ -65,30 +101,10 @@ export const ShortcutItemView = ({
               marginInlineStart={"10px"}
               justify={"center"}
               align="center"
-              maxW={"100%"}
+              maxW={isExpanded ? "150px" : "48px"}
               overflow={"hidden"}
-              onClick={() => {
-                eventBus.emit(EventKeys.Shortcut.ShortcutClicked(id));
-              }}
             >
-              <VStack maxW={"100%"} overflow={"hidden"} gap={0}>
-                <Icon
-                  as={IconComponent as As}
-                  fontSize={iconFontSize}
-                  title={name}
-                ></Icon>
-                <Text
-                  m="0 !important"
-                  fontSize={textFontSize}
-                  className="shortcut-text text"
-                  maxW={"100%"}
-                  overflow={"hidden"}
-                  whiteSpace={"nowrap"}
-                  textOverflow={"ellipsis"}
-                >
-                  {name}
-                </Text>
-              </VStack>
+              {content}
             </Stack>
           </PopoverTrigger>
           <Portal>
@@ -123,30 +139,10 @@ export const ShortcutItemView = ({
       marginInlineStart={"10px"}
       justify={"center"}
       align="center"
-      maxW={"100%"}
+      maxW={isExpanded ? "150px" : "48px"}
       overflow={"hidden"}
-      onClick={() => {
-        eventBus.emit(EventKeys.Shortcut.ShortcutClicked(id));
-      }}
     >
-      <VStack maxW={"100%"} overflow={"hidden"} gap={0}>
-        <Icon
-          as={IconComponent as As}
-          fontSize={iconFontSize}
-          title={name}
-        ></Icon>
-        <Text
-          m="0 !important"
-          fontSize={textFontSize}
-          className="shortcut-text text"
-          maxW={"100%"}
-          overflow={"hidden"}
-          whiteSpace={"nowrap"}
-          textOverflow={"ellipsis"}
-        >
-          {name}
-        </Text>
-      </VStack>
+      {content}
     </Stack>
   );
 };

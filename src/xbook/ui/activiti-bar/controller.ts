@@ -121,6 +121,20 @@ export const ActivityBarController = defineController(() => {
     };
   });
 
+  const { getExpanded, setExpanded, useExpanded, toggleExpanded } = createCustomReactBean(
+    "Expanded",
+    false,
+    (bean) => {
+      withCache(bean, cache);
+      const toggleExpanded = () => {
+        bean.setExpanded(!bean.getExpanded());
+      };
+      return {
+        toggleExpanded,
+      };
+    }
+  );
+
   combineLatest([activeId$, activityList$]).subscribe(
     ([activeId, activityList]) => {
       if (activeId) {
@@ -185,5 +199,9 @@ export const ActivityBarController = defineController(() => {
     removeActivity,
     // addShortcut,
     // useShortcutList,
+    getExpanded,
+    setExpanded,
+    useExpanded,
+    toggleExpanded,
   };
 });

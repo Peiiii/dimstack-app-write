@@ -41,6 +41,11 @@ export const TreeEventKeys = {
     event: React.KeyboardEvent<HTMLInputElement>;
     parentNode?: TreeDataNode<FolderTreeNode>;
   }>("editKeyEnter"),
+  EditKeyDown: typedKey<{
+    node: TreeDataNode<FolderTreeNode>;
+    event: React.KeyboardEvent<HTMLInputElement>;
+    parentNode?: TreeDataNode<FolderTreeNode>;
+  }>("editKeyDown"),
   EditChange: typedKey<{
     node: TreeDataNode<FolderTreeNode>;
     event: React.KeyboardEvent<HTMLInputElement>;

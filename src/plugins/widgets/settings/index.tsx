@@ -1,41 +1,34 @@
+import { EventKeys } from "@/constants/eventKeys";
+import { SettingEntry } from "@/plugins/widgets/settings/types";
 import { AiOutlineSetting } from "react-icons/ai";
 import { createPlugin } from "xbook/common/createPlugin";
-import View from "./View";
-import store from "./store";
+import { SettingsPage } from "./page";
+import store from "@/plugins/widgets/settings/store";
 
 export default createPlugin({
   initilize(xbook) {
-    xbook.componentService.register("settings", AiOutlineSetting);
-    xbook.shortcutService.addShortcut(
-      {
-        id: "settings",
-        name: "设置",
-        hasPopover: true,
-        order: 10000,
-        icon: "settings",
+    xbook.componentService.register("AiOutlineSetting", AiOutlineSetting);
+    xbook.serviceBus.exposeAt("settingService", {
+      addSettingEntry: (entry: SettingEntry) => {
+        store.getActions().add(entry);
       },
-      true
+    });
+    xbook.shortcutService.addShortcut({
+      id: "settings",
+      name: "设置",
+      order: 10000,
+      icon: "AiOutlineSetting",
+    });
+
+    xbook.eventBus.on(
+      EventKeys.Shortcut.ShortcutClicked("settings"),
+      () => {
+        xbook.modalService.open({
+          content: <SettingsPage />,
+          footer: false,
+          width: "720px"
+        });
+      }
     );
-  },
-  addServices() {
-    return [
-      "settingService",
-      {
-        addSettingEntry: store.getActions().add,
-      },
-    ];
-  },
-  addCommands() {
-    return [
-      "settingService",
-      {
-        addSettingEntry: store.getActions().add,
-      },
-    ];
-  },
-  addComponents() {
-    return {
-      "shortcut:settings:page": View,
-    };
   },
 });

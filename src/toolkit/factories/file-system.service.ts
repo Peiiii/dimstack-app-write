@@ -73,9 +73,6 @@ export class FileSystemService {
       if (entry.scheme && entry.scheme !== uri.scheme) {
         return false;
       }
-      // example: space-vfs://spaceId/path
-      // example: space-vfs://spaceId/path/to/file.md
-      // github-vfs://
       if (entry.authority && entry.authority !== uri.authority) {
         return false;
       }

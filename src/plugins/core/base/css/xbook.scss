@@ -2,10 +2,24 @@
   transition: width 0.3s ease;
   background-color: var(--default-bg-color);
 
-  //   .activity-wrapper {
-  //     background-color: transparent !important;
-  //     box-shadow: none !important;
-  //   }
+  &.expanded {
+    width: 200px;
+  }
+
+  &.collapsed {
+    width: 48px;
+  }
+
+  .activity-text {
+    transition: opacity 0.2s ease;
+    white-space: nowrap;
+
+    &.hidden {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+    }
+  }
 
   @mixin normal-side-item {
     color: var(--secondary-color);

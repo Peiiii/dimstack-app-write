@@ -1,7 +1,6 @@
 import { useGlobalContext } from "@/toolkit/components/context";
-import { Action, SafeAny } from "@/toolkit/types";
+import { Action } from "@/toolkit/types";
 import {
-  Box,
   Flex,
   HStack,
   IconButton,
@@ -11,11 +10,12 @@ import {
   MenuList,
   Text,
   Tooltip,
-  VStack,
+  VStack
 } from "@chakra-ui/react";
-import { FC, ReactNode, forwardRef } from "react";
+import { FC, ReactNode } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
 import xbook from "xbook/index";
+
 export const SideCard: FC<{
   title: ReactNode;
   className?: string;
@@ -39,8 +39,14 @@ export const SideCard: FC<{
           align={"center"}
           flexShrink={0}
           className="header"
+          px={4}
+          py={2}
+          bg="gray.100"
+          _dark={{ bg: "gray.800",borderColor: "gray.700"  }}
+          borderBottom="1px solid"
+          borderColor="gray.200"
         >
-          <Flex  align={"center"} w="100%" mt="1rem">
+          <Flex align={"center"} w="100%">
             <Tooltip label={title}>
               <>
                 {typeof title === "string" ? (
@@ -49,6 +55,9 @@ export const SideCard: FC<{
                     textOverflow={"ellipsis"}
                     whiteSpace={"nowrap"}
                     overflow="hidden"
+                    fontSize="lg"
+                    color="gray.800"
+                    _dark={{ color: "gray.200" }}
                   >
                     {title}
                   </Text>
@@ -57,31 +66,16 @@ export const SideCard: FC<{
                 )}
               </>
             </Tooltip>
-
-            <Box flexGrow={1} />
-            <Flex flexGrow={0} flexShrink={0}>
-              <MenuButton
-                // borderRadius={0}
-                as={forwardRef<SafeAny>((props, ref) => (
-                  <IconButton
-                    ref={ref}
-                    aria-label=""
-                    size={"sm"}
-                    ml="0.2rem"
-                    mr="0.2rem"
-                    variant={"ghost"}
-                    {...props}
-                    icon={<AiOutlineSetting />}
-                  />
-                ))}
-                bg="inherit"
-              />
-            </Flex>
+            <MenuButton
+              as={IconButton}
+              aria-label="Options"
+              icon={<AiOutlineSetting />}
+              variant="ghost"
+              size="sm"
+              ml="auto"
+              _hover={{ bg: "gray.200", _dark: { bg: "gray.600" } }}
+            />
           </Flex>
-
-          {/* <Button  borderRadius={0} className="side-card-header" flexShrink={0}>
-        {title}
-      </Button> */}
         </HStack>
         <MenuList zIndex={2}>
           {actions.map((a) => {
@@ -96,9 +90,14 @@ export const SideCard: FC<{
                     }))
               );
             }
-            
+
             return (
-              <MenuItem key={a.title} icon={a.icon} {...eventMap}>
+              <MenuItem
+                key={a.title}
+                icon={a.icon}
+                {...eventMap}
+                _hover={{ bg: "gray.100", _dark: { bg: "gray.700" } }}
+              >
                 {a.title}
               </MenuItem>
             );
@@ -110,8 +109,6 @@ export const SideCard: FC<{
           w="100%"
           height={"100%"}
           overflowX={"hidden"}
-          // overflowY="auto"
-          // className="scroll scroll-7 "
           className="flex-container-limited"
           gap={0}
         >
