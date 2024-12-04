@@ -24,6 +24,7 @@ export const createSidebar = (): {
       useActiveViewId,
       useViewList,
     } = sidebarController;
+    (window as any).sidebarController = sidebarController;
     const visible = useVisible();
     const isFullwidth = useFullwidth();
     const viewList = useViewList();

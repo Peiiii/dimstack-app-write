@@ -86,7 +86,10 @@ export const SidebarController = defineController(() => {
   });
   const Visible = createCustomReactBean("Visible", true, (bean) => {
     withCache(bean, cache);
-    const { getVisible, setVisible } = bean;
+    const { getVisible, setVisible,Visible$ } = bean;
+    Visible$.subscribe((visible) => {
+      console.log("[Sidebar] visible", visible);
+    });
     return {
       show: () => setVisible(true),
       hide: () => setVisible(false),
@@ -116,5 +119,6 @@ export const SidebarController = defineController(() => {
     getCurrentView,
     useCurrentView,
     setView,
+    cache,
   };
 });

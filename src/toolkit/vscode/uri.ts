@@ -1,3 +1,5 @@
+import { UriRegistry } from "@/toolkit/vscode/uri-registry";
+
 // 3.0 的 vscode-uri 没有导出这个
 export interface UriComponents {
   scheme: string;
@@ -6,6 +8,38 @@ export interface UriComponents {
   query?: string;
   fragment?: string;
 }
+
+export interface IUriParser {
+  /**
+   * 解析器支持的协议
+   */
+  readonly scheme: string;
+
+  /**
+   * 解析URI字符串
+   */
+  parse(value: string): UriComponents;
+
+  /**
+   * 验证URI格式
+   */
+  isValid(value: string): boolean;
+
+  /**
+   * 获取解析器配置
+   */
+  getConfig(): UriParserConfig;
+}
+
+export interface UriParserConfig {
+  // 是否需要authority部分
+  requiresAuthority?: boolean;
+  // 是否支持query参数
+  supportsQuery?: boolean;
+  // 是否支持fragment
+  supportsFragment?: boolean;
+}
+
 
 /**
  * Interface representing the shape of a URI object.
@@ -159,8 +193,16 @@ class Uri implements IUri {
     return encodeURIComponent(fragment).replace(/%20/g, "+");
   }
 
-  static parse(value: string): Uri {
-    return UriStatic.parse(value);
+  static parse(value: string, strict = false): Uri {
+    try {
+      const components = UriRegistry.getInstance().parse(value);
+      return new Uri(components);
+    } catch (error) {
+      if (strict) {
+        throw error;
+      }
+      return new Uri({});
+    }
   }
 
   static file(path: string): IUri {

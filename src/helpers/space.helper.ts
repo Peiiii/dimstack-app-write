@@ -39,23 +39,27 @@ const createSpaceHelper = () => {
   const getUri = (
     spaceId: string,
     path: string,
-    extraOptions?: { authority?: string }
+    options?: {
+      fragment?: string;
+      query?: string;
+    }
   ) => {
     return new Uri({
-      scheme: spaceId,
-      authority: extraOptions?.authority,
+      scheme: "space",
+      authority: spaceId,
       path,
+      fragment: options?.fragment || "",
+      query: options?.query || "",
     });
   };
   const parseUri = (uri: string) => {
     return Uri.parse(uri);
   };
   const getSpaceIdFromUri = (uri: string) => {
-    return Uri.parse(uri).scheme;
+    return Uri.parse(uri).authority;
   };
   const getInSpacePathFromUri = (uri: string) => {
-    const parsed = Uri.parse(uri);
-    return parsed.path;
+    return Uri.parse(uri).path;
   };
   const getFileName = (uri: string) => {
     return getInSpacePathFromUri(uri).split("/").pop();

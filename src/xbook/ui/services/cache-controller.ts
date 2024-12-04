@@ -31,7 +31,8 @@ export const CacheController = defineController(
       return bean;
     };
     const get = <T>(key: string, defaultValue: T) => {
-      return storageProvider.get(joinKey(scope, key)) || defaultValue;
+      const value = storageProvider.get(joinKey(scope, key));
+      return value ?? defaultValue;
     };
     const set = <T>(key: string, value: T) => {
       return storageProvider.set(joinKey(scope, key), value);
@@ -61,7 +62,9 @@ export const withCache = <
     key,
     BeanReflector.getGetter(bean as SafeAny)()
   );
+  console.log("[Cache] get", key, cachedValue);
   if (cachedValue !== BeanReflector.getGetter(bean as SafeAny)()) {
+    console.log("[Cache] set", key, cachedValue);
     BeanReflector.getSetter(bean as SafeAny)(cachedValue);
   }
   BeanReflector.getObservable(bean as SafeAny)

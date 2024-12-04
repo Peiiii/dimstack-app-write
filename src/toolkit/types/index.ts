@@ -28,3 +28,5 @@ export type ExtractKeyType<T> = T extends TypedKey<infer U> ? U : never;
 export type Key<T = any> = string | TypedKey<T>;
 
 export type MaybePromise<T> = T | Promise<T>;
+
+export type MaybeThenable<T> = T | Thenable<T>;

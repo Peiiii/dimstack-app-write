@@ -137,7 +137,9 @@ export const PageBoxController = defineController(() => {
   const { getVisible, setVisible, useVisible } = createCustomReactBean(
     "Visible",
     true,
-    () => {}
+    (bean) => {
+      withCache(bean, cache);
+    }
   );
 
   //   const [visible, setVisible] = cache.useCachedState("visible", true);
@@ -151,7 +153,7 @@ export const PageBoxController = defineController(() => {
   const hide = () => setVisible(false);
   const toggle = () => setVisible(!getVisible());
 
-  const addPage = (page: PageDescriptor, show: boolean = true) => {
+  const addPage = (page: PageDescriptor, showPage: boolean = true) => {
     let exists = false;
     const pageList = getPageList().slice();
     for (const p of pageList) {
@@ -160,7 +162,7 @@ export const PageBoxController = defineController(() => {
       }
     }
     if (!exists) pageList.push(page);
-    if (show) {
+    if (showPage) {
       // pageList.forEach((p) => (p.active = p.id === page.id ? true : false));
       setPageList(
         pageList.map((p) => {
@@ -171,6 +173,7 @@ export const PageBoxController = defineController(() => {
           }
         })
       );
+      show();
     } else setPageList(pageList.slice());
   };
   const addPages = (pages: PageDescriptor[]) => {

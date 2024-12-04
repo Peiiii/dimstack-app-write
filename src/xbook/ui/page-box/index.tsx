@@ -32,6 +32,7 @@ export const createPageBox = (): {
   instance: ReactNode;
 } => {
   const pageBoxController = PageBoxController.create();
+  (window as any).pageBoxController = pageBoxController;
 
   const PageBoxView = () => {
     const proxy = pageBoxController;
