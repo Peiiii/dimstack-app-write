@@ -20,10 +20,16 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
         key: "editNode",
         group: "more",
         event: TreeEventKeys.EditNode.name,
-        name: "编辑",
-        label: "编辑",
+        name: "重命名",
+        label: "重命名",
         icon: "AiFillEdit",
-        when: "level >= 1",
+        when: "level >= 0",
+        validationRules: [
+          {
+            check: "type !== 'dir'",
+            failMessage: "赞不支持重命名文件夹",
+          },
+        ],
       },
     ]);
     const treeService = serviceBus.createProxy(TreeServicePoints.TreeService);

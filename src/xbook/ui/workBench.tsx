@@ -107,11 +107,26 @@ export const createWorkbench = () => {
     }, [proxy, setLayout]);
     const { useReactEntries } = workbenchService;
     const reactEntries = useReactEntries();
+    const components = reactEntries.filter((entry) => entry.WrapperComponent);
+
+    // 修改嵌套组件的函数
+    const createNestedComponents = (index: number) => {
+      const content = componentService.render(layout);
+      
+      // 添加类型断言确保组件接受children属性
+      return components.reduceRight((wrapped, entry, currentIndex) => {
+        const CurrentComponent = entry.WrapperComponent as React.ComponentType<{ children?: React.ReactNode }>;
+        return <CurrentComponent>{wrapped}</CurrentComponent>;
+      }, content);
+    };
+
     return (
       <DndProvider backend={device.isMobile() ? TouchBackend : HTML5Backend}>
-        {reactEntries.map((entry) => (
-          <Fragment key={entry.id}>{entry.reactNode}</Fragment>
-        ))}
+        {reactEntries
+          .filter((entry) => entry.reactNode)
+          .map((entry) => (
+            <Fragment key={entry.id}>{entry.reactNode}</Fragment>
+          ))}
         <Toaster />
         <Flex
           className={`workbench ${device.isMobile() ? "mobile" : "pc"}`}
@@ -119,8 +134,7 @@ export const createWorkbench = () => {
           h="100%"
           overflow={"hidden"}
         >
-          {componentService.render(layout)}
-          {/* <ComboboxDemo /> */}
+          {createNestedComponents(0)}
         </Flex>
       </DndProvider>
     );

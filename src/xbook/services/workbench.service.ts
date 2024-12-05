@@ -1,9 +1,11 @@
+import { SafeAny } from "@/toolkit/types";
 import { createCustomReactBean } from "rx-bean";
 import { createCRUDActions } from "xbook/utils/create-actions";
 
 export type ReactEntry = {
   id: string;
-  reactNode: React.ReactNode;
+  reactNode?: React.ReactNode;
+  WrapperComponent?: React.ComponentType<SafeAny>;
 };
 
 export class WorkbenchService {

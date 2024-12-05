@@ -20,6 +20,7 @@ import { IMenuTree } from "@/toolkit/factories/menu-manager";
 import { ITreeNode } from "@/toolkit/factories/reactive-tree";
 import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
 import { FC, useMemo } from "react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export const TreeNodeActionBar: FC<{
   node: TreeDataNode;
@@ -54,38 +55,30 @@ export const MenuItemView: FC<{
     level,
   });
 
-  if (menuItem.children && menuItem.children.length > 0) {
-    return (
-      <DropdownMenuSub>
-        <DropdownMenuSubTrigger>
+  console.log("[MenuItemView]", menuItem.data, "node:", node, "level:", level, "result:", {
+    isValid,
+    message,
+  });
+
+  return (
+    <DropdownMenuItem
+      disabled={!isValid}
+      onClick={(e) => {
+        isValid && event && eventBus.emit(event, { ...nodeContext, event: e });
+      }}
+    >
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center gap-2">
           {menuItem.data.icon &&
             renderer.render({
               type: menuItem.data.icon,
             })}
           {menuItem.data.label}
-        </DropdownMenuSubTrigger>
-        <DropdownMenuSubContent>
-          {menuItem.children?.map((child) => {
-            return <MenuItemView key={child.id} menuItem={child} />;
-          })}
-        </DropdownMenuSubContent>
-      </DropdownMenuSub>
-    );
-  }
-  // console.log("nodeContext", nodeContext);
-  return (
-    <DropdownMenuItem
-      disabled={!isValid}
-      title={!isValid ? message : undefined}
-      onClick={(e) => {
-        isValid && event && eventBus.emit(event, { ...nodeContext, event: e });
-      }}
-    >
-      {menuItem.data.icon &&
-        renderer.render({
-          type: menuItem.data.icon,
-        })}
-      {menuItem.data.label}
+        </div>
+        {!isValid && message && (
+          <span className="text-xs text-muted-foreground">{message}</span>
+        )}
+      </div>
     </DropdownMenuItem>
   );
 };

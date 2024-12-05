@@ -103,12 +103,21 @@ export const prepareMenuService = (options: {
     { node, level }: { node: TreeDataNode; level: number },
     simple = false
   ) => {
+    console.log("[renderNodeMenuItem]", nodeMenuItem.data);
     const { icon, name, title } = nodeMenuItem.data;
     const { isValid, message } = validateMenuItem(nodeMenuItem, {
       ...node,
       level,
     });
     const disabled = !isValid;
+    console.log(
+      nodeMenuItem.data.validationRules,
+      "result:",
+      "isValid:",
+      isValid,
+      "message:",
+      message
+    );
     if (simple) {
       return (
         <Flex
