@@ -15,7 +15,7 @@ export default createFolderTreePlugin({
       {
         id: "copyFilePath",
         key: "copyFilePath",
-        label: "复制文件 URI",
+        label: "复制 URI",
         icon: "AiFillCopy",
         event: TreeEventKeys.CopyFilePath.name,
         group: "more",
@@ -23,7 +23,7 @@ export default createFolderTreePlugin({
     ]);
     viewSystem.renderer.register("AiFillCopy", AiFillCopy);
     eventBus.on(TreeEventKeys.CopyFilePath, ({ node }) => {
-      const uri = spaceHelper.getUri(space.id, node.id);
+      const uri = spaceHelper.getUri(space.id, node.id === "root" ? "" : node.id);
       navigator.clipboard.writeText(uri.toString());
       xbook.notificationService.success("已复制文件 URI");
     });
