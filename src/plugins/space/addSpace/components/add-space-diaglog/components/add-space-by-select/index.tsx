@@ -168,7 +168,7 @@ export const AddSpaceBySelect = () => {
           {noLoginNotice}
           <FormItemSelect name="repo" />
         </div>
-        <Flex justify={"flex-end"} gap={"1em"}>
+        <Flex justify={"flex-end"} gap={"1em"} mt={"1em"}>
           <Button
             colorScheme="blue"
             onClick={() => {

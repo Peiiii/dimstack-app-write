@@ -10,6 +10,7 @@ import { refreshGiteeAccessToken } from "libs/gitee-api";
 import { useEffect, useState } from "react";
 import { switchMap } from "rxjs";
 import xbook from "xbook/index";
+import { spacePlatformRegistry } from "@/services/space-platform.registry";
 
 export class SpaceService implements ISpaceService {
   spaceStore = createDataStore<SpaceDef>({
@@ -273,12 +274,30 @@ export class SpaceService implements ISpaceService {
   };
 
   parseRepoUrl = (url: string) => {
-    const u = new URL(url);
-    let platform, owner, repo;
-    if (u.hostname === "gitee.com") platform = "gitee";
-    else if (u.hostname === "github.com") platform = "github";
-    [owner, repo] = u.pathname.slice(1).split("/");
-    return { platform, owner, repo };
+    try {
+      const u = new URL(url);
+      const platform = Array.from(spacePlatformRegistry.getPlatforms()).find(
+        (p) => p.hostname === u.hostname
+      );
+      if (!platform) return {};
+
+      // 移除开头和结尾的斜杠
+      const path = u.pathname.replace(/^\/|\/$/g, "");
+      const [owner, repo, ...rest] = path.split("/");
+
+      // 确保只有 owner/repo 的格式
+      if (!owner || !repo || rest.length > 0) {
+        return {};
+      }
+
+      return {
+        platform: platform?.id || "",
+        owner: owner || "",
+        repo: (repo || "").replace(/\.git$/, ""),
+      };
+    } catch (e) {
+      return { platform: "", owner: "", repo: "" };
+    }
   };
 
   subscribeSpaces = (callback: (spaces: SpaceDef[]) => void) => {

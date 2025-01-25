@@ -32,13 +32,13 @@ export const AddSpaceDialog = () => {
           <TabsTrigger value="url">从URL添加</TabsTrigger>
           <TabsTrigger value="custom">指定所有者和仓库</TabsTrigger>
         </TabsList>
-        <TabsContent value="select">
+        <TabsContent value="select" className="pb-4">
           <AddSpaceBySelect />
         </TabsContent>
-        <TabsContent value="url">
+        <TabsContent value="url" className="pb-4">
           <AddSpaceFromUrl />
         </TabsContent>
-        <TabsContent value="custom">
+        <TabsContent value="custom" className="pb-4">
           <AddSpaceForm />
         </TabsContent>
       </Tabs>

@@ -22,13 +22,15 @@ export default createPlugin({
     const openRepo = params["openRepo"];
     const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
     if (openRepo) {
-      const { platform, owner, repo } = spaceService.parseRepoUrl(openRepo);
-      const space = spaceService.addSpace({ platform, owner, repo });
-      const url = removeUrlParams(window.location.href, ["openRepo"]);
-      window.history.replaceState(null, "", url);
-      setTimeout(() => {
-        spaceService.focusSpace(space.id);
-      }, 400);
+      const result = spaceService.parseRepoUrl(openRepo);
+      if (result.platform && result.owner && result.repo) {
+        const space = spaceService.addSpace(result);
+        const url = removeUrlParams(window.location.href, ["openRepo"]);
+        window.history.replaceState(null, "", url);
+        setTimeout(() => {
+          spaceService.focusSpace(space.id);
+        }, 400);
+      }
     }
 
     const action: Action = {

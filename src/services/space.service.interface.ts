@@ -1,6 +1,12 @@
 import { DataStore } from "@/toolkit/factories/dataStore";
 import { SpaceDef } from "@/toolkit/types/space";
 
+interface RepoUrlResult {
+  platform: string;
+  owner: string;
+  repo: string;
+}
+
 export interface ISpaceService {
   setSpaces(spaces: SpaceDef[]): void;
   useSpaces(): SpaceDef[];
@@ -24,6 +30,6 @@ export interface ISpaceService {
   ): SpaceDef;
   focusSpace(spaceId: string): void;
   getFocusedSpace(): SpaceDef | undefined;
-  parseRepoUrl(url: string): { platform: string; owner: string; repo: string };
+  parseRepoUrl(url: string): Partial<RepoUrlResult>;
   subscribeSpaces(callback: (spaces: SpaceDef[]) => void): void;
 }

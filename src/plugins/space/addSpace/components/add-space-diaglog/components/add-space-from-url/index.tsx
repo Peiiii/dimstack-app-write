@@ -42,6 +42,7 @@ export const AddSpaceFromUrl = () => {
           autoFocus
           value={url}
           onChange={(e) => setUrl(e.target.value)}
+          className="flex-1"
         />
         <Button
           onClick={() => {

@@ -5,6 +5,7 @@ import { createGiteeClient } from "libs/gitee-api";
 import { createGithubClient } from "libs/github-api";
 import { createPlugin } from "xbook/common/createPlugin";
 import { SpaceFileSystemProviderProxy } from "@/services/space-file-system-provider-proxy";
+import { spacePlatformRegistry } from "@/services/space-platform.registry";
 
 export const AddFileSystemProviderForEachSpace = createPlugin({
   initilize(xbook) {
@@ -13,33 +14,15 @@ export const AddFileSystemProviderForEachSpace = createPlugin({
 
     spaceService.subscribeSpaces((spaces) => {
       spaces.forEach((space) => {
-        let provider;
-        
-        if (space.platform === "idb") {
-          provider = new IndexedDBFileSystemProvider();
-        } else if (space.platform === "gitee") {
-          provider = new GitRepoFileSystemProvider(
-            createGiteeClient({
-              getAccessToken: () =>
-                authService.getAnyAuthInfo(space.platform, space.owner)
-                  ?.accessToken,
-            }),
-            space.owner,
-            space.repo
-          );
-        } else {
-          provider = new GitRepoFileSystemProvider(
-            createGithubClient({
-              getAccessToken: () =>
-                authService.getAnyAuthInfo(space.platform, space.owner)
-                  ?.accessToken,
-            }),
-            space.owner,
-            space.repo
-          );
-        }
+        const platform = spacePlatformRegistry.getPlatform(space.platform);
+        if (!platform) return;
 
-        // 使用代理包装原始提供者
+        const provider = platform.getProvider({
+          accessToken: authService.getAnyAuthInfo(space.platform, space.owner)?.accessToken,
+          owner: space.owner,
+          repo: space.repo,
+        });
+
         const proxyProvider = new SpaceFileSystemProviderProxy(provider, space.id);
         
         xbook.fs.registerProvider({

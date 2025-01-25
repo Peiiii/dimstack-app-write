@@ -15,6 +15,9 @@ import {
   AiOutlineClose,
   AiOutlineMenu,
   AiOutlineMenuFold,
+  AiOutlineArrowRight,
+  AiOutlineArrowLeft,
+  AiOutlineCloseCircle,
 } from "react-icons/ai";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
@@ -101,7 +104,7 @@ export const createPageBox = (): {
                 actions={[
                   {
                     label: "关闭右侧标签页",
-                    icon: AiOutlineClose,
+                    icon: AiOutlineArrowRight,
                     onClick: () => {
                       const currentIndex = pageList.findIndex(
                         (page) => page.id === id
@@ -112,7 +115,7 @@ export const createPageBox = (): {
                   },
                   {
                     label: "关闭左侧标签页",
-                    icon: AiOutlineClose,
+                    icon: AiOutlineArrowLeft,
                     onClick: () => {
                       const currentIndex = pageList.findIndex(
                         (page) => page.id === id
@@ -129,6 +132,15 @@ export const createPageBox = (): {
                         if (page.id !== id) {
                           proxy.removePage(page.id);
                         }
+                      });
+                    },
+                  },
+                  {
+                    label: "关闭所有标签页",
+                    icon: AiOutlineCloseCircle,
+                    onClick: () => {
+                      pageList.forEach((page) => {
+                        proxy.removePage(page.id);
                       });
                     },
                   },
