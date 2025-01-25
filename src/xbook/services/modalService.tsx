@@ -17,6 +17,16 @@ import React, { ReactNode, useEffect, useState } from "react";
 import * as ReactDOM from "react-dom/client";
 import { DeferredProxy } from "xbook/common/deferredProxy";
 import { createDeferredComponentProxy } from "xbook/hooks/useDeferredComponentProxy";
+
+const modalRoot = ReactDOM.createRoot(
+  (() => {
+    const container = document.createElement('div');
+    container.id = 'modal-container';
+    document.body.appendChild(container);
+    return container;
+  })()
+);
+
 export type ModalSpec = {
   title?: ReactNode;
   content: React.ReactNode;
@@ -38,25 +48,6 @@ export const ModalActionContext = React.createContext<
 >(undefined);
 
 export const createModalService = () => {
-  const getContainer = (name: string) => {
-    if (document.getElementById(name) !== null)
-      return document.getElementById(name)!;
-    else {
-      const dom = document.createElement("div");
-      dom.id = name;
-      document.body.appendChild(dom);
-      return dom;
-    }
-  };
-
-  const getWrapper = (name) => {
-    const container = getContainer(name);
-    const wrapper = document.createElement("div");
-    wrapper.className = "wrapper";
-    container.appendChild(wrapper);
-    return wrapper;
-  };
-
   const createModal = ({
     content,
     title,
@@ -130,7 +121,8 @@ export const createModalService = () => {
       };
       return <ModalWrapper content={content} />;
     });
-    ReactDOM.createRoot(getWrapper("modal-container")).render(
+    
+    modalRoot.render(
       <ChakraProvider>{modal.instance}</ChakraProvider>
     );
     return modal.proxy;
