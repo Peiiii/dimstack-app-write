@@ -12,23 +12,23 @@ import {
 } from "@chakra-ui/react";
 import { ReactNode, useEffect, useMemo, useRef } from "react";
 import {
+  AiOutlineArrowLeft,
+  AiOutlineArrowRight,
   AiOutlineClose,
+  AiOutlineCloseCircle,
   AiOutlineMenu,
   AiOutlineMenuFold,
-  AiOutlineArrowRight,
-  AiOutlineArrowLeft,
-  AiOutlineCloseCircle,
 } from "react-icons/ai";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
 import { device } from "xbook/common/device";
+import { CommandKeys } from "xbook/constants/tokens";
 import { commandService } from "xbook/services/commandService";
 import { DragSortItem, moveItem } from "xbook/ui/components/DragSort";
 import { PageActions } from "xbook/ui/page-box/components/page-actions";
 import { PageBoxController } from "xbook/ui/page-box/controller";
 import { componentService } from "../componentService";
 import { Tab, TabIconButton } from "../components/tab";
-import { CommandKeys } from "xbook/constants/tokens";
 
 export const createPageBox = (): {
   proxy: ReturnType<typeof PageBoxController.create>;
@@ -60,9 +60,54 @@ export const createPageBox = (): {
       }
       return () => {};
     }, []);
+
     const tabsView = useMemo(
       () =>
         pageList.map(({ id, title, active, status }, index) => {
+          const actions = [
+            {
+              label: "关闭右侧标签页",
+              icon: AiOutlineArrowRight,
+              onClick: () => {
+                const currentIndex = pageList.findIndex(
+                  (page) => page.id === id
+                );
+                const rightPages = pageList.slice(currentIndex + 1);
+                rightPages.forEach((page) => proxy.removePage(page.id));
+              },
+            },
+            {
+              label: "关闭左侧标签页",
+              icon: AiOutlineArrowLeft,
+              onClick: () => {
+                const currentIndex = pageList.findIndex(
+                  (page) => page.id === id
+                );
+                const leftPages = pageList.slice(0, currentIndex);
+                leftPages.forEach((page) => proxy.removePage(page.id));
+              },
+            },
+            {
+              label: "关闭其它标签页",
+              icon: AiOutlineClose,
+              onClick: () => {
+                pageList.forEach((page) => {
+                  if (page.id !== id) {
+                    proxy.removePage(page.id);
+                  }
+                });
+              },
+            },
+            {
+              label: "关闭所有标签页",
+              icon: AiOutlineCloseCircle,
+              onClick: () => {
+                pageList.forEach((page) => {
+                  proxy.removePage(page.id);
+                });
+              },
+            },
+          ];
           return device.isMobile() ? (
             <Tab
               minWidth={minTabWidth}
@@ -77,6 +122,7 @@ export const createPageBox = (): {
               onClose={() => {
                 proxy.removePage(id);
               }}
+              actions={actions}
             />
           ) : (
             <DragSortItem
@@ -101,50 +147,7 @@ export const createPageBox = (): {
                 onClose={() => {
                   proxy.removePage(id);
                 }}
-                actions={[
-                  {
-                    label: "关闭右侧标签页",
-                    icon: AiOutlineArrowRight,
-                    onClick: () => {
-                      const currentIndex = pageList.findIndex(
-                        (page) => page.id === id
-                      );
-                      const rightPages = pageList.slice(currentIndex + 1);
-                      rightPages.forEach((page) => proxy.removePage(page.id));
-                    },
-                  },
-                  {
-                    label: "关闭左侧标签页",
-                    icon: AiOutlineArrowLeft,
-                    onClick: () => {
-                      const currentIndex = pageList.findIndex(
-                        (page) => page.id === id
-                      );
-                      const leftPages = pageList.slice(0, currentIndex);
-                      leftPages.forEach((page) => proxy.removePage(page.id));
-                    },
-                  },
-                  {
-                    label: "关闭其它标签页",
-                    icon: AiOutlineClose,
-                    onClick: () => {
-                      pageList.forEach((page) => {
-                        if (page.id !== id) {
-                          proxy.removePage(page.id);
-                        }
-                      });
-                    },
-                  },
-                  {
-                    label: "关闭所有标签页",
-                    icon: AiOutlineCloseCircle,
-                    onClick: () => {
-                      pageList.forEach((page) => {
-                        proxy.removePage(page.id);
-                      });
-                    },
-                  },
-                ]}
+                actions={actions}
               />
             </DragSortItem>
           );
