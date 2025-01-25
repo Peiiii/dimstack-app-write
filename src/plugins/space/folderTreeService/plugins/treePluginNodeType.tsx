@@ -1,17 +1,12 @@
-import {
-  TreeServicePoints,
-  TreeEventKeys,
-} from "@/plugins/space/folderTreeService/tokens";
+import { TreeServicePoints } from "@/plugins/space/folderTreeService/tokens";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreePlugin } from "@/toolkit/components/tree/treePlugins";
 import { Icon, Text } from "@chakra-ui/react";
-import {
-  AiFillFile,
-  AiFillFileMarkdown,
-  AiFillFolder,
-  AiFillFolderOpen,
-} from "react-icons/ai";
+import { AiFillFolder, AiFillFolderOpen } from "react-icons/ai";
+import { getFileTypeByExtension } from "../constants/fileTypes";
 import { getNodeFileType, getNodeType } from "../utils";
+import classNames from "classnames";
+import { css } from "@emotion/css";
 
 export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
   activate({ viewSystem, eventBus, dataStore, serviceBus }) {
@@ -38,6 +33,7 @@ export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
           viewSystem.getDefaultViewState(node);
         const { editMode, editingName } = state;
         const name = editMode ? editingName ?? node.name : node.name;
+
         if (getNodeType(node) === "dir") {
           return (
             <Icon
@@ -45,18 +41,27 @@ export const treePluginNodeType = createTreePlugin<FolderTreeNode>({
               as={state?.expanded ? AiFillFolderOpen : AiFillFolder}
             />
           );
-        } else {
-          if (getNodeFileType(node) === "file") {
-            const isMarkdown =
-              name.endsWith(".md") || name.endsWith(".markdown");
-            return (
-              <Icon
-                className={"icon file " + (isMarkdown ? "file-markdown" : "")}
-                as={isMarkdown ? AiFillFileMarkdown : AiFillFile}
-              />
-            );
-          } else return <Text as="h3"> </Text>;
+        } else if (getNodeFileType(node) === "file") {
+          const fileType = getFileTypeByExtension(name);
+
+          return (
+            <Icon
+              className={classNames(
+                "icon file",
+                css`
+                  & {
+                    color: ${fileType.color} !important;
+                  }
+                `
+              )}
+              as={fileType.icon}
+              color={fileType.color}
+              opacity={0.7}
+            />
+          );
         }
+
+        return <Text as="h3"> </Text>;
       },
       true
     );

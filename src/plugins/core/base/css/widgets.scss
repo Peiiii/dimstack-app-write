@@ -74,8 +74,6 @@
   .icon {
     &.dir {
       color: #b37619;
-      // color: var(--primary-color);
-      // opacity: 0.7;
     }
 
     &.file {
@@ -83,8 +81,11 @@
       opacity: 0.7;
 
       &.file-markdown {
-        // color: var(--primary-color);
         color: #14668b;
+      }
+
+      &.file-json {
+        color: #8b6914;
       }
     }
   }

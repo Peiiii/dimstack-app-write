@@ -1,7 +1,7 @@
 // import { IAuthService } from "@/services/auth.service.interface";
 import { AuthService } from "@/services/auth.service";
 import { FolderTreeService } from "@/services/folder-tree.service";
-import { OpenerService } from "@/services/opener-service";
+import { OpenerService } from "@/services/opener.service";
 import { SpaceService } from "@/services/space.service";
 import { typedKey } from "@/toolkit/utils/typedKey";
 

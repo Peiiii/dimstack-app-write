@@ -1,75 +1,79 @@
 import { Tokens } from "@/constants/tokens";
-import PowerForm, { PowerFormAtom } from "@/toolkit/components/power-form";
-import { createAtom } from "@/toolkit/factories/atom";
-import { Button, Flex } from "@chakra-ui/react";
-import { useContext } from "react";
-import xbook from "xbook/index";
+import { spacePlatformRegistry } from "@/services/space-platform.registry";
+import PowerForm, { PowerFormRef } from "@/toolkit/components/power-form";
+import { Button } from "@/components/ui/button";
+import { useContext, useRef } from "react";
+import xbook from "xbook";
 import { ModalActionContext } from "xbook/services/modalService";
+import { useAtom } from "@/toolkit/utils/hooks/useAtom";
+
+interface SpaceFormData {
+  platform: string;
+  owner: string;
+  repo: string;
+}
 
 export const AddSpaceForm = () => {
   const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
   const modal = useContext(ModalActionContext)!;
-  const atom: PowerFormAtom<{
-    platform: string;
-    owner: string;
-    repo: string;
-  }> = createAtom();
+  const platforms = spacePlatformRegistry.getPlatforms();
+
+  const ref = useRef<PowerFormRef<SpaceFormData>>(null);
 
   return (
-    <>
-      <PowerForm<{
-        platform: string;
-        owner: string;
-        repo: string;
-      }>
-        atom={atom}
+    <div className="space-y-4">
+      <PowerForm
+        ref={ref}
         fields={[
           {
             name: "platform",
             title: "平台",
-            select: {
-              options: [
-                { value: "github", label: "GitHub" },
-                { value: "gitee", label: "Gitee" },
-              ],
-            },
             required: true,
+            select: {
+              options: platforms.map((p) => ({
+                value: p.id,
+                label: p.name,
+              })),
+            },
           },
           {
             name: "owner",
             title: "所有者",
             required: true,
+            placeholder: "请输入仓库所有者",
           },
           {
             name: "repo",
             title: "仓库名",
             required: true,
+            placeholder: "请输入仓库名称",
           },
         ]}
         defaultData={{
           platform: "gitee",
         }}
       />
-      <Flex justify={"flex-end"} gap={"1em"}>
+      <div className="flex justify-end gap-2">
         <Button
-          colorScheme="blue"
+          type="submit"
+          form="power-form"
           onClick={() => {
-            const data = atom.invoke("getData");
+            const data = ref.current!.getData() as Required<SpaceFormData>;
             spaceService.addSpace(
               {
                 ...data,
+                repo: data.repo.toLowerCase(),
               },
-              {
-                focus: true,
-              }
+              { focus: true }
             );
-            modal.close();
           }}
         >
           创建
         </Button>
-        <Button onClick={() => modal.close()}>取消</Button>
-      </Flex>
-    </>
+        <Button variant="outline" onClick={() => modal.close()}>
+          取消
+        </Button>
+      </div>
+    </div>
   );
 };

@@ -19,6 +19,7 @@ export type Field<K extends string =string,V=SafeAny> = {
     }[];
   };
   compute?: (record?: any) => any;
+  placeholder?: string;
 };
 
 export type TableInfo = {

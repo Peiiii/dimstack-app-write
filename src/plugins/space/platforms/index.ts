@@ -36,7 +36,7 @@ export const platformsPlugin = createPlugin({
     // 注册IndexedDB
     spacePlatformRegistry.register({
       id: "idb",
-      name: "Local Storage",
+      name: "IndexDB",
       getProvider: () => new IndexedDBFileSystemProvider(),
     });
   }

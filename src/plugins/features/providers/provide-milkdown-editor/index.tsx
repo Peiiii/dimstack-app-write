@@ -2,7 +2,7 @@ import { EventKeys } from "@/constants/eventKeys";
 import { Tokens } from "@/constants/tokens";
 import { fileSystemHelper } from "@/helpers/file-system.helper";
 import { useEfffectOnce } from "@/hooks/use-efffect-once";
-import { systemjsModuleService } from "@/services/systemjsModuleService";
+import { systemjsModuleService } from "@/services/systemjs-module.service";
 import { SafeAny } from "@/toolkit/types";
 import { useEffect, useRef, useState } from "react";
 import "systemjs/dist/extras/amd";

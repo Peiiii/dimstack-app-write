@@ -1,11 +1,7 @@
 import { Tokens } from "@/constants/tokens";
-import { GitRepoFileSystemProvider } from "@/services/gite-repo-file-system.provider";
-import { IndexedDBFileSystemProvider } from "@/services/indexed-db-file-system.provider";
-import { createGiteeClient } from "libs/gitee-api";
-import { createGithubClient } from "libs/github-api";
-import { createPlugin } from "xbook/common/createPlugin";
 import { SpaceFileSystemProviderProxy } from "@/services/space-file-system-provider-proxy";
 import { spacePlatformRegistry } from "@/services/space-platform.registry";
+import { createPlugin } from "xbook/common/createPlugin";
 
 export const AddFileSystemProviderForEachSpace = createPlugin({
   initilize(xbook) {

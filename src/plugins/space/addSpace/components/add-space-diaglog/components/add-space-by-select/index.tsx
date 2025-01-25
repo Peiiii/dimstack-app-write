@@ -4,10 +4,11 @@ import {
   getFormData,
   getFormItemComponents,
 } from "@/components/form-builder/utils";
+import { Button } from "@/components/ui/button";
 import { EventKeys } from "@/constants/eventKeys";
 import { Tokens } from "@/constants/tokens";
 import { useSubscribeObservable } from "@/hooks/use-subscribe-observable";
-import { Alert, AlertIcon, Button, Flex } from "@chakra-ui/react";
+import { Alert, AlertIcon, Flex } from "@chakra-ui/react";
 import { defineController } from "app-toolkit";
 import { createGiteeClient } from "libs/gitee-api";
 import { createGithubClient } from "libs/github-api";
@@ -170,7 +171,6 @@ export const AddSpaceBySelect = () => {
         </div>
         <Flex justify={"flex-end"} gap={"1em"} mt={"1em"}>
           <Button
-            colorScheme="blue"
             onClick={() => {
               const data = getFormData<SpaceFormData>(get());
               spaceService.addSpace(
@@ -187,7 +187,9 @@ export const AddSpaceBySelect = () => {
           >
             创建
           </Button>
-          <Button onClick={() => modal.close()}>取消</Button>
+          <Button variant="outline" onClick={() => modal.close()}>
+            取消
+          </Button>
         </Flex>
       </>
     </FormControllerContext.Provider>

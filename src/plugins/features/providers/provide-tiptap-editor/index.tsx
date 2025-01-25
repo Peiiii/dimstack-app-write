@@ -1,5 +1,5 @@
 import { EventKeys } from "@/constants/eventKeys";
-import { systemjsModuleService } from "@/services/systemjsModuleService";
+import { systemjsModuleService } from "@/services/systemjs-module.service";
 import "systemjs/dist/extras/amd";
 import "systemjs/dist/system.min";
 import { createPlugin } from "xbook/common/createPlugin";

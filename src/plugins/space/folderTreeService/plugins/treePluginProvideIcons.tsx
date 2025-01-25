@@ -12,6 +12,8 @@ import {
   AiOutlineLink,
   AiOutlinePlus,
   AiOutlineReload,
+  AiOutlineFileText,
+  AiFillFileText,
 } from "react-icons/ai";
 
 export default createTreeHelper<FolderTreeNode>().createPlugin({
@@ -27,5 +29,7 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
     renderer.register("AiOutlineFileMarkdown", AiOutlineFileMarkdown);
     renderer.register("AiFillFileMarkdown", AiFillFileMarkdown);
     renderer.register("AiOutlineReload", AiOutlineReload);
+    renderer.register("AiOutlineFileText", AiOutlineFileText);
+    renderer.register("AiFillFileText", AiFillFileText);
   },
 });
