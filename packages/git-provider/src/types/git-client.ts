@@ -92,9 +92,6 @@ export interface GitProvider {
  * Git提供商配置选项
  */
 export interface GitProviderOptions {
-  owner: string;
-  repo: string;
-  token: string;
   baseUrl?: string;
   timeout?: number;
   headers?: Record<string, string>;

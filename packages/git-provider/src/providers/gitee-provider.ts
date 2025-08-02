@@ -6,87 +6,25 @@ import {
   FileItem,
   FileSystemOptions,
   GitProvider,
-  GitProviderOptions,
   Repository,
   User,
 } from "../types/git-client";
 
 /**
- * Gitee API响应类型
+ * Gitee提供者配置选项
  */
-interface GiteeResponse<T> {
-  data: T;
-  status: number;
-  statusText: string;
-  headers: Record<string, string>;
-}
-
-/**
- * Gitee仓库信息
- */
-interface GiteeRepository {
-  id: number;
-  full_name: string;
-  name: string;
-  owner: GiteeUser;
-  description: string | null;
-  private: boolean;
-  html_url: string;
-  default_branch: string;
-  created_at: string;
-  updated_at: string;
-}
-
-/**
- * Gitee用户信息
- */
-interface GiteeUser {
-  id: number;
-  login: string;
-  name: string;
-  avatar_url: string;
-  html_url: string;
-  type: string;
-}
-
-/**
- * Gitee分支信息
- */
-interface GiteeBranch {
-  name: string;
-  commit: {
-    sha: string;
-    url: string;
-  };
-  protected: boolean;
-}
-
-/**
- * Gitee文件内容
- */
-interface GiteeFileContent {
-  name: string;
-  path: string;
-  sha: string;
-  size: number;
-  url: string;
-  html_url: string;
-  git_url: string;
-  download_url: string;
-  type: string;
-  content: string;
-  encoding: string;
+interface GiteeProviderOptions {
+  token: string;
+  baseUrl?: string;
+  timeout?: number;
+  headers?: Record<string, string>;
 }
 
 /**
  * Gitee提供者
  */
 export class GiteeProvider implements GitProvider {
-  protected options: GitProviderOptions;
-
-  constructor(options: GitProviderOptions) {
-    this.options = options;
-  }
+  constructor(private options: GiteeProviderOptions) {}
 
   /**
    * 获取文件内容
@@ -95,11 +33,11 @@ export class GiteeProvider implements GitProvider {
     options: FileSystemOptions & { path: string }
   ): Promise<ApiResponse<FileContent>> {
     const response = await fetch(
-      `https://gitee.com/api/v5/repos/${this.options.owner}/${this.options.repo}/contents/${options.path}`,
+      `https://gitee.com/api/v5/repos/${options.owner}/${options.repo}/contents/${options.path}`,
       {
         headers: {
           Authorization: `token ${this.options.token}`,
-          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       }
     );
@@ -137,11 +75,11 @@ export class GiteeProvider implements GitProvider {
     options: FileSystemOptions & { path: string }
   ): Promise<ApiResponse<FileItem[]>> {
     const response = await fetch(
-      `https://gitee.com/api/v5/repos/${this.options.owner}/${this.options.repo}/contents/${options.path}`,
+      `https://gitee.com/api/v5/repos/${options.owner}/${options.repo}/contents/${options.path}`,
       {
         headers: {
           Authorization: `token ${this.options.token}`,
-          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       }
     );
@@ -185,15 +123,15 @@ export class GiteeProvider implements GitProvider {
         : btoa(String.fromCharCode.apply(null, Array.from(options.content)));
 
     const response = await fetch(
-      `https://gitee.com/api/v5/repos/${this.options.owner}/${this.options.repo}/contents/${options.path}`,
+      `https://gitee.com/api/v5/repos/${options.owner}/${options.repo}/contents/${options.path}`,
       {
-        method: "POST",
+        method: "PUT",
         headers: {
           Authorization: `token ${this.options.token}`,
-          Accept: "application/json",
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          access_token: this.options.token,
           content,
           message: options.message || "Update file",
           sha: options.sha,
@@ -230,17 +168,17 @@ export class GiteeProvider implements GitProvider {
     options: FileSystemOptions & { path: string; sha?: string }
   ): Promise<ApiResponse<void>> {
     const response = await fetch(
-      `https://gitee.com/api/v5/repos/${this.options.owner}/${this.options.repo}/contents/${options.path}`,
+      `https://gitee.com/api/v5/repos/${options.owner}/${options.repo}/contents/${options.path}`,
       {
         method: "DELETE",
         headers: {
           Authorization: `token ${this.options.token}`,
-          Accept: "application/json",
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          sha: options.sha,
+          access_token: this.options.token,
           message: options.message || "Delete file",
+          sha: options.sha,
         }),
       }
     );
@@ -261,16 +199,20 @@ export class GiteeProvider implements GitProvider {
    * 刷新访问令牌
    */
   async refreshAccessToken(refreshToken: string): Promise<AuthInfo> {
-    const response = await fetch("https://gitee.com/oauth/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        grant_type: "refresh_token",
-        refresh_token: refreshToken,
-      }),
-    });
+    const response = await fetch(
+      "https://gitee.com/oauth/token",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          grant_type: "refresh_token",
+          refresh_token: refreshToken,
+        }),
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`Failed to refresh token: ${response.statusText}`);
@@ -299,7 +241,7 @@ export class GiteeProvider implements GitProvider {
       {
         headers: {
           Authorization: `token ${this.options.token}`,
-          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       }
     );
@@ -347,10 +289,10 @@ export class GiteeProvider implements GitProvider {
       method: "POST",
       headers: {
         Authorization: `token ${this.options.token}`,
-        Accept: "application/json",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        access_token: this.options.token,
         name: options.name,
         private: options.private,
         description: options.description,
@@ -401,7 +343,7 @@ export class GiteeProvider implements GitProvider {
         method: "DELETE",
         headers: {
           Authorization: `token ${this.options.token}`,
-          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       }
     );
@@ -425,7 +367,7 @@ export class GiteeProvider implements GitProvider {
     const response = await fetch("https://gitee.com/api/v5/user", {
       headers: {
         Authorization: `token ${this.options.token}`,
-        Accept: "application/json",
+        "Content-Type": "application/json",
       },
     });
 
@@ -461,7 +403,7 @@ export class GiteeProvider implements GitProvider {
       {
         headers: {
           Authorization: `token ${this.options.token}`,
-          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       }
     );
@@ -495,18 +437,38 @@ export class GiteeProvider implements GitProvider {
     branch: string;
     ref?: string;
   }): Promise<ApiResponse<Branch>> {
+    // 获取引用SHA
+    const refResponse = await fetch(
+      `https://gitee.com/api/v5/repos/${options.owner}/${
+        options.repo
+      }/git/refs/heads/${options.ref || "master"}`,
+      {
+        headers: {
+          Authorization: `token ${this.options.token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!refResponse.ok) {
+      throw new Error(`Failed to get ref: ${refResponse.statusText}`);
+    }
+
+    const refData = await refResponse.json();
+
+    // 创建新分支
     const response = await fetch(
-      `https://gitee.com/api/v5/repos/${options.owner}/${options.repo}/branches`,
+      `https://gitee.com/api/v5/repos/${options.owner}/${options.repo}/git/refs`,
       {
         method: "POST",
         headers: {
           Authorization: `token ${this.options.token}`,
-          Accept: "application/json",
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          branch_name: options.branch,
-          refs: options.ref || "master",
+          access_token: this.options.token,
+          ref: `refs/heads/${options.branch}`,
+          sha: refData.object.sha,
         }),
       }
     );
@@ -520,12 +482,12 @@ export class GiteeProvider implements GitProvider {
       status: response.status,
       statusText: response.statusText,
       data: {
-        name: data.name,
+        name: options.branch,
         commit: {
-          sha: data.commit.sha,
-          url: data.commit.url,
+          sha: data.object.sha,
+          url: data.object.url,
         },
-        protected: data.protected || false,
+        protected: false,
       },
       headers: Object.fromEntries(response.headers.entries()),
     };

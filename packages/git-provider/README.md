@@ -25,8 +25,6 @@ npm install @dimstack/git-provider
 import { GitHubProvider } from '@dimstack/git-provider';
 
 const client = new GitHubProvider({
-  owner: 'octocat',
-  repo: 'Hello-World',
   token: 'your-github-token'
 });
 
@@ -51,8 +49,6 @@ import { GitFileSystem } from '@dimstack/git-provider';
 import { GitHubProvider } from '@dimstack/git-provider';
 
 const provider = new GitHubProvider({
-  owner: 'octocat',
-  repo: 'Hello-World',
   token: 'your-github-token'
 });
 
@@ -77,8 +73,6 @@ const files = await fs.readdir('src');
 import { GiteeProvider } from '@dimstack/git-provider';
 
 const client = new GiteeProvider({
-  owner: 'your-username',
-  repo: 'your-repo',
   token: 'your-gitee-token'
 });
 

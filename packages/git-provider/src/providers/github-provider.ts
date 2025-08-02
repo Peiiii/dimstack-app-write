@@ -6,87 +6,25 @@ import {
   FileItem,
   FileSystemOptions,
   GitProvider,
-  GitProviderOptions,
   Repository,
   User,
 } from "../types/git-client";
 
 /**
- * GitHub API响应类型
+ * GitHub提供者配置选项
  */
-interface GitHubResponse<T> {
-  data: T;
-  status: number;
-  statusText: string;
-  headers: Record<string, string>;
-}
-
-/**
- * GitHub仓库信息
- */
-interface GitHubRepository {
-  id: number;
-  full_name: string;
-  name: string;
-  owner: GitHubUser;
-  description: string | null;
-  private: boolean;
-  html_url: string;
-  default_branch: string;
-  created_at: string;
-  updated_at: string;
-}
-
-/**
- * GitHub用户信息
- */
-interface GitHubUser {
-  id: number;
-  login: string;
-  name: string;
-  avatar_url: string;
-  html_url: string;
-  type: string;
-}
-
-/**
- * GitHub分支信息
- */
-interface GitHubBranch {
-  name: string;
-  commit: {
-    sha: string;
-    url: string;
-  };
-  protected: boolean;
-}
-
-/**
- * GitHub文件内容
- */
-interface GitHubFileContent {
-  name: string;
-  path: string;
-  sha: string;
-  size: number;
-  url: string;
-  html_url: string;
-  git_url: string;
-  download_url: string;
-  type: string;
-  content: string;
-  encoding: string;
+interface GitHubProviderOptions {
+  token: string;
+  baseUrl?: string;
+  timeout?: number;
+  headers?: Record<string, string>;
 }
 
 /**
  * GitHub提供者
  */
 export class GitHubProvider implements GitProvider {
-  protected options: GitProviderOptions;
-
-  constructor(options: GitProviderOptions) {
-    this.options = options;
-  }
+  constructor(private options: GitHubProviderOptions) { }
 
   /**
    * 获取文件内容
@@ -95,7 +33,7 @@ export class GitHubProvider implements GitProvider {
     options: FileSystemOptions & { path: string }
   ): Promise<ApiResponse<FileContent>> {
     const response = await fetch(
-      `https://api.github.com/repos/${this.options.owner}/${this.options.repo}/contents/${options.path}`,
+      `https://api.github.com/repos/${options.owner}/${options.repo}/contents/${options.path}`,
       {
         headers: {
           Authorization: `token ${this.options.token}`,
@@ -137,7 +75,7 @@ export class GitHubProvider implements GitProvider {
     options: FileSystemOptions & { path: string }
   ): Promise<ApiResponse<FileItem[]>> {
     const response = await fetch(
-      `https://api.github.com/repos/${this.options.owner}/${this.options.repo}/contents/${options.path}`,
+      `https://api.github.com/repos/${options.owner}/${options.repo}/contents/${options.path}`,
       {
         headers: {
           Authorization: `token ${this.options.token}`,
@@ -185,7 +123,7 @@ export class GitHubProvider implements GitProvider {
         : btoa(String.fromCharCode.apply(null, Array.from(options.content)));
 
     const response = await fetch(
-      `https://api.github.com/repos/${this.options.owner}/${this.options.repo}/contents/${options.path}`,
+      `https://api.github.com/repos/${options.owner}/${options.repo}/contents/${options.path}`,
       {
         method: "PUT",
         headers: {
@@ -230,7 +168,7 @@ export class GitHubProvider implements GitProvider {
     options: FileSystemOptions & { path: string; sha?: string }
   ): Promise<ApiResponse<void>> {
     const response = await fetch(
-      `https://api.github.com/repos/${this.options.owner}/${this.options.repo}/contents/${options.path}`,
+      `https://api.github.com/repos/${options.owner}/${options.repo}/contents/${options.path}`,
       {
         method: "DELETE",
         headers: {
@@ -503,9 +441,7 @@ export class GitHubProvider implements GitProvider {
   }): Promise<ApiResponse<Branch>> {
     // 获取引用SHA
     const refResponse = await fetch(
-      `https://api.github.com/repos/${options.owner}/${
-        options.repo
-      }/git/refs/heads/${options.ref || "main"}`,
+      `https://api.github.com/repos/${options.owner}/${options.repo}/git/refs/heads/${options.ref || "main"}`,
       {
         headers: {
           Authorization: `token ${this.options.token}`,
