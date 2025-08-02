@@ -157,11 +157,7 @@ export class TeamDocs {
     const templatePath = `templates/${templateName}.md`;
     
     try {
-      const templateContent = await this.fs.readFile(templatePath, { 
-        owner: this.fs.options.owner,
-        repo: this.fs.options.repo,
-        encoding: 'utf-8' 
-      });
+      const templateContent = await this.fs.readFile(templatePath, { encoding: 'utf-8' });
       const templateStr = typeof templateContent === 'string' ? templateContent : new TextDecoder().decode(templateContent);
       const docContent = this.replaceTemplateVariables(templateStr, variables);
       

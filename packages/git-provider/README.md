@@ -35,11 +35,7 @@ const fs = new GitFileSystem(provider, {
 });
 
 // 读取文件
-const content = await fs.readFile('README.md', {
-  owner: 'octocat',
-  repo: 'Hello-World',
-  encoding: 'utf-8'
-});
+const content = await fs.readFile('README.md', { encoding: 'utf-8' });
 
 // 写入文件
 await fs.writeFile('docs/example.md', '# Hello World', {
@@ -113,9 +109,9 @@ class GitFileSystem {
   constructor(provider: GitProvider, options: { owner: string; repo: string });
 
   // 文件操作
-  readFile(path: string, options: FileSystemOptions & { encoding?: string }): Promise<string | Uint8Array>;
-  writeFile(path: string, content: string | Uint8Array, options: FileSystemOptions): Promise<void>;
-  deleteFile(path: string, options: FileSystemOptions): Promise<void>;
+  readFile(path: string, options?: { encoding?: string }): Promise<string | Uint8Array>;
+  writeFile(path: string, content: string | Uint8Array, options?: { message?: string }): Promise<void>;
+  deleteFile(path: string, options?: { message?: string }): Promise<void>;
 
   // 目录操作
   readdir(path: string): Promise<FileItem[]>;

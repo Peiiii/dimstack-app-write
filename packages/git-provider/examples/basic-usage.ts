@@ -53,11 +53,7 @@ async function basicUsage() {
 
     // 读取文件
     try {
-      const readmeContent = await fs.readFile('README.md', { 
-        owner: 'octocat',
-        repo: 'Hello-World',
-        encoding: 'utf-8' 
-      });
+      const readmeContent = await fs.readFile('README.md', { encoding: 'utf-8' });
       const content = typeof readmeContent === 'string' ? readmeContent : new TextDecoder().decode(readmeContent);
       console.log(`✅ README.md content (first 100 chars): ${content.substring(0, 100)}...`);
     } catch (error) {

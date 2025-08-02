@@ -67,11 +67,7 @@ export class PersonalKMS {
         for (const file of files) {
             if (file.type === 'file' && file.name.endsWith('.md')) {
                 try {
-                    const content = await this.fs.readFile(`${basePath}/${file.name}`, { 
-                        owner: this.fs.options.owner,
-                        repo: this.fs.options.repo,
-                        encoding: 'utf-8' 
-                    });
+                    const content = await this.fs.readFile(`${basePath}/${file.name}`, { encoding: 'utf-8' });
                     const contentStr = typeof content === 'string' ? content : new TextDecoder().decode(content);
                     if (contentStr.toLowerCase().includes(query.toLowerCase())) {
                         results.push({

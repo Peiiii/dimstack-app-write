@@ -39,9 +39,7 @@ export class GitBlog {
 
         try {
             // 获取现有文章内容
-            const existingContent = await this.fs.readFile(path, { 
-                encoding: 'utf-8' 
-            });
+            const existingContent = await this.fs.readFile(path, { encoding: 'utf-8' });
             const contentStr = typeof existingContent === 'string' ? existingContent : new TextDecoder().decode(existingContent);
             const updatedContent = this.updatePostContent(contentStr, content, tags);
 
@@ -74,11 +72,7 @@ export class GitBlog {
         for (const post of posts) {
             if (post.type === 'file' && post.name.endsWith('.md')) {
                 try {
-                    const content = await this.fs.readFile(`posts/${post.name}`, { 
-                        owner: this.fs.options.owner,
-                        repo: this.fs.options.repo,
-                        encoding: 'utf-8' 
-                    });
+                    const content = await this.fs.readFile(`posts/${post.name}`, { encoding: 'utf-8' });
                     const contentStr = typeof content === 'string' ? content : new TextDecoder().decode(content);
                     const metadata = this.extractPostMetadata(contentStr);
 
@@ -109,11 +103,7 @@ export class GitBlog {
         const path = `posts/${slug}.md`;
 
         try {
-            const content = await this.fs.readFile(path, { 
-                owner: this.fs.options.owner,
-                repo: this.fs.options.repo,
-                encoding: 'utf-8' 
-            });
+            const content = await this.fs.readFile(path, { encoding: 'utf-8' });
             const contentStr = typeof content === 'string' ? content : new TextDecoder().decode(content);
             const metadata = this.extractPostMetadata(contentStr);
 
