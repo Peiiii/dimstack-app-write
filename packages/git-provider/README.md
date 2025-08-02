@@ -4,12 +4,11 @@
 
 ## 特性
 
-- 统一的API接口
-- 支持多个Git提供商（GitHub、Gitee）
-- 完整的文件系统抽象
-- TypeScript支持
-- 自动令牌刷新
-- 错误处理
+- 🔄 **统一接口**: 提供一致的API，支持GitHub和Gitee
+- 📁 **文件系统抽象**: 将Git仓库当作本地文件系统使用
+- 🔐 **版本控制**: 完整的Git操作支持，包括提交、分支、合并等
+- 🛡️ **类型安全**: 完整的TypeScript类型定义
+- 🚀 **现代化**: 基于fetch API，支持现代JavaScript环境
 
 ## 安装
 
@@ -17,103 +16,180 @@
 npm install @dimstack/git-provider
 ```
 
-## 使用示例
+## 快速开始
 
-### 创建GitHub客户端
-
-```typescript
-import { GitHubProvider } from '@dimstack/git-provider';
-
-const client = new GitHubProvider({
-  token: 'your-github-token'
-});
-
-// 获取仓库信息
-const repo = await client.getRepository({
-  owner: 'octocat',
-  repo: 'Hello-World'
-});
-
-// 获取文件内容
-const file = await client.getFile({
-  owner: 'octocat',
-  repo: 'Hello-World',
-  path: 'README.md'
-});
-```
-
-### 使用文件系统
+### 基本使用
 
 ```typescript
-import { GitFileSystem } from '@dimstack/git-provider';
-import { GitHubProvider } from '@dimstack/git-provider';
+import { GitHubProvider, GitFileSystem } from '@dimstack/git-provider';
 
+// 创建GitHub Provider
 const provider = new GitHubProvider({
   token: 'your-github-token'
 });
 
-const fs = new GitFileSystem(provider);
+// 创建文件系统实例
+const fs = new GitFileSystem(provider, {
+  owner: 'octocat',
+  repo: 'Hello-World'
+});
 
 // 读取文件
-const content = await fs.readFile('README.md', { encoding: 'utf-8' });
+const content = await fs.readFile('README.md', {
+  owner: 'octocat',
+  repo: 'Hello-World',
+  encoding: 'utf-8'
+});
 
 // 写入文件
-await fs.writeFile('test.txt', 'Hello, World!');
-
-// 创建目录
-await fs.mkdir('src');
-
-// 列出目录内容
-const files = await fs.readdir('src');
+await fs.writeFile('docs/example.md', '# Hello World', {
+  message: 'Add example document'
+});
 ```
 
-### 使用Gitee客户端
+### 跨平台支持
 
 ```typescript
-import { GiteeProvider } from '@dimstack/git-provider';
+import { GitHubProvider, GiteeProvider } from '@dimstack/git-provider';
 
-const client = new GiteeProvider({
+// GitHub
+const githubProvider = new GitHubProvider({
+  token: 'your-github-token'
+});
+
+// Gitee
+const giteeProvider = new GiteeProvider({
   token: 'your-gitee-token'
 });
 
-// 获取仓库信息
-const repo = await client.getRepository({
-  owner: 'your-username',
-  repo: 'your-repo'
-});
-
-// 获取文件内容
-const file = await client.getFile({
-  owner: 'your-username',
-  repo: 'your-repo',
-  path: 'README.md'
+// 相同的API接口
+const repo = await githubProvider.getRepository({
+  owner: 'octocat',
+  repo: 'Hello-World'
 });
 ```
 
-## 项目结构
+## API 参考
 
+### GitProvider 接口
+
+```typescript
+interface GitProvider {
+  // 仓库操作
+  getRepository(options: { owner: string; repo: string }): Promise<ApiResponse<Repository>>;
+  createRepository(options: { name: string; private?: boolean; description?: string }): Promise<ApiResponse<Repository>>;
+  deleteRepository(options: { owner: string; repo: string }): Promise<ApiResponse<void>>;
+
+  // 用户信息
+  getUserInfo(): Promise<ApiResponse<User>>;
+
+  // 分支操作
+  getBranches(options: { owner: string; repo: string }): Promise<ApiResponse<Branch[]>>;
+  createBranch(options: { owner: string; repo: string; branch: string; ref?: string }): Promise<ApiResponse<Branch>>;
+
+  // 文件操作
+  getFile(options: FileSystemOptions & { path: string }): Promise<ApiResponse<FileContent>>;
+  getFileInfo(options: FileSystemOptions & { path: string }): Promise<ApiResponse<FileItem[]>>;
+  putFile(options: FileSystemOptions & { path: string; content: string | Uint8Array; sha?: string }): Promise<ApiResponse<FileItem>>;
+  deleteFile(options: FileSystemOptions & { path: string; sha?: string }): Promise<ApiResponse<void>>;
+
+  // 版本控制
+  getCommits(options: { owner: string; repo: string; path?: string; branch?: string; per_page?: number }): Promise<ApiResponse<Commit[]>>;
+  getCommit(options: { owner: string; repo: string; sha: string }): Promise<ApiResponse<Commit>>;
+  getDiff(options: { owner: string; repo: string; base: string; head: string; path?: string }): Promise<ApiResponse<Diff[]>>;
+  mergeBranch(options: { owner: string; repo: string; base: string; head: string; commit_message?: string }): Promise<ApiResponse<MergeResult>>;
+
+  // 拉取请求
+  createPullRequest(options: { owner: string; repo: string; title: string; body?: string; head: string; base: string }): Promise<ApiResponse<PullRequest>>;
+  getPullRequests(options: { owner: string; repo: string; state?: 'open' | 'closed' | 'all' }): Promise<ApiResponse<PullRequest[]>>;
+  mergePullRequest(options: { owner: string; repo: string; pull_number: number; commit_message?: string; merge_method?: 'merge' | 'squash' | 'rebase' }): Promise<ApiResponse<MergeResult>>;
+}
 ```
-src/
-├── types/           # 类型定义
-│   ├── index.ts     # 类型导出
-│   ├── fs.ts        # 文件系统类型
-│   └── git-client.ts # Git客户端类型
-├── filesystem/      # 文件系统实现
-│   ├── index.ts     # 文件系统导出
-│   └── git-file-system.ts # Git文件系统实现
-├── providers/       # Git提供商实现
-│   ├── index.ts     # 提供商导出
-│   ├── github-provider.ts # GitHub实现
-│   └── gitee-provider.ts  # Gitee实现
-└── index.ts         # 主入口文件
+
+### GitFileSystem 类
+
+```typescript
+class GitFileSystem {
+  constructor(provider: GitProvider, options: { owner: string; repo: string });
+
+  // 文件操作
+  readFile(path: string, options: FileSystemOptions & { encoding?: string }): Promise<string | Uint8Array>;
+  writeFile(path: string, content: string | Uint8Array, options: FileSystemOptions): Promise<void>;
+  deleteFile(path: string, options: FileSystemOptions): Promise<void>;
+
+  // 目录操作
+  readdir(path: string): Promise<FileItem[]>;
+  mkdir(path: string): Promise<void>;
+}
 ```
 
-## 支持的提供商
+## 配置选项
 
-- GitHub
-- Gitee
-- GitLab (计划中)
+### GitHubProvider
+
+```typescript
+interface GitHubProviderOptions {
+  token: string;                    // GitHub Personal Access Token
+  baseUrl?: string;                 // 自定义API基础URL
+  timeout?: number;                 // 请求超时时间
+  headers?: Record<string, string>; // 自定义请求头
+}
+```
+
+### GiteeProvider
+
+```typescript
+interface GiteeProviderOptions {
+  token: string;                    // Gitee Personal Access Token
+  baseUrl?: string;                 // 自定义API基础URL
+  timeout?: number;                 // 请求超时时间
+  headers?: Record<string, string>; // 自定义请求头
+}
+```
+
+## 错误处理
+
+```typescript
+import { GitProviderError } from '@dimstack/git-provider';
+
+try {
+  const repo = await provider.getRepository({
+    owner: 'octocat',
+    repo: 'non-existent-repo'
+  });
+} catch (error) {
+  if (error instanceof GitProviderError) {
+    console.error(`Git Provider Error: ${error.message}`);
+    console.error(`Error Code: ${error.code}`);
+    console.error(`HTTP Status: ${error.status}`);
+  }
+}
+```
+
+## 示例应用
+
+查看 `examples/` 目录获取完整的示例应用：
+
+- **基础使用**: `examples/basic-usage.ts`
+- **个人知识管理**: `examples/personal-kms.ts`
+- **团队文档协作**: `examples/team-docs.ts`
+- **Git博客系统**: `examples/git-blog.ts`
+
+运行示例：
+
+```bash
+# 设置环境变量
+export GITHUB_TOKEN="your-github-token"
+export GITEE_TOKEN="your-gitee-token"
+
+# 运行基础示例
+npx ts-node examples/basic-usage.ts
+```
+
+## 贡献
+
+欢迎提交 Issue 和 Pull Request！
 
 ## 许可证
 
-MIT 
+MIT License 

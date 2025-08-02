@@ -1,17 +1,12 @@
-import { FileSystem, FileSystemOptions, FileItem, FileStats } from '../types/fs';
+import { FileItem, FileStats, FileSystem, FileSystemOptions } from '../types/fs';
 import { GitProvider } from '../types/git-client';
 
 /**
  * Git文件系统
  */
 export class GitFileSystem implements FileSystem {
-  protected provider: GitProvider;
-  protected options: FileSystemOptions;
 
-  constructor(provider: GitProvider, options: FileSystemOptions) {
-    this.provider = provider;
-    this.options = options;
-  }
+  constructor(private provider: GitProvider, public readonly options: FileSystemOptions) {}
 
   /**
    * 创建目录
@@ -68,7 +63,7 @@ export class GitFileSystem implements FileSystem {
   /**
    * 写入文件
    */
-  async writeFile(path: string, data: string | Uint8Array, options?: FileSystemOptions): Promise<void> {
+  async writeFile(path: string, data: string | Uint8Array, options?: Partial<FileSystemOptions>): Promise<void> {
     await this.provider.putFile({
       ...this.options,
       ...options,
@@ -95,7 +90,7 @@ export class GitFileSystem implements FileSystem {
   /**
    * 读取文件内容
    */
-  async readFile(path: string, options?: FileSystemOptions & { encoding?: string }): Promise<string | Uint8Array> {
+  async readFile(path: string, options?: Partial<FileSystemOptions> & { encoding?: string }): Promise<string | Uint8Array> {
     const response = await this.provider.getFile({ ...this.options, ...options, path });
     return options?.encoding ? response.data.content : response.data.uint8array;
   }

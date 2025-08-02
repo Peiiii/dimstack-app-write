@@ -86,6 +86,86 @@ export interface GitProvider {
    * 刷新访问令牌
    */
   refreshAccessToken?(refreshToken: string): Promise<AuthInfo>;
+
+  /**
+   * 获取提交历史
+   */
+  getCommits(options: {
+    owner: string;
+    repo: string;
+    path?: string;
+    branch?: string;
+    since?: string;
+    until?: string;
+    per_page?: number;
+    page?: number;
+  }): Promise<ApiResponse<Commit[]>>;
+
+  /**
+   * 获取单个提交信息
+   */
+  getCommit(options: {
+    owner: string;
+    repo: string;
+    sha: string;
+  }): Promise<ApiResponse<Commit>>;
+
+  /**
+   * 获取文件差异
+   */
+  getDiff(options: {
+    owner: string;
+    repo: string;
+    base: string;
+    head: string;
+    path?: string;
+  }): Promise<ApiResponse<Diff[]>>;
+
+  /**
+   * 合并分支
+   */
+  mergeBranch(options: {
+    owner: string;
+    repo: string;
+    base: string;
+    head: string;
+    commit_message?: string;
+  }): Promise<ApiResponse<MergeResult>>;
+
+  /**
+   * 创建拉取请求
+   */
+  createPullRequest(options: {
+    owner: string;
+    repo: string;
+    title: string;
+    body?: string;
+    head: string;
+    base: string;
+  }): Promise<ApiResponse<PullRequest>>;
+
+  /**
+   * 获取拉取请求列表
+   */
+  getPullRequests(options: {
+    owner: string;
+    repo: string;
+    state?: 'open' | 'closed' | 'all';
+    head?: string;
+    base?: string;
+  }): Promise<ApiResponse<PullRequest[]>>;
+
+  /**
+   * 合并拉取请求
+   */
+  mergePullRequest(options: {
+    owner: string;
+    repo: string;
+    pull_number: number;
+    commit_title?: string;
+    commit_message?: string;
+    merge_method?: 'merge' | 'squash' | 'rebase';
+  }): Promise<ApiResponse<MergeResult>>;
 }
 
 /**
@@ -191,7 +271,144 @@ export interface FileSystemOptions {
 }
 
 /**
- * 错误类型
+ * 提交信息类型
+ */
+export interface Commit {
+  sha: string;
+  message: string;
+  author: {
+    name: string;
+    email: string;
+    date: string;
+  };
+  committer: {
+    name: string;
+    email: string;
+    date: string;
+  };
+  parents: string[];
+  tree: {
+    sha: string;
+    url: string;
+  };
+  url: string;
+  htmlUrl: string;
+  commentsUrl: string;
+}
+
+/**
+ * 差异信息类型
+ */
+export interface Diff {
+  sha: string;
+  filename: string;
+  status: 'added' | 'removed' | 'modified' | 'renamed';
+  additions: number;
+  deletions: number;
+  changes: number;
+  blobUrl: string;
+  rawUrl: string;
+  contentsUrl: string;
+  patch?: string;
+}
+
+/**
+ * 合并结果类型
+ */
+export interface MergeResult {
+  sha: string;
+  merged: boolean;
+  message: string;
+  htmlUrl: string;
+}
+
+/**
+ * 拉取请求类型
+ */
+export interface PullRequest {
+  id: number;
+  number: number;
+  title: string;
+  body?: string;
+  state: 'open' | 'closed';
+  locked: boolean;
+  user: User;
+  assignees: User[];
+  requestedReviewers: User[];
+  labels: Label[];
+  milestone?: Milestone;
+  draft: boolean;
+  merged: boolean;
+  mergeable?: boolean;
+  mergeableState: 'dirty' | 'clean' | 'unstable' | 'blocked';
+  mergedBy?: User;
+  mergeCommitSha?: string;
+  comments: number;
+  reviewComments: number;
+  commits: number;
+  additions: number;
+  deletions: number;
+  changedFiles: number;
+  createdAt: string;
+  updatedAt: string;
+  closedAt?: string;
+  mergedAt?: string;
+  head: {
+    label: string;
+    ref: string;
+    sha: string;
+    user: User;
+    repo: Repository;
+  };
+  base: {
+    label: string;
+    ref: string;
+    sha: string;
+    user: User;
+    repo: Repository;
+  };
+  htmlUrl: string;
+  diffUrl: string;
+  patchUrl: string;
+  issueUrl: string;
+  commitsUrl: string;
+  reviewCommentsUrl: string;
+  reviewCommentUrl: string;
+  commentsUrl: string;
+  statusesUrl: string;
+}
+
+/**
+ * 标签类型
+ */
+export interface Label {
+  id: number;
+  name: string;
+  color: string;
+  description?: string;
+  default: boolean;
+}
+
+/**
+ * 里程碑类型
+ */
+export interface Milestone {
+  id: number;
+  number: number;
+  title: string;
+  description?: string;
+  state: 'open' | 'closed';
+  creator: User;
+  openIssues: number;
+  closedIssues: number;
+  createdAt: string;
+  updatedAt: string;
+  closedAt?: string;
+  dueOn?: string;
+}
+
+/**
+ * Git提供商错误类型
  */
 export class GitProviderError extends Error {
   constructor(
@@ -201,6 +418,6 @@ export class GitProviderError extends Error {
     public readonly originalError?: any
   ) {
     super(message);
-    this.name = "GitProviderError";
+    this.name = 'GitProviderError';
   }
 }
