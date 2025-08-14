@@ -1,0 +1,26 @@
+{
+  "name": "@dimstack/git-auth",
+  "version": "1.0.0",
+  "description": "Simple Git platform authentication library for GitHub, Gitee, etc.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": ["git", "authentication", "oauth", "github", "gitee"],
+  "author": "DimStack",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
