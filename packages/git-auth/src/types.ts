@@ -2,6 +2,9 @@
 // 支持的Git平台
 export type GitPlatform = 'github' | 'gitee';
 
+// Token请求方式
+export type TokenRequestMethod = 'body' | 'url' | 'auto';
+
 // HTTP客户端配置
 export interface HttpClientConfig {
   fetch: (url: string, options: RequestInit) => Promise<Response>;
@@ -10,6 +13,7 @@ export interface HttpClientConfig {
 // Provider配置
 export interface ProviderConfig {
   httpClient?: HttpClientConfig;
+  tokenRequestMethod?: TokenRequestMethod;  // 添加token请求方式配置
 }
 
 // 认证配置

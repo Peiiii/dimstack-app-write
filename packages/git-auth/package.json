@@ -1,6 +1,6 @@
 {
   "name": "@dimstack/git-auth",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Simple Git platform authentication library for GitHub, Gitee, etc.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
