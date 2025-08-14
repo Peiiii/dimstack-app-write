@@ -1,7 +1,21 @@
 
+// 支持的Git平台
+export type GitPlatform = 'github' | 'gitee';
+
+// HTTP客户端配置
+export interface HttpClientConfig {
+  fetch: (url: string, options: RequestInit) => Promise<Response>;
+}
+
+// Provider配置
+export interface ProviderConfig {
+  httpClient?: HttpClientConfig;
+}
+
 // 认证配置
 export interface GitAuthConfig {
   clientId: string;
+  clientSecret: string;  // 添加必需的clientSecret
   redirectUri: string;
   scopes?: string[];
 }
@@ -20,7 +34,7 @@ export interface AuthResult {
   expiresIn: number;
   scope: string;
   user: UserInfo;
-  platform: string; // 改为string类型，更灵活
+  platform: string;
   createdAt: number;
 }
 

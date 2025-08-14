@@ -9,6 +9,7 @@
 - 🛡️ **安全可靠**: 基于OAuth 2.0标准，支持状态验证
 - 📱 **无存储耦合**: 完全由使用者控制数据存储方式
 - 🎯 **轻量级**: 只包含核心认证逻辑，无额外依赖
+- 🌐 **跨域支持**: 支持自定义HTTP客户端，轻松解决跨域问题
 
 ## 安装
 
@@ -29,6 +30,7 @@ const githubProvider = new GitHubProvider();
 // 2. 创建认证实例
 const auth = new GitAuth(githubProvider, {
   clientId: 'your-github-client-id',
+  clientSecret: 'your-github-client-secret',  // 添加clientSecret
   redirectUri: 'https://your-app.com/auth/callback',
   scopes: ['repo', 'user']
 });
@@ -64,6 +66,36 @@ if (code && receivedState === originalState) {
 }
 ```
 
+### 解决跨域问题
+
+如果遇到跨域问题，可以通过配置自定义HTTP客户端来解决：
+
+```typescript
+import { GitAuth, GitHubProvider } from '@dimstack/git-auth';
+
+// 创建带有自定义HTTP客户端的GitHub Provider
+const githubProvider = new GitHubProvider({
+  httpClient: {
+    fetch: async (url, options) => {
+      // 对token交换请求使用proxy解决跨域
+      if (url.includes('github.com/login/oauth/access_token')) {
+        const proxyUrl = `https://proxy.brainbo.fun/?${url}`;
+        return fetch(proxyUrl, options);
+      }
+      // 其他请求直接使用fetch
+      return fetch(url, options);
+    }
+  }
+});
+
+const auth = new GitAuth(githubProvider, {
+  clientId: 'your-github-client-id',
+  clientSecret: 'your-github-client-secret',  // 添加clientSecret
+  redirectUri: 'https://your-app.com/callback',
+  scopes: ['repo', 'user']
+});
+```
+
 ### 支持GitHub
 
 ```typescript
@@ -74,6 +106,7 @@ const githubProvider = new GitHubProvider();
 
 const githubAuth = new GitAuth(githubProvider, {
   clientId: 'your-github-client-id',
+  clientSecret: 'your-github-client-secret',  // 添加clientSecret
   redirectUri: 'https://your-app.com/auth/github/callback',
   scopes: ['repo', 'user', 'pages']
 });
@@ -213,7 +246,7 @@ await fs.writeFile('posts/new-article.md', articleContent, {
 #### 构造函数
 
 ```typescript
-new GitAuth(config: GitAuthConfig)
+new GitAuth(provider: AuthProvider, config: GitAuthConfig)
 ```
 
 #### 方法
@@ -228,6 +261,7 @@ new GitAuth(config: GitAuthConfig)
 ```typescript
 interface GitAuthConfig {
   clientId: string;                       // 客户端ID
+  clientSecret: string;                   // 客户端密钥
   redirectUri: string;                    // 回调地址
   scopes?: string[];                      // 权限范围
 }

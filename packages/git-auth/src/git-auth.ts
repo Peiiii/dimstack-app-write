@@ -34,6 +34,7 @@ export class GitAuth {
         // 交换授权码获取令牌
         const tokenResponse = await this.provider.exchangeCodeForToken(code, {
             clientId: this.config.clientId,
+            clientSecret: this.config.clientSecret,  // 确保传递clientSecret
             redirectUri: this.config.redirectUri,
             code
         });

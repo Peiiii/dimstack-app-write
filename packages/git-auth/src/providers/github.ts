@@ -1,4 +1,4 @@
-import { AuthProvider, AuthUrlConfig, TokenExchangeConfig, TokenResponse, UserInfo } from '../types';
+import { AuthProvider, AuthUrlConfig, TokenExchangeConfig, TokenResponse, UserInfo, ProviderConfig } from '../types';
 
 export class GitHubProvider implements AuthProvider {
   name = 'GitHub';
@@ -6,6 +6,17 @@ export class GitHubProvider implements AuthProvider {
   tokenUrl = 'https://github.com/login/oauth/access_token';
   userInfoUrl = 'https://api.github.com/user';
   defaultScopes = ['repo', 'user'];
+
+  private customFetch?: (url: string, options: RequestInit) => Promise<Response>;
+
+  constructor(config?: ProviderConfig) {
+    this.customFetch = config?.httpClient?.fetch;
+  }
+
+  private async makeRequest(url: string, options: RequestInit): Promise<Response> {
+    const fetchFn = this.customFetch || fetch;
+    return fetchFn(url, options);
+  }
 
   buildAuthUrl(config: AuthUrlConfig): string {
     const params = {
@@ -22,7 +33,7 @@ export class GitHubProvider implements AuthProvider {
   }
 
   async exchangeCodeForToken(code: string, config: TokenExchangeConfig): Promise<TokenResponse> {
-    const response = await fetch(this.tokenUrl, {
+    const response = await this.makeRequest(this.tokenUrl, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -56,7 +67,7 @@ export class GitHubProvider implements AuthProvider {
   }
 
   async getUserInfo(token: string): Promise<UserInfo> {
-    const response = await fetch(this.userInfoUrl, {
+    const response = await this.makeRequest(this.userInfoUrl, {
       headers: {
         'Authorization': `token ${token}`,
         'Accept': 'application/vnd.github.v3+json',

@@ -1,4 +1,4 @@
-import { AuthProvider, AuthUrlConfig, TokenExchangeConfig, TokenResponse, UserInfo } from '../types';
+import { AuthProvider, AuthUrlConfig, TokenExchangeConfig, TokenResponse, UserInfo, ProviderConfig } from '../types';
 
 export class GiteeProvider implements AuthProvider {
   name = 'Gitee';
@@ -6,6 +6,17 @@ export class GiteeProvider implements AuthProvider {
   tokenUrl = 'https://gitee.com/oauth/token';
   userInfoUrl = 'https://gitee.com/api/v5/user';
   defaultScopes = ['projects', 'user_info'];
+
+  private customFetch?: (url: string, options: RequestInit) => Promise<Response>;
+
+  constructor(config?: ProviderConfig) {
+    this.customFetch = config?.httpClient?.fetch;
+  }
+
+  private async makeRequest(url: string, options: RequestInit): Promise<Response> {
+    const fetchFn = this.customFetch || fetch;
+    return fetchFn(url, options);
+  }
 
   buildAuthUrl(config: AuthUrlConfig): string {
     const params = {
@@ -22,7 +33,7 @@ export class GiteeProvider implements AuthProvider {
   }
 
   async exchangeCodeForToken(code: string, config: TokenExchangeConfig): Promise<TokenResponse> {
-    const response = await fetch(this.tokenUrl, {
+    const response = await this.makeRequest(this.tokenUrl, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -57,7 +68,7 @@ export class GiteeProvider implements AuthProvider {
   }
 
   async getUserInfo(token: string): Promise<UserInfo> {
-    const response = await fetch(this.userInfoUrl, {
+    const response = await this.makeRequest(this.userInfoUrl, {
       headers: {
         'Authorization': `token ${token}`,
         'Accept': 'application/json',
