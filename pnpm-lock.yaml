@@ -81,11 +81,11 @@ importers:
         specifier: ^3.5.12
         version: 3.5.18
       '@zenfs/core':
-        specifier: ^1.11.4
-        version: 1.11.4
+        specifier: ^1.0.5
+        version: 1.0.5
       '@zenfs/dom':
         specifier: ^1.0.0
-        version: 1.1.9(@zenfs/core@1.11.4)(kerium@1.3.6)(utilium@2.3.11)
+        version: 1.0.0(@zenfs/core@1.0.5)
       add:
         specifier: ^2.0.6
         version: 2.0.6
@@ -1816,9 +1816,6 @@ packages:
   '@types/node@20.19.9':
     resolution: {integrity: sha512-cuVNgarYWZqxRJDQHEB58GEONhOK79QVR/qYx4S7kcUObQvUwvFnYxJuuHUKm2aieN9X3yZB4LZsuYNU1Qphsw==}
 
-  '@types/node@22.17.0':
-    resolution: {integrity: sha512-bbAKTCqX5aNVryi7qXVMi+OkB3w/OyblodicMbvE38blyAz7GxXf6XYhklokijuPwwVg9sDLKRxt0ZHXQwZVfQ==}
-
   '@types/parse-json@4.0.2':
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
 
@@ -1835,6 +1832,9 @@ packages:
 
   '@types/react@18.3.23':
     resolution: {integrity: sha512-/LDXMQh55EzZQ0uVAZmKKhfENivEvWz6E+EYzh+/MCjMhNsotd+ZHhBGIjFDTi6+fz0OhQQQLbTgdQIxxCsC0w==}
+
+  '@types/readable-stream@4.0.21':
+    resolution: {integrity: sha512-19eKVv9tugr03IgfXlA9UVUVRbW6IuqRO5B92Dl4a6pT7K8uaGrNS0GkxiZD0BOk6PLuXl5FhWl//eX/pzYdTQ==}
 
   '@types/semver@7.7.0':
     resolution: {integrity: sha512-k107IF4+Xr7UHjwDc7Cfd6PRQfbdkiRabXGRjo07b4WyPahFBZCZ1sE+BNxYIJPPg73UkfOsVOLwqVc/6ETrIA==}
@@ -1982,9 +1982,6 @@ packages:
   '@vue/shared@3.5.18':
     resolution: {integrity: sha512-cZy8Dq+uuIXbxCZpuLd2GJdeSO/lIzIspC2WtkqIpje5QyFbvLaI5wZtdUjLHjGZrlVX6GilejatWwVYYRc8tA==}
 
-  '@xterm/xterm@5.5.0':
-    resolution: {integrity: sha512-hqJHYaQb5OptNunnyAnkHyM8aCjZ1MEIDTQu1iIbbTD/xops91NB5yq1ZK/dC2JDbVWtF23zUtl9JE2NqwT87A==}
-
   '@zag-js/dom-query@0.31.1':
     resolution: {integrity: sha512-oiuohEXAXhBxpzzNm9k2VHGEOLC1SXlXSbRPcfBZ9so5NRQUA++zCE7cyQJqGLTZR0t3itFLlZqDbYEXRrefwg==}
 
@@ -1994,18 +1991,16 @@ packages:
   '@zag-js/focus-visible@0.31.1':
     resolution: {integrity: sha512-dbLksz7FEwyFoANbpIlNnd3bVm0clQSUsnP8yUVQucStZPsuWjCrhL2jlAbGNrTrahX96ntUMXHb/sM68TibFg==}
 
-  '@zenfs/core@1.11.4':
-    resolution: {integrity: sha512-jFihhedKitw1X9rlImtaca4KTs1Xk9awo4GxUemqt2ucE1jLi10lyRfFFbiYXZsFDkuCWGHwEQwv7BeDIEXMbQ==}
-    engines: {node: '>= 18'}
+  '@zenfs/core@1.0.5':
+    resolution: {integrity: sha512-0IihdXr4v/n9Paeo/yk7PSlLNUmRgC609ddIAHD1IOwjHcTSD5b9YTZVdzzWrCKzduQgHb9WUyrh+QlNinRkPw==}
+    engines: {node: '>= 16'}
     hasBin: true
 
-  '@zenfs/dom@1.1.9':
-    resolution: {integrity: sha512-pMSrGNeN9TpzjrOTpEt4qjDtSepgxjJCuaDl4+j4SinnTeKjW4AyTZsLX6fUYftDXTvrJ7npjSif3fBLNEMUpA==}
-    engines: {node: '>= 22'}
+  '@zenfs/dom@1.0.0':
+    resolution: {integrity: sha512-gQ+qUr4xfX8jQei7QeDK2rfUnOZaLrgzVDLID7dnNZF618NDhAaVjyKtRsLK8FULyhr1citCHq7UJWANUFDtSg==}
+    engines: {node: '>= 18'}
     peerDependencies:
-      '@zenfs/core': ^2.1.0
-      kerium: ^1.3.4
-      utilium: ^2.0.0
+      '@zenfs/core': ^1.0.5
 
   abort-controller@3.0.0:
     resolution: {integrity: sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==}
@@ -3231,9 +3226,6 @@ packages:
   jstoxml@2.2.9:
     resolution: {integrity: sha512-OYWlK0j+roh+eyaMROlNbS5cd5R25Y+IUpdl7cNdB8HNrkgwQzIS7L9MegxOiWNBj9dQhA/yAxiMwCC5mwNoBw==}
 
-  kerium@1.3.6:
-    resolution: {integrity: sha512-TEMYweNOPW79LOGV9G26biypM2q96s4iJYxcWMg3IxUzRUIFGFfWIxS7Yx2eREKfhLINcNNXGUa0OR6ONS9Dgg==}
-
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
 
@@ -4370,11 +4362,8 @@ packages:
     resolution: {integrity: sha512-PYxZDA+6QtvRvm//++aGdmKG/cI07jNwbROz0Ql+VzFV1+Z0Dy55NI4zZ7RHc9KKpBePNFwoErqIuqQv/cjiTA==}
     engines: {node: '>= 0.12.0'}
 
-  utilium@1.10.1:
-    resolution: {integrity: sha512-GQINDTb/ocyz4acQj3GXAe0wipYxws6L+9ouqaq10KlInTk9DGvW9TJd0pYa/Xu3cppNnZuB4T/sBuSXpcN2ng==}
-
-  utilium@2.3.11:
-    resolution: {integrity: sha512-8AHPaWZ+yIwP+uUmfENWxUid4uF44g2XiyrnTmkSDkTcy5awY0e9N5UtNAeHWY2nr3OFq7fQZlhE5jmTU7pOIQ==}
+  utilium@0.7.10:
+    resolution: {integrity: sha512-xMKSCp+AeKuuh+tqJQG45ge4gTgb47dXVooePDidJY/G07kYIIId1M9XXcClDs3HZbk/Whz+Ih6inYZmZVcdeQ==}
 
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
@@ -5057,7 +5046,7 @@ snapshots:
   '@jest/console@29.7.0':
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 18.19.121
+      '@types/node': 20.19.9
       chalk: 4.1.2
       jest-message-util: 29.7.0
       jest-util: 29.7.0
@@ -5070,14 +5059,14 @@ snapshots:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 18.19.121
+      '@types/node': 20.19.9
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       ci-info: 3.9.0
       exit: 0.1.2
       graceful-fs: 4.2.11
       jest-changed-files: 29.7.0
-      jest-config: 29.7.0(@types/node@18.19.121)(babel-plugin-macros@3.1.0)
+      jest-config: 29.7.0(@types/node@20.19.9)(babel-plugin-macros@3.1.0)
       jest-haste-map: 29.7.0
       jest-message-util: 29.7.0
       jest-regex-util: 29.6.3
@@ -5102,7 +5091,7 @@ snapshots:
     dependencies:
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 18.19.121
+      '@types/node': 20.19.9
       jest-mock: 29.7.0
 
   '@jest/expect-utils@29.7.0':
@@ -5120,7 +5109,7 @@ snapshots:
     dependencies:
       '@jest/types': 29.6.3
       '@sinonjs/fake-timers': 10.3.0
-      '@types/node': 18.19.121
+      '@types/node': 20.19.9
       jest-message-util: 29.7.0
       jest-mock: 29.7.0
       jest-util: 29.7.0
@@ -5142,7 +5131,7 @@ snapshots:
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
       '@jridgewell/trace-mapping': 0.3.29
-      '@types/node': 18.19.121
+      '@types/node': 20.19.9
       chalk: 4.1.2
       collect-v8-coverage: 1.0.2
       exit: 0.1.2
@@ -5212,7 +5201,7 @@ snapshots:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 18.19.121
+      '@types/node': 20.19.9
       '@types/yargs': 17.0.33
       chalk: 4.1.2
 
@@ -6215,7 +6204,7 @@ snapshots:
 
   '@types/graceful-fs@4.1.9':
     dependencies:
-      '@types/node': 18.19.121
+      '@types/node': 20.19.9
 
   '@types/hoist-non-react-statics@3.3.7(@types/react@18.3.23)':
     dependencies:
@@ -6253,10 +6242,6 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
-  '@types/node@22.17.0':
-    dependencies:
-      undici-types: 6.21.0
-
   '@types/parse-json@4.0.2': {}
 
   '@types/path-browserify@1.0.3': {}
@@ -6271,6 +6256,10 @@ snapshots:
     dependencies:
       '@types/prop-types': 15.7.15
       csstype: 3.1.3
+
+  '@types/readable-stream@4.0.21':
+    dependencies:
+      '@types/node': 20.19.9
 
   '@types/semver@7.7.0': {}
 
@@ -6474,9 +6463,6 @@ snapshots:
 
   '@vue/shared@3.5.18': {}
 
-  '@xterm/xterm@5.5.0':
-    optional: true
-
   '@zag-js/dom-query@0.31.1': {}
 
   '@zag-js/element-size@0.31.1': {}
@@ -6485,19 +6471,19 @@ snapshots:
     dependencies:
       '@zag-js/dom-query': 0.31.1
 
-  '@zenfs/core@1.11.4':
+  '@zenfs/core@1.0.5':
     dependencies:
-      '@types/node': 22.17.0
+      '@types/node': 20.19.9
+      '@types/readable-stream': 4.0.21
       buffer: 6.0.3
       eventemitter3: 5.0.1
+      minimatch: 9.0.5
       readable-stream: 4.7.0
-      utilium: 1.10.1
+      utilium: 0.7.10
 
-  '@zenfs/dom@1.1.9(@zenfs/core@1.11.4)(kerium@1.3.6)(utilium@2.3.11)':
+  '@zenfs/dom@1.0.0(@zenfs/core@1.0.5)':
     dependencies:
-      '@zenfs/core': 1.11.4
-      kerium: 1.3.6
-      utilium: 2.3.11
+      '@zenfs/core': 1.0.5
 
   abort-controller@3.0.0:
     dependencies:
@@ -7407,7 +7393,7 @@ snapshots:
       fs.realpath: 1.0.0
       inflight: 1.0.6
       inherits: 2.0.4
-      minimatch: 3.0.4
+      minimatch: 3.1.2
       once: 1.4.0
       path-is-absolute: 1.0.1
 
@@ -7645,7 +7631,7 @@ snapshots:
       '@jest/expect': 29.7.0
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 18.19.121
+      '@types/node': 20.19.9
       chalk: 4.1.2
       co: 4.6.0
       dedent: 1.6.0(babel-plugin-macros@3.1.0)
@@ -7787,7 +7773,7 @@ snapshots:
       '@jest/environment': 29.7.0
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 18.19.121
+      '@types/node': 20.19.9
       jest-mock: 29.7.0
       jest-util: 29.7.0
 
@@ -7797,7 +7783,7 @@ snapshots:
     dependencies:
       '@jest/types': 29.6.3
       '@types/graceful-fs': 4.1.9
-      '@types/node': 18.19.121
+      '@types/node': 20.19.9
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
@@ -7836,7 +7822,7 @@ snapshots:
   jest-mock@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 18.19.121
+      '@types/node': 20.19.9
       jest-util: 29.7.0
 
   jest-pnp-resolver@1.2.3(jest-resolve@29.7.0):
@@ -7871,7 +7857,7 @@ snapshots:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 18.19.121
+      '@types/node': 20.19.9
       chalk: 4.1.2
       emittery: 0.13.1
       graceful-fs: 4.2.11
@@ -7899,7 +7885,7 @@ snapshots:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 18.19.121
+      '@types/node': 20.19.9
       chalk: 4.1.2
       cjs-module-lexer: 1.4.3
       collect-v8-coverage: 1.0.2
@@ -7945,7 +7931,7 @@ snapshots:
   jest-util@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 18.19.121
+      '@types/node': 20.19.9
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -7964,7 +7950,7 @@ snapshots:
     dependencies:
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 18.19.121
+      '@types/node': 20.19.9
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.13.1
@@ -7973,7 +7959,7 @@ snapshots:
 
   jest-worker@29.7.0:
     dependencies:
-      '@types/node': 18.19.121
+      '@types/node': 20.19.9
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
@@ -8034,10 +8020,6 @@ snapshots:
   json5@2.2.3: {}
 
   jstoxml@2.2.9: {}
-
-  kerium@1.3.6:
-    dependencies:
-      utilium: 2.3.11
 
   keyv@4.5.4:
     dependencies:
@@ -9160,17 +9142,9 @@ snapshots:
       mz: 2.7.0
       unescape: 1.0.1
 
-  utilium@1.10.1:
+  utilium@0.7.10:
     dependencies:
       eventemitter3: 5.0.1
-    optionalDependencies:
-      '@xterm/xterm': 5.5.0
-
-  utilium@2.3.11:
-    dependencies:
-      eventemitter3: 5.0.1
-    optionalDependencies:
-      '@xterm/xterm': 5.5.0
 
   uuid@8.3.2: {}
 
