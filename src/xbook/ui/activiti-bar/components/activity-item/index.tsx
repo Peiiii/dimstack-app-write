@@ -1,5 +1,5 @@
 // components/ActivityItem.tsx
-import { As, Icon, Stack, Text, VStack } from "@chakra-ui/react";
+import { Icon, Stack, Text } from "@chakra-ui/react";
 import { AiFillFolder } from "react-icons/ai";
 import { componentService } from "xbook/services";
 import { IActivityItem } from "xbook/ui/activiti-bar/types";
@@ -55,7 +55,7 @@ const ActivityItem = ({
       >
         <Icon
           className="icon"
-          as={IconComponent as As}
+          as={IconComponent}
           fontSize={iconFontSize}
           flexShrink={0}
         />
