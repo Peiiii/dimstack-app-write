@@ -1,9 +1,10 @@
 import { EventKeys } from "@/constants/eventKeys";
+import { Tokens } from "@/constants/tokens";
+import { ZenmarkEditorComponent } from "@/plugins/features/providers/provide-zenmark-editor/zenmark-editor-component";
 import { systemjsModuleService } from "@/services/systemjs-module.service";
 import "systemjs/dist/extras/amd";
 import "systemjs/dist/system.min";
 import { createPlugin } from "xbook/common/createPlugin";
-import { ZenmarkEditor } from "zenmark-editor";
 declare global {
   interface Window {
     System: any;
@@ -28,20 +29,33 @@ export default createPlugin({
     if (!systemjsModuleService.isInitialized()) {
       systemjsModuleService.init();
     }
-    systemjsModuleService
-      .load(
-        "https://apps.eiooie.com/tiptap-editor/lib/tiptap-editor.umd.js" as any
-      )
-      .then((module) => module.plugin)
-      .then((plugin) => {
-        xbook.pluginService.use(plugin);
-        xbook.eventBus.on(EventKeys.FileSaved, () => {
-          xbook.notificationService.success({
-            title: "文件保存成功",
-            duration: 1000,
-          });
+
+    xbook.componentService.register("zenmark-editor", ZenmarkEditorComponent);
+    const openerService = xbook.serviceBus.createProxy(
+      Tokens.OpenerService
+    );
+    openerService.register({
+      priority: -100,
+      match: [".md", ".markdown", ".MD"],
+      init: (uri: string) => {
+        xbook.layoutService.pageBox.addPage({
+          id: uri,
+          title: uri,
+          viewData: {
+            type: "zenmark-editor",
+            props: {
+              uri,
+            },
+          },
         });
+      },
+    });
+    xbook.eventBus.on(EventKeys.FileSaved, () => {
+      xbook.notificationService.success({
+        title: "文件保存成功",
+        duration: 1000,
       });
+    });
 
     // xbook.layoutService.activityBar.addActivity({
     //   id: "plugins",

@@ -37,7 +37,7 @@ export default createPlugin({
       onClick({ page }) {
         if (page.viewData) {
           // const markdownEditorView = "tiptap-editor";
-          const markdownEditorView = "milkdown-editor";
+          const markdownEditorView = "zenmark-editor";
           const plainTextView = "text-file-view";
           const nextViewType =
             page.viewData.type === plainTextView
