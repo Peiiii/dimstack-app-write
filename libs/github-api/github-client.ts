@@ -142,7 +142,7 @@ export const getGithubAccessToken = async ({
     redirectUri
   )}&client_secret=${clientSecret}`;
   // const url = `https://cors-anywhere.herokuapp.com/${proxyUrl}`;
-  const url = `https://proxy.brainbo.fun/?${proxyUrl}`;
+  const url = `https://proxy.agentverse.cc/?${proxyUrl}`;
   const res = await axios.post(url);
   // store.set("github", res.data);
   return Object.fromEntries(

@@ -39,7 +39,7 @@
     "@radix-ui/react-tooltip": "^1.1.3",
     "@reduxjs/toolkit": "^1.9.5",
     "@vue/reactivity": "^3.5.12",
-    "@zenfs/core": "^1.0.0",
+    "@zenfs/core": "^1.11.4",
     "@zenfs/dom": "^1.0.0",
     "add": "^2.0.6",
     "ali-oss": "^6.21.0",
