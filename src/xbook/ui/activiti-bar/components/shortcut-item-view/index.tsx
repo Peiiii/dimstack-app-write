@@ -1,6 +1,5 @@
 import { EventKeys } from "@/constants/eventKeys";
 import {
-  As,
   Icon,
   Popover,
   PopoverArrow,
@@ -9,8 +8,7 @@ import {
   PopoverTrigger,
   Portal,
   Stack,
-  Text,
-  VStack,
+  Text
 } from "@chakra-ui/react";
 import { componentService, eventBus } from "xbook/services";
 import { IShortcutItem } from "xbook/services/shortcutService";
@@ -60,7 +58,7 @@ export const ShortcutItemView = ({
       }}
     >
       <Icon
-        as={IconComponent as As}
+        as={IconComponent}
         fontSize={iconFontSize}
         title={name}
         flexShrink={0}

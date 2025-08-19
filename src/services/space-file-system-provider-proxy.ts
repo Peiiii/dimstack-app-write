@@ -3,10 +3,10 @@ import { Disposable } from "@/toolkit/vscode/disposable";
 import { Event } from "@/toolkit/vscode/event";
 import { EventEmitter } from "@/toolkit/vscode/event-emitter";
 import {
-    FileChangeType,
-    FileStat,
-    FileSystemProvider,
-    FileType,
+  FileChangeType,
+  FileStat,
+  FileSystemProvider,
+  FileType,
 } from "@/toolkit/vscode/file-system";
 import { Uri } from "@/toolkit/vscode/uri";
 

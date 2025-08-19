@@ -1,5 +1,6 @@
+import { Box } from '@chakra-ui/react';
+import { keyframes } from '@emotion/css';
 import React from 'react';
-import { Box, keyframes } from '@chakra-ui/react';
 
 interface ProgressBarProps {
   isLoading: boolean;
