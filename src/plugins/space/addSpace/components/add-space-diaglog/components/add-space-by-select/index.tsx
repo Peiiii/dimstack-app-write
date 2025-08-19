@@ -75,7 +75,7 @@ const getPlatformRepos = (platform: string) => {
 
     const promise = createGithubClient({
       getAccessToken: () => accessToken,
-    }).Repo.getList({});
+    }).Repo.getList({per_page: 100});
     return from(promise).pipe(map((res) => res.data));
   }
   return of([]);
@@ -122,7 +122,6 @@ export const AddSpaceBySelect = () => {
         })
       ),
     (data) => {
-      console.log("data", data);
 
       setOwner(data[0]?.owner?.name || data[0].owner.login || "");
       setRepoOptions(
