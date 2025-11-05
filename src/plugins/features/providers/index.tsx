@@ -5,11 +5,14 @@ import provideZenmarkEditor from "@/plugins/features/providers/provide-zenmark-e
 import { createPlugin } from "xbook/common/createPlugin";
 
 export const pluginForProviders = createPlugin({
-  initilize(xbook) {
+  async initilize(xbook) {
     xbook.pluginService.use([
       provideApps,
       provideCommonTextFileOpener,
-      // provideTiptapEditor,
+      // Keep both editors registered, but we won't expose UI switching.
+      // Opener will prefer Tiptap if loaded, otherwise fall back to Zenmark.
+      provideTiptapEditor,
+      // @note: keep zenmark available for offline/first-load scenarios
       provideZenmarkEditor,
       // provideMilkdownEditor,
       // provideVditor,
