@@ -17,8 +17,21 @@ export default createPlugin({
       priority: -100,
       match: COMMON_TEXT_FILE_EXTENSIONS.map((ext) => `.${ext}`),
       init: (uri: string) => {
-        const isMarkdown = uri.endsWith(".md") || uri.endsWith(".markdown") || uri.endsWith(".MD");
-        const viewType = isMarkdown ? "tiptap-editor" : "text-file-view";
+        const isMarkdown =
+          uri.endsWith(".md") || uri.endsWith(".markdown") || uri.endsWith(".MD");
+
+        // Prefer tiptap when available; otherwise fall back to local zenmark, then plain text
+        const registry = xbook.componentService.getComponents()?.componentRegistry || {};
+        const hasTiptap = !!registry["tiptap-editor"];
+        const hasZenmark = !!registry["zenmark-editor"];
+        const viewType = isMarkdown
+          ? hasTiptap
+            ? "tiptap-editor"
+            : hasZenmark
+            ? "zenmark-editor"
+            : "text-file-view"
+          : "text-file-view";
+
         xbook.layoutService.pageBox.addPage({
           id: uri,
           title: uri,
