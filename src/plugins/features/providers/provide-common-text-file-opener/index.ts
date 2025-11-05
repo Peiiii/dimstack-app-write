@@ -14,7 +14,9 @@ export default createPlugin({
   initilize(xbook) {
     const openerService = xbook.serviceBus.createProxy(Tokens.OpenerService);
     openerService.register({
-      priority: -100,
+      // Slightly higher than other markdown editor openers (-100),
+      // but lower than app-specific openers (usually 100)
+      priority: -10,
       match: COMMON_TEXT_FILE_EXTENSIONS.map((ext) => `.${ext}`),
       init: (uri: string) => {
         const isMarkdown =
