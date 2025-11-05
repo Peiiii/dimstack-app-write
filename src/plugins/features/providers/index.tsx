@@ -1,7 +1,7 @@
 import { provideApps } from "@/plugins/features/providers/provide-apps";
 import provideCommonTextFileOpener from "@/plugins/features/providers/provide-common-text-file-opener";
 import provideTiptapEditor from "@/plugins/features/providers/provide-tiptap-editor";
-import provideZenmarkEditor from "@/plugins/features/providers/provide-zenmark-editor";
+// import provideZenmarkEditor from "@/plugins/features/providers/provide-zenmark-editor";
 import { createPlugin } from "xbook/common/createPlugin";
 
 export const pluginForProviders = createPlugin({
@@ -9,8 +9,8 @@ export const pluginForProviders = createPlugin({
     xbook.pluginService.use([
       provideApps,
       provideCommonTextFileOpener,
-      // provideTiptapEditor,
-      provideZenmarkEditor,
+      provideTiptapEditor,
+      // provideZenmarkEditor, // 隐藏切换，默认 Tiptap
       // provideMilkdownEditor,
       // provideVditor,
     ]);
