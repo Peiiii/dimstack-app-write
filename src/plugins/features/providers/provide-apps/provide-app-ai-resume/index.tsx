@@ -1,11 +1,11 @@
-import { Tokens } from "@/constants/tokens";
+import { openerService } from "@/services/opener.service";
 import { AppAIResume } from "./app";
 import { createPlugin } from "xbook/common/createPlugin";
 
 export const provideAppAIResume = createPlugin({
   initilize(xbook) {
     xbook.componentService.register("ai-resume", AppAIResume);
-    const openerService = xbook.serviceBus.createProxy(Tokens.OpenerService);
+    // Use singleton openerService
     openerService.register({
       match: [".airesume.json"],
       priority: 100,

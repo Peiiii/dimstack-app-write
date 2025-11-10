@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Tokens } from "@/constants/tokens";
 import { spaceHelper } from "@/helpers/space.helper";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useContext } from "react";
 import xbook from "xbook";
 import { spaceService } from "@/services/space.service";
 import { ModalActionContext } from "xbook/services/modalService";
+import { openerService } from "@/services/opener.service";
 
 // Quick start tab: focus the local IndexedDB space and open README.md
 export const AddSpaceQuickStart = () => {
@@ -26,7 +26,6 @@ export const AddSpaceQuickStart = () => {
     try {
       const uri = spaceHelper.getUri(space.id, "/README.md").toString();
       // Let opener service route to the proper editor/view
-      const openerService = xbook.serviceBus.createProxy(Tokens.OpenerService);
       // Minimal FolderTreeNode-like shape with path for opener
       await openerService.open(space.id, { path: "/README.md" } as any);
     } catch (e) {

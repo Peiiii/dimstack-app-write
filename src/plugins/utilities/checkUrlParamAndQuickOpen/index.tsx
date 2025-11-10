@@ -1,4 +1,4 @@
-import { Tokens } from "@/constants/tokens";
+import { spaceService } from "@/services/space.service";
 import { Action } from "@/toolkit/types";
 import { AiOutlineShareAlt } from "react-icons/ai";
 import { createPlugin } from "xbook/common/createPlugin";
@@ -20,7 +20,7 @@ export default createPlugin({
   initilize(xbook) {
     const params = getUrlParams(window.location.search);
     const openRepo = params["openRepo"];
-    const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
+    // Use singleton spaceService
     if (openRepo) {
       const result = spaceService.parseRepoUrl(openRepo);
       if (result.platform && result.owner && result.repo) {

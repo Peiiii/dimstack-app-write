@@ -1,4 +1,4 @@
-import { Tokens } from "@/constants/tokens";
+import { spaceService } from "@/services/space.service";
 import { distinctUntilChanged, pairwise } from "rxjs";
 import { createPlugin } from "xbook/common/createPlugin";
 import { CacheController } from "xbook/ui/services/cache-controller";
@@ -10,7 +10,7 @@ const cache = CacheController.create({
 
 export const ShowCurrentSpacePagesOnly = createPlugin({
   initilize(xbook) {
-    const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
+    // Use singleton spaceService
     xbook.layoutService.pageBox.subscribePageList((pages) => {
       const space = spaceService.getFocusedSpace();
       if (space?.id) cache.set(space.id, pages);

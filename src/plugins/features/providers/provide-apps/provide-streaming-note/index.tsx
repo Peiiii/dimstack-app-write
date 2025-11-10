@@ -1,11 +1,11 @@
-import { Tokens } from "@/constants/tokens";
+import { openerService } from "@/services/opener.service";
 import { AppStreamingNote } from "./app";
 import { createPlugin } from "xbook/common/createPlugin";
 
 export const provideStreamingNote = createPlugin({
   initilize(xbook) {
     xbook.componentService.register("streaming-note", AppStreamingNote);
-    const openerService = xbook.serviceBus.createProxy(Tokens.OpenerService);
+    // Use singleton openerService
     openerService.register({
       match: [".streaming.json"],
       priority: 100,

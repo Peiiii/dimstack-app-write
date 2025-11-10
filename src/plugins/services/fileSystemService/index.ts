@@ -1,18 +1,16 @@
-import { Tokens } from "@/constants/tokens";
 import { spaceHelper } from "@/helpers/space.helper";
+import { spaceService } from "@/services/space.service";
+import { authService } from "@/services/auth.service";
 
 
 import { SpaceDef } from "@/toolkit/types/space";
 import { createPlugin } from "xbook/common/createPlugin";
-import xbook from "xbook/index";
 import { fs } from "xbook/services";
 const SEPERATOR = ":";
 
 const getSpaceWithAuth = (spaceId: string): SpaceDef | undefined => {
-  const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
   const space = spaceService.getSpace(spaceId);
   if (!space) return;
-  const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
   const authInfo = authService.getAnyAuthInfo(space.platform, space.owner);
   if (!authInfo) return;
   if (!authInfo.accessToken || !authInfo.refreshToken) return;

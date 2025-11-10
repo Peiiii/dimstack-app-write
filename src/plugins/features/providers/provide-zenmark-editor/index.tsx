@@ -1,5 +1,5 @@
 import { EventKeys } from "@/constants/eventKeys";
-import { Tokens } from "@/constants/tokens";
+import { openerService } from "@/services/opener.service";
 import { ZenmarkEditorComponent } from "@/plugins/features/providers/provide-zenmark-editor/zenmark-editor-component";
 import { systemjsModuleService } from "@/services/systemjs-module.service";
 import "systemjs/dist/extras/amd";
@@ -31,9 +31,6 @@ export default createPlugin({
     }
 
     xbook.componentService.register("zenmark-editor", ZenmarkEditorComponent);
-    const openerService = xbook.serviceBus.createProxy(
-      Tokens.OpenerService
-    );
     openerService.register({
       priority: -100,
       match: [".md", ".markdown", ".MD"],

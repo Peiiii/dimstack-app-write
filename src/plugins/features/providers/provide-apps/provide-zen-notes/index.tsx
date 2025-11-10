@@ -1,11 +1,11 @@
-import { Tokens } from "@/constants/tokens";
+import { openerService } from "@/services/opener.service";
 import { AppZenNotes } from "./app";
 import { createPlugin } from "xbook/common/createPlugin";
 
 export const provideZenNotes = createPlugin({
   initilize(xbook) {
     xbook.componentService.register("zen-notes", AppZenNotes);
-    const openerService = xbook.serviceBus.createProxy(Tokens.OpenerService);
+    // Use singleton openerService
     openerService.register({
       match: [".zennotes.json"],
       priority: 100,

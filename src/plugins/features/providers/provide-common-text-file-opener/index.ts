@@ -1,4 +1,4 @@
-import { Tokens } from "@/constants/tokens";
+import { openerService } from "@/services/opener.service";
 import { TextFileView } from "@/plugins/features/providers/provide-common-text-file-opener/components/text-file-view";
 import { COMMON_TEXT_FILE_EXTENSIONS } from "@/plugins/features/providers/provide-common-text-file-opener/constants";
 import { createPlugin } from "xbook/common/createPlugin";
@@ -10,7 +10,6 @@ export default createPlugin({
     };
   },
   initilize(xbook) {
-    const openerService = xbook.serviceBus.createProxy(Tokens.OpenerService);
     openerService.register({
       // Slightly higher than other markdown editor openers (-100),
       // but lower than app-specific openers (usually 100)

@@ -1,8 +1,7 @@
-import { Tokens } from "@/constants/tokens";
+import { spaceService } from "@/services/space.service";
 import { SpaceDef } from "@/toolkit/types/space";
 import { Select } from "@chakra-ui/react";
 import { FC, useContext, useEffect, useRef } from "react";
-import xbook from "xbook/index";
 import { ModalActionContext } from "xbook/services/modalService";
 
 export const SpaceItemView: FC<{ space: SpaceDef }> = ({ space }) => {
@@ -15,7 +14,7 @@ export const SpaceItemView: FC<{ space: SpaceDef }> = ({ space }) => {
 
 export const SpaceListView = () => {
   const { useSpaces, focusSpace, getFocusedSpace } =
-    xbook.serviceBus.createProxy(Tokens.SpaceService);
+    spaceService;
   const spaces = useSpaces();
   const currentSpace = getFocusedSpace();
   const { close } = useContext(ModalActionContext)!;

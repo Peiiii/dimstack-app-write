@@ -1,5 +1,5 @@
 import { EventKeys } from "@/constants/eventKeys";
-import { Tokens } from "@/constants/tokens";
+import { spaceService } from "@/services/space.service";
 import { spaceHelper } from "@/helpers/space.helper";
 import { createPlugin } from "xbook/common/createPlugin";
 import { CacheController } from "xbook/ui/services/cache-controller";
@@ -22,7 +22,7 @@ const getDefaultSpaceState = (): ISpaceState => {
 
 export const pluginAddInitialIndexedDbSpace = createPlugin({
   initilize(xbook) {
-    const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
+    // Use singleton spaceService directly
     spaceService.getSpaceStore().waitUtilLoaded(async () => {
       const defaultSpaceConfig = {
         platform: "idb",

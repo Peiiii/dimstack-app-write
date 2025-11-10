@@ -1,11 +1,11 @@
-import { Tokens } from "@/constants/tokens";
+import { openerService } from "@/services/opener.service";
 import { AppMindFlow } from "./app";
 import { createPlugin } from "xbook/common/createPlugin";
 
 export const provideMindFlow = createPlugin({
   initilize(xbook) {
     xbook.componentService.register("mind-flow", AppMindFlow);
-    const openerService = xbook.serviceBus.createProxy(Tokens.OpenerService);
+    // Use singleton openerService
     openerService.register({
       match: [".mindflow.json"],
       priority: 100,

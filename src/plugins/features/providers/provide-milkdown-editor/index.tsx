@@ -1,5 +1,5 @@
 import { EventKeys } from "@/constants/eventKeys";
-import { Tokens } from "@/constants/tokens";
+import { openerService } from "@/services/opener.service";
 import { fileSystemHelper } from "@/helpers/file-system.helper";
 import { useEfffectOnce } from "@/hooks/use-efffect-once";
 import { systemjsModuleService } from "@/services/systemjs-module.service";
@@ -92,9 +92,6 @@ export const provideMilkdownEditor = createPlugin({
           xbook.componentService.register("tiptap-editor", MilkdownEditor);
           xbook.componentService.register("vditor", MilkdownEditor);
           xbook.componentService.register("markdown-editor", MilkdownEditor);
-          const openerService = xbook.serviceBus.createProxy(
-            Tokens.OpenerService
-          );
           openerService.register({
             priority: -100,
             match: [".md", ".markdown", ".MD"],

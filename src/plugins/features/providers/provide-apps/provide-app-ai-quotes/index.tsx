@@ -1,11 +1,11 @@
-import { Tokens } from "@/constants/tokens";
+import { openerService } from "@/services/opener.service";
 import { AppAIQuotes } from "./app";
 import { createPlugin } from "xbook/common/createPlugin";
 
 export const provideAppAIQuotes = createPlugin({
   initilize(xbook) {
     xbook.componentService.register("ai-quotes", AppAIQuotes);
-    const openerService = xbook.serviceBus.createProxy(Tokens.OpenerService);
+    // Use singleton openerService
     openerService.register({
       match: [".aiquotes.json"],
       priority: 100,

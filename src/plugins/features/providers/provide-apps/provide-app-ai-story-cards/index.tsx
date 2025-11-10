@@ -1,4 +1,4 @@
-import { Tokens } from "@/constants/tokens";
+import { openerService } from "@/services/opener.service";
 import { AppAIStoryCards } from "@/plugins/features/providers/provide-apps/provide-app-ai-story-cards/app";
 import { createPlugin } from "xbook/common/createPlugin";
 
@@ -17,7 +17,7 @@ export const provideAppAIStoryCards = createPlugin({
     //   });
     // });
     xbook.componentService.register("ai-story-cards", AppAIStoryCards);
-    const openerService = xbook.serviceBus.createProxy(Tokens.OpenerService);
+    // Use singleton openerService
     openerService.register({
       match: [".aicard.json"],
       priority: 100,

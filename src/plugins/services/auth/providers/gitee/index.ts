@@ -1,4 +1,4 @@
-import { Tokens } from "@/constants/tokens";
+import { authService } from "@/services/auth.service";
 import { appInfo } from "@/plugins/services/auth/providers/gitee/appInfo";
 import {
   createGitRepoAuthProvider,
@@ -44,7 +44,6 @@ export default createPlugin({
       },
     });
     xbook.taskService.registerTaskType(callbackTask);
-    const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
     authService.registerAuthProvider(authProvider);
   },
 });

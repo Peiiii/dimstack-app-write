@@ -1,4 +1,3 @@
-import { Tokens } from "@/constants/tokens";
 import { spaceHelper } from "@/helpers/space.helper";
 import {
   TreeEventKeys,
@@ -13,6 +12,7 @@ import { SpaceDef } from "@/toolkit/types/space";
 import { FileType } from "@/toolkit/vscode/file-system";
 import xbook from "xbook/index";
 import { dirname, join } from "path-browserify";
+import { openerService } from "@/services/opener.service";
 import { fs } from "xbook/services";
 import { joinPath } from "@/toolkit/utils/path";
 
@@ -273,7 +273,6 @@ export const createTreeService = (
 
     openNode = (id: string) => {
       const node = dataStore.getNode(id)!;
-      const openerService = xbook.serviceBus.createProxy(Tokens.OpenerService);
       openerService.open(space.id, node);
     };
 

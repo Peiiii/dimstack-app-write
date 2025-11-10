@@ -1,5 +1,5 @@
 import { OnlineReactIde } from "@/components/online-react-ide";
-import { Tokens } from "@/constants/tokens";
+import { openerService } from "@/services/opener.service";
 import { AiFillCode } from "react-icons/ai";
 import { createPlugin } from "xbook/common/createPlugin";
 
@@ -22,7 +22,7 @@ export const provideReactIDE = createPlugin({
       });
     });
     xbook.componentService.register(config.appName, OnlineReactIde);
-    const openerService = xbook.serviceBus.createProxy(Tokens.OpenerService);
+    // Use singleton openerService
     openerService.register({
       match: [config.suffix],
       priority: 100,

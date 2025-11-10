@@ -1,4 +1,4 @@
-import { Tokens } from "@/constants/tokens";
+import { openerService } from "@/services/opener.service";
 import { AppCommunity } from "./app";
 import { createPlugin } from "xbook/common/createPlugin";
 import { spaceHelper } from "@/helpers/space.helper";
@@ -6,7 +6,7 @@ import { spaceHelper } from "@/helpers/space.helper";
 export const provideCommunity = createPlugin({
   initilize(xbook) {
     xbook.componentService.register("community", AppCommunity);
-    const openerService = xbook.serviceBus.createProxy(Tokens.OpenerService);
+    // Use singleton openerService
     openerService.register({
       match: [".community.json"],
       priority: 100,

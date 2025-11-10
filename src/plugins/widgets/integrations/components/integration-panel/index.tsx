@@ -1,7 +1,6 @@
-import { Tokens } from "@/constants/tokens";
+import { authService } from "@/services/auth.service";
 import React, { useMemo } from "react";
 import { AiOutlineLink } from "react-icons/ai";
-import xbook from "xbook/index";
 
 interface Integration {
   id: string;
@@ -73,7 +72,7 @@ const IntegrationList: React.FC<IntegrationPanelProps> = ({
 };
 
 const IntegrationPanel: React.FC = () => {
-  const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
+  // Use singleton authService directly
   const authRecords = authService.useAuthRecords();
 
   const integrations: Integration[] = useMemo(

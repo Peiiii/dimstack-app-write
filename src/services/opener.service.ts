@@ -1,4 +1,5 @@
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
+import { spaceHelper } from "@/helpers/space.helper";
 import { device } from "xbook/common/device";
 import xbook from "xbook/index";
 
@@ -34,13 +35,8 @@ export class OpenerService implements IOpenerService {
       .find((opener) => this.match(opener, file.path!.split("/").pop()!));
 
     if (opener) {
-      opener.init(
-        await xbook.serviceBus.invoke(
-          "fileSystemService.open",
-          spaceId,
-          file.path!
-        )
-      );
+      const uri = spaceHelper.getUri(spaceId, file.path!).toString();
+      opener.init(uri);
       if (device.isMobile())
         xbook.commandService.executeCommand("client:toggleHome");
     }
@@ -65,3 +61,6 @@ export class OpenerService implements IOpenerService {
     return false;
   };
 }
+
+// Export a single, shared instance for direct imports.
+export const openerService = new OpenerService();

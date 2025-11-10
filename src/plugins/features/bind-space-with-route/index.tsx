@@ -1,5 +1,5 @@
-import { Tokens } from "@/constants/tokens";
 import { spaceHelper } from "@/helpers/space.helper";
+import { spaceService } from "@/services/space.service";
 import { createObservableFromExternalStore } from "@/toolkit/utils/rx-utils";
 import { BehaviorSubject } from "rxjs";
 import { createPlugin } from "xbook/common/createPlugin";
@@ -26,7 +26,7 @@ const getSpaceInfoObservableFromRoute = () => {
 export const bindSpaceWithRoute = createPlugin({
   initilize(xbook) {
     setTimeout(() => {
-      const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
+      // Use singleton spaceService directly
       const routeSpace$ = getSpaceInfoObservableFromRoute();
       routeSpace$.subscribe((spaceInfo) => {
         if (!spaceInfo) return;

@@ -1,4 +1,4 @@
-import { Tokens } from "@/constants/tokens";
+import { authService } from "@/services/auth.service";
 import { IAuthProvider } from "@/services/auth.service.interface";
 import { updateSearchParams } from "@/toolkit/utils/url";
 import { GithubAuthInfo } from "libs/github-api";
@@ -32,7 +32,6 @@ export const createOAuthCallbackTask = ({
   const CheckAuthCodeAndNext = {
     name: "CheckAuthCodeAndNext:" + platform,
     execute(taskData: { platform: string; username: string }): void {
-      const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
       const { platform, username } = taskData;
       const code = history.location.query["code"];
       const codePlatform = history.location.query["platform"];
@@ -113,7 +112,6 @@ export const createGitRepoAuthProvider = ({
     }) => {
       const { platform, username, refreshToken } = params;
       const auth = await refreshAccessToken({ refreshToken });
-      const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
       authService.saveAuthInfo({
         platform,
         username,

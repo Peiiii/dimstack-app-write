@@ -1,10 +1,9 @@
-import { Tokens } from "@/constants/tokens";
 import { spaceHelper } from "@/helpers/space.helper";
+import { spaceService } from "@/services/space.service";
 import { createPlugin } from "xbook/common/createPlugin";
 
 export const Migration20240518 = createPlugin({
   initilize(xbook) {
-    const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
     spaceService.subscribeSpaces((spaces) => {
       let isOld = false;
       const migrated = spaces.map((space) => {
