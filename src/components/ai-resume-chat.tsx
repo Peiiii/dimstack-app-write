@@ -7,6 +7,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { useToast } from "@/hooks/use-toast";
 import { AIService } from "@/services/ai-service";
 import { useEffect, useRef, useState } from "react";
+import { useStickyAutoScroll } from "@/hooks/use-sticky-autoscroll";
 import { ResumeView } from "@/components/resume-view";
 import { Message, Resume, AppProps } from "@/types/resume";
 import { isEqual } from 'lodash';
@@ -18,7 +19,8 @@ export function AIResumeChat({ saveData, loadData }: AppProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedResume, setSelectedResume] = useState<Resume | null>(null);
   const { toast } = useToast();
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { containerRef, notifyNewItem, scrollToBottom, setIsSticky } =
+    useStickyAutoScroll({ threshold: 80 });
   const aiService = new AIService(apiKey, "gpt-4-turbo-preview");
   const prevDataRef = useRef({ messages, apiKey });
 
@@ -62,9 +64,10 @@ export function AIResumeChat({ saveData, loadData }: AppProps) {
     return () => clearTimeout(timeoutId);
   }, [messages, apiKey, saveData]);
 
+  // Auto scroll on new messages when sticky
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    notifyNewItem();
+  }, [messages, notifyNewItem]);
 
   const handleSend = async () => {
     if (!apiKey) {
@@ -96,6 +99,8 @@ export function AIResumeChat({ saveData, loadData }: AppProps) {
 
       setMessages((prev) => [...prev, userMessage]);
       setInput("");
+      // User reply should always scroll to bottom
+      requestAnimationFrame(() => scrollToBottom());
 
       const prompt = `你是一个专业的简历顾问。基于用户的输入："${input}"，
 请提供专业的建议和帮助。如果收集到足够信息，请生成一份简历。
@@ -151,6 +156,7 @@ ${messages.map((m) => `${m.type}: ${m.content}`).join("\n")}
       }
 
       setMessages((prev) => [...prev, ...aiMessages]);
+      // AI reply respects sticky (handled by notifyNewItem in messages effect)
     } catch (error) {
       console.error("Error:", error);
       toast({
@@ -217,9 +223,13 @@ ${messages.map((m) => `${m.type}: ${m.content}`).join("\n")}
           </CardContent>
         </Card>
 
-        <div className="space-y-4 mb-4">
+        <div
+          className="space-y-4 mb-4 max-h-[60vh] overflow-auto"
+          ref={containerRef}
+          onMouseEnter={() => setIsSticky(false)}
+          onMouseLeave={() => setIsSticky(true)}
+        >
           {messages.map(renderMessage)}
-          <div ref={messagesEndRef} />
         </div>
 
         <div className="flex space-x-2">

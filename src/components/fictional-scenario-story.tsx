@@ -20,6 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useStickyAutoScroll } from "@/hooks/use-sticky-autoscroll";
 import { AIService } from "../services/ai-service";
 
 interface SaveDataFunction {
@@ -62,7 +63,8 @@ export default function Component({ saveData, loadData }: AppProps) {
     () => new AIService(apiKey, selectedModel),
     [apiKey, selectedModel]
   );
-  const lastCardRef = useRef<HTMLDivElement>(null);
+  const { containerRef, notifyNewItem, scrollToBottom, setIsSticky } =
+    useStickyAutoScroll({ threshold: 80 });
 
   useEffect(() => {
     const loadSavedData = async () => {
@@ -216,8 +218,7 @@ export default function Component({ saveData, loadData }: AppProps) {
   };
 
   const renderCard = (item, index) => {
-    const isLastCard = index === conversation.length - 1;
-    const cardProps = isLastCard ? { ref: lastCardRef } : {};
+    const cardProps = {};
 
     switch (item.type) {
       case "user":
@@ -326,15 +327,10 @@ export default function Component({ saveData, loadData }: AppProps) {
       .map((msg) => msg.content);
   }, [conversation]);
 
-  // 添加自动滚动功能
+  // 自动滚动：当 sticky 状态下有新内容
   useEffect(() => {
-    if (lastCardRef.current) {
-      lastCardRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-      });
-    }
-  }, [conversation]);
+    notifyNewItem();
+  }, [conversation, notifyNewItem]);
 
   // 处理回车键发送
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -351,7 +347,12 @@ export default function Component({ saveData, loadData }: AppProps) {
   return (
     <div className="flex flex-col h-full">
       {/* Scrollable conversation area */}
-      <div className="flex-1 overflow-auto p-4 pb-[200px] scroll-smooth">
+      <div
+        className="flex-1 overflow-auto p-4 pb-[200px] scroll-smooth"
+        ref={containerRef}
+        onMouseEnter={() => setIsSticky(false)}
+        onMouseLeave={() => setIsSticky(true)}
+      >
         <div className="max-w-3xl mx-auto space-y-4">
           {conversation.map((item, index) => renderCard(item, index))}
         </div>
@@ -408,13 +409,14 @@ export default function Component({ saveData, loadData }: AppProps) {
                   onKeyDown={handleKeyPress}
                   className="min-h-[80px]"
                 />
-                <Button
-                  onClick={startNewRound}
-                  disabled={isGenerating}
-                  className="shrink-0"
-                >
-                  开始新一轮
-                </Button>
+              <Button
+                onClick={startNewRound}
+                disabled={isGenerating}
+                className="shrink-0"
+                onMouseDown={() => scrollToBottom("auto")}
+              >
+                开始新一轮
+              </Button>
               </div>
             </div>
           ) : (
@@ -429,6 +431,7 @@ export default function Component({ saveData, loadData }: AppProps) {
                 onClick={generateCards}
                 disabled={isGenerating}
                 className="shrink-0"
+                onMouseDown={() => scrollToBottom("auto")}
               >
                 {isGenerating ? "生成中..." : "发送"}
               </Button>
