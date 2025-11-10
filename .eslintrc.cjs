@@ -46,6 +46,12 @@ module.exports = {
         message:
           "Use direct singletons instead of serviceBus.createProxy(Tokens.X)",
       },
+      {
+        selector:
+          "CallExpression[callee.object.object.name='xbook'][callee.object.property.name='eventBus'][arguments.0.type='Literal'][arguments.0.value=/::/]",
+        message:
+          "Use typed EventKeys; avoid '::' in event names",
+      },
     ],
     // Ensure imported named exports actually exist
     "import/named": "error",

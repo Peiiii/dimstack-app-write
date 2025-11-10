@@ -3,7 +3,6 @@ import features from "@/plugins/features";
 import migrations from "@/plugins/migrations";
 import authService from "@/plugins/services/auth";
 import commonServiceProviders from "@/plugins/services/common-service-providers";
-import fileSystemService from "@/plugins/services/fileSystemService";
 import { addGiteeSpace } from "@/plugins/space/addSpace";
 import displaySpaces from "@/plugins/space/displaySpaces";
 import { folderTreeService } from "@/plugins/space/folderTreeService";
@@ -32,7 +31,6 @@ xbook.pluginService.use([
   // listenGiteeLoginCallback,
 
   /** basic */
-  fileSystemService,
   folderTreeService,
   AddFileSystemProviderForEachSpace,
   commonServiceProviders,

@@ -2,6 +2,7 @@ import { spaceService } from "@/services/space.service";
 import { Action } from "@/toolkit/types";
 import { AiOutlineShareAlt } from "react-icons/ai";
 import { createPlugin } from "xbook/common/createPlugin";
+import { EventKeys } from "@/constants/eventKeys";
 
 const getUrlParams = (search: string) => {
   const params = new URLSearchParams(search);
@@ -33,14 +34,15 @@ export default createPlugin({
       }
     }
 
+    const actionId = "shareRepoUrl";
     const action: Action = {
-      id: "shareRepoUrl",
+      id: actionId,
       icon: <AiOutlineShareAlt />,
       title: "分享",
       events: ["Click"],
     };
     xbook.eventBus.on(
-      `${action.id}::Click`,
+      EventKeys.Action.Clicked(actionId),
       ({
         context: {
           space: { platform, owner, repo },

@@ -1,5 +1,6 @@
 import { Tokens } from "@/constants/tokens";
 import { spaceHelper } from "@/helpers/space.helper";
+import { EventKeys } from "@/constants/eventKeys";
 import { folderTreeService as folderTreeServiceInstance } from "@/services/folder-tree.service";
 import { Action } from "@/toolkit/types";
 import { SpaceDef } from "@/toolkit/types/space";
@@ -34,16 +35,21 @@ export const folderTreeService = createPlugin({
       },
     ]);
 
-    xbook.eventBus.on<any>("space.delete::Click", ({ context }) => {
-      spaceHelper.getStore().getActions().delete(context.space.id);
-    });
+    xbook.eventBus.on<{ context: { space: SpaceDef } }>(
+      EventKeys.Action.Clicked("space.delete"),
+      ({ context }) => {
+        spaceHelper.getStore().getActions().delete(context.space.id);
+      }
+    );
 
-    xbook.eventBus.on<any>("space.info::Click", ({ context }) => {
-      const { repo, id, owner, platform } = context.space;
-      const url = `https://${platform}.com/${owner}/${repo}`;
-      xbook.modalService
-        .createModal({
-          title: `About ${context.space.repo}`,
+    xbook.eventBus.on<{ context: { space: SpaceDef } }>(
+      EventKeys.Action.Clicked("space.info"),
+      ({ context }) => {
+        const { repo, id, owner, platform } = context.space;
+        const url = `https://${platform}.com/${owner}/${repo}`;
+        xbook.modalService
+          .createModal({
+            title: `About ${context.space.repo}`,
           footer: false,
           content: (
             <Box mb="1em">
@@ -72,7 +78,8 @@ export const folderTreeService = createPlugin({
           ),
         })
         .open();
-    });
+      }
+    );
 
     // Expose the singleton instance for legacy callers still using serviceBus.
     xbook.serviceBus.exposeAt(Tokens.FolderTreeService, folderTreeServiceInstance);

@@ -15,6 +15,7 @@ import { CommandKeys } from "xbook/constants/tokens";
 import { PresetComponents } from "xbook/ui/componentService";
 import { Layout } from "xbook/ui/workBench";
 import "./css/themes/markdown/github.css";
+import { sideResizer } from "xbook/ui/side-resizer";
 
 const MobileLayout: Layout = {
   type: "column",
@@ -199,8 +200,7 @@ export default createPlugin({
       xbook.commandService.registerCommand(CommandKeys.ToggleHome, () => {
         // xbook.layoutService.sidebar.toggle();
         xbook.layoutService.activityBar.toggle();
-        // xbook.serviceBus.invoke("sidebarResizer.toggleResizable")
-        xbook.serviceBus.invoke("sideResizer.toggleLeft");
+        sideResizer.toggleLeft();
       });
 
       xbook.commandService.registerCommand(CommandKeys.ToChatPage, () => {

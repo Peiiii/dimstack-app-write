@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import xbook from "xbook";
+import { EventKeys } from "@/constants/eventKeys";
 
 export const IntroductionPage = () => (
   <div className="p-6 max-w-[1400px] mx-auto">
@@ -39,7 +40,7 @@ export const IntroductionPage = () => (
         <Button
           size="lg"
           className="px-8"
-          onClick={() => xbook.eventBus.emit("addGiteeRepo::Click")}
+          onClick={() => xbook.eventBus.emit(EventKeys.ActivityBar.ActivityClicked("addGiteeRepo"))}
         >
           开始使用
         </Button>

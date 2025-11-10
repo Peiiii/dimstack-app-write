@@ -12,13 +12,20 @@ export const EventKeys = {
       prevIndex: number;
       nextIndex: number;
     }>("activityBar:DragItem"),
-    ActivityClicked: (id: string) => typedKey(`activity:${id}:clicked`),
+    // No payload required when an activity is clicked
+    ActivityClicked: (id: string) => typedKey<void>(`activity:${id}:clicked`),
   },
   Shortcut: {
-    ShortcutClicked: (id: string) => typedKey(`shortcut:${id}:clicked`),
+    // No payload required when a shortcut is clicked
+    ShortcutClicked: (id: string) => typedKey<void>(`shortcut:${id}:clicked`),
   },
-  FileSaved: typedKey("FileSaved"),
+  FileSaved: typedKey<void>("FileSaved"),
   ReadMeFileInitialized: typedKey<{
     spaceId: string
   }>("ReadMeFileInitialized"),
+  Action: {
+    // Generic action clicked; specify payload type at call-site if needed
+    Clicked: <TPayload = unknown>(id: string) =>
+      typedKey<TPayload>(`action:${id}:clicked`),
+  },
 };

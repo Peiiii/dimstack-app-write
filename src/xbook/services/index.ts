@@ -7,7 +7,6 @@ export { layoutService } from "./layoutService";
 export { logService } from "./logService";
 export { modalService } from "./modalService";
 export { notificationService } from "./notificationService";
-export { pipeService } from "./pipeService";
 export { pluginService } from "./pluginService";
 export { popupService } from "./popupService";
 export { registry as registryService } from "./registry";
@@ -20,7 +19,6 @@ import { commandService } from "./commandService";
 import { eventBus } from "./eventBus";
 import { layoutService } from "./layoutService";
 import { logService } from "./logService";
-import { pipeService } from "./pipeService";
 import { serviceBus } from "./serviceBus";
 import { taskService } from "./taskService";
 
@@ -41,8 +39,6 @@ export default {
   serviceBus,
   commandService,
   eventBus,
-  /** @deprecated */
-  pipeService,
   registry,
   pluginService,
   cacheService,
