@@ -6,6 +6,7 @@ import { useContext, useRef } from "react";
 import xbook from "xbook";
 import { ModalActionContext } from "xbook/services/modalService";
 import { useAtom } from "@/toolkit/utils/hooks/useAtom";
+import { spaceService } from "@/services/space.service";
 
 interface SpaceFormData {
   platform: string;
@@ -14,7 +15,7 @@ interface SpaceFormData {
 }
 
 export const AddSpaceForm = () => {
-  const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
+  // Use singleton service directly
   const modal = useContext(ModalActionContext)!;
   const platforms = spacePlatformRegistry.getPlatforms();
 

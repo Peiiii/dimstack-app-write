@@ -4,12 +4,13 @@ import { spaceHelper } from "@/helpers/space.helper";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useContext } from "react";
 import xbook from "xbook";
+import { spaceService } from "@/services/space.service";
 import { ModalActionContext } from "xbook/services/modalService";
 
 // Quick start tab: focus the local IndexedDB space and open README.md
 export const AddSpaceQuickStart = () => {
   const modal = useContext(ModalActionContext)!;
-  const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
+  // Use singleton service directly
   const defaultSpaceInfo = { platform: "idb", owner: "root", repo: "home" };
 
   const handleQuickStart = async () => {
@@ -50,4 +51,3 @@ export const AddSpaceQuickStart = () => {
     </div>
   );
 };
-

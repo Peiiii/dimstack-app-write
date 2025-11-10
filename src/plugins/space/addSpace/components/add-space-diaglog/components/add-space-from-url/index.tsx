@@ -5,10 +5,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Fragment, useContext, useState } from "react";
 import xbook from "xbook/index";
+import { spaceService } from "@/services/space.service";
 import { ModalActionContext } from "xbook/services/modalService";
 
 export const AddSpaceFromUrl = () => {
-  const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
+  // Use singleton service directly
   const [url, setUrl] = useState("");
   const modal = useContext(ModalActionContext)!;
   const recommendUrls = [

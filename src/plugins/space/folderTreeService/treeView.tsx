@@ -2,7 +2,6 @@ import { Alert, Box, Icon, Link } from "@chakra-ui/react";
 import "./sidebar.scss";
 
 import { EventKeys } from "@/constants/eventKeys";
-import { Tokens } from "@/constants/tokens";
 import { fileSystemHelper } from "@/helpers/file-system.helper";
 import { useStateFromRegistry } from "@/helpers/hooks/user-state-from-registry";
 import { spaceHelper } from "@/helpers/space.helper";
@@ -37,6 +36,7 @@ import { dirname } from "path-browserify";
 import { useEffect, useMemo, useState } from "react";
 import { AiOutlineLink } from "react-icons/ai";
 import xbook from "xbook/index";
+import { spaceService } from "@/services/space.service";
 import { fs } from "xbook/services";
 import treePluginClickNode from "./plugins/treePluginClickNode";
 import treePluginConfig from "./plugins/treePluginConfig";
@@ -76,7 +76,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
       }),
     [space.id]
   );
-  const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
+  // Use singleton spaceService directly
   const treeService = serviceBus.createProxy(TreeServicePoints.TreeService);
   const { hasReadPermission: isLogin } = spaceService.usePermissions(space.id);
   const [pluginsLoaded, setPluginsLoaded] = useState(false);

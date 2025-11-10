@@ -6,7 +6,6 @@ import {
 } from "@/components/form-builder/utils";
 import { Button } from "@/components/ui/button";
 import { EventKeys } from "@/constants/eventKeys";
-import { Tokens } from "@/constants/tokens";
 import { useSubscribeObservable } from "@/hooks/use-subscribe-observable";
 import { Alert, AlertIcon, Flex } from "@chakra-ui/react";
 import { defineController } from "app-toolkit";
@@ -17,6 +16,8 @@ import { useEffectOnce } from "rx-nested-bean";
 import { distinctUntilChanged, from, map, of, switchMap } from "rxjs";
 import xbook from "xbook/index";
 import { ModalActionContext } from "xbook/services/modalService";
+import { authService } from "@/services/auth.service";
+import { spaceService } from "@/services/space.service";
 
 export type SpaceFormData = {
   platform: string;
@@ -57,12 +58,10 @@ export const SpaceFormController = defineController(
 const { FormItemSelect } = getFormItemComponents<SpaceFormData>();
 
 const hasAlreadyLogin = (platform: string) => {
-  const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
   return !!authService.getAnyAuthInfo(platform)?.accessToken;
 };
 
 const getPlatformRepos = (platform: string) => {
-  const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
   const accessToken = authService.getAnyAuthInfo(platform)?.accessToken;
   if (!accessToken) return of([]);
   if (platform === "gitee") {
@@ -82,7 +81,6 @@ const getPlatformRepos = (platform: string) => {
 };
 
 export const AddSpaceBySelect = () => {
-  const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
   const modal = useContext(ModalActionContext)!;
   const controller = SpaceFormController.useInstace();
   const {

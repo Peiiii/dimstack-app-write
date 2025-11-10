@@ -1,12 +1,13 @@
 import { Tokens } from "@/constants/tokens";
 import { SpaceFileSystemProviderProxy } from "@/services/space-file-system-provider-proxy";
 import { spacePlatformRegistry } from "@/services/space-platform.registry";
+import { spaceService } from "@/services/space.service";
+import { authService } from "@/services/auth.service";
 import { createPlugin } from "xbook/common/createPlugin";
 
 export const AddFileSystemProviderForEachSpace = createPlugin({
   initilize(xbook) {
-    const spaceService = xbook.serviceBus.createProxy(Tokens.SpaceService);
-    const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
+    // Use singleton services directly
 
     spaceService.subscribeSpaces((spaces) => {
       spaces.forEach((space) => {
