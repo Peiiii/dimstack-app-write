@@ -1,5 +1,5 @@
 import { EventKeys } from "@/constants/eventKeys";
-import { Tokens } from "@/constants/tokens";
+import { folderTreeService } from "@/services/folder-tree.service";
 import { spaceHelper } from "@/helpers/space.helper";
 import { SpaceDef } from "@/toolkit/types/space";
 import { createPlugin } from "xbook/common/createPlugin";
@@ -7,7 +7,7 @@ import { createPlugin } from "xbook/common/createPlugin";
 export default createPlugin({
   initilize(xbook) {
     let prevSpaces: SpaceDef[] = [];
-    xbook.pipeService.on("spaceStore.spaces", (spaces: SpaceDef[]) => {
+    xbook.eventBus.on(EventKeys.Space.SpacesChanged, (spaces: SpaceDef[]) => {
       const prevIds = prevSpaces.map((p) => p.id);
       const ids = spaces.map((s) => s.id);
       const spacesAdded = spaces.filter((s) => !prevIds.includes(s.id));
@@ -19,9 +19,6 @@ export default createPlugin({
       //   (s) => !spacesAdded.includes(s)
       // );
       prevSpaces = spaces;
-      const folderTreeService = xbook.serviceBus.createProxy(
-        Tokens.FolderTreeService
-      );
       spacesAddedOrUpdated.forEach((space) => {
         folderTreeService.add(space);
       });

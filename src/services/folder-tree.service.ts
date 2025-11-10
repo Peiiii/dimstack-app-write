@@ -42,3 +42,6 @@ export class FolderTreeService {
     xbook.layoutService.sidebar.removeView(id);
   };
 }
+
+// Export a single, shared instance for direct imports.
+export const folderTreeService = new FolderTreeService();

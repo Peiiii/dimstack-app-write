@@ -255,7 +255,7 @@ export default function Component({ saveData, loadData }: AppProps) {
           </Card>
         );
 
-      case "divergent":
+      case "divergent": {
         const directions = item.content
           .split("\n")
           .filter((line) => line.trim().length > 0)
@@ -312,6 +312,7 @@ export default function Component({ saveData, loadData }: AppProps) {
             </CardContent>
           </Card>
         );
+      }
 
       default:
         return null;

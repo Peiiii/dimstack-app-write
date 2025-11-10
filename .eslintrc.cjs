@@ -6,9 +6,9 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "plugin:react-hooks/recommended",
   ],
-  ignorePatterns: ["dist", ".eslintrc.cjs"],
+  ignorePatterns: ["dist", ".eslintrc.cjs", "libs/**", "packages/**"],
   parser: "@typescript-eslint/parser",
-  plugins: ["react-refresh"],
+  plugins: ["react-refresh", "@typescript-eslint"],
   rules: {
     "react-refresh/only-export-components": [
       "warn",
@@ -18,8 +18,10 @@ module.exports = {
       "warn",
       { allow: ["log", "clear", "info", "error", "dir", "trace"] },
     ],
+    "@typescript-eslint/no-explicit-any": ["warn"],
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }
+    ],
   },
-  "@typescript-eslint/no-explicit-any": ["warn"],
-  "@typescript-eslint/no-unused-vars": ["warn"],
-  "@typescript-eslint/no-unused-imports": ["warn"],
 };

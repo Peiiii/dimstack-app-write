@@ -198,3 +198,6 @@ export class AuthService {
     };
   };
 }
+
+// Export a single, shared instance for direct imports.
+export const authService = new AuthService();

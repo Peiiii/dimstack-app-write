@@ -10,6 +10,9 @@ import { refreshGiteeAccessToken } from "libs/gitee-api";
 import { useEffect, useState } from "react";
 import { switchMap } from "rxjs";
 import xbook from "xbook/index";
+import { folderTreeService } from "./folder-tree.service";
+import { authService } from "./auth.service";
+import { EventKeys } from "@/constants/eventKeys";
 import { spacePlatformRegistry } from "@/services/space-platform.registry";
 
 export class SpaceService implements ISpaceService {
@@ -50,7 +53,11 @@ export class SpaceService implements ISpaceService {
   constructor() {
     xbook.registry.set("spaceStore", this.spaceStore);
     this.spaceStore.reduxStore.subscribe(() => {
-      xbook.pipeService.emit("spaceStore.spaces", this.spaceStore.getData());
+      // Broadcast space list changes via the typed event bus
+      xbook.eventBus.emit(
+        EventKeys.Space.SpacesChanged,
+        this.spaceStore.getData()
+      );
     });
   }
 
@@ -90,12 +97,10 @@ export class SpaceService implements ISpaceService {
     const space = this.spaceStore.getRecord(spaceId);
     if (!space) return false;
     // if (!space.auth) return false;
-    const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
     return authService.hasReadPermission(space.platform, space.owner);
   };
 
   useAutoRefreshAuth = (spaceId: string, maxRetry = 1) => {
-    const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
     const space = this.spaceStore.getRecord(spaceId);
     const existingAuthRecord = authService.getAnyAuthInfo(
       space?.platform || ""
@@ -146,7 +151,6 @@ export class SpaceService implements ISpaceService {
       };
     }
     // if (!space.auth) return false;
-    const authService = xbook.serviceBus.createProxy(Tokens.AuthService);
     const [hasReadPermission, setHasReadPermission] = useState<boolean>(
       authService.hasReadPermission(space.platform, space.owner)
     );
@@ -227,9 +231,6 @@ export class SpaceService implements ISpaceService {
   };
 
   focusSpace = (spaceId: string) => {
-    const folderTreeService = xbook.serviceBus.createProxy(
-      Tokens.FolderTreeService
-    );
     folderTreeService.focus(spaceId);
     setTimeout(() => {
       xbook.serviceBus.invoke(`space-${spaceId}.trigger`);
@@ -237,9 +238,6 @@ export class SpaceService implements ISpaceService {
   };
 
   getFocusedSpace = () => {
-    const folderTreeService = xbook.serviceBus.createProxy(
-      Tokens.FolderTreeService
-    );
     const id = folderTreeService.getCurrentViewId();
     if (id) {
       return this.spaceStore.getRecord(id);
@@ -247,18 +245,12 @@ export class SpaceService implements ISpaceService {
   };
 
   useFocusedSpace = () => {
-    const folderTreeService = xbook.serviceBus.createProxy(
-      Tokens.FolderTreeService
-    );
     const id = folderTreeService.useCurrentViewId();
     const space = this.spaceStore.getRecord(id);
     return space;
   };
 
   getFocusedSpace$ = () => {
-    const folderTreeService = xbook.serviceBus.createProxy(
-      Tokens.FolderTreeService
-    );
     return folderTreeService.getCurrentViewId$().pipe(
       switchMap((id) => {
         return createObservableFromExternalStore(
@@ -307,3 +299,7 @@ export class SpaceService implements ISpaceService {
     });
   };
 }
+
+// Export a single, shared instance for direct imports.
+// This enables a simpler architecture without a global service bus.
+export const spaceService = new SpaceService();

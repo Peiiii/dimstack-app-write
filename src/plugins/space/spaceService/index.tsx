@@ -1,9 +1,11 @@
 import { Tokens } from "@/constants/tokens";
-import { SpaceService } from "@/services/space.service";
+import { spaceService } from "@/services/space.service";
 import { createPlugin } from "xbook/common/createPlugin";
 
 export const spaceServiceModule = createPlugin({
   initilize(xbook) {
-    xbook.serviceBus.exposeAt(Tokens.SpaceService, new SpaceService());
+    // Expose the singleton instance for legacy callers still using serviceBus.
+    // New code should import `spaceService` directly.
+    xbook.serviceBus.exposeAt(Tokens.SpaceService, spaceService);
   },
 });

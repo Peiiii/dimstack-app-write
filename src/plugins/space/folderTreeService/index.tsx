@@ -1,6 +1,6 @@
 import { Tokens } from "@/constants/tokens";
 import { spaceHelper } from "@/helpers/space.helper";
-import { FolderTreeService } from "@/services/folder-tree.service";
+import { folderTreeService as folderTreeServiceInstance } from "@/services/folder-tree.service";
 import { Action } from "@/toolkit/types";
 import { SpaceDef } from "@/toolkit/types/space";
 import { Box, HStack, Icon, Link, Stat, Text } from "@chakra-ui/react";
@@ -74,9 +74,7 @@ export const folderTreeService = createPlugin({
         .open();
     });
 
-    xbook.serviceBus.exposeAt(
-      Tokens.FolderTreeService,
-      new FolderTreeService()
-    );
+    // Expose the singleton instance for legacy callers still using serviceBus.
+    xbook.serviceBus.exposeAt(Tokens.FolderTreeService, folderTreeServiceInstance);
   },
 });

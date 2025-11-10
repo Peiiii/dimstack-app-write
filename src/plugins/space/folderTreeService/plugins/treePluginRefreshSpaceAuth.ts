@@ -1,6 +1,7 @@
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreeHelper } from "@/toolkit/components/tree/treePlugins";
 import xbook from "xbook";
+import { spaceService } from "@/services/space.service";
 export default createTreeHelper<FolderTreeNode>().createPlugin({
   addOptions() {
     return {
@@ -8,12 +9,10 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
     };
   },
   activate({ options: { space } }) {
+    // Periodically refresh auth for the current space.
+    // Emitters/bus are unnecessary here; `spaceService.refreshAuth` updates state internally.
     const checkSpace = async () => {
-      const status = await xbook.serviceBus.invoke(
-        "spaceService.refreshAuth",
-        space.id
-      );
-      xbook.pipeService.emit(`space[${space.id}].isLogin`, status);
+      await spaceService.refreshAuth(space.id);
     };
     this.options.interval = setInterval(checkSpace, 1000 * 60 * 10);
     setTimeout(() => {
