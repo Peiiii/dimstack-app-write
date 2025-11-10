@@ -2,7 +2,7 @@
 type AnyFunction = (...args: any[]) => any;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyArgs = any[];
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export const createCommandManager = () => {
   const map: Map<string, AnyFunction> = new Map();
   const taskQueueMap: { [command: string]: AnyFunction[] } = new Proxy(

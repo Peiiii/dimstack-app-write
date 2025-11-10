@@ -5,7 +5,6 @@ import {
 } from "@/plugins/space/folderTreeService/tokens";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreeHelper } from "@/toolkit/components/tree/treePlugins";
-import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
 
 export default createTreeHelper<FolderTreeNode>().createPlugin({
   activate({

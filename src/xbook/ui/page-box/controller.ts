@@ -11,10 +11,8 @@ import {
   BehaviorSubject,
   Observable,
   combineLatest,
-  distinctUntilChanged,
   map,
   of,
-  tap,
 } from "rxjs";
 import "simplebar-react/dist/simplebar.min.css";
 import { VisibilityControl } from "xbook/hooks/proxiedControls";

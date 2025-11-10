@@ -1,15 +1,8 @@
 import { Tokens } from "@/constants/tokens";
 import { spaceHelper } from "@/helpers/space.helper";
-import {
-  createFile,
-  getDirectoryContent,
-  getFileContent,
-  rename,
-  rm,
-  setFileContent,
-} from "@/plugins/services/fileSystemService/utils";
+
+
 import { SpaceDef } from "@/toolkit/types/space";
-import { join } from "path-browserify";
 import { createPlugin } from "xbook/common/createPlugin";
 import xbook from "xbook/index";
 import { fs } from "xbook/services";

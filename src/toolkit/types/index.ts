@@ -14,7 +14,7 @@ export type Action = {
   icon?: React.ReactElement;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+ 
 export type TypedKey<T> = {
   name: string;
   typeHolder?: (arg: T) => void;

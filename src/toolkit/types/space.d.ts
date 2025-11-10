@@ -1,4 +1,3 @@
-import { SafeAny } from "@/toolkit/types";
 
 export type SpaceDef = {
   id: string;

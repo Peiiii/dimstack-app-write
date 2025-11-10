@@ -1,14 +1,9 @@
-import { fileSystemHelper } from "@/helpers/file-system.helper";
-import { spaceHelper } from "@/helpers/space.helper";
 import {
   TreeServicePoints,
   TreeEventKeys,
 } from "@/plugins/space/folderTreeService/tokens";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreeHelper } from "@/toolkit/components/tree/treePlugins";
-import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
-import { FileType } from "@/toolkit/vscode/file-system";
-import xbook from "xbook/index";
 
 export default createTreeHelper<FolderTreeNode>().createPlugin({
   activate({

@@ -5,8 +5,8 @@ export const nameSorter = (a: FolderTreeNode, b: FolderTreeNode) => {
   const re = /(\d+)|(\D+)/g;
 
   // 将文件名拆分为数字和非数字部分
-  let segmentsA = a.name.match(re);
-  let segmentsB = b.name.match(re);
+  const segmentsA = a.name.match(re);
+  const segmentsB = b.name.match(re);
 
   // Check if either segmentsA or segmentsB is null
   if (!segmentsA || !segmentsB) {
@@ -16,8 +16,8 @@ export const nameSorter = (a: FolderTreeNode, b: FolderTreeNode) => {
   }
   // 循环比较每个部分
   while (segmentsA.length && segmentsB.length) {
-    let segmentA = segmentsA.shift();
-    let segmentB = segmentsB.shift();
+    const segmentA = segmentsA.shift();
+    const segmentB = segmentsB.shift();
 
     // Ensure segmentA and segmentB are not undefined
     if (typeof segmentA === "undefined" || typeof segmentB === "undefined") {
@@ -27,12 +27,12 @@ export const nameSorter = (a: FolderTreeNode, b: FolderTreeNode) => {
     }
 
     // 检查是否为数字
-    let isNumA = !isNaN(parseInt(segmentA));
-    let isNumB = !isNaN(parseInt(segmentB));
+    const isNumA = !isNaN(parseInt(segmentA));
+    const isNumB = !isNaN(parseInt(segmentB));
 
     // 如果两部分都是数字，按数值比较
     if (isNumA && isNumB) {
-      let diff = parseInt(segmentA) - parseInt(segmentB);
+      const diff = parseInt(segmentA) - parseInt(segmentB);
       if (diff !== 0) return diff;
     } else if (segmentA !== segmentB) {
       // 如果两部分不相同，按字典顺序比较

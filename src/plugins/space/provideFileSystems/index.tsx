@@ -1,4 +1,3 @@
-import { Tokens } from "@/constants/tokens";
 import { SpaceFileSystemProviderProxy } from "@/services/space-file-system-provider-proxy";
 import { spacePlatformRegistry } from "@/services/space-platform.registry";
 import { spaceService } from "@/services/space.service";

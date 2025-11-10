@@ -3,7 +3,6 @@ import { systemjsModuleService } from "@/services/systemjs-module.service";
 import "systemjs/dist/extras/amd";
 import "systemjs/dist/system.min";
 import { createPlugin } from "xbook/common/createPlugin";
-import { ZenmarkEditor } from "zenmark-editor";
 declare global {
   interface Window {
     System: any;

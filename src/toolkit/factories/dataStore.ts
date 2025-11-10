@@ -8,7 +8,7 @@ import { persistReducer, persistStore } from "redux-persist";
 // import PouchDBStorage from "redux-persist-pouchdb";
 import persistLocalStorage from "redux-persist/lib/storage";
 // import thunk from "redux-thunk";
-import { ReplaySubject, Subject } from "rxjs";
+import { ReplaySubject } from "rxjs";
 
 const Storages = {
   localStorage: persistLocalStorage,

@@ -99,7 +99,7 @@ export const createRenderer = (registryName: string = "componentRegistry") => {
   const setFallbackComponent = (fallback) => {
     ErrorFallback = fallback;
   };
-  let DefaultNotFoundComponent = ({ type }: { type: string }) => {
+  const DefaultNotFoundComponent = ({ type }: { type: string }) => {
     return (
       <Box>
         <Alert>Unknown component type: {type}</Alert>

@@ -1,5 +1,4 @@
 import { SafeAny } from "@/toolkit/types";
-import { IShortcutItem } from "xbook/services/shortcutService";
 
 export type IActivityItem = {
   id: string;

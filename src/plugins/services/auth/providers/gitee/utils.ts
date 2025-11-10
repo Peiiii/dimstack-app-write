@@ -3,8 +3,8 @@ import { JSONStorage } from "@/toolkit/factories/treeStorage";
 import { getGiteeAccessToken } from "libs/gitee-api/gitee-client";
 
 export var getUrlParam = function (name) {
-  var queryString = window.location.search;
-  var urlParams = new URLSearchParams(queryString);
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
   return urlParams.get(name);
 };
 

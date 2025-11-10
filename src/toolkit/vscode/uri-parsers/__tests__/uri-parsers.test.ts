@@ -1,5 +1,5 @@
 import { FileUriParser } from "../file";
-import { HttpUriParser, HttpsUriParser } from "../http";
+import { HttpUriParser } from "../http";
 import { CommandUriParser } from "../command";
 import { DatabaseUriParser } from "../database";
 import { GitUriParser } from "../git";

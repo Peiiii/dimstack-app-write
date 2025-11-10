@@ -16,7 +16,7 @@ export const treePluginForIndexedDbSpace = createFolderTreePlugin({
           treeService.openNode(node.id);
           treeService.focusNode(node.id);
           }, 1000);
-        };
+        }
       }
     });
   },

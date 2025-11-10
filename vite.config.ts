@@ -3,7 +3,6 @@ import { resolve } from "path";
 import { defineConfig } from "vite";
 import { dependencies } from "./package.json";
 import { renderChunksWithStrategy } from "./splitChunks";
-import eslint from 'vite-plugin-eslint';
 
 
 console.log("dependencies", dependencies);

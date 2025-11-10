@@ -1,8 +1,6 @@
 import { Tokens } from "@/constants/tokens";
 import { TextFileView } from "@/plugins/features/providers/provide-common-text-file-opener/components/text-file-view";
 import { COMMON_TEXT_FILE_EXTENSIONS } from "@/plugins/features/providers/provide-common-text-file-opener/constants";
-import { VscOpenPreview } from "react-icons/vsc";
-import { map } from "rxjs";
 import { createPlugin } from "xbook/common/createPlugin";
 
 export default createPlugin({

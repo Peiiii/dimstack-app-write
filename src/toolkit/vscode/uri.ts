@@ -174,7 +174,7 @@ class Uri implements IUri {
     return result;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   toJSON(): UriComponents {
     return {
       scheme: this.scheme,

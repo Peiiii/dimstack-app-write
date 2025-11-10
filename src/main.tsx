@@ -1,5 +1,4 @@
 import { pluginCore } from "@/plugins/core";
-import base from "@/plugins/core/base";
 import features from "@/plugins/features";
 import migrations from "@/plugins/migrations";
 import authService from "@/plugins/services/auth";

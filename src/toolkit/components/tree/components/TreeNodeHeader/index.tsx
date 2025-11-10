@@ -1,4 +1,3 @@
-import { ProgressBar } from "@/components/progress-bar";
 import { InputBox } from "@/toolkit/components/tree/components/TreeNodeHeader/components/InputBox";
 import { LeftExtra } from "@/toolkit/components/tree/components/TreeNodeHeader/components/LeftExtra";
 import { useNodeEventHandlers } from "@/toolkit/components/tree/components/TreeNodeHeader/hooks/use-node-event-handlers";

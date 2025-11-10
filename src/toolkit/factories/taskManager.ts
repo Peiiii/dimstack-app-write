@@ -1,5 +1,4 @@
 import { SafeAny } from "@/toolkit/types";
-import { log } from "console";
 
 // 定义任务类型
 export interface TaskType {

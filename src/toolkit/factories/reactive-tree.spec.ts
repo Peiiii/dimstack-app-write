@@ -1,4 +1,4 @@
-import { ReactiveTree, ITreeNode } from './reactive-tree';
+import { ReactiveTree } from './reactive-tree';
 
 describe('ReactiveTree', () => {
   let tree: ReactiveTree<string>;

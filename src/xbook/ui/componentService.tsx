@@ -1,7 +1,6 @@
 import { createRenderer } from "@/toolkit/factories/renderer";
 import { Box } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import SplitPane from "xbook/ui/components/split-pane";
 // import { createActivityBar } from "./activityBar";
 import { createPageBox } from "./page-box";
 import { createSidebar } from "./sidebar";

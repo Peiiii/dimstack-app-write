@@ -7,11 +7,9 @@ import ReactFlow, {
   ConnectionMode,
   Controls,
   Edge,
-  EdgeProps,
   MarkerType,
   Node,
   Position,
-  getBezierPath,
   Connection,
   addEdge,
 } from "reactflow";

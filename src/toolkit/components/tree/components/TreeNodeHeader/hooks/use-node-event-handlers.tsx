@@ -1,6 +1,5 @@
 import { TreeEventKeys } from "@/plugins/space/folderTreeService/tokens";
 import { useTreeContext } from "@/toolkit/components/tree/tokens";
-import { EventBus } from "@/toolkit/factories/eventBus";
 import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
 
 // 事件处理的 hooks

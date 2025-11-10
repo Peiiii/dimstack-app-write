@@ -1,5 +1,4 @@
-import { Box, Button, Spacer } from "@chakra-ui/react";
-import xbook from "xbook/index";
+import { Box, Button } from "@chakra-ui/react";
 import { spaceService } from "@/services/space.service";
 
 export default ({ spaceId }) => {

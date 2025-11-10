@@ -8,7 +8,6 @@ import {
   createGithubClient,
   getGithubAccessToken,
   getGithubLoginUrl,
-  getGithubRepositoryId,
   refreshGithubAccessToken,
 } from "libs/github-api";
 import { OAuthApp } from "octokit";

@@ -48,7 +48,7 @@ const PageBox = ({
   defaultActivePath: string;
   atom?: Atom<{ services: { goTo: (...args: any[]) => any }; events: {} }>;
 }) => {
-  let {
+  const {
     // title,
     defaultChildId,
     // id,

@@ -1,7 +1,7 @@
 import { LayoutNode } from "@/toolkit/factories/renderer";
 import { defineController } from "app-toolkit";
 import { useEffect, useState } from "react";
-import { createCustomReactBean, createReactBean } from "rx-bean";
+import { createCustomReactBean } from "rx-bean";
 import { distinctUntilChanged, map } from "rxjs";
 import { CacheController, withCache } from "xbook/ui/services/cache-controller";
 import { createCRUDActions } from "xbook/utils/create-actions";

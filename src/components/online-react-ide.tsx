@@ -15,7 +15,6 @@ import { useEffect, useRef, useState } from "react";
 // const restoreDefine = hajackDefine();
 
 import { CustomMonacoEditor } from "@/components/custom-monaco-editor";
-import * as Babel from "@babel/standalone";
 
 export function OnlineReactIde() {
   const [code, setCode] = useState(`

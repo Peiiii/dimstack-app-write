@@ -1,7 +1,7 @@
 import { useEfffectOnce } from "@/hooks/use-efffect-once";
 import { defineController } from "app-toolkit";
 import { FC, ReactNode } from "react";
-import { createCustomReactBean, createReactBean } from "rx-bean";
+import { createCustomReactBean } from "rx-bean";
 import { serviceBus } from "xbook/services";
 import SplitPane from "xbook/ui/components/split-pane";
 import { CacheController, withCache } from "xbook/ui/services/cache-controller";

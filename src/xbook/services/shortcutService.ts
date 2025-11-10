@@ -1,6 +1,6 @@
 import { defineController } from "app-toolkit";
 import { createCustomReactBean } from "rx-bean";
-import { CacheController, withCache } from "xbook/ui/services/cache-controller";
+import { CacheController } from "xbook/ui/services/cache-controller";
 import { createCRUDActions } from "xbook/utils/create-actions";
 
 const cache = CacheController.create({
