@@ -1,10 +1,11 @@
 import { createPlugin } from "xbook/common/createPlugin";
+import { settingService } from "@/services/setting.service";
 import { Button } from "@chakra-ui/react";
 import { AiOutlineClear } from "react-icons/ai";
 
 export default createPlugin({
   initilize(xbook) {
-    xbook.serviceBus.invoke("settingService.addSettingEntry", {
+    settingService.addSettingEntry({
       id: "localCache",
       name: "本地缓存",
       icon: AiOutlineClear,

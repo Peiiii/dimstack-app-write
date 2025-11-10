@@ -4,6 +4,7 @@ import { AiFillFolder } from "react-icons/ai";
 import xbook from "xbook/index";
 
 export class FolderTreeService {
+  private triggers = new Map<string, () => void>();
   add = (space: SpaceDef) => {
     const { repo, id } = space;
     xbook.componentService.register("AiFillFolder", AiFillFolder);
@@ -40,6 +41,21 @@ export class FolderTreeService {
   remove = (id: string) => {
     xbook.layoutService.activityBar.removeActivity(id);
     xbook.layoutService.sidebar.removeView(id);
+    this.triggers.delete(id);
+  };
+
+  // Register a trigger callback for a specific space's tree view
+  registerTrigger = (spaceId: string, trigger: () => void) => {
+    this.triggers.set(spaceId, trigger);
+    return () => {
+      this.triggers.delete(spaceId);
+    };
+  };
+
+  // Invoke the trigger for a space if present
+  trigger = (spaceId: string) => {
+    const t = this.triggers.get(spaceId);
+    if (t) t();
   };
 }
 

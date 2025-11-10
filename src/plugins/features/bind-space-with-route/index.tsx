@@ -17,37 +17,34 @@ const parseSpaceInfoFromRoute = () => {
 
 const getSpaceInfoObservableFromRoute = () => {
   const subject = new BehaviorSubject(parseSpaceInfoFromRoute());
-  window.addEventListener("popstate", () => {
-    subject.next(parseSpaceInfoFromRoute());
-  });
+  const handler = () => subject.next(parseSpaceInfoFromRoute());
+  window.addEventListener("hashchange", handler);
   return subject;
 };
 
 export const bindSpaceWithRoute = createPlugin({
   initilize(xbook) {
-    setTimeout(() => {
-      // Use singleton spaceService directly
-      const routeSpace$ = getSpaceInfoObservableFromRoute();
-      routeSpace$.subscribe((spaceInfo) => {
-        if (!spaceInfo) return;
-        const { platform, owner, repo } = spaceInfo;
-        spaceService.focusSpace(
-          spaceHelper.generateSpaceId(platform, owner, repo)
-        );
-      });
-
-      const space$ = createObservableFromExternalStore(
-        () => spaceService.getFocusedSpace(),
-        (callback) => spaceService.getFocusedSpace$().subscribe(callback)
+    // Use singleton spaceService directly; no need to delay
+    const routeSpace$ = getSpaceInfoObservableFromRoute();
+    routeSpace$.subscribe((spaceInfo) => {
+      if (!spaceInfo) return;
+      const { platform, owner, repo } = spaceInfo;
+      spaceService.focusSpace(
+        spaceHelper.generateSpaceId(platform, owner, repo)
       );
+    });
 
-      space$.subscribe((space) => {
-        if (!space) return;
-        const { platform, owner, repo } = space;
-        const path = `/${location.search}#/https://${platform}.com/${owner}/${repo}`;
-        if (window.location.pathname === path) return;
-        window.history.pushState(null, "", path);
-      });
-    }, 500);
+    const space$ = createObservableFromExternalStore(
+      () => spaceService.getFocusedSpace(),
+      (callback) => spaceService.getFocusedSpace$().subscribe(callback)
+    );
+
+    space$.subscribe((space) => {
+      if (!space) return;
+      const { platform, owner, repo } = space;
+      const path = `/${location.search}#/https://${platform}.com/${owner}/${repo}`;
+      if (window.location.pathname === path) return;
+      window.history.pushState(null, "", path);
+    });
   },
 });

@@ -8,7 +8,12 @@ module.exports = {
   ],
   ignorePatterns: ["dist", ".eslintrc.cjs", "libs/**", "packages/**"],
   parser: "@typescript-eslint/parser",
-  plugins: ["react-refresh", "@typescript-eslint", "unused-imports"],
+  plugins: ["react-refresh", "@typescript-eslint", "unused-imports", "import"],
+  settings: {
+    "import/resolver": {
+      typescript: {},
+    },
+  },
   rules: {
     "react-refresh/only-export-components": [
       "warn",
@@ -26,5 +31,31 @@ module.exports = {
       "warn",
       { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }
     ],
+    // Forbid global serviceBus imperative calls; prefer singletons or typed APIs
+    "no-restricted-syntax": [
+      "error",
+      {
+        selector:
+          "MemberExpression[object.object.name='xbook'][object.property.name='serviceBus'][property.name='invoke']",
+        message:
+          "Use direct singletons or typed APIs instead of serviceBus.invoke",
+      },
+      {
+        selector:
+          "CallExpression[callee.object.object.name='xbook'][callee.object.property.name='serviceBus'][callee.property.name='createProxy']",
+        message:
+          "Use direct singletons instead of serviceBus.createProxy(Tokens.X)",
+      },
+    ],
+    // Ensure imported named exports actually exist
+    "import/named": "error",
   },
+  overrides: [
+    {
+      files: ["src/services/space-file-system-provider-proxy.ts"],
+      rules: {
+        "@typescript-eslint/no-explicit-any": ["error"],
+      },
+    },
+  ],
 };

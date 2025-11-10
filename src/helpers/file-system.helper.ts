@@ -1,26 +1,47 @@
-import { createServiceMapper } from "@/helpers/utils/mapper";
-import { FileItem } from "@/plugins/services/fileSystemService/utils";
+import xbook from "xbook/index";
+import { spaceHelper } from "@/helpers/space.helper";
+
 const SEPERATOR = "::";
+
+const parseFid = (fid: string) => {
+  const [spaceId, ...rest] = fid.split(SEPERATOR);
+  const path = rest.join(SEPERATOR);
+  return { spaceId, path };
+};
+
 const createFileSystemHelper = () => {
-  const service = createServiceMapper<{
-    open: (spaceId: string, path: string) => Promise<string>;
-    read: (fid: string) => Promise<string>;
-    write: (fid: string, content: string) => Promise<boolean>;
-    createFile: (fid: string, content?: string) => Promise<boolean>;
-    createDirectory: (fid: string) => Promise<boolean>;
-    delete: (fid: string) => Promise<boolean>;
-    rename: (fid1: string, fid2: string) => Promise<boolean>;
-    readDirectory: (fid: string) => Promise<FileItem[]>;
-  }>("fileSystemService");
+  const service = {
+    open: async (spaceId: string, path: string) => {
+      return spaceHelper.getUri(spaceId, path).toString();
+    },
+    read: async (idOrUri: string) => {
+      const isUri = /:\/\//.test(idOrUri);
+      const uri = isUri
+        ? spaceHelper.parseUri(idOrUri)
+        : spaceHelper.getUri(...Object.values(parseFid(idOrUri)) as [string, string]);
+      const uint = await xbook.fs.readFile(uri);
+      return new TextDecoder().decode(uint);
+    },
+    write: async (idOrUri: string, content: string) => {
+      const isUri = /:\/\//.test(idOrUri);
+      const uri = isUri
+        ? spaceHelper.parseUri(idOrUri)
+        : spaceHelper.getUri(...Object.values(parseFid(idOrUri)) as [string, string]);
+      const uint = new TextEncoder().encode(content);
+      await xbook.fs.writeFile(uri, uint, {
+        overwrite: true,
+        create: true,
+      });
+      return true;
+    },
+  };
+
   const generateFileId = (spaceId: string, path: string) =>
     `${spaceId}${SEPERATOR}${path}`;
   const isRootPath = (path: string) => {
     return path === "/" || path === "." || path === "";
   };
-  return {
-    service,
-    generateFileId,
-    isRootPath,
-  };
+  return { service, generateFileId, isRootPath };
 };
+
 export const fileSystemHelper = createFileSystemHelper();

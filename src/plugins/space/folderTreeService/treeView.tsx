@@ -38,6 +38,7 @@ import { AiOutlineLink } from "react-icons/ai";
 import xbook from "xbook/index";
 import { spaceService } from "@/services/space.service";
 import { fs } from "xbook/services";
+import { folderTreeService } from "@/services/folder-tree.service";
 import treePluginClickNode from "./plugins/treePluginClickNode";
 import treePluginConfig from "./plugins/treePluginConfig";
 import treePluginDeleteNode from "./plugins/treePluginDeleteNode";
@@ -81,10 +82,11 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
   const { hasReadPermission: isLogin } = spaceService.usePermissions(space.id);
   const [pluginsLoaded, setPluginsLoaded] = useState(false);
   useEffect(() => {
-    xbook.serviceBus.expose(`space-${space.id}.trigger`, () => {
+    const off = folderTreeService.registerTrigger(space.id, () => {
       treeService.deepRefresh("root");
       treeService.expandNode({ id: "root" });
     });
+    return () => off();
   }, []);
 
   useEffect(() => {

@@ -1,11 +1,12 @@
 import { createPlugin } from "xbook/common/createPlugin";
+import { settingService } from "@/services/setting.service";
 import { Button, useColorMode } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { CiDark, CiLight } from "react-icons/ci";
 
 export default createPlugin({
   initilize(xbook) {
-    xbook.serviceBus.invoke("settingService.addSettingEntry", {
+    settingService.addSettingEntry({
       id: "themer",
       name: "主题",
       description: "黑夜/白天",

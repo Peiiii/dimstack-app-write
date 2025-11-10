@@ -87,7 +87,8 @@ export class SpaceService implements ISpaceService {
   };
 
   redirectAuthPage = (spaceId: string) => {
-    xbook.serviceBus.invoke("redirectAuthPage", spaceId);
+    // Use event bus to request auth redirect
+    xbook.eventBus.emit(EventKeys.RequestRedirectAuthPage, spaceId);
   };
 
   isAuthorized = (spaceId: string) => {
@@ -231,8 +232,9 @@ export class SpaceService implements ISpaceService {
 
   focusSpace = (spaceId: string) => {
     folderTreeService.focus(spaceId);
+    // Trigger tree refresh/expand via registered trigger
     setTimeout(() => {
-      xbook.serviceBus.invoke(`space-${spaceId}.trigger`);
+      folderTreeService.trigger(spaceId);
     }, 100);
   };
 

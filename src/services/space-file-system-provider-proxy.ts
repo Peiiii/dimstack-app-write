@@ -24,7 +24,13 @@ export class SpaceFileSystemProviderProxy implements FileSystemProvider {
   constructor(
     private readonly provider: FileSystemProvider,
     private readonly spaceId: string
-  ) {}
+  ) {
+    // Bridge provider events and filter by space
+    provider.onDidChangeFile((changes?: { type: FileChangeType; uri: Uri }[]) => {
+      if (!Array.isArray(changes)) return;
+      this.handleFileChange(changes);
+    });
+  }
 
   // 文件监听
   watch(
@@ -124,7 +130,9 @@ export class SpaceFileSystemProviderProxy implements FileSystemProvider {
   }
 
   // 事件转发处理
-  private handleFileChange(changes: { type: FileChangeType; uri: Uri }[]) {
+  private handleFileChange(
+    changes: Array<{ type: FileChangeType; uri: Uri }>
+  ): void {
     this._onDidChangeFile.fire(
       changes.filter((change) => change.uri.authority === this.spaceId)
     );
