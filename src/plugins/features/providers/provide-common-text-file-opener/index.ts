@@ -19,14 +19,11 @@ export default createPlugin({
         const isMarkdown =
           uri.endsWith(".md") || uri.endsWith(".markdown") || uri.endsWith(".MD");
 
-        // Prefer tiptap when available; otherwise fall back to local zenmark, then plain text
+        // Force a single editor: always use zenmark for markdown; otherwise fall back to plain text view
         const registry = xbook.componentService.getComponents()?.componentRegistry || {};
-        const hasTiptap = !!registry["tiptap-editor"];
         const hasZenmark = !!registry["zenmark-editor"];
         const viewType = isMarkdown
-          ? hasTiptap
-            ? "tiptap-editor"
-            : hasZenmark
+          ? hasZenmark
             ? "zenmark-editor"
             : "text-file-view"
           : "text-file-view";
@@ -51,7 +48,7 @@ export default createPlugin({
     //   icon: "vsc-open-preview",
     //   onClick({ page }) {
     //     if (page.viewData) {
-    //       const markdownEditorView = "tiptap-editor";
+    //       const markdownEditorView = "zenmark-editor";
     //       const plainTextView = "text-file-view";
     //       const nextViewType =
     //         page.viewData.type === plainTextView

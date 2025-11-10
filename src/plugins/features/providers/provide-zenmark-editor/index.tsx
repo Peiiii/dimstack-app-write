@@ -1,35 +1,12 @@
 import { EventKeys } from "@/constants/eventKeys";
 import { openerService } from "@/services/opener.service";
 import { ZenmarkEditorComponent } from "@/plugins/features/providers/provide-zenmark-editor/zenmark-editor-component";
-import { systemjsModuleService } from "@/services/systemjs-module.service";
-import "systemjs/dist/extras/amd";
-import "systemjs/dist/system.min";
 import { createPlugin } from "xbook/common/createPlugin";
-declare global {
-  interface Window {
-    System: any;
-  }
-}
-// const importFromString = (str: string) => {
-//   if (URL.createObjectURL) {
-//     const blob = new Blob([str], { type: "text/javascript" });
-//     const url = URL.createObjectURL(blob);
-//     const module = import(url);
-//     URL.revokeObjectURL(url); // GC objectURLs
-//     return module;
-//   }
-
-//   const url = "data:text/javascript;base64," + btoa(str);
-//   return import(url);
-// };
 
 
 export default createPlugin({
   async initilize(xbook) {
-    if (!systemjsModuleService.isInitialized()) {
-      systemjsModuleService.init();
-    }
-
+    // Use local zenmark-editor; no SystemJS runtime required
     xbook.componentService.register("zenmark-editor", ZenmarkEditorComponent);
     openerService.register({
       priority: -100,
