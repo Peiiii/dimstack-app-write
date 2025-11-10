@@ -15,6 +15,8 @@ import { EventKeys } from "@/constants/eventKeys";
 import { spacePlatformRegistry } from "@/services/space-platform.registry";
 
 export class SpaceService implements ISpaceService {
+  // Cache key for remembering last focused space between sessions
+  private static readonly LAST_FOCUSED_SPACE_KEY = "ui:lastFocusedSpaceId";
   spaceStore = createDataStore<SpaceDef>({
     initialState: [],
     persistConfig: {
@@ -57,6 +59,31 @@ export class SpaceService implements ISpaceService {
         EventKeys.Space.SpacesChanged,
         this.spaceStore.getData()
       );
+    });
+
+    // Persist the currently focused space id to localStorage whenever it changes
+    folderTreeService.onCurrentViewIdChanged((id) => {
+      try {
+        if (id) {
+          localStorage.setItem(
+            SpaceService.LAST_FOCUSED_SPACE_KEY,
+            id
+          );
+        }
+      } catch {}
+    });
+
+    // Attempt to restore focus to the last space after store hydration
+    this.spaceStore.waitUtilLoaded(() => {
+      try {
+        const lastId = localStorage.getItem(
+          SpaceService.LAST_FOCUSED_SPACE_KEY
+        );
+        if (lastId && this.spaceStore.getRecord(lastId)) {
+          // Delay slightly to ensure views are registered by displaySpaces
+          setTimeout(() => this.focusSpace(lastId), 0);
+        }
+      } catch {}
     });
   }
 

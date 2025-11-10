@@ -6,6 +6,8 @@ import { createPlugin } from "xbook/common/createPlugin";
 
 export default createPlugin({
   initilize(xbook) {
+    // Use a simple localStorage cache to restore last focused space on startup
+    const LAST_FOCUSED_SPACE_KEY = "ui:lastFocusedSpaceId";
     let prevSpaces: SpaceDef[] = [];
     xbook.eventBus.on(EventKeys.Space.SpacesChanged, (spaces: SpaceDef[]) => {
       const prevIds = prevSpaces.map((p) => p.id);
@@ -26,13 +28,20 @@ export default createPlugin({
         folderTreeService.remove(space.id);
       });
 
-      if (
-        !xbook.layoutService.sidebar
-          .getViewList()
-          .some((v) => v.id === xbook.layoutService.sidebar.getActiveViewId())
-      ) {
-        const firstId = xbook.layoutService.sidebar.getViewList()[0]?.id;
-        if (firstId) xbook.layoutService.sidebar.setActiveViewId(firstId);
+      // Ensure there is an active view; prefer cached last focused space when available
+      const list = xbook.layoutService.sidebar.getViewList();
+      const activeId = xbook.layoutService.sidebar.getActiveViewId();
+      const activeValid = list.some((v) => v.id === activeId);
+      if (!activeValid) {
+        let nextId: string | undefined;
+        try {
+          const cached = localStorage.getItem(LAST_FOCUSED_SPACE_KEY) || undefined;
+          if (cached && list.some((v) => v.id === cached)) {
+            nextId = cached;
+          }
+        } catch {}
+        if (!nextId) nextId = list[0]?.id;
+        if (nextId) xbook.layoutService.sidebar.setActiveViewId(nextId);
       }
     });
     xbook.eventBus.on(
