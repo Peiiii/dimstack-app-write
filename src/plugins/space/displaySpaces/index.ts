@@ -1,13 +1,15 @@
 import { EventKeys } from "@/constants/eventKeys";
 import { folderTreeService } from "@/services/folder-tree.service";
+import { StorageKeys } from "@/constants/storageKeys";
+import { storage } from "@/toolkit/utils/storage";
 import { spaceHelper } from "@/helpers/space.helper";
 import { SpaceDef } from "@/toolkit/types/space";
 import { createPlugin } from "xbook/common/createPlugin";
 
 export default createPlugin({
   initilize(xbook) {
-    // Use a simple localStorage cache to restore last focused space on startup
-    const LAST_FOCUSED_SPACE_KEY = "ui:lastFocusedSpaceId";
+    // Use a simple storage cache to restore last focused space on startup
+    const LAST_FOCUSED_SPACE_KEY = StorageKeys.LastFocusedSpaceId;
     let prevSpaces: SpaceDef[] = [];
     xbook.eventBus.on(EventKeys.Space.SpacesChanged, (spaces: SpaceDef[]) => {
       const prevIds = prevSpaces.map((p) => p.id);
@@ -34,12 +36,10 @@ export default createPlugin({
       const activeValid = list.some((v) => v.id === activeId);
       if (!activeValid) {
         let nextId: string | undefined;
-        try {
-          const cached = localStorage.getItem(LAST_FOCUSED_SPACE_KEY) || undefined;
-          if (cached && list.some((v) => v.id === cached)) {
-            nextId = cached;
-          }
-        } catch {}
+        const cached = storage.get(LAST_FOCUSED_SPACE_KEY);
+        if (cached && list.some((v) => v.id === cached)) {
+          nextId = cached;
+        }
         if (!nextId) nextId = list[0]?.id;
         if (nextId) xbook.layoutService.sidebar.setActiveViewId(nextId);
       }

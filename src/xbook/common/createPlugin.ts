@@ -18,7 +18,9 @@ type EventMapConfiguration = {
 export type PluginConfiguration = {
   priority?: number;
   providers?: PluginConfiguration[];
+  // Typo kept for backward compatibility; prefer `initialize` going forward.
   initilize?: (xbook: typeof _xbook) => void;
+  initialize?: (xbook: typeof _xbook) => void;
   addServices?: (
     xbook: typeof _xbook
   ) =>
@@ -122,6 +124,7 @@ const createHelper = (xbook: typeof _xbook) => {
 
 export const createPlugin = ({
   initilize,
+  initialize,
   addCommands,
   addEvents,
   addServices,
@@ -156,7 +159,8 @@ export const createPlugin = ({
         const res = addPages(xbook);
         helper.doAddPages(res);
       }
-      initilize?.(xbook);
+      // Prefer `initialize`, fallback to legacy `initilize`
+      (initialize || initilize)?.(xbook);
     },
   };
 };
