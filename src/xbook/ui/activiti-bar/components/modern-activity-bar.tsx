@@ -35,9 +35,9 @@ export function ModernActivityBar({
     <TooltipProvider>
       <div
         className={cn(
-          "h-full bg-background flex flex-col transition-all duration-200 ease-in-out",
+          "h-full bg-background flex flex-col transition-all duration-300 ease-in-out",
           "border-r border-border/40",
-          isExpanded ? "w-[160px]" : "w-[52px]"
+          isExpanded ? "w-[140px]" : "w-[52px]"
         )}
       >
         <div className="flex-1 overflow-y-auto py-1">
@@ -119,7 +119,7 @@ function SidebarItem({
     <div className="flex justify-center">
       <button
         className={cn(
-          "flex items-center transition-all duration-150",
+          "flex items-center transition-all duration-300 ease-in-out",
           isExpanded ? "px-3 py-1.5 w-full" : "p-1.5 aspect-square",
           isExpanded ? "rounded-sm" : "rounded-md",
           "hover:bg-accent/80 hover:text-accent-foreground",
@@ -134,13 +134,13 @@ function SidebarItem({
       >
         <IconComponent
           className={cn(
-            "flex-shrink-0 transition-transform",
+            "flex-shrink-0 transition-all duration-300 ease-in-out",
             isExpanded ? "h-5 w-5" : "h-[22px] w-[22px]",
-            "hover:scale-105 duration-200"
+            "hover:scale-105"
           )}
         />
         {isExpanded && (
-          <span className="ml-2.5 text-[13px] truncate text-muted-foreground">
+          <span className="ml-2.5 text-sm truncate text-muted-foreground animate-in fade-in-0 slide-in-from-left-2 duration-300">
             {name}
           </span>
         )}
