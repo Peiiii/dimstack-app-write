@@ -46,31 +46,33 @@ export const AddSpaceQuickStart = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-[280px] mx-auto">
-      <div className="space-y-1 text-center">
-        <h2 className="text-2xl font-semibold tracking-tight">本地开始</h2>
-        <p className="text-sm text-muted-foreground">无需登录，立即开始写作</p>
+    <div className="space-y-8">
+      <div className="text-center">
+        <h2 className="text-2xl font-semibold">本地开始</h2>
+        <p className="text-sm text-muted-foreground mt-1">无需登录，立即开始写作</p>
       </div>
       
-      <Button
-        onClick={handleQuickStart}
-        disabled={loading || success}
-        className="w-full h-11 font-medium"
-      >
-        {loading ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            创建中
-          </>
-        ) : success ? (
-          <>
-            <CheckCircle2 className="mr-2 h-4 w-4" />
-            已创建
-          </>
-        ) : (
-          "开始使用"
-        )}
-      </Button>
+      <div className="max-w-[280px] mx-auto">
+        <Button
+          onClick={handleQuickStart}
+          disabled={loading || success}
+          className="w-full h-11"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              创建中
+            </>
+          ) : success ? (
+            <>
+              <CheckCircle2 className="mr-2 h-4 w-4" />
+              已创建
+            </>
+          ) : (
+            "开始使用"
+          )}
+        </Button>
+      </div>
     </div>
   );
 };
