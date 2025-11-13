@@ -206,6 +206,10 @@ function ActivityItem({
 }
 
 function ShortcutItem({ shortcut, isExpanded }) {
+  const CustomComponent = componentService.useComponent(`shortcut:${shortcut.id}`);
+  if (CustomComponent) {
+    return <CustomComponent shortcut={shortcut} isExpanded={isExpanded} />;
+  }
   return (
     <SidebarItem
       icon={shortcut.icon}

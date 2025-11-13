@@ -1,7 +1,7 @@
 import { EventKeys } from "@/constants/eventKeys";
 import { AiOutlineSetting } from "react-icons/ai";
 import { createPlugin } from "xbook/common/createPlugin";
-import { SettingsPage } from "./page";
+import SettingsShortcut from "./shortcut";
 
 export default createPlugin({
   initilize(xbook) {
@@ -11,17 +11,11 @@ export default createPlugin({
       name: "设置",
       order: 10000,
       icon: "AiOutlineSetting",
+      hasPopover: true,
     });
+    // Custom render for the bottom-left settings shortcut to show a popover
+    xbook.componentService.register(`shortcut:settings`, SettingsShortcut);
 
-    xbook.eventBus.on(
-      EventKeys.Shortcut.ShortcutClicked("settings"),
-      () => {
-        xbook.modalService.open({
-          content: <SettingsPage />,
-          footer: false,
-          width: "720px"
-        });
-      }
-    );
+    // 移除旧的“完整设置”弹窗逻辑，无需再打开 Modal
   },
 });

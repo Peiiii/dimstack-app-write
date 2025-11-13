@@ -1,20 +1,16 @@
 import { useGlobalContext } from "@/toolkit/components/context";
 import { Action } from "@/toolkit/types";
+import { Flex, HStack, IconButton, Text, Tooltip, VStack } from "@chakra-ui/react";
 import {
-  Flex,
-  HStack,
-  IconButton,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  Text,
-  Tooltip,
-  VStack
-} from "@chakra-ui/react";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { FC, ReactNode } from "react";
 import { AiOutlineSetting } from "react-icons/ai";
 import xbook from "xbook/index";
+import { EventKeys } from "@/constants/eventKeys";
 
 export const SideCard: FC<{
   title: ReactNode;
@@ -32,7 +28,7 @@ export const SideCard: FC<{
       flexShrink={0}
       gap={0}
     >
-      <Menu>
+      <DropdownMenu>
         <HStack
           w="100%"
           h="2.5rem"
@@ -66,44 +62,53 @@ export const SideCard: FC<{
                 )}
               </>
             </Tooltip>
-            <MenuButton
-              as={IconButton}
-              aria-label="Options"
-              icon={<AiOutlineSetting />}
-              variant="ghost"
-              size="sm"
-              ml="auto"
-              _hover={{ bg: "gray.200", _dark: { bg: "gray.600" } }}
-            />
+            <DropdownMenuTrigger asChild>
+              <IconButton
+                aria-label="Options"
+                icon={<AiOutlineSetting />}
+                variant="ghost"
+                size="sm"
+                ml="auto"
+                _hover={{ bg: "gray.200", _dark: { bg: "gray.600" } }}
+              />
+            </DropdownMenuTrigger>
           </Flex>
         </HStack>
-        <MenuList zIndex={2}>
+        {/* Use shadcn dropdown for consistent popover styling across the app */}
+        <DropdownMenuContent align="start" sideOffset={4} className="min-w-40">
           {actions.map((a) => {
             const eventMap = {};
             if (a.events && a.id) {
-              a.events.forEach(
-                (e) =>
-                  (eventMap[`on${e}`] = (event: Event) =>
-                    xbook.eventBus.emit(`${a.id}::${e}`, {
-                      event: event,
-                      context: context,
-                    }))
+              a.events.forEach((e) =>
+                // Emit both legacy and unified action events for compatibility
+                (eventMap[`on${e}`] = (event: Event) => {
+                  xbook.eventBus.emit(`${a.id}::${e}`, {
+                    event,
+                    context,
+                  });
+                  if (a.id && e.toLowerCase() === "click") {
+                    xbook.eventBus.emit(EventKeys.Action.Clicked(a.id), {
+                      event,
+                      context,
+                    });
+                  }
+                })
               );
             }
 
             return (
-              <MenuItem
+              <DropdownMenuItem
                 key={a.title}
-                icon={a.icon}
                 {...eventMap}
-                _hover={{ bg: "gray.100", _dark: { bg: "gray.700" } }}
               >
+                {/* Optional leading icon (kept for compatibility with existing actions) */}
+                {a.icon}
                 {a.title}
-              </MenuItem>
+              </DropdownMenuItem>
             );
           })}
-        </MenuList>
-      </Menu>
+        </DropdownMenuContent>
+      </DropdownMenu>
       <VStack m="0 !important" w="100%" flexGrow={1} overflow="hidden" gap={0}>
         <VStack
           w="100%"
