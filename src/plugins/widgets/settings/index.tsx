@@ -1,4 +1,3 @@
-import { EventKeys } from "@/constants/eventKeys";
 import { AiOutlineSetting } from "react-icons/ai";
 import { createPlugin } from "xbook/common/createPlugin";
 import SettingsShortcut from "./shortcut";

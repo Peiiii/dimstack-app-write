@@ -10,7 +10,6 @@ const clearIndexedDB = async () => {
   if (!window.indexedDB) return;
   try {
     // Some TS lib versions may not declare indexedDB.databases()
-    // @ts-ignore
     const databases: (IDBDatabaseInfo & { name?: string })[] = await indexedDB.databases();
     await Promise.all(
       databases
