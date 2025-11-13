@@ -16,7 +16,7 @@ interface AddSpaceMenuProps {
 }
 
 export const AddSpaceMenu = ({ children }: AddSpaceMenuProps) => {
-  const authRecords = authService.useAuthRecords();
+  authService.useAuthRecords();
   const githubAuthorized = !!authService.getAnyAuthInfo("github")?.accessToken;
   const giteeAuthorized = !!authService.getAnyAuthInfo("gitee")?.accessToken;
 
