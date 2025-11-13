@@ -34,7 +34,7 @@ export const RepoSelect = ({
           <SelectValue placeholder={placeholder} />
         )}
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="w-[var(--radix-select-trigger-width)] min-w-[var(--radix-select-trigger-width)] max-w-[var(--radix-select-trigger-width)]">
         {options.map((option) => (
           <SelectItem key={option.value} value={option.value}>
             {option.label}

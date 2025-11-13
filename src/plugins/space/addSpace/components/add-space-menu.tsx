@@ -55,6 +55,7 @@ export const AddSpaceMenu = ({ children }: AddSpaceMenuProps) => {
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
       <DropdownMenuContent 
         align="start" 
+        side="right"
         className="w-[240px] p-1"
         sideOffset={6}
       >
@@ -64,10 +65,10 @@ export const AddSpaceMenu = ({ children }: AddSpaceMenuProps) => {
         <DropdownMenuSeparator className="my-1" />
         <DropdownMenuItem
           onClick={handleGitHub}
-          className="px-2.5 py-2 cursor-pointer focus:bg-accent/50"
+          className="px-2.5 py-2 cursor-pointer group"
         >
           <div className="flex items-center gap-3 w-full">
-            <div className="flex-shrink-0 w-7 h-7 rounded-md bg-muted/60 flex items-center justify-center">
+            <div className="flex-shrink-0 w-7 h-7 rounded-md flex items-center justify-center group-hover:bg-muted/60 transition-colors">
               <Github className="h-3.5 w-3.5" />
             </div>
             <div className="flex-1 min-w-0">
@@ -85,10 +86,10 @@ export const AddSpaceMenu = ({ children }: AddSpaceMenuProps) => {
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={handleGitee}
-          className="px-2.5 py-2 cursor-pointer focus:bg-accent/50"
+          className="px-2.5 py-2 cursor-pointer group"
         >
           <div className="flex items-center gap-3 w-full">
-            <div className="flex-shrink-0 w-7 h-7 rounded-md bg-muted/60 flex items-center justify-center">
+            <div className="flex-shrink-0 w-7 h-7 rounded-md flex items-center justify-center group-hover:bg-muted/60 transition-colors">
               <GitBranch className="h-3.5 w-3.5" />
             </div>
             <div className="flex-1 min-w-0">
@@ -107,10 +108,10 @@ export const AddSpaceMenu = ({ children }: AddSpaceMenuProps) => {
         <DropdownMenuSeparator className="my-1" />
         <DropdownMenuItem
           onClick={handleLocal}
-          className="px-2.5 py-2 cursor-pointer focus:bg-accent/50"
+          className="px-2.5 py-2 cursor-pointer group"
         >
           <div className="flex items-center gap-3 w-full">
-            <div className="flex-shrink-0 w-7 h-7 rounded-md bg-muted/60 flex items-center justify-center">
+            <div className="flex-shrink-0 w-7 h-7 rounded-md flex items-center justify-center group-hover:bg-muted/60 transition-colors">
               <Sparkles className="h-3.5 w-3.5" />
             </div>
             <div className="flex-1 min-w-0">
