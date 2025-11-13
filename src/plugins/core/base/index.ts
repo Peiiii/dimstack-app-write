@@ -16,6 +16,8 @@ import { PresetComponents } from "xbook/ui/componentService";
 import { Layout } from "xbook/ui/workBench";
 import "./css/themes/markdown/github.css";
 import { sideResizer } from "xbook/ui/side-resizer";
+import GithubShortcut from "./components/github-shortcut";
+import { Github } from "lucide-react";
 
 const MobileLayout: Layout = {
   type: "column",
@@ -143,6 +145,16 @@ export default createPlugin({
   initilize(xbook) {
     (window as any).xbook = xbook;
     const cache = xbook.cacheService.space("base", "localStorage");
+
+    // Register GitHub shortcut
+    xbook.componentService.register("Github", Github);
+    xbook.shortcutService.addShortcut({
+      id: "github",
+      name: "GitHub",
+      order: 9999,
+      icon: "Github",
+    });
+    xbook.componentService.register("shortcut:github", GithubShortcut);
     if (device.isMobile()) {
       xbook.layoutService.pageBox.showTabBar();
       xbook.layoutService.workbench.setLayout(MobileLayout);
