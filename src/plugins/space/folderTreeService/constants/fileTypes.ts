@@ -9,6 +9,7 @@ import {
   SiCss3,
   SiGo,
   SiJavascript,
+  SiMarkdown,
   SiPython,
   SiRust,
   SiTypescript,
@@ -23,7 +24,7 @@ export interface FileTypeConfig {
 export const FILE_TYPES: Record<string, FileTypeConfig> = {
   markdown: {
     extensions: [".md", ".markdown"],
-    icon: AiFillFileMarkdown,
+    icon: SiMarkdown,
     color: "#14668b",
   },
   json: {
