@@ -14,12 +14,11 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { EventKeys } from "@/constants/eventKeys";
 import { authService } from "@/services/auth.service";
 import { spaceService } from "@/services/space.service";
 import { createGiteeClient } from "libs/gitee-api";
 import { createGithubClient } from "libs/github-api";
-import { ChevronDown, ChevronRight, GitBranch, Github, KeyRound, Loader2, Sparkles } from "lucide-react";
+import { ChevronDown, ChevronRight, GitBranch, Github, Loader2, Sparkles, ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { from, map, of } from "rxjs";
 import xbook from "xbook";
@@ -47,8 +46,12 @@ const getPlatformRepos = (platform: string) => {
 
 export const AddSpaceMenu = ({ children }: AddSpaceMenuProps) => {
     authService.useAuthRecords();
+    const { authProviders } = authService.useAuthProviders();
     const githubAuthorized = !!authService.getAnyAuthInfo("github")?.accessToken;
     const giteeAuthorized = !!authService.getAnyAuthInfo("gitee")?.accessToken;
+    
+    const githubProvider = authProviders.find((p) => p.platform === "github");
+    const giteeProvider = authProviders.find((p) => p.platform === "gitee");
 
     // Expanded state
     const [githubExpanded, setGithubExpanded] = useState(false);
@@ -140,12 +143,20 @@ export const AddSpaceMenu = ({ children }: AddSpaceMenuProps) => {
         }
     };
 
-    const handleGitHubAuth = () => {
-        xbook.eventBus.emit(EventKeys.RequestAuthManage);
+    const handleGitHubAuth = async () => {
+        if (githubProvider) {
+            await githubProvider.authenticate({
+                needConfirm: false,
+            });
+        }
     };
 
-    const handleGiteeAuth = () => {
-        xbook.eventBus.emit(EventKeys.RequestAuthManage);
+    const handleGiteeAuth = async () => {
+        if (giteeProvider) {
+            await giteeProvider.authenticate({
+                needConfirm: false,
+            });
+        }
     };
 
     const handleGithubToggle = (event: React.MouseEvent) => {
@@ -233,7 +244,10 @@ export const AddSpaceMenu = ({ children }: AddSpaceMenuProps) => {
                                     <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
                                 )
                             ) : (
-                                <KeyRound className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
+                                    <span>去授权</span>
+                                    <ArrowRight className="h-3 w-3" />
+                                </div>
                             )}
                         </div>
                     </DropdownMenuItem>
@@ -305,7 +319,10 @@ export const AddSpaceMenu = ({ children }: AddSpaceMenuProps) => {
                                     <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
                                 )
                             ) : (
-                                <KeyRound className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
+                                    <span>去授权</span>
+                                    <ArrowRight className="h-3 w-3" />
+                                </div>
                             )}
                         </div>
                     </DropdownMenuItem>
