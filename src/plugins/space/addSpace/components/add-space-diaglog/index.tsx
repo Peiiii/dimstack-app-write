@@ -1,108 +1,168 @@
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { AddSpaceBySelect } from "@/plugins/space/addSpace/components/add-space-diaglog/components/add-space-by-select";
-import { AddSpaceForm } from "@/plugins/space/addSpace/components/add-space-diaglog/components/add-space-form";
-import { AddSpaceFromUrl } from "@/plugins/space/addSpace/components/add-space-diaglog/components/add-space-from-url";
 import { AddSpaceQuickStart } from "@/plugins/space/addSpace/components/add-space-diaglog/components/add-space-quick-start";
-import { AlertCircle, Cloud, Link2, Settings, Zap } from "lucide-react";
-import { useState } from "react";
+import { Github, GitBranch, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
+import { authService } from "@/services/auth.service";
+import xbook from "xbook";
+import { EventKeys } from "@/constants/eventKeys";
+
+type Step = "platform" | "auth" | "select";
 
 export const AddSpaceDialog = () => {
-  const [activeTab, setActiveTab] = useState<string>("quickstart");
+  const [step, setStep] = useState<Step>("platform");
+  const [selectedPlatform, setSelectedPlatform] = useState<"github" | "gitee" | null>(null);
+  const [showLocalOption, setShowLocalOption] = useState(false);
 
-  const options = [
-    {
-      id: "quickstart",
-      title: "快速开始",
-      description: "无需登录，立即在本地开始写作",
-      icon: Zap,
-      highlight: true,
-      component: AddSpaceQuickStart,
-    },
-    {
-      id: "select",
-      title: "连接云端仓库",
-      description: "从 GitHub/Gitee 选择已有仓库",
-      icon: Cloud,
-      component: AddSpaceBySelect,
-    },
-    {
-      id: "url",
-      title: "从链接添加",
-      description: "通过仓库链接快速添加",
-      icon: Link2,
-      component: AddSpaceFromUrl,
-    },
-    {
-      id: "custom",
-      title: "手动指定",
-      description: "手动输入平台、所有者、仓库名",
-      icon: Settings,
-      component: AddSpaceForm,
-    },
-  ];
+  const authRecords = authService.useAuthRecords();
+  
+  const isAuthorized = selectedPlatform
+    ? !!authService.getAnyAuthInfo(selectedPlatform)?.accessToken
+    : false;
+
+  useEffect(() => {
+    if (step === "auth" && selectedPlatform && isAuthorized) {
+      setStep("select");
+    }
+  }, [authRecords, step, selectedPlatform, isAuthorized]);
+
+  const handlePlatformSelect = (platform: "github" | "gitee") => {
+    setSelectedPlatform(platform);
+    const hasAuth = !!authService.getAnyAuthInfo(platform)?.accessToken;
+    if (hasAuth) {
+      setStep("select");
+    } else {
+      setStep("auth");
+    }
+  };
+
+  const handleBack = () => {
+    if (step === "select") {
+      if (isAuthorized) {
+        setStep("platform");
+      } else {
+        setStep("auth");
+      }
+    } else if (step === "auth") {
+      setStep("platform");
+    }
+  };
+
+  if (showLocalOption) {
+    return (
+      <div className="py-2">
+        <AddSpaceQuickStart />
+        <div className="mt-6 pt-4 border-t">
+          <Button
+            variant="ghost"
+            className="w-full text-muted-foreground hover:text-foreground"
+            onClick={() => setShowLocalOption(false)}
+          >
+            返回
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6">
-      <Alert>
-        <AlertCircle className="h-4 w-4" />
-        <AlertTitle>欢迎使用 GitNote</AlertTitle>
-        <AlertDescription>
-          <div className="space-y-2 mt-2">
-            <p>1. 先在本地开始写（无需登录），随时可连接云端同步</p>
-            <p>2. 连接 GitHub/Gitee 后，可编辑自己的仓库或查看公开仓库</p>
-            <p>3. 使用 Ctrl+S / Cmd+S 保存文件</p>
+    <div className="py-1">
+      {step === "platform" && (
+        <div className="space-y-8 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+          <div className="space-y-1 text-center">
+            <h2 className="text-2xl font-semibold tracking-tight">连接你的仓库</h2>
+            <p className="text-sm text-muted-foreground">选择代码托管平台开始使用</p>
           </div>
-        </AlertDescription>
-      </Alert>
 
-      <div className="grid grid-cols-2 gap-4">
-        {options.map((option) => {
-          const Icon = option.icon;
-          const isActive = activeTab === option.id;
-          return (
-            <Card
-              key={option.id}
-              className={`cursor-pointer transition-all hover:shadow-md ${isActive
-                  ? "border-primary shadow-md"
-                  : "hover:border-primary/50"
-                } ${option.highlight ? "border-2 border-primary/50" : ""}`}
-              onClick={() => setActiveTab(option.id)}
+          <div className="flex flex-col gap-2 max-w-[280px] mx-auto">
+            <PlatformButton
+              name="GitHub"
+              icon={Github}
+              onClick={() => handlePlatformSelect("github")}
+            />
+            <PlatformButton
+              name="Gitee"
+              icon={GitBranch}
+              onClick={() => handlePlatformSelect("gitee")}
+            />
+          </div>
+
+          <div className="pt-6 border-t">
+            <Button
+              variant="ghost"
+              className="w-full text-muted-foreground hover:text-foreground font-normal"
+              onClick={() => setShowLocalOption(true)}
             >
-              <CardHeader className="pb-3">
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`p-2 rounded-lg ${isActive
-                        ? "bg-primary/10 text-primary"
-                        : "bg-muted text-muted-foreground"
-                      }`}
-                  >
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <div className="flex-1">
-                    <CardTitle className="text-base">{option.title}</CardTitle>
-                    <CardDescription className="text-xs mt-1">
-                      {option.description}
-                    </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-            </Card>
-          );
-        })}
-      </div>
+              <Sparkles className="mr-2 h-4 w-4" />
+              先在本地开始
+            </Button>
+          </div>
+        </div>
+      )}
 
-      <div className="mt-6">
-        {options.map((option) => {
-          const Component = option.component;
-          if (activeTab !== option.id) return null;
-          return (
-            <div key={option.id} className="animate-in fade-in-50 duration-200">
-              <Component />
-            </div>
-          );
-        })}
-      </div>
+      {step === "auth" && selectedPlatform && (
+        <div className="space-y-8 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+          <div className="space-y-1 text-center">
+            <h2 className="text-2xl font-semibold tracking-tight">授权 {selectedPlatform === "github" ? "GitHub" : "Gitee"}</h2>
+            <p className="text-sm text-muted-foreground">需要访问你的仓库列表</p>
+          </div>
+
+          <div className="space-y-3 max-w-[280px] mx-auto">
+            <Button
+              className="w-full h-11 font-medium"
+              onClick={() => {
+                xbook.eventBus.emit(EventKeys.RequestAuthManage);
+              }}
+            >
+              继续授权
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="w-full font-normal" 
+              onClick={handleBack}
+            >
+              返回
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {step === "select" && selectedPlatform && (
+        <div className="space-y-8 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+          <div className="space-y-1 text-center">
+            <h2 className="text-2xl font-semibold tracking-tight">选择仓库</h2>
+            <p className="text-sm text-muted-foreground">从你的仓库中选择一个</p>
+          </div>
+
+          <AddSpaceBySelect defaultPlatform={selectedPlatform} onBack={handleBack} />
+        </div>
+      )}
     </div>
+  );
+};
+
+const PlatformButton = ({
+  name,
+  icon: Icon,
+  onClick,
+}: {
+  name: string;
+  icon: React.ComponentType<{ className?: string }>;
+  onClick: () => void;
+}) => {
+  return (
+    <button
+      onClick={onClick}
+      className="group relative w-full px-4 py-3.5 rounded-lg border bg-background hover:bg-accent/50 transition-all duration-200 text-left active:scale-[0.99]"
+    >
+      <div className="flex items-center gap-3">
+        <div className="flex-shrink-0 w-9 h-9 rounded-md bg-muted/50 group-hover:bg-muted flex items-center justify-center transition-colors">
+          <Icon className="h-5 w-5 text-foreground" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="font-medium text-sm">{name}</div>
+        </div>
+      </div>
+    </button>
   );
 };

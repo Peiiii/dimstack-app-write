@@ -20,10 +20,11 @@ export const addGiteeSpace = createPlugin({
     );
     xbook.eventBus.on(EventKeys.ActivityBar.ActivityClicked(id), () => {
      xbook.modalService.open({
-        title: "开始写作（本地/云端）",
-        width: "760px",
+        title: "",
+        width: "420px",
         content: <AddSpaceDialog />,
         footer: false,
+        modalContentClassName: "!p-8",
       });
     });
     spaceHelper.getStore().waitUtilLoaded(() => {
