@@ -1,13 +1,14 @@
 import { EventKeys } from "@/constants/eventKeys";
 import { spaceHelper } from "@/helpers/space.helper";
-import { AddSpaceDialog } from "@/plugins/space/addSpace/components/add-space-diaglog";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { createPlugin } from "xbook/common/createPlugin";
+import { AddSpaceActivityItem } from "./components/add-space-activity-item";
 
 export const addGiteeSpace = createPlugin({
   initilize(xbook) {
     const id = "addGiteeRepo";
     xbook.componentService.register("AiOutlinePlusCircle", AiOutlinePlusCircle);
+    xbook.componentService.register(`activity:${id}`, AddSpaceActivityItem);
     xbook.layoutService.activityBar.addActivity(
       {
         id,
@@ -18,18 +19,13 @@ export const addGiteeSpace = createPlugin({
       },
       true
     );
-    xbook.eventBus.on(EventKeys.ActivityBar.ActivityClicked(id), () => {
-     xbook.modalService.open({
-        title: "",
-        width: "420px",
-        content: <AddSpaceDialog />,
-        footer: false,
-        modalContentClassName: "!p-8",
-      });
-    });
     spaceHelper.getStore().waitUtilLoaded(() => {
       if (spaceHelper.getStore().getData().length === 0) {
-        xbook.eventBus.emit(EventKeys.ActivityBar.ActivityClicked(id));
+        const activityList = xbook.layoutService.activityBar.getActivityList();
+        const activity = activityList.find((a) => a.id === id);
+        if (activity) {
+          xbook.eventBus.emit(EventKeys.ActivityBar.ActivityClicked(id));
+        }
       }
     });
   },

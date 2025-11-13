@@ -172,6 +172,21 @@ function ActivityItem({
   onMove,
   onClick,
 }: ActivityItemProps) {
+  const CustomComponent = componentService.useComponent(`activity:${activity.id}`);
+  
+  if (CustomComponent) {
+    return (
+      <DragSortItem
+        key={activity.id}
+        id={activity.id}
+        index={index}
+        moveItem={onMove}
+      >
+        <CustomComponent activity={activity} isExpanded={isExpanded} />
+      </DragSortItem>
+    );
+  }
+
   return (
     <DragSortItem
       key={activity.id}

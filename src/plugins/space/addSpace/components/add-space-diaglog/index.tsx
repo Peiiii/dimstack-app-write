@@ -9,10 +9,23 @@ import { EventKeys } from "@/constants/eventKeys";
 
 type Step = "platform" | "auth" | "select";
 
-export const AddSpaceDialog = () => {
-  const [step, setStep] = useState<Step>("platform");
-  const [selectedPlatform, setSelectedPlatform] = useState<"github" | "gitee" | null>(null);
-  const [showLocalOption, setShowLocalOption] = useState(false);
+interface AddSpaceDialogProps {
+  defaultPlatform?: "github" | "gitee";
+  defaultMode?: "local";
+}
+
+export const AddSpaceDialog = ({ defaultPlatform, defaultMode }: AddSpaceDialogProps = {}) => {
+  const getInitialStep = (): Step => {
+    if (defaultPlatform) {
+      const hasAuth = !!authService.getAnyAuthInfo(defaultPlatform)?.accessToken;
+      return hasAuth ? "select" : "auth";
+    }
+    return defaultMode === "local" ? "platform" : "platform";
+  };
+  
+  const [step, setStep] = useState<Step>(getInitialStep());
+  const [selectedPlatform, setSelectedPlatform] = useState<"github" | "gitee" | null>(defaultPlatform || null);
+  const [showLocalOption, setShowLocalOption] = useState(defaultMode === "local");
 
   const authRecords = authService.useAuthRecords();
   
