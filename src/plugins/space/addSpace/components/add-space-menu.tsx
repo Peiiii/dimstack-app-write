@@ -1,360 +1,375 @@
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
 } from "@/components/ui/command";
-import { Github, GitBranch, Sparkles, KeyRound, CheckCircle2, ChevronDown, ChevronRight, Loader2 } from "lucide-react";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { EventKeys } from "@/constants/eventKeys";
 import { authService } from "@/services/auth.service";
 import { spaceService } from "@/services/space.service";
 import { createGiteeClient } from "libs/gitee-api";
 import { createGithubClient } from "libs/github-api";
-import xbook from "xbook";
-import { EventKeys } from "@/constants/eventKeys";
-import { useState } from "react";
+import { ChevronDown, ChevronRight, GitBranch, Github, KeyRound, Loader2, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
 import { from, map, of } from "rxjs";
-import { useSubscribeObservable } from "@/hooks/use-subscribe-observable";
+import xbook from "xbook";
 
 interface AddSpaceMenuProps {
-  children: React.ReactNode;
+    children: React.ReactNode;
 }
 
 const getPlatformRepos = (platform: string) => {
-  const accessToken = authService.getAnyAuthInfo(platform)?.accessToken;
-  if (!accessToken) return of([]);
-  if (platform === "gitee") {
-    const promise = createGiteeClient({
-      getAccessToken: () => accessToken,
-    }).Repo.getList({});
-    return from(promise).pipe(map((res) => res.data));
-  } else if (platform.toLowerCase() === "github") {
-    const promise = createGithubClient({
-      getAccessToken: () => accessToken,
-    }).Repo.getList({ per_page: 100 });
-    return from(promise).pipe(map((res) => res.data));
-  }
-  return of([]);
+    const accessToken = authService.getAnyAuthInfo(platform)?.accessToken;
+    if (!accessToken) return of([]);
+    if (platform === "gitee") {
+        const promise = createGiteeClient({
+            getAccessToken: () => accessToken,
+        }).Repo.getList({});
+        return from(promise).pipe(map((res) => res.data));
+    } else if (platform.toLowerCase() === "github") {
+        const promise = createGithubClient({
+            getAccessToken: () => accessToken,
+        }).Repo.getList({ per_page: 100 });
+        return from(promise).pipe(map((res) => res.data));
+    }
+    return of([]);
 };
 
 export const AddSpaceMenu = ({ children }: AddSpaceMenuProps) => {
-  authService.useAuthRecords();
-  const githubAuthorized = !!authService.getAnyAuthInfo("github")?.accessToken;
-  const giteeAuthorized = !!authService.getAnyAuthInfo("gitee")?.accessToken;
+    authService.useAuthRecords();
+    const githubAuthorized = !!authService.getAnyAuthInfo("github")?.accessToken;
+    const giteeAuthorized = !!authService.getAnyAuthInfo("gitee")?.accessToken;
 
-  // Expanded state
-  const [githubExpanded, setGithubExpanded] = useState(false);
-  const [giteeExpanded, setGiteeExpanded] = useState(false);
+    // Expanded state
+    const [githubExpanded, setGithubExpanded] = useState(false);
+    const [giteeExpanded, setGiteeExpanded] = useState(false);
 
-  // GitHub repos state
-  const [githubRepos, setGithubRepos] = useState<{ value: string; label: string; owner: string }[]>([]);
-  const [githubLoading, setGithubLoading] = useState(false);
-  const [githubOwner, setGithubOwner] = useState<string>("");
+    // GitHub repos state
+    const [githubRepos, setGithubRepos] = useState<{ value: string; label: string; owner: string }[]>([]);
+    const [githubLoading, setGithubLoading] = useState(false);
 
-  // Gitee repos state
-  const [giteeRepos, setGiteeRepos] = useState<{ value: string; label: string; owner: string }[]>([]);
-  const [giteeLoading, setGiteeLoading] = useState(false);
-  const [giteeOwner, setGiteeOwner] = useState<string>("");
+    // Gitee repos state
+    const [giteeRepos, setGiteeRepos] = useState<{ value: string; label: string; owner: string }[]>([]);
+    const [giteeLoading, setGiteeLoading] = useState(false);
 
-  // Load GitHub repos when expanded
-  useSubscribeObservable(
-    () => {
-      if (!githubAuthorized || !githubExpanded) return of([]);
-      setGithubLoading(true);
-      return getPlatformRepos("github");
-    },
-    (data) => {
-      setGithubLoading(false);
-      if (data && data.length > 0) {
-        setGithubOwner(data[0]?.owner?.name || data[0].owner.login || "");
-        setGithubRepos(
-          data.map((d) => ({
-            value: d.name,
-            label: d.name,
-            owner: data[0]?.owner?.name || data[0].owner.login || "",
-          }))
-        );
-      } else {
-        setGithubRepos([]);
-      }
-    }
-  );
+    // Load GitHub repos when expanded
+    useEffect(() => {
+        if (githubAuthorized && githubExpanded && githubRepos.length === 0) {
+            setGithubLoading(true);
+            const subscription = getPlatformRepos("github").subscribe({
+                next: (data) => {
+                    setGithubLoading(false);
+                    if (data && data.length > 0) {
+                        setGithubRepos(
+                            data.map((d) => ({
+                                value: d.name,
+                                label: d.name,
+                                owner: d.owner?.login || d.owner?.name || "",
+                            }))
+                        );
+                    } else {
+                        setGithubRepos([]);
+                    }
+                },
+                error: (error) => {
+                    console.error("Failed to load GitHub repos:", error);
+                    setGithubLoading(false);
+                    setGithubRepos([]);
+                }
+            });
 
-  // Load Gitee repos when expanded
-  useSubscribeObservable(
-    () => {
-      if (!giteeAuthorized || !giteeExpanded) return of([]);
-      setGiteeLoading(true);
-      return getPlatformRepos("gitee");
-    },
-    (data) => {
-      setGiteeLoading(false);
-      if (data && data.length > 0) {
-        setGiteeOwner(data[0]?.owner?.name || data[0].owner.login || "");
-        setGiteeRepos(
-          data.map((d) => ({
-            value: d.name,
-            label: d.name,
-            owner: data[0]?.owner?.name || data[0].owner.login || "",
-          }))
-        );
-      } else {
-        setGiteeRepos([]);
-      }
-    }
-  );
-
-  const handleCreateSpace = async (platform: string, repo: string, owner: string) => {
-    try {
-      spaceService.addSpace(
-        {
-          platform,
-          owner,
-          repo: repo.toLowerCase(),
-        },
-        {
-          focus: true,
+            return () => subscription.unsubscribe();
         }
-      );
-      xbook.notificationService.success("工作空间添加成功");
-    } catch {
-      xbook.notificationService.error("添加失败，请重试");
-    }
-  };
+    }, [githubAuthorized, githubExpanded, githubRepos.length]);
 
-  const handleGitHubAuth = () => {
-    xbook.eventBus.emit(EventKeys.RequestAuthManage);
-  };
+    // Load Gitee repos when expanded
+    useEffect(() => {
+        if (giteeAuthorized && giteeExpanded && giteeRepos.length === 0) {
+            setGiteeLoading(true);
+            const subscription = getPlatformRepos("gitee").subscribe({
+                next: (data) => {
+                    setGiteeLoading(false);
+                    if (data && data.length > 0) {
+                        setGiteeRepos(
+                            data.map((d) => ({
+                                value: d.name,
+                                label: d.name,
+                                owner: d.owner?.login || d.owner?.name || "",
+                            }))
+                        );
+                    } else {
+                        setGiteeRepos([]);
+                    }
+                },
+                error: (error) => {
+                    console.error("Failed to load Gitee repos:", error);
+                    setGiteeLoading(false);
+                    setGiteeRepos([]);
+                }
+            });
 
-  const handleGiteeAuth = () => {
-    xbook.eventBus.emit(EventKeys.RequestAuthManage);
-  };
+            return () => subscription.unsubscribe();
+        }
+    }, [giteeAuthorized, giteeExpanded, giteeRepos.length]);
 
-  const handleGithubToggle = () => {
-    if (githubAuthorized) {
-      setGithubExpanded(!githubExpanded);
-    } else {
-      handleGitHubAuth();
-    }
-  };
+    const handleCreateSpace = async (platform: string, repo: string, owner: string) => {
+        try {
+            spaceService.addSpace(
+                {
+                    platform,
+                    owner,
+                    repo: repo.toLowerCase(),
+                },
+                {
+                    focus: true,
+                }
+            );
+            xbook.notificationService.success("工作空间添加成功");
+        } catch {
+            xbook.notificationService.error("添加失败，请重试");
+        }
+    };
 
-  const handleGiteeToggle = () => {
-    if (giteeAuthorized) {
-      setGiteeExpanded(!giteeExpanded);
-    } else {
-      handleGiteeAuth();
-    }
-  };
+    const handleGitHubAuth = () => {
+        xbook.eventBus.emit(EventKeys.RequestAuthManage);
+    };
 
-  const handleLocal = async () => {
-    const defaultSpaceInfo = { platform: "idb", owner: "root", repo: "home" };
-    try {
-      const existing = spaceService.getSpaceByInfo(defaultSpaceInfo);
-      const space = existing
-        ? existing
-        : spaceService.addSpace(defaultSpaceInfo, { focus: true, silent: true });
+    const handleGiteeAuth = () => {
+        xbook.eventBus.emit(EventKeys.RequestAuthManage);
+    };
 
-      spaceService.focusSpace(space.id);
+    const handleGithubToggle = (event: React.MouseEvent) => {
+        event.preventDefault();
+        if (githubAuthorized) {
+            setGithubExpanded(!githubExpanded);
+        } else {
+            handleGitHubAuth();
+        }
+    };
 
-      try {
-        await import("@/services/opener.service").then(({ openerService }) =>
-          openerService.open(space.id, {
-            id: space.id + "/README.md",
-            name: "README.md",
-            path: "/README.md",
-            type: "file",
-          })
-        );
-      } catch {
-        xbook.notificationService.info("已创建本地空间，可在左侧选择文件开始编辑");
-      }
-    } catch {
-      xbook.notificationService.error("创建本地空间失败，请重试");
-    }
-  };
+    const handleGiteeToggle = (event: React.MouseEvent) => {
+        event.preventDefault();
+        if (giteeAuthorized) {
+            setGiteeExpanded(!giteeExpanded);
+        } else {
+            handleGiteeAuth();
+        }
+    };
 
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="start"
-        side="right"
-        className="w-[320px] p-1"
-        sideOffset={6}
-      >
-        <DropdownMenuLabel className="px-2.5 py-1.5 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
-          添加工作空间
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator className="my-1" />
+    const handleLocal = async () => {
+        const defaultSpaceInfo = { platform: "idb", owner: "root", repo: "home" };
+        try {
+            const existing = spaceService.getSpaceByInfo(defaultSpaceInfo);
+            const space = existing
+                ? existing
+                : spaceService.addSpace(defaultSpaceInfo, { focus: true, silent: true });
 
-        {/* GitHub Section */}
-        <div className="space-y-1">
-          <DropdownMenuItem
-            onClick={handleGithubToggle}
-            className="px-2.5 py-2 cursor-pointer group focus:bg-accent/50"
-          >
-            <div className="flex items-center gap-3 w-full">
-              <div className="flex-shrink-0 w-7 h-7 rounded-md flex items-center justify-center group-hover:bg-muted/60 transition-colors">
-                <Github className="h-3.5 w-3.5" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm font-medium leading-tight">GitHub</div>
-                <div className="text-[11px] text-muted-foreground leading-tight mt-0.5">
-                  {githubAuthorized ? "选择仓库" : "需要授权"}
-                </div>
-              </div>
-              {githubAuthorized ? (
-                <>
-                  <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
-                  {githubLoading ? (
-                    <Loader2 className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0 animate-spin" />
-                  ) : (
-                    <ChevronDown
-                      className={`h-3.5 w-3.5 text-muted-foreground/60 shrink-0 transition-transform duration-200 ${
-                        githubExpanded ? 'rotate-180' : ''
-                      }`}
-                    />
-                  )}
-                </>
-              ) : (
-                <KeyRound className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
-              )}
-            </div>
-          </DropdownMenuItem>
+            spaceService.focusSpace(space.id);
 
-          {githubAuthorized && githubExpanded && (
-            <div className="ml-11 mr-2 border-l border-muted-foreground/20 pl-4">
-              <Command className="border-0 bg-transparent p-0">
-                <CommandInput
-                  placeholder="搜索仓库..."
-                  className="h-8 text-xs"
-                />
-                <CommandList className="max-h-[200px]">
-                  <CommandEmpty className="py-4 text-center text-xs">
-                    未找到仓库
-                  </CommandEmpty>
-                  <CommandGroup className="p-0">
-                    {githubLoading ? (
-                      <div className="py-4 text-center text-xs flex items-center justify-center gap-2">
-                        <Loader2 className="h-3 w-3 animate-spin" />
-                        加载中...
-                      </div>
-                    ) : (
-                      githubRepos.map((repo) => (
-                        <CommandItem
-                          key={repo.value}
-                          onSelect={() => handleCreateSpace("github", repo.value, repo.owner)}
-                          className="cursor-pointer py-2 px-2 text-sm hover:bg-accent/50 rounded-sm"
-                        >
-                          {repo.label}
-                        </CommandItem>
-                      ))
+            try {
+                await import("@/services/opener.service").then(({ openerService }) =>
+                    openerService.open(space.id, {
+                        id: space.id + "/README.md",
+                        name: "README.md",
+                        path: "/README.md",
+                        type: "file",
+                    })
+                );
+            } catch {
+                xbook.notificationService.info("已创建本地空间，可在左侧选择文件开始编辑");
+            }
+        } catch {
+            xbook.notificationService.error("创建本地空间失败，请重试");
+        }
+    };
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
+            <DropdownMenuContent
+                align="start"
+                side="right"
+                className="w-[280px] p-1"
+                sideOffset={6}
+            >
+                <DropdownMenuLabel className="px-2.5 py-1.5 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+                    添加工作空间
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="my-1" />
+
+                {/* GitHub Section */}
+                <div className="space-y-1">
+                    <DropdownMenuItem
+                        onClick={handleGithubToggle}
+                        className="px-2.5 py-2 cursor-pointer group focus:bg-accent/50"
+                        onSelect={(event) => event.preventDefault()}
+                    >
+                        <div className="flex items-center gap-3 w-full">
+                            <div className="flex-shrink-0 w-7 h-7 rounded-md flex items-center justify-center group-hover:bg-muted/60 transition-colors">
+                                <Github className="h-3.5 w-3.5" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <div className="text-sm font-medium leading-tight">GitHub</div>
+                                <div className="text-[11px] text-muted-foreground leading-tight mt-0.5">
+                                    {githubAuthorized ? "选择仓库" : "需要授权"}
+                                </div>
+                            </div>
+                            {githubAuthorized ? (
+                                githubLoading ? (
+                                    <Loader2 className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0 animate-spin" />
+                                ) : githubExpanded ? (
+                                    <ChevronDown className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
+                                ) : (
+                                    <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
+                                )
+                            ) : (
+                                <KeyRound className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
+                            )}
+                        </div>
+                    </DropdownMenuItem>
+
+                    {githubAuthorized && githubExpanded && (
+                        <div className="ml-6 mr-1 mb-1 rounded-md bg-muted/50 p-2">
+                            <Command className="bg-transparent">
+                                <CommandInput
+                                    placeholder="搜索仓库..."
+                                    className="h-8 text-sm border-0 focus:ring-0 bg-transparent"
+                                />
+                                <CommandList className="max-h-[240px]">
+                                    <CommandGroup className="p-0">
+                                        {githubLoading ? (
+                                            <div className="py-4 text-center text-xs flex items-center justify-center gap-2 text-muted-foreground">
+                                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                                加载中
+                                            </div>
+                                        ) : githubRepos.length === 0 ? (
+                                            <div className="py-4 text-center text-xs text-muted-foreground">
+                                                暂无仓库
+                                            </div>
+                                        ) : (
+                                            githubRepos.map((repo) => (
+                                                <CommandItem
+                                                    key={repo.value}
+                                                    onSelect={() => handleCreateSpace("github", repo.value, repo.owner)}
+                                                    className="cursor-pointer px-2 py-1.5 rounded-sm text-sm"
+                                                >
+                                                    {repo.label}
+                                                </CommandItem>
+                                            ))
+                                        )}
+                                    </CommandGroup>
+                                    {!githubLoading && githubRepos.length > 0 && (
+                                        <CommandEmpty className="py-4 text-center text-xs text-muted-foreground">
+                                            未找到
+                                        </CommandEmpty>
+                                    )}
+                                </CommandList>
+                            </Command>
+                        </div>
                     )}
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </div>
-          )}
-        </div>
-
-        {/* Gitee Section */}
-        <div className="space-y-1">
-          <DropdownMenuItem
-            onClick={handleGiteeToggle}
-            className="px-2.5 py-2 cursor-pointer group focus:bg-accent/50"
-          >
-            <div className="flex items-center gap-3 w-full">
-              <div className="flex-shrink-0 w-7 h-7 rounded-md flex items-center justify-center group-hover:bg-muted/60 transition-colors">
-                <GitBranch className="h-3.5 w-3.5" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm font-medium leading-tight">Gitee</div>
-                <div className="text-[11px] text-muted-foreground leading-tight mt-0.5">
-                  {giteeAuthorized ? "选择仓库" : "需要授权"}
                 </div>
-              </div>
-              {giteeAuthorized ? (
-                <>
-                  <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
-                  {giteeLoading ? (
-                    <Loader2 className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0 animate-spin" />
-                  ) : (
-                    <ChevronDown
-                      className={`h-3.5 w-3.5 text-muted-foreground/60 shrink-0 transition-transform duration-200 ${
-                        giteeExpanded ? 'rotate-180' : ''
-                      }`}
-                    />
-                  )}
-                </>
-              ) : (
-                <KeyRound className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
-              )}
-            </div>
-          </DropdownMenuItem>
 
-          {giteeAuthorized && giteeExpanded && (
-            <div className="ml-11 mr-2 border-l border-muted-foreground/20 pl-4">
-              <Command className="border-0 bg-transparent p-0">
-                <CommandInput
-                  placeholder="搜索仓库..."
-                  className="h-8 text-xs"
-                />
-                <CommandList className="max-h-[200px]">
-                  <CommandEmpty className="py-4 text-center text-xs">
-                    未找到仓库
-                  </CommandEmpty>
-                  <CommandGroup className="p-0">
-                    {giteeLoading ? (
-                      <div className="py-4 text-center text-xs flex items-center justify-center gap-2">
-                        <Loader2 className="h-3 w-3 animate-spin" />
-                        加载中...
-                      </div>
-                    ) : (
-                      giteeRepos.map((repo) => (
-                        <CommandItem
-                          key={repo.value}
-                          onSelect={() => handleCreateSpace("gitee", repo.value, repo.owner)}
-                          className="cursor-pointer py-2 px-2 text-sm hover:bg-accent/50 rounded-sm"
-                        >
-                          {repo.label}
-                        </CommandItem>
-                      ))
+                {/* Gitee Section */}
+                <div className="space-y-1">
+                    <DropdownMenuItem
+                        onClick={handleGiteeToggle}
+                        className="px-2.5 py-2 cursor-pointer group focus:bg-accent/50"
+                        onSelect={(event) => event.preventDefault()}
+                    >
+                        <div className="flex items-center gap-3 w-full">
+                            <div className="flex-shrink-0 w-7 h-7 rounded-md flex items-center justify-center group-hover:bg-muted/60 transition-colors">
+                                <GitBranch className="h-3.5 w-3.5" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <div className="text-sm font-medium leading-tight">Gitee</div>
+                                <div className="text-[11px] text-muted-foreground leading-tight mt-0.5">
+                                    {giteeAuthorized ? "选择仓库" : "需要授权"}
+                                </div>
+                            </div>
+                            {giteeAuthorized ? (
+                                giteeLoading ? (
+                                    <Loader2 className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0 animate-spin" />
+                                ) : giteeExpanded ? (
+                                    <ChevronDown className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
+                                ) : (
+                                    <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
+                                )
+                            ) : (
+                                <KeyRound className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
+                            )}
+                        </div>
+                    </DropdownMenuItem>
+
+                    {giteeAuthorized && giteeExpanded && (
+                        <div className="ml-6 mr-1 mb-1 rounded-md bg-muted/50 p-2">
+                            <Command className="bg-transparent">
+                                <CommandInput
+                                    placeholder="搜索仓库..."
+                                    className="h-8 text-sm border-0 focus:ring-0 bg-transparent"
+                                />
+                                <CommandList className="max-h-[240px]">
+                                    <CommandGroup className="p-0">
+                                        {giteeLoading ? (
+                                            <div className="py-4 text-center text-xs flex items-center justify-center gap-2 text-muted-foreground">
+                                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                                加载中
+                                            </div>
+                                        ) : giteeRepos.length === 0 ? (
+                                            <div className="py-4 text-center text-xs text-muted-foreground">
+                                                暂无仓库
+                                            </div>
+                                        ) : (
+                                            giteeRepos.map((repo) => (
+                                                <CommandItem
+                                                    key={repo.value}
+                                                    onSelect={() => handleCreateSpace("gitee", repo.value, repo.owner)}
+                                                    className="cursor-pointer px-2 py-1.5 rounded-sm text-sm"
+                                                >
+                                                    {repo.label}
+                                                </CommandItem>
+                                            ))
+                                        )}
+                                    </CommandGroup>
+                                    {!giteeLoading && giteeRepos.length > 0 && (
+                                        <CommandEmpty className="py-4 text-center text-xs text-muted-foreground">
+                                            未找到
+                                        </CommandEmpty>
+                                    )}
+                                </CommandList>
+                            </Command>
+                        </div>
                     )}
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </div>
-          )}
-        </div>
+                </div>
 
-        <DropdownMenuSeparator className="my-1" />
-        <DropdownMenuItem
-          onClick={handleLocal}
-          className="px-2.5 py-2 cursor-pointer group"
-        >
-          <div className="flex items-center gap-3 w-full">
-            <div className="flex-shrink-0 w-7 h-7 rounded-md flex items-center justify-center group-hover:bg-muted/60 transition-colors">
-              <Sparkles className="h-3.5 w-3.5" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium leading-tight">本地开始</div>
-              <div className="text-[11px] text-muted-foreground leading-tight mt-0.5">
-                无需登录
-              </div>
-            </div>
-          </div>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
+                <DropdownMenuSeparator className="my-1" />
+                <DropdownMenuItem
+                    onClick={handleLocal}
+                    className="px-2.5 py-2 cursor-pointer group"
+                >
+                    <div className="flex items-center gap-3 w-full">
+                        <div className="flex-shrink-0 w-7 h-7 rounded-md flex items-center justify-center group-hover:bg-muted/60 transition-colors">
+                            <Sparkles className="h-3.5 w-3.5" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <div className="text-sm font-medium leading-tight">本地开始</div>
+                            <div className="text-[11px] text-muted-foreground leading-tight mt-0.5">
+                                无需登录
+                            </div>
+                        </div>
+                    </div>
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
 };
 
