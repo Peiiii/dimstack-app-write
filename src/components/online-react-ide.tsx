@@ -14,7 +14,12 @@ import { useEffect, useRef, useState } from "react";
 
 // const restoreDefine = hajackDefine();
 
-import { CustomMonacoEditor } from "@/components/custom-monaco-editor";
+import React from "react";
+const LazyCustomMonacoEditor = React.lazy(() =>
+  import("@/components/custom-monaco-editor").then((m) => ({
+    default: m.CustomMonacoEditor,
+  }))
+);
 
 export function OnlineReactIde() {
   const [code, setCode] = useState(`
@@ -146,19 +151,21 @@ export default function App() {
               style={{ display: activeTab === "editor" ? "block" : "none" }}
             >
               <div className="relative h-full">
-                <CustomMonacoEditor
-                  language="javascript"
-                  theme="vs-dark"
-                  value={code}
-                  onChange={handleEditorChange}
-                  options={{
-                    minimap: { enabled: false },
-                    fontSize: 14,
-                  }}
-                  // onMount={() => {
-                  //   restoreDefine();
-                  // }}
-                />
+                <React.Suspense fallback={<div>加载编辑器中...</div>}>
+                  <LazyCustomMonacoEditor
+                    language="javascript"
+                    theme="vs-dark"
+                    value={code}
+                    onChange={handleEditorChange}
+                    options={{
+                      minimap: { enabled: false },
+                      fontSize: 14,
+                    }}
+                    // onMount={() => {
+                    //   restoreDefine();
+                    // }}
+                  />
+                </React.Suspense>
                 <div className="absolute bottom-4 right-4">
                   <Button onClick={executeCode}>Run Code</Button>
                 </div>

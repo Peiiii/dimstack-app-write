@@ -1,4 +1,5 @@
-import * as monaco from "monaco-editor";
+// Import curated Monaco API + selected language contributions
+import { monaco } from "@/monaco/customMonaco";
 import React from "react";
 
 type KeyBinding = {

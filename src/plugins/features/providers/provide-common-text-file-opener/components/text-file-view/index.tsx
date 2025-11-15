@@ -1,11 +1,14 @@
-import {
-  CustomMonacoEditor,
-  MonacoKeyCode,
-  MonacoKeyMod,
-} from "@/components/custom-monaco-editor";
+import React from "react";
+// Lazy-load Monaco editor to avoid pulling it into the main chunk immediately
+const LazyCustomMonacoEditor = React.lazy(() =>
+  import("@/components/custom-monaco-editor").then((m) => ({
+    default: m.CustomMonacoEditor,
+  }))
+);
+// Import key enums from a tiny module that only pulls monaco editor.api (no languages)
+import { MonacoKeyCode, MonacoKeyMod } from "@/monaco/keys";
 import { useResource } from "@/hooks/use-resource";
 import { Uri } from "@/toolkit/vscode/uri";
-import React from "react";
 import xbook from "xbook/index";
 
 // 30+ languages supported by Monaco Editor
@@ -84,22 +87,24 @@ export const TextFileView: React.FC<{
       });
   };
   return (
-    <CustomMonacoEditor
-      value={data || ""}
-      language={(suffix && LanguageMap[suffix]) || "txt"}
-      onChange={(e) => {
-        htmlContentRef.current = e;
-      }}
-      keyBindings={[
-        {
-          key: MonacoKeyMod.CtrlCmd | MonacoKeyCode.KeyS,
-          action: () => {
-            if (htmlContentRef.current !== null) {
-              onSave(htmlContentRef.current);
-            }
+    <React.Suspense fallback={<div>加载编辑器中...</div>}>
+      <LazyCustomMonacoEditor
+        value={data || ""}
+        language={(suffix && LanguageMap[suffix]) || "txt"}
+        onChange={(e) => {
+          htmlContentRef.current = e;
+        }}
+        keyBindings={[
+          {
+            key: MonacoKeyMod.CtrlCmd | MonacoKeyCode.KeyS,
+            action: () => {
+              if (htmlContentRef.current !== null) {
+                onSave(htmlContentRef.current);
+              }
+            },
           },
-        },
-      ]}
-    />
+        ]}
+      />
+    </React.Suspense>
   );
 };

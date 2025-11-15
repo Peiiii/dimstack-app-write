@@ -4,6 +4,11 @@ interface SplitChunkStrategyItem {
 }
 type SplitChunkStrategy = SplitChunkStrategyItem[];
 export const strategy: SplitChunkStrategy = [
+  // Split Monaco into its own chunk to keep app chunk smaller
+  {
+    match: [/^monaco-editor$/],
+    name: "monaco",
+  },
   {
     match: [
       /^react$/,
