@@ -31,7 +31,7 @@ export type PageDescriptor = {
   viewData?: LayoutNode;
   src?: string;
   active?: boolean;
-  status?: "deleted" | "loading";
+  status?: "deleted" | "loading" | "unsaved";
 };
 type PageBoxMethods = {
   addPage(page: PageDescriptor): void;

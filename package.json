@@ -84,7 +84,7 @@
     "tinykeys": "^2.1.0",
     "usehooks-ts": "^2.9.1",
     "yarn": "^1.22.22",
-    "zenmark-editor": "^0.0.1"
+    "zenmark-editor": "^0.1.5"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",

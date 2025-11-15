@@ -1,16 +1,69 @@
-import { fileSystemHelper } from "@/helpers/file-system.helper";
-import { ZenmarkEditor } from "zenmark-editor";
-// For future editors, prefer using `useDocument(uri)` to centralize read/write/autosave.
-// Kept simple here to match zenmark-editor's current contract.
+import { ZenmarkEditor, KeyMod, KeyCode, matchesKeybinding } from "zenmark-editor";
+import { useDocument } from "@/hooks/use-document";
+import { useEffect, useRef } from "react";
 
 export const ZenmarkEditorComponent = (props: { uri: string }) => {
   const { uri } = props;
+  const { content, setContent, loading, flush } = useDocument(uri, {
+    autosave: false,
+  });
+  const editorRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleDocumentKeyDown = (event: KeyboardEvent) => {
+      const isSaveShortcut =
+        (event.metaKey || event.ctrlKey) && 
+        (event.key === "s" || event.key === "S") &&
+        !event.shiftKey;
+      
+      if (isSaveShortcut && editorRef.current?.contains(document.activeElement)) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        flush();
+      }
+    };
+
+    document.addEventListener("keydown", handleDocumentKeyDown, true);
+    return () => {
+      document.removeEventListener("keydown", handleDocumentKeyDown, true);
+    };
+  }, [flush]);
+
+  if (loading) {
+    return <div>加载中...</div>;
+  }
+
+  const handleKeyDown = (event: {
+    keyCode: number;
+    code: string;
+    key: string;
+    ctrlKey: boolean;
+    shiftKey: boolean;
+    altKey: boolean;
+    metaKey: boolean;
+    preventDefault: () => void;
+    stopPropagation: () => void;
+  }) => {
+    const saveKeybinding = KeyMod.CtrlCmd | KeyCode.KEY_S;
+    if (matchesKeybinding(event, saveKeybinding)) {
+      event.preventDefault();
+      event.stopPropagation();
+      flush();
+      return true;
+    }
+    return false;
+  };
+
   return (
-    <ZenmarkEditor
-      readContent={() => fileSystemHelper.service.read(uri)}
-      writeContent={async (content) => {
-        await fileSystemHelper.service.write(uri, content);
-      }}
-    />
+    <div ref={editorRef} style={{ height: "100%" }}>
+      <ZenmarkEditor
+        value={content}
+        onChange={(newContent) => {
+          setContent(newContent);
+        }}
+        onKeyDown={handleKeyDown}
+      />
+    </div>
   );
 };

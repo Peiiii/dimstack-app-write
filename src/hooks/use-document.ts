@@ -13,12 +13,27 @@ export function useDocument(uri: string, opts?: UseDocumentOptions) {
   const debounceMs = opts?.debounceMs ?? 500;
 
   const [content, setContentState] = useState<string>("");
+  const [savedContent, setSavedContent] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [saving, setSaving] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const timerRef = useRef<number | null>(null);
+  const dirtyRef = useRef<boolean>(false);
 
-  // Load content
+  const isDirty = content !== savedContent;
+
+  useEffect(() => {
+    if (loading) return;
+    const wasDirty = dirtyRef.current;
+    dirtyRef.current = isDirty;
+    
+    if (isDirty && !wasDirty) {
+      xbook.eventBus.emit(EventKeys.FileDirty, { uri });
+    } else if (!isDirty && wasDirty) {
+      xbook.eventBus.emit(EventKeys.FileClean, { uri });
+    }
+  }, [isDirty, loading, uri]);
+
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
@@ -27,6 +42,8 @@ export function useDocument(uri: string, opts?: UseDocumentOptions) {
       .then((c) => {
         if (!cancelled) {
           setContentState(c);
+          setSavedContent(c);
+          dirtyRef.current = false;
           setLoading(false);
         }
       })
@@ -48,7 +65,10 @@ export function useDocument(uri: string, opts?: UseDocumentOptions) {
       setSaving(true);
       try {
         await fileSystemHelper.service.write(uri, text);
+        setSavedContent(text);
+        dirtyRef.current = false;
         xbook.eventBus.emit(EventKeys.FileSaved);
+        xbook.eventBus.emit(EventKeys.FileClean, { uri });
       } catch (e) {
         setError(String((e as any)?.message || e));
       } finally {
@@ -76,6 +96,6 @@ export function useDocument(uri: string, opts?: UseDocumentOptions) {
     };
   }, []);
 
-  return { content, setContent, flush, loading, saving, error };
+  return { content, setContent, flush, loading, saving, error, isDirty };
 }
 

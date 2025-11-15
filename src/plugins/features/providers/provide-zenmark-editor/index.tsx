@@ -31,6 +31,20 @@ export default createPlugin({
       });
     });
 
+    xbook.eventBus.on(EventKeys.FileDirty, ({ uri }) => {
+      xbook.layoutService.pageBox.updatePage({
+        id: uri,
+        status: "unsaved",
+      });
+    });
+
+    xbook.eventBus.on(EventKeys.FileClean, ({ uri }) => {
+      xbook.layoutService.pageBox.updatePage({
+        id: uri,
+        status: undefined,
+      });
+    });
+
     // xbook.layoutService.activityBar.addActivity({
     //   id: "plugins",
     //   name: "Plugins",

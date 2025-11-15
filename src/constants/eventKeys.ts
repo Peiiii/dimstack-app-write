@@ -19,6 +19,8 @@ export const EventKeys = {
     ShortcutClicked: (id: string) => typedKey<void>(`shortcut:${id}:clicked`),
   },
   FileSaved: typedKey<void>("FileSaved"),
+  FileDirty: typedKey<{ uri: string }>("FileDirty"),
+  FileClean: typedKey<{ uri: string }>("FileClean"),
   ReadMeFileInitialized: typedKey<{
     spaceId: string
   }>("ReadMeFileInitialized"),

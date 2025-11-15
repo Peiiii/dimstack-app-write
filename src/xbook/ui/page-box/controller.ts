@@ -26,7 +26,7 @@ export type PageDescriptor = {
   viewData?: LayoutNode;
   src?: string;
   active?: boolean;
-  status?: "deleted" | "loading";
+  status?: "deleted" | "loading" | "unsaved";
 };
 
 export type PageBoxMethods = {

@@ -74,7 +74,20 @@ export const Tab: FC<TabProps> = ({
         className="tab-title"
         flexGrow={1}
         textDecoration={status === "deleted" ? "line-through" : undefined}
+        display="flex"
+        alignItems="center"
+        gap="4px"
       >
+        {status === "unsaved" && (
+          <Box
+            w="8px"
+            h="8px"
+            borderRadius="50%"
+            bg="currentColor"
+            flexShrink={0}
+            title="未保存"
+          />
+        )}
         {shortTitle}
       </Box>
       {(stretch || width || minWidth) && <Box flexGrow={1} />}
