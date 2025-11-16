@@ -20,7 +20,7 @@ import { createGiteeClient } from "libs/gitee-api";
 import { createGithubClient } from "libs/github-api";
 import { ChevronDown, ChevronRight, GitBranch, Github, Loader2, Sparkles, ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import { from, map, of } from "rxjs";
+import { forkJoin, from, map, of } from "rxjs";
 import xbook from "xbook";
 import { useTranslation } from "react-i18next";
 
@@ -31,16 +31,35 @@ interface AddSpaceMenuProps {
 const getPlatformRepos = (platform: string) => {
     const accessToken = authService.getAnyAuthInfo(platform)?.accessToken;
     if (!accessToken) return of([]);
+    
+    const targetCount = 200;
+    const perPage = 100;
+    const pagesNeeded = Math.ceil(targetCount / perPage);
+    
     if (platform === "gitee") {
-        const promise = createGiteeClient({
+        const client = createGiteeClient({
             getAccessToken: () => accessToken,
-        }).Repo.getList({});
-        return from(promise).pipe(map((res) => res.data));
+        });
+        const requests = Array.from({ length: pagesNeeded }, (_, i) =>
+            from(client.Repo.getList({ page: i + 1, per_page: perPage })).pipe(
+                map((res) => res.data)
+            )
+        );
+        return forkJoin(requests).pipe(
+            map((results) => results.flat().slice(0, targetCount))
+        );
     } else if (platform.toLowerCase() === "github") {
-        const promise = createGithubClient({
+        const client = createGithubClient({
             getAccessToken: () => accessToken,
-        }).Repo.getList({ per_page: 100 });
-        return from(promise).pipe(map((res) => res.data));
+        });
+        const requests = Array.from({ length: pagesNeeded }, (_, i) =>
+            from(client.Repo.getList({ page: i + 1, per_page: perPage })).pipe(
+                map((res) => res.data)
+            )
+        );
+        return forkJoin(requests).pipe(
+            map((results) => results.flat().slice(0, targetCount))
+        );
     }
     return of([]);
 };
