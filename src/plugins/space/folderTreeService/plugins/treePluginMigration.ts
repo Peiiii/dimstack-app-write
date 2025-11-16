@@ -1,6 +1,7 @@
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreePlugin } from "@/toolkit/components/tree/treePlugins";
 import { nanoid } from "@reduxjs/toolkit";
+import { t } from "@/i18n/utils";
 
 export default createTreePlugin<FolderTreeNode>({
   activate({ dataStore }) {
@@ -13,7 +14,7 @@ export default createTreePlugin<FolderTreeNode>({
       if (cloned.id === "root") {
         cloned.path = "/";
         cloned.type = "dir";
-        cloned.name = "文件";
+        cloned.name = t("common.file");
       }
       return cloned;
     };

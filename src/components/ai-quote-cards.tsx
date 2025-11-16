@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { AIService } from "../services/ai-service";
 
@@ -33,6 +34,7 @@ interface Quote {
 }
 
 export function AIQuoteCards({ saveData, loadData }: AppProps) {
+  const { t } = useTranslation();
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [apiKey, setApiKey] = useState("");
   const [category, setCategory] = useState("");
@@ -51,8 +53,8 @@ export function AIQuoteCards({ saveData, loadData }: AppProps) {
       } catch (error) {
         console.error("Error loading data:", error);
         toast({
-          title: "加载失败",
-          description: "无法加载保存的数据",
+          title: t("quotes.loadFailed"),
+          description: t("quotes.loadFailedDesc"),
           variant: "destructive",
         });
       }
@@ -75,8 +77,8 @@ export function AIQuoteCards({ saveData, loadData }: AppProps) {
   const generateQuote = async () => {
     if (!apiKey) {
       toast({
-        title: "错误",
-        description: "请输入OpenAI API密钥",
+        title: t("quotes.error"),
+        description: t("quotes.enterApiKey"),
         variant: "destructive",
       });
       return;

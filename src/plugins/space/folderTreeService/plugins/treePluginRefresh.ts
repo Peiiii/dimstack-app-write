@@ -4,6 +4,7 @@ import {
 } from "@/plugins/space/folderTreeService/tokens";
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreeHelper } from "@/toolkit/components/tree/treePlugins";
+import { t } from "@/i18n/utils";
 
 export default createTreeHelper<FolderTreeNode>().createPlugin({
   activate({
@@ -25,8 +26,8 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
         id: "refreshNode",
         key: "refreshNode",
         event: TreeEventKeys.RefreshNode.name,
-        name: "刷新",
-        label: "刷新",
+        name: t("tree.refresh"),
+        label: t("tree.refresh"),
         when: "level === 0 || type === 'dir'",
         icon: "AiOutlineReload",
         group: "more",

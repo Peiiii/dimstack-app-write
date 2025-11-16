@@ -2,6 +2,7 @@ import { openerService } from "@/services/opener.service";
 import { AppCommunity } from "./app";
 import { createPlugin } from "xbook/common/createPlugin";
 import { spaceHelper } from "@/helpers/space.helper";
+import { t } from "@/i18n/utils";
 
 export const provideCommunity = createPlugin({
   initilize(xbook) {
@@ -13,7 +14,7 @@ export const provideCommunity = createPlugin({
       init: async (uri) => {
         return xbook.layoutService.pageBox.addPage({
           id: `community:${uri}`,
-          title: `社区:${spaceHelper.getFileName(uri)}`,
+          title: `${t("apps.community")}:${spaceHelper.getFileName(uri)}`,
           viewData: {
             type: "community",
             props: { uri },

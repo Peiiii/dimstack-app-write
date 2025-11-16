@@ -13,6 +13,7 @@ import { Box } from "@chakra-ui/react";
 import { css } from "@emotion/css";
 import classNames from "classnames";
 import { useCallback, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 export type { NodeMenuItem } from "./menu-v2.service";
 
 // View System
@@ -209,6 +210,7 @@ export const Tree = <
     };
   }, []);
 
+  const { t } = useTranslation();
   const rootNode = dataStore.useData() as TreeDataNode;
   const rootViewState =
     (viewStateStore?.useRecord(rootNode.id) as WidgetViewState) || {};
@@ -229,7 +231,7 @@ export const Tree = <
             "w-full py-1 px-2 cursor-pointer hover:bg-gray-200 flex justify-between"
           )}
         >
-          目录
+          {t("tree.directory")}
           <div className="h-full flex items-center hover-show">
             {renderer.render({
               type: "tree-node-action-bar",

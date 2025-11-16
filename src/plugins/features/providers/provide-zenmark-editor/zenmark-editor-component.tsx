@@ -1,8 +1,10 @@
 import { ZenmarkEditor, KeyMod, KeyCode, matchesKeybinding } from "zenmark-editor";
 import { useDocument } from "@/hooks/use-document";
 import { useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 export const ZenmarkEditorComponent = (props: { uri: string }) => {
+  const { t } = useTranslation();
   const { uri } = props;
   const { content, setContent, loading, flush } = useDocument(uri, {
     autosave: false,
@@ -31,7 +33,7 @@ export const ZenmarkEditorComponent = (props: { uri: string }) => {
   }, [flush]);
 
   if (loading) {
-    return <div>加载中...</div>;
+    return <div>{t("zenmark.loading")}</div>;
   }
 
   const handleKeyDown = (event: {

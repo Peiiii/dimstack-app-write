@@ -6,6 +6,7 @@ import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreeHelper } from "@/toolkit/components/tree/treePlugins";
 import { nanoid } from "@reduxjs/toolkit";
 import xbook from "xbook/index";
+import { t } from "@/i18n/utils";
 export default createTreeHelper<FolderTreeNode>().createPlugin({
   addOptions() {
     return {
@@ -20,14 +21,14 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
         key: "editNode",
         group: "more",
         event: TreeEventKeys.EditNode.name,
-        name: "重命名",
-        label: "重命名",
+        name: t("tree.rename"),
+        label: t("tree.rename"),
         icon: "AiFillEdit",
         when: "level >= 0",
         validationRules: [
           {
             check: "type !== 'dir'",
-            failMessage: "赞不支持重命名文件夹",
+            failMessage: t("tree.renameFolderNotSupported"),
           },
         ],
       },

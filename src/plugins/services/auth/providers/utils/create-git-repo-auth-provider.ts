@@ -129,9 +129,10 @@ export const createGitRepoAuthProvider = ({
       // 弹窗询问用户是否确定跳转到对应平台的登录页面
       const { username, repo, needConfirm } = options || {};
       if (needConfirm) {
+        const { t } = await import("@/i18n/utils").then(m => ({ t: m.t }));
         const userConfirmation = await xbook.modalService.confirm({
-          title: "即将跳转",
-          description: `是否确定跳转到${platform}登录页面？`,
+          title: t("auth.redirecting"),
+          description: t("auth.confirmRedirect", { platform }),
         });
         if (!userConfirmation) {
           return; // 用户取消认证

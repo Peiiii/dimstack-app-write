@@ -1,6 +1,7 @@
 import { openerService } from "@/services/opener.service";
 import { AppMindFlow } from "./app";
 import { createPlugin } from "xbook/common/createPlugin";
+import { t } from "@/i18n/utils";
 
 export const provideMindFlow = createPlugin({
   initilize(xbook) {
@@ -15,7 +16,7 @@ export const provideMindFlow = createPlugin({
         };
         xbook.layoutService.pageBox.addPage({
           id: `mind-flow:${uri}`,
-          title: `思维流:${getFileName(uri)}`,
+          title: `${t("apps.mindFlow")}:${getFileName(uri)}`,
           viewData: {
             type: "mind-flow",
             props: { uri },

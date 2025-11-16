@@ -15,6 +15,7 @@ import widgets from "@/plugins/widgets";
 import xbook from "xbook";
 import "@/plugins/space/platforms";
 import { platformsPlugin } from "@/plugins/space/platforms";
+import "@/i18n/config";
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.has("testMode")) {
   import("https://esm.sh/vconsole@latest" as any).then((m) => {

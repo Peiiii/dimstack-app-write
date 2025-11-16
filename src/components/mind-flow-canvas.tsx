@@ -2,6 +2,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AIService } from "@/services/ai-service";
 import { Edit2, MoreHorizontal, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import ReactFlow, {
   Background,
   ConnectionMode,
@@ -90,6 +91,7 @@ const createNodeTypes = (handleEditNode: Function, handleDeleteNode: Function) =
 });
 
 export function MindFlowCanvas({ saveData, loadData }: MindFlowProps) {
+  const { t } = useTranslation();
   const [nodes, setNodes] = useState<MindFlowNode[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
   const [selectedNode, setSelectedNode] = useState<MindFlowNode | null>(null);
@@ -120,8 +122,8 @@ export function MindFlowCanvas({ saveData, loadData }: MindFlowProps) {
       } catch (error) {
         console.error("Error loading data:", error);
         toast({
-          title: "加载失败",
-          description: "无法加载保存的数据",
+          title: t("mindFlow.loadingFailed"),
+          description: t("mindFlow.loadDataFailed"),
           variant: "destructive",
         });
       }
@@ -151,8 +153,8 @@ export function MindFlowCanvas({ saveData, loadData }: MindFlowProps) {
   const expandNode = async (direction: string) => {
     if (!selectedNode || !apiKey) {
       toast({
-        title: "错误",
-        description: "请选择节点并输入API密钥",
+        title: t("mindFlow.error"),
+        description: t("mindFlow.selectNodeAndApiKey"),
         variant: "destructive",
       });
       return;
@@ -205,8 +207,8 @@ export function MindFlowCanvas({ saveData, loadData }: MindFlowProps) {
     } catch (error) {
       console.error("Error:", error);
       toast({
-        title: "生成失败",
-        description: "无法生成新的想法，请重试",
+        title: t("mindFlow.generateFailed"),
+        description: t("mindFlow.cannotGenerate"),
         variant: "destructive",
       });
     } finally {
@@ -217,8 +219,8 @@ export function MindFlowCanvas({ saveData, loadData }: MindFlowProps) {
   const createRootNode = () => {
     if (!newNodeContent.trim()) {
       toast({
-        title: "错误",
-        description: "请输入内容",
+        title: t("mindFlow.error"),
+        description: t("mindFlow.enterContent"),
         variant: "destructive",
       });
       return;
@@ -259,7 +261,7 @@ export function MindFlowCanvas({ saveData, loadData }: MindFlowProps) {
   };
 
   const handleDeleteNode = (nodeId: string) => {
-    if (window.confirm('确定要删除这个节点吗？相关的连接也会被删除。')) {
+    if (window.confirm(t("mindFlow.confirmDelete"))) {
       setNodes((nodes) => nodes.filter((node) => node.id !== nodeId));
       setEdges((edges) => edges.filter(
         (edge) => edge.source !== nodeId && edge.target !== nodeId
@@ -270,8 +272,8 @@ export function MindFlowCanvas({ saveData, loadData }: MindFlowProps) {
   const addManualNode = () => {
     if (!selectedNode || !newNodeContent.trim()) {
       toast({
-        title: "错误",
-        description: "请输入内容",
+        title: t("mindFlow.error"),
+        description: t("mindFlow.enterContent"),
         variant: "destructive",
       });
       return;
@@ -346,16 +348,16 @@ export function MindFlowCanvas({ saveData, loadData }: MindFlowProps) {
           
           {nodes.length === 0 ? (
             <Card className="p-4">
-              <p className="text-sm font-medium mb-2">创建中心主题</p>
+              <p className="text-sm font-medium mb-2">{t("mindFlow.createCenterTheme")}</p>
               <div className="flex flex-col space-y-2">
                 <Input
-                  placeholder="输入主内容..."
+                  placeholder={t("mindFlow.enterMainContent")}
                   value={newNodeContent}
                   onChange={(e) => setNewNodeContent(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && createRootNode()}
                 />
                 <Button onClick={createRootNode} className="w-full">
-                  创建
+                  {t("mindFlow.create")}
                 </Button>
               </div>
             </Card>
@@ -364,7 +366,7 @@ export function MindFlowCanvas({ saveData, loadData }: MindFlowProps) {
               <p className="text-sm font-medium mb-2">选中���点: {selectedNode.data.content}</p>
               <div className="flex flex-col space-y-2">
                 <Input
-                  placeholder="手动添加节点内容..."
+                  placeholder={t("mindFlow.addNodeContent")}
                   value={newNodeContent}
                   onChange={(e) => setNewNodeContent(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && addManualNode()}
@@ -374,32 +376,32 @@ export function MindFlowCanvas({ saveData, loadData }: MindFlowProps) {
                   onClick={addManualNode}
                   className="w-full"
                 >
-                  添加节点
+                  {t("mindFlow.addNode")}
                 </Button>
                 <div className="h-px bg-gray-200 my-2" />
                 <Button 
                   size="sm"
-                  onClick={() => expandNode("深入分析")}
+                  onClick={() => expandNode(t("mindFlow.deepAnalysis"))}
                   disabled={isExpanding}
                   className="w-full"
                 >
-                  深入分析
+                  {t("mindFlow.deepAnalysis")}
                 </Button>
                 <Button
                   size="sm"
-                  onClick={() => expandNode("横向联想")}
+                  onClick={() => expandNode(t("mindFlow.lateralThinking"))}
                   disabled={isExpanding}
                   className="w-full"
                 >
-                  横向联想
+                  {t("mindFlow.lateralThinking")}
                 </Button>
                 <Button
                   size="sm"
-                  onClick={() => expandNode("抽象概括")}
+                  onClick={() => expandNode(t("mindFlow.abstractSummary"))}
                   disabled={isExpanding}
                   className="w-full"
                 >
-                  抽象概括
+                  {t("mindFlow.abstractSummary")}
                 </Button>
               </div>
             </Card>

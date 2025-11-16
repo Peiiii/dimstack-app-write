@@ -9,22 +9,23 @@ import { cn } from "@/toolkit/utils/shadcn-utils";
 import QuickSettingsMenu from "./quick-settings-menu";
 import { useColorMode } from "@chakra-ui/react";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 interface SettingsShortcutProps {
   shortcut: { id: string; icon?: string; name: string };
   isExpanded: boolean;
 }
 
-// Render a popover-style quick settings, similar to AddSpace entry
 export default function SettingsShortcut({ shortcut, isExpanded }: SettingsShortcutProps) {
-  // Ensure Tailwind 'dark' class stays in sync with Chakra color mode on mount and updates
   const { colorMode } = useColorMode();
+  const { t } = useTranslation();
   useEffect(() => {
     const root = document.documentElement;
     if (colorMode === "dark") root.classList.add("dark");
     else root.classList.remove("dark");
   }, [colorMode]);
   const { icon = "AiOutlineSetting", name } = shortcut;
+  const displayName = name || t("common.settings");
   const IconComponent = componentService.useComponent(icon);
 
   const trigger = (
@@ -52,7 +53,7 @@ export default function SettingsShortcut({ shortcut, isExpanded }: SettingsShort
         />
         {isExpanded && (
           <span className="ml-2.5 text-sm truncate text-muted-foreground animate-in fade-in-0 slide-in-from-left-2 duration-300">
-            {name}
+            {displayName}
           </span>
         )}
       </button>
@@ -79,7 +80,7 @@ export default function SettingsShortcut({ shortcut, isExpanded }: SettingsShort
           sideOffset={10}
           className="text-xs px-2.5 py-1.5 bg-popover/95 text-popover-foreground rounded-md"
         >
-          {name}
+          {displayName}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

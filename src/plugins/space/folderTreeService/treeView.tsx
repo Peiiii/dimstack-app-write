@@ -2,6 +2,7 @@ import { Alert, Box, Icon, Link } from "@chakra-ui/react";
 import "./sidebar.scss";
 
 import { EventKeys } from "@/constants/eventKeys";
+import { useTranslation } from "react-i18next";
 import { fileSystemHelper } from "@/helpers/file-system.helper";
 import { useStateFromRegistry } from "@/helpers/hooks/user-state-from-registry";
 import { spaceHelper } from "@/helpers/space.helper";
@@ -48,12 +49,13 @@ import treePluginDragAndDrop from "@/plugins/space/folderTreeService/plugins/tre
 import treePluginCopyFilePath from "@/plugins/space/folderTreeService/plugins/treePluginCopyFilePath";
 
 const TreeView = ({ space }: { space: SpaceDef }) => {
+  const { t } = useTranslation();
   const treeDataStore = useMemo(
     () =>
       createTreeDataStore<FolderTreeNode>({
         initialState: {
-          name: "文件",
-          content: "内容",
+          name: t("common.file"),
+          content: t("common.content"),
           id: "root",
           type: "dir",
           path: "/",
@@ -111,14 +113,14 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
           p="10px"
           w="100%"
         >
-          当前平台 {space.platform} 未授权或授权已过期，请
+          {t("space.unauthorized", { platform: space.platform })}
           <Link
             color="blue.300"
             onClick={() => {
               xbook.eventBus.emit(EventKeys.RequestRedirectAuthPage, space.id);
             }}
           >
-            点此授权
+            {t("space.clickToAuthorize")}
             <Icon as={AiOutlineLink} />
           </Link>
         </Alert>
@@ -139,7 +141,7 @@ const TreeView = ({ space }: { space: SpaceDef }) => {
                   spaceService.focusSpace(value);
                 }
               }}
-              placeholder="搜索"
+              placeholder={t("common.search")}
             />
           </>
         }

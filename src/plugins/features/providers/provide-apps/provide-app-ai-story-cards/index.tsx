@@ -1,6 +1,7 @@
 import { openerService } from "@/services/opener.service";
 import { AppAIStoryCards } from "@/plugins/features/providers/provide-apps/provide-app-ai-story-cards/app";
 import { createPlugin } from "xbook/common/createPlugin";
+import { t } from "@/i18n/utils";
 
 export const provideAppAIStoryCards = createPlugin({
   initilize(xbook) {
@@ -28,7 +29,7 @@ export const provideAppAIStoryCards = createPlugin({
         console.log("open uri:", uri);
         xbook.layoutService.pageBox.addPage({
           id: `ai-story-cards:${uri}`,
-          title: `AI故事卡:${getFileName(uri)}`,
+          title: `${t("apps.aiStoryCards")}:${getFileName(uri)}`,
           viewData: {
             type: "ai-story-cards",
             props: { uri },

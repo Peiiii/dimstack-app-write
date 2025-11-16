@@ -3,6 +3,7 @@ import { Action } from "@/toolkit/types";
 import { AiOutlineShareAlt } from "react-icons/ai";
 import { createPlugin } from "xbook/common/createPlugin";
 import { EventKeys } from "@/constants/eventKeys";
+import { t } from "@/i18n/utils";
 
 const getUrlParams = (search: string) => {
   const params = new URLSearchParams(search);
@@ -38,7 +39,7 @@ export default createPlugin({
     const action: Action = {
       id: actionId,
       icon: <AiOutlineShareAlt />,
-      title: "分享",
+      title: t("share.title"),
       events: ["Click"],
     };
     xbook.eventBus.on(
@@ -52,7 +53,7 @@ export default createPlugin({
       }) => {
         const url = `${window.location.href}?openRepo=https://${platform}.com/${owner}/${repo}`;
         navigator.clipboard.writeText(url);
-        xbook.notificationService.success("已复制链接到剪贴板");
+        xbook.notificationService.success(t("share.linkCopied"));
       }
     );
     xbook.registry.set("space.actions", [

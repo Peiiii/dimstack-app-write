@@ -3,6 +3,7 @@ import { Moon, Sun, Plus, History } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { useTranslation } from "react-i18next"
 
 type Note = {
   id: string;
@@ -16,6 +17,7 @@ interface ZenNotesProps {
 }
 
 export function ZenNotes({ saveData, loadData }: ZenNotesProps) {
+  const { t } = useTranslation();
   const [notes, setNotes] = useState<Note[]>([])
   const [currentNote, setCurrentNote] = useState<Note | null>(null)
   const [isDarkMode, setIsDarkMode] = useState(false)
@@ -121,16 +123,16 @@ export function ZenNotes({ saveData, loadData }: ZenNotesProps) {
               isDarkMode ? 'bg-gray-800 text-gray-100 border-gray-700' : 'bg-white'
             }`}>
               <DialogHeader>
-                <DialogTitle>创建新笔记</DialogTitle>
+                <DialogTitle>{t("zenNotes.createNewNote")}</DialogTitle>
               </DialogHeader>
               <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
-                确定要创建新笔记吗？当前笔记将被保存。
+                {t("zenNotes.confirmCreateNew")}
               </p>
               <Button 
                 onClick={createNewNote}
                 className={isDarkMode ? 'bg-blue-600 hover:bg-blue-700' : ''}
               >
-                确定
+                {t("common.ok")}
               </Button>
             </DialogContent>
           </Dialog>
@@ -152,7 +154,7 @@ export function ZenNotes({ saveData, loadData }: ZenNotesProps) {
               isDarkMode ? 'bg-gray-800 text-gray-100 border-gray-700' : 'bg-white'
             }`}>
               <DialogHeader>
-                <DialogTitle>历史笔记</DialogTitle>
+                <DialogTitle>{t("zenNotes.historyNotes")}</DialogTitle>
               </DialogHeader>
               <div className="max-h-96 overflow-y-auto">
                 {notes.map(note => (
@@ -198,7 +200,7 @@ export function ZenNotes({ saveData, loadData }: ZenNotesProps) {
           <Textarea
             value={currentNote?.content || ''}
             onChange={handleNoteChange}
-            placeholder="记录你的内心感受..."
+            placeholder={t("zenNotes.placeholder")}
             className={`w-full h-64 p-4 rounded-lg resize-none focus:ring-2 focus:ring-opacity-50 transition-all duration-300 ${
               isDarkMode
                 ? 'bg-gray-800 text-gray-100 focus:ring-blue-500 border-gray-700 placeholder-gray-500'
@@ -208,7 +210,7 @@ export function ZenNotes({ saveData, loadData }: ZenNotesProps) {
           <p className={`mt-2 text-sm ${
             isDarkMode ? 'text-gray-400' : 'text-gray-500'
           }`}>
-            字数: {currentNote?.content.length || 0}
+            {t("zenNotes.wordCount", { count: currentNote?.content.length || 0 })}
           </p>
         </div>
       </main>

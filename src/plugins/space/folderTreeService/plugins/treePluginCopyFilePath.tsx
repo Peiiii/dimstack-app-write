@@ -6,6 +6,7 @@ import {
 } from "@/plugins/space/folderTreeService/tokens";
 import { AiFillCopy } from "react-icons/ai";
 import xbook from "xbook/index";
+import { t } from "@/i18n/utils";
 
 export default createFolderTreePlugin({
   activate({ viewSystem, eventBus, serviceBus }) {
@@ -15,7 +16,7 @@ export default createFolderTreePlugin({
       {
         id: "copyFilePath",
         key: "copyFilePath",
-        label: "复制 URI",
+        label: t("tree.copyUri"),
         icon: "AiFillCopy",
         event: TreeEventKeys.CopyFilePath.name,
         group: "more",
@@ -25,7 +26,7 @@ export default createFolderTreePlugin({
     eventBus.on(TreeEventKeys.CopyFilePath, ({ node }) => {
       const uri = spaceHelper.getUri(space.id, node.id === "root" ? "" : node.id);
       navigator.clipboard.writeText(uri.toString());
-      xbook.notificationService.success("已复制文件 URI");
+      xbook.notificationService.success(t("tree.uriCopied"));
     });
   },
 });

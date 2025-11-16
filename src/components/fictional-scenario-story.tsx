@@ -22,6 +22,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useStickyAutoScroll } from "@/hooks/use-sticky-autoscroll";
 import { AIService } from "../services/ai-service";
+import { useTranslation } from "react-i18next";
 
 interface SaveDataFunction {
   (data: any): Promise<void>;
@@ -50,6 +51,7 @@ const AI_MODELS = [
 ] as const;
 
 export default function Component({ saveData, loadData }: AppProps) {
+  const { t } = useTranslation();
   const [input, setInput] = useState("");
   const [apiKey, setApiKey] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -78,8 +80,8 @@ export default function Component({ saveData, loadData }: AppProps) {
       } catch (error) {
         console.error("Error loading data:", error);
         toast({
-          title: "加载数据失败",
-          description: "无法加载保存的数据，请检查您的存储设置。",
+          title: t("story.loadDataFailed"),
+          description: t("story.loadDataFailedDesc"),
           variant: "destructive",
         });
       }
@@ -106,8 +108,8 @@ export default function Component({ saveData, loadData }: AppProps) {
   const generateCards = async () => {
     if (!apiKey) {
       toast({
-        title: "错误",
-        description: "请输入OpenAI API密钥",
+        title: t("story.error"),
+        description: t("story.enterApiKey"),
         variant: "destructive",
       });
       return;
@@ -115,8 +117,8 @@ export default function Component({ saveData, loadData }: AppProps) {
 
     if (!input.trim()) {
       toast({
-        title: "错误",
-        description: "请输入内容",
+        title: t("story.error"),
+        description: t("story.enterContent"),
         variant: "destructive",
       });
       return;
@@ -151,8 +153,8 @@ export default function Component({ saveData, loadData }: AppProps) {
     } catch (error) {
       console.error("Error:", error);
       toast({
-        title: "生成失败",
-        description: "无法生成AI回应，请检查您的API密钥和网络连接。",
+        title: t("story.generateFailed"),
+        description: t("story.generateFailedDesc"),
         variant: "destructive",
       });
     } finally {
@@ -167,8 +169,8 @@ export default function Component({ saveData, loadData }: AppProps) {
   const startNewRound = async () => {
     if (!selectedDirection) {
       toast({
-        title: "错误",
-        description: "请选择一个方向",
+        title: t("story.error"),
+        description: t("story.selectDirection"),
         variant: "destructive",
       });
       return;

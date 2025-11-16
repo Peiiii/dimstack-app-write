@@ -2,6 +2,7 @@ import { createPlugin } from "xbook/common/createPlugin";
 import { settingService } from "@/services/setting.service";
 import { Button } from "@chakra-ui/react";
 import { AiOutlineClear } from "react-icons/ai";
+import { useTranslation } from "react-i18next";
 
 const clearIndexedDB = async () => {
   if (!window.indexedDB) {
@@ -36,13 +37,14 @@ export default createPlugin({
       name: "本地缓存",
       icon: AiOutlineClear,
       widget: () => {
+        const { t } = useTranslation();
         return (
           <Button
             onClick={async () => {
               if (
                 await xbook.modalService.confirm({
-                  title: "清空本地缓存",
-                  description: "是否确定清空本地缓存？",
+                  title: t("settings.clearCacheTitle"),
+                  description: t("settings.clearCacheDescription"),
                 })
               ) {
                 localStorage.clear();
@@ -50,7 +52,7 @@ export default createPlugin({
               }
             }}
           >
-            清空
+            {t("common.clear")}
           </Button>
         );
       },

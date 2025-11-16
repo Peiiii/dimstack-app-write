@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 // const hajackDefine = () => {
 //   const systemJsDefine = (window as any).define;
@@ -22,6 +23,7 @@ const LazyCustomMonacoEditor = React.lazy(() =>
 );
 
 export function OnlineReactIde() {
+  const { t } = useTranslation();
   const [code, setCode] = useState(`
 import React, { useState } from 'react';
 
@@ -151,7 +153,7 @@ export default function App() {
               style={{ display: activeTab === "editor" ? "block" : "none" }}
             >
               <div className="relative h-full">
-                <React.Suspense fallback={<div>加载编辑器中...</div>}>
+                <React.Suspense fallback={<div>{t("file.loadingEditor")}</div>}>
                   <LazyCustomMonacoEditor
                     language="javascript"
                     theme="vs-dark"

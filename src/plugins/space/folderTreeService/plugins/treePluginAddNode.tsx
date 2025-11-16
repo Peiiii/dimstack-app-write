@@ -11,6 +11,7 @@ import { joinPath } from "@/toolkit/utils/path";
 import { nanoid } from "@reduxjs/toolkit";
 import xbook from "xbook/index";
 import { fs } from "xbook/services";
+import { t } from "@/i18n/utils";
 
 export default createTreeHelper<FolderTreeNode>().createPlugin({
   addOptions() {
@@ -33,8 +34,8 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
       {
         id: "addFile",
         key: "addFile",
-        name: "新建文件",
-        label: "新建文件",
+        name: t("tree.newFile"),
+        label: t("tree.newFile"),
         event: TreeEventKeys.AddFileAt.name,
         when: "type === 'dir'",
         icon: "AiFillFileAdd",
@@ -43,18 +44,17 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
       {
         id: "addNode",
         key: "addNode",
-        name: "新建文件夹",
-        label: "新建文件夹",
+        name: t("tree.newFolder"),
+        label: t("tree.newFolder"),
         event: TreeEventKeys.AddFolderAt.name,
         when: "type === 'dir'",
         icon: "AiFillFolderAdd",
         group: "add",
       },
-      // 新建markdown文档
       {
         id: "addMarkdownDocumnet",
         key: "addMarkdownDocumnet",
-        label: "新建 Markdown 文档",
+        label: t("tree.newMarkdown"),
         event: TreeEventKeys.AddMarkdownAt.name,
         when: "type === 'dir'",
         icon: "AiFillFileMarkdown",

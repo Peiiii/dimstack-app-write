@@ -1,0 +1,196 @@
+{
+  "common": {
+    "settings": "设置",
+    "theme": "主题",
+    "language": "语言",
+    "clear": "清空",
+    "confirm": "确认",
+    "cancel": "取消",
+    "success": "成功",
+    "error": "错误",
+    "loading": "加载中...",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "add": "添加",
+    "create": "创建",
+    "search": "搜索",
+    "refresh": "刷新",
+    "authorize": "授权",
+    "login": "登录",
+    "file": "文件",
+    "content": "内容",
+    "name": "名称",
+    "description": "描述",
+    "close": "关闭",
+    "ok": "确定",
+    "yes": "是",
+    "no": "否"
+  },
+  "settings": {
+    "title": "设置",
+    "quickSettings": "快速设置",
+    "switchToDarkMode": "切换到暗黑模式",
+    "switchToLightMode": "切换到明亮模式",
+    "localCache": "本地缓存",
+    "clearLocalCache": "清空所有本地数据",
+    "clearCacheTitle": "清空本地缓存",
+    "clearCacheDescription": "是否确定清空本地缓存？",
+    "cacheCleared": "已清空本地缓存",
+    "clearCacheFailed": "清空失败，请稍后重试",
+    "language": "语言",
+    "switchLanguage": "切换语言",
+    "chinese": "中文",
+    "english": "English"
+  },
+  "space": {
+    "addWorkspace": "添加工作空间",
+    "selectRepository": "选择仓库",
+    "needAuthorization": "需要授权",
+    "goAuthorize": "去授权",
+    "searchRepository": "搜索仓库...",
+    "loading": "加载中",
+    "noRepository": "暂无仓库",
+    "notFound": "未找到",
+    "localStart": "本地开始",
+    "noLoginRequired": "无需登录",
+    "workspaceAdded": "工作空间添加成功",
+    "addFailed": "添加失败，请重试",
+    "localSpaceCreated": "已创建本地空间，可在左侧选择文件开始编辑",
+    "createLocalSpaceFailed": "创建本地空间失败，请重试",
+    "unauthorized": "当前平台 {{platform}} 未授权或授权已过期，请",
+    "clickToAuthorize": "点此授权",
+    "deleteSpace": "删除此空间",
+    "viewInfo": "查看信息",
+    "loginTo": "登录 {{platform}}",
+    "spaceAdded": "成功添加空间",
+    "spaceExists": "空间已存在"
+  },
+  "file": {
+    "saveSuccess": "保存成功",
+    "loadingEditor": "加载编辑器中...",
+    "unsaved": "未保存",
+    "nameExists": "名称已存在"
+  },
+  "introduction": {
+    "title": "介绍",
+    "welcome": "欢迎使用 GitNote",
+    "subtitle": "用 Git 的方式，管理你的笔记",
+    "gitIntegration": "Git 集成",
+    "gitIntegrationDesc": "直接连接 GitHub/Gitee 仓库，将笔记存储在你的代码仓库中",
+    "markdownEditor": "Markdown 编辑",
+    "markdownEditorDesc": "所见即所得的 Markdown 编辑器，支持数学公式和代码高亮",
+    "convenientAccess": "便捷访问",
+    "convenientAccessDesc": "随时随地通过浏览器访问你的笔记，无需本地安装",
+    "secure": "安全可控",
+    "secureDesc": "笔记数据完全存储在你的 Git 仓库中，无需担心数据安全",
+    "getStarted": "开始使用"
+  },
+  "zenNotes": {
+    "createNewNote": "创建新笔记",
+    "confirmCreateNew": "确定要创建新笔记吗？当前笔记将被保存。",
+    "historyNotes": "历史笔记",
+    "placeholder": "记录你的内心感受...",
+    "wordCount": "字数: {{count}}"
+  },
+  "mindFlow": {
+    "loadingFailed": "加载失败",
+    "loadDataFailed": "无法加载保存的数据",
+    "error": "错误",
+    "selectNodeAndApiKey": "请选择节点并输入API密钥",
+    "generateFailed": "生成失败",
+    "cannotGenerate": "无法生成新的想法，请重试",
+    "enterContent": "请输入内容",
+    "createCenterTheme": "创建中心主题",
+    "enterMainContent": "输入主内容...",
+    "create": "创建",
+    "selectedNode": "选中节点: {{content}}",
+    "addNodeContent": "手动添加节点内容...",
+    "addNode": "添加节点",
+    "deepAnalysis": "深入分析",
+    "lateralThinking": "横向联想",
+    "abstractSummary": "抽象概括",
+    "confirmDelete": "确定要删除这个节点吗？相关的连接也会被删除。"
+  },
+  "auth": {
+    "unsupportedPlatform": "不支持的平台: {{platform}}",
+    "redirecting": "即将跳转",
+    "confirmRedirect": "是否确定跳转到{{platform}}登录页面？"
+  },
+  "share": {
+    "title": "分享",
+    "linkCopied": "已复制链接到剪贴板"
+  },
+  "zenmark": {
+    "loading": "加载中...",
+    "fileSaved": "文件保存成功"
+  },
+  "tree": {
+    "refresh": "刷新",
+    "rename": "重命名",
+    "delete": "删除",
+    "newFile": "新建文件",
+    "newFolder": "新建文件夹",
+    "newMarkdown": "新建 Markdown 文档",
+    "copyUri": "复制 URI",
+    "uriCopied": "已复制文件 URI",
+    "confirmDeleteFile": "你确定要删除该文件吗？",
+    "deleteFolderHint": "删除文件夹中全部文件后，文件夹会自动删除",
+    "renameFolderNotSupported": "暂不支持重命名文件夹",
+    "notFound": "未找到",
+    "directory": "目录"
+  },
+  "apps": {
+    "zenNotes": "禅意笔记",
+    "streamingNote": "流式笔记",
+    "mindFlow": "思维流",
+    "community": "社区",
+    "aiStoryCards": "AI故事卡",
+    "aiResume": "AI简历助手",
+    "aiQuotes": "AI名言"
+  },
+  "story": {
+    "loadDataFailed": "加载数据失败",
+    "loadDataFailedDesc": "无法加载保存的数据，请检查您的存储设置。",
+    "error": "错误",
+    "enterApiKey": "请输入OpenAI API密钥",
+    "enterContent": "请输入内容",
+    "generateFailed": "生成失败",
+    "generateFailedDesc": "无法生成AI回应，请检查您的API密钥和网络连接。",
+    "selectDirection": "请选择一个方向"
+  },
+  "community": {
+    "loadFailed": "加载失败",
+    "loadFailedDesc": "无法加载社区数据",
+    "error": "错误",
+    "enterContent": "请输入内容",
+    "user": "用户",
+    "publishSuccess": "发布成功",
+    "publishSuccessDesc": "帖子已发布到社区",
+    "publishNewPost": "发布新帖子",
+    "shareYourThoughts": "分享你的想法...",
+    "writeSomething": "写点什么...",
+    "publish": "发布"
+  },
+  "resume": {
+    "loadFailed": "加载失败",
+    "loadFailedDesc": "无法加载保存的数据",
+    "error": "错误",
+    "enterApiKey": "请输入OpenAI API密钥",
+    "enterContent": "请输入内容"
+  },
+  "quotes": {
+    "loadFailed": "加载失败",
+    "loadFailedDesc": "无法加载保存的数据",
+    "error": "错误",
+    "enterApiKey": "请输入OpenAI API密钥"
+  },
+  "thoughts": {
+    "placeholder": "记录你的想法...",
+    "confirmDelete": "确定要删除这条记录吗？",
+    "delete": "删除",
+    "noRecords": "还没有任何记录",
+    "startWriting": "开始写下你的第一个想法吧..."
+  }
+}
+

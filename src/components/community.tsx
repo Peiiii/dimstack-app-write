@@ -14,6 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { MessageCircle, Heart, Share2, MoreVertical } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface Post {
   id: string;
@@ -33,6 +34,7 @@ interface CommunityProps {
 }
 
 export function Community({ saveData, loadData }: CommunityProps) {
+  const { t } = useTranslation();
   const [posts, setPosts] = useState<Post[]>([]);
   const [newPost, setNewPost] = useState("");
   const { toast } = useToast();
@@ -52,8 +54,8 @@ export function Community({ saveData, loadData }: CommunityProps) {
       } catch (error) {
         console.error("Error loading data:", error);
         toast({
-          title: "加载失败",
-          description: "无法加载社区数据",
+          title: t("community.loadFailed"),
+          description: t("community.loadFailedDesc"),
           variant: "destructive",
         });
       }
@@ -78,8 +80,8 @@ export function Community({ saveData, loadData }: CommunityProps) {
   const createPost = async () => {
     if (!newPost.trim()) {
       toast({
-        title: "错误",
-        description: "请输入内容",
+        title: t("community.error"),
+        description: t("community.enterContent"),
         variant: "destructive",
       });
       return;
@@ -89,7 +91,7 @@ export function Community({ saveData, loadData }: CommunityProps) {
       id: Date.now().toString(),
       content: newPost,
       author: {
-        name: "用户" + Math.floor(Math.random() * 1000),
+        name: t("community.user") + Math.floor(Math.random() * 1000),
         avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${Date.now()}`,
       },
       likes: 0,
@@ -101,8 +103,8 @@ export function Community({ saveData, loadData }: CommunityProps) {
     setNewPost("");
     
     toast({
-      title: "发布成功",
-      description: "帖子已发布到社区",
+      title: t("community.publishSuccess"),
+      description: t("community.publishSuccessDesc"),
     });
   };
 
@@ -119,12 +121,12 @@ export function Community({ saveData, loadData }: CommunityProps) {
       <div className="max-w-2xl mx-auto p-4">
         <Card className="mb-8 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
           <CardHeader>
-            <CardTitle className="dark:text-gray-100">发布新帖子</CardTitle>
-            <CardDescription className="dark:text-gray-400">分享你的想法...</CardDescription>
+            <CardTitle className="dark:text-gray-100">{t("community.publishNewPost")}</CardTitle>
+            <CardDescription className="dark:text-gray-400">{t("community.shareYourThoughts")}</CardDescription>
           </CardHeader>
           <CardContent>
             <Textarea
-              placeholder="写点什么..."
+              placeholder={t("community.writeSomething")}
               value={newPost}
               onChange={(e) => setNewPost(e.target.value)}
               className="min-h-[100px] bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 
@@ -133,7 +135,7 @@ export function Community({ saveData, loadData }: CommunityProps) {
           </CardContent>
           <CardFooter className="flex justify-end">
             <Button onClick={createPost} className="dark:bg-blue-600 dark:hover:bg-blue-700">
-              发布
+              {t("community.publish")}
             </Button>
           </CardFooter>
         </Card>

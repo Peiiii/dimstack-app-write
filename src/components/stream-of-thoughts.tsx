@@ -28,6 +28,7 @@ export function StreamOfThoughtsComponent({
   saveData,
   loadData,
 }: StreamOfThoughtsProps) {
+  const { t } = useTranslation();
   const [thoughts, setThoughts] = useState<Thought[]>([]);
   const [newThought, setNewThought] = useState("");
   const [selectedMood, setSelectedMood] = useState("😊");
@@ -148,7 +149,7 @@ export function StreamOfThoughtsComponent({
                 value={newThought}
                 onChange={(e) => setNewThought(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="记录你的想法..."
+                placeholder={t("thoughts.placeholder")}
                 className="flex-grow border-0 focus:ring-0 focus-visible:ring-0 focus:outline-none px-0 placeholder-gray-400 text-base"
                 autoFocus
               />
@@ -191,13 +192,13 @@ export function StreamOfThoughtsComponent({
                       <DropdownMenuItem
                         className="text-red-600 focus:text-red-700 focus:bg-red-50"
                         onClick={() => {
-                          if (window.confirm('确定要删除这条记录吗？')) {
+                          if (window.confirm(t("thoughts.confirmDelete"))) {
                             deleteThought(thought.id);
                           }
                         }}
                       >
                         <Trash2 className="h-4 w-4 mr-2" />
-                        删除
+                        {t("thoughts.delete")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -208,8 +209,8 @@ export function StreamOfThoughtsComponent({
 
           {thoughts.length === 0 && (
             <div className="text-center text-gray-400 py-16 bg-white rounded-xl border border-dashed border-gray-200">
-              <p className="text-lg">还没有任何记录</p>
-              <p className="text-sm mt-1">开始写下你的第一个想法吧...</p>
+              <p className="text-lg">{t("thoughts.noRecords")}</p>
+              <p className="text-sm mt-1">{t("thoughts.startWriting")}</p>
             </div>
           )}
         </div>

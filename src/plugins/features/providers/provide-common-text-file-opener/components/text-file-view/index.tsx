@@ -10,6 +10,7 @@ import { MonacoKeyCode, MonacoKeyMod } from "@/monaco/keys";
 import { useResource } from "@/hooks/use-resource";
 import { Uri } from "@/toolkit/vscode/uri";
 import xbook from "xbook/index";
+import { useTranslation } from "react-i18next";
 
 // 30+ languages supported by Monaco Editor
 const LanguageMap = {
@@ -68,6 +69,7 @@ const LanguageMap = {
 export const TextFileView: React.FC<{
   uri: string;
 }> = ({ uri }) => {
+  const { t } = useTranslation();
   uri = uri.replace("::", ":/xxx.com");
   const [{ data }] = useResource(() =>
     xbook.fs
@@ -83,11 +85,11 @@ export const TextFileView: React.FC<{
         create: false,
       })
       .then(() => {
-        xbook.notificationService.success("保存成功");
+        xbook.notificationService.success(t("file.saveSuccess"));
       });
   };
   return (
-    <React.Suspense fallback={<div>加载编辑器中...</div>}>
+    <React.Suspense fallback={<div>{t("file.loadingEditor")}</div>}>
       <LazyCustomMonacoEditor
         value={data || ""}
         language={(suffix && LanguageMap[suffix]) || "txt"}

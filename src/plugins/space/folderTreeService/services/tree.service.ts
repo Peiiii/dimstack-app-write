@@ -15,6 +15,7 @@ import { dirname, join } from "path-browserify";
 import { openerService } from "@/services/opener.service";
 import { fs } from "xbook/services";
 import { joinPath } from "@/toolkit/utils/path";
+import { t } from "@/i18n/utils";
 
 export const createTreeService = (
   context: WidgetContext<TreeDataNode<FolderTreeNode>>
@@ -309,7 +310,7 @@ export const createTreeService = (
         const exist = parentNode.children?.find((n) => n.name === tryName);
         if (exist && exist.id !== node.id) {
           result.hasError = true;
-          result.message = "名称已存在";
+          result.message = t("file.nameExists");
         } else {
           result.hasError = false;
         }

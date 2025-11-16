@@ -3,6 +3,7 @@ import { settingService } from "@/services/setting.service";
 import { Button, useColorMode } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { CiDark, CiLight } from "react-icons/ci";
+import { useTranslation } from "react-i18next";
 
 export default createPlugin({
   initilize(xbook) {
@@ -42,6 +43,7 @@ export default createPlugin({
         );
       },
       widget: () => {
+        const { t } = useTranslation();
         const { colorMode, toggleColorMode } = useColorMode();
 
         // 同样在 widget 里处理 TailwindCSS 的 dark 模式适配
@@ -63,7 +65,7 @@ export default createPlugin({
 
         return (
           <Button onClick={toggleColorMode}>
-            {colorMode === "light" ? "切换到暗黑模式" : "切换到明亮模式"}
+            {colorMode === "light" ? t("settings.switchToDarkMode") : t("settings.switchToLightMode")}
           </Button>
         );
       },

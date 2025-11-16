@@ -15,6 +15,7 @@ import { EventKeys } from "@/constants/eventKeys";
 import { spacePlatformRegistry } from "@/services/space-platform.registry";
 import { StorageKeys } from "@/constants/storageKeys";
 import { storage } from "@/toolkit/utils/storage";
+import { t } from "@/i18n/utils";
 
 export class SpaceService implements ISpaceService {
   // Cache key for remembering last focused space between sessions
@@ -97,7 +98,7 @@ export class SpaceService implements ISpaceService {
   login = (spaceId: string) => {
     const space = this.spaceStore.getRecord(spaceId)!;
     const modal = xbook.modalService.createModal({
-      title: `登录 ${space.platform}`,
+      title: t("space.loginTo", { platform: space.platform }),
       content: <Auth spaceId={spaceId} />,
       footer: false,
     });
@@ -238,9 +239,9 @@ export class SpaceService implements ISpaceService {
       spaceStore.getActions().upsert({ ...spaceInfo, id });
     });
     if (!existingSpace) {
-      if (!silent) xbook.notificationService.success("成功添加空间");
+      if (!silent) xbook.notificationService.success(t("space.spaceAdded"));
     } else {
-      if (!silent) xbook.notificationService.success("空间已存在");
+      if (!silent) xbook.notificationService.success(t("space.spaceExists"));
     }
     if (focus) {
       this.focusSpace(id);

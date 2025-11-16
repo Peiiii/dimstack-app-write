@@ -2,8 +2,10 @@ import { DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/co
 import { Button } from "@/components/ui/button";
 import { cn } from "@/toolkit/utils/shadcn-utils";
 import { useColorMode } from "@chakra-ui/react";
-import { Moon, Sun, Trash2, ArrowRight } from "lucide-react";
+import { Moon, Sun, Trash2, ArrowRight, Languages } from "lucide-react";
 import xbook from "xbook/index";
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 // Local helper: clear all IndexedDB databases
 const clearIndexedDB = async () => {
@@ -33,17 +35,18 @@ const clearIndexedDB = async () => {
 
 export default function QuickSettingsMenu() {
   const { colorMode, toggleColorMode } = useColorMode();
+  const { t } = useTranslation();
   const syncTailwindDark = (nextMode: "light" | "dark") => {
     const root = document.documentElement;
     if (nextMode === "dark") root.classList.add("dark");
     else root.classList.remove("dark");
   };
-  const nextTheme = colorMode === "light" ? "暗黑模式" : "明亮模式";
+  const nextTheme = colorMode === "light" ? t("settings.switchToDarkMode") : t("settings.switchToLightMode");
 
   return (
     <div className="py-1">
       <DropdownMenuLabel className="px-2.5 py-1.5 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
-        快速设置
+        {t("settings.quickSettings")}
       </DropdownMenuLabel>
       <DropdownMenuSeparator className="my-1" />
 
@@ -61,16 +64,16 @@ export default function QuickSettingsMenu() {
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-sm font-medium leading-tight">主题</div>
+            <div className="text-sm font-medium leading-tight">{t("settings.theme")}</div>
             <div className="text-[11px] text-muted-foreground leading-tight mt-0.5">
-              切换到{nextTheme}
+              {nextTheme}
             </div>
           </div>
           <Button
             variant="ghost"
             size="icon"
-            title={`切换到${nextTheme}`}
-            aria-label={`切换到${nextTheme}`}
+            title={nextTheme}
+            aria-label={nextTheme}
             className="h-7 w-7 shrink-0 text-muted-foreground hover:text-foreground"
             onClick={(e) => {
               e.preventDefault();
@@ -89,6 +92,25 @@ export default function QuickSettingsMenu() {
         </div>
       </DropdownMenuItem>
 
+      {/* Language Switcher */}
+      <DropdownMenuItem
+        className={cn("px-2.5 py-2 group focus:bg-accent/50 select-none")}
+        onSelect={(e) => e.preventDefault()}
+      >
+        <div className="flex items-center gap-3 w-full">
+          <div className="flex-shrink-0 w-7 h-7 rounded-md flex items-center justify-center group-hover:bg-muted/60 transition-colors">
+            <Languages className="h-3.5 w-3.5" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-medium leading-tight">{t("settings.language")}</div>
+            <div className="text-[11px] text-muted-foreground leading-tight mt-0.5">
+              {t("settings.switchLanguage")}
+            </div>
+          </div>
+          <LanguageSwitcher />
+        </div>
+      </DropdownMenuItem>
+
       {/* Clear Local Cache */}
       <DropdownMenuItem
         className={cn("px-2.5 py-2 group focus:bg-accent/50 select-none")}
@@ -99,8 +121,10 @@ export default function QuickSettingsMenu() {
             <Trash2 className="h-3.5 w-3.5" />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-sm font-medium leading-tight">本地缓存</div>
-            <div className="text-[11px] text-muted-foreground leading-tight mt-0.5">清空所有本地数据</div>
+            <div className="text-sm font-medium leading-tight">{t("settings.localCache")}</div>
+            <div className="text-[11px] text-muted-foreground leading-tight mt-0.5">
+              {t("settings.clearLocalCache")}
+            </div>
           </div>
           <div
             className="flex items-center gap-1 text-xs text-muted-foreground shrink-0 cursor-pointer"
@@ -108,22 +132,22 @@ export default function QuickSettingsMenu() {
               e.preventDefault();
               e.stopPropagation();
               const confirmed = await xbook.modalService.confirm({
-                title: "清空本地缓存",
-                description: "是否确定清空本地缓存？",
+                title: t("settings.clearCacheTitle"),
+                description: t("settings.clearCacheDescription"),
               });
               if (confirmed) {
                 try {
                   localStorage.clear();
                   await clearIndexedDB();
-                  xbook.notificationService.success("已清空本地缓存");
+                  xbook.notificationService.success(t("settings.cacheCleared"));
                 } catch (err) {
                   console.error(err);
-                  xbook.notificationService.error("清空失败，请稍后重试");
+                  xbook.notificationService.error(t("settings.clearCacheFailed"));
                 }
               }
             }}
           >
-            <span>清空</span>
+            <span>{t("common.clear")}</span>
             <ArrowRight className="h-3 w-3" />
           </div>
         </div>

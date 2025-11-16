@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/popover";
 import { SafeAny } from "@/toolkit/types";
 import { cn } from "@/toolkit/utils/shadcn-utils";
+import { useTranslation } from "react-i18next";
 
 export function Combobox(props: {
   options?: {
@@ -29,6 +30,7 @@ export function Combobox(props: {
   onChange?: (value: string | undefined) => void;
   placeholder?: string;
 }) {
+  const { t } = useTranslation();
   const { options = [], value, onChange, placeholder } = props;
   const [open, setOpen] = React.useState(false);
   const selectedItem = options.find((item) => item.value === value);
@@ -91,7 +93,7 @@ export function Combobox(props: {
             className="h-9 dark:bg-gray-800 dark:text-gray-200"
             onValueChange={(v) => {}}
           />
-          <CommandEmpty className="dark:text-gray-400">未找到</CommandEmpty>
+          <CommandEmpty className="dark:text-gray-400">{t("tree.notFound")}</CommandEmpty>
           <CommandGroup>
             <CommandList>
               {options.map((item) => (

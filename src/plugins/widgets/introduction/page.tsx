@@ -2,52 +2,56 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import xbook from "xbook";
 import { EventKeys } from "@/constants/eventKeys";
+import { useTranslation } from "react-i18next";
 
-export const IntroductionPage = () => (
-  <div className="p-6 max-w-[1400px] mx-auto">
-    <div className="space-y-8">
-      <div className="space-y-2 text-center">
-        <h1 className="text-4xl font-bold tracking-tight">欢迎使用 GitNote</h1>
-        <p className="text-xl text-muted-foreground">
-          用 Git 的方式，管理你的笔记
-        </p>
-      </div>
+export const IntroductionPage = () => {
+  const { t } = useTranslation();
+  return (
+    <div className="p-6 max-w-[1400px] mx-auto">
+      <div className="space-y-8">
+        <div className="space-y-2 text-center">
+          <h1 className="text-4xl font-bold tracking-tight">{t("introduction.welcome")}</h1>
+          <p className="text-xl text-muted-foreground">
+            {t("introduction.subtitle")}
+          </p>
+        </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <FeatureCard
-          icon="🔄"
-          title="Git 集成"
-          description="直接连接 GitHub/Gitee 仓库，将笔记存储在你的代码仓库中"
-        />
-        <FeatureCard
-          icon="✍️"
-          title="Markdown 编辑"
-          description="所见即所得的 Markdown 编辑器，支持数学公式和代码高亮"
-        />
-        <FeatureCard
-          icon="📱"
-          title="便捷访问"
-          description="随时随地通过浏览器访问你的笔记，无需本地安装"
-        />
-        <FeatureCard
-          icon="🔐"
-          title="安全可控"
-          description="笔记数据完全存储在你的 Git 仓库中，无需担心数据安全"
-        />
-      </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <FeatureCard
+            icon="🔄"
+            title={t("introduction.gitIntegration")}
+            description={t("introduction.gitIntegrationDesc")}
+          />
+          <FeatureCard
+            icon="✍️"
+            title={t("introduction.markdownEditor")}
+            description={t("introduction.markdownEditorDesc")}
+          />
+          <FeatureCard
+            icon="📱"
+            title={t("introduction.convenientAccess")}
+            description={t("introduction.convenientAccessDesc")}
+          />
+          <FeatureCard
+            icon="🔐"
+            title={t("introduction.secure")}
+            description={t("introduction.secureDesc")}
+          />
+        </div>
 
-      <div className="text-center">
-        <Button
-          size="lg"
-          className="px-8"
-          onClick={() => xbook.eventBus.emit(EventKeys.ActivityBar.ActivityClicked("addGiteeRepo"))}
-        >
-          开始使用
-        </Button>
+        <div className="text-center">
+          <Button
+            size="lg"
+            className="px-8"
+            onClick={() => xbook.eventBus.emit(EventKeys.ActivityBar.ActivityClicked("addGiteeRepo"))}
+          >
+            {t("introduction.getStarted")}
+          </Button>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const FeatureCard = ({
   icon,

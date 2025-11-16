@@ -3,6 +3,7 @@ import { spaceHelper } from "@/helpers/space.helper";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { createPlugin } from "xbook/common/createPlugin";
 import { AddSpaceActivityItem } from "./components/add-space-activity-item";
+import { t } from "@/i18n/utils";
 
 export const addGiteeSpace = createPlugin({
   initilize(xbook) {
@@ -13,7 +14,7 @@ export const addGiteeSpace = createPlugin({
       {
         id,
         icon: "AiOutlinePlusCircle",
-        name: "添加",
+        name: t("common.add"),
         order: 100,
         unselectable: true,
       },

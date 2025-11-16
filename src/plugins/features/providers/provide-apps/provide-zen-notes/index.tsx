@@ -1,6 +1,7 @@
 import { openerService } from "@/services/opener.service";
 import { AppZenNotes } from "./app";
 import { createPlugin } from "xbook/common/createPlugin";
+import { t } from "@/i18n/utils";
 
 export const provideZenNotes = createPlugin({
   initilize(xbook) {
@@ -15,7 +16,7 @@ export const provideZenNotes = createPlugin({
         };
         xbook.layoutService.pageBox.addPage({
           id: `zen-notes:${uri}`,
-          title: `禅意笔记:${getFileName(uri)}`,
+          title: `${t("apps.zenNotes")}:${getFileName(uri)}`,
           viewData: {
             type: "zen-notes",
             props: { uri },

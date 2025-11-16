@@ -2,6 +2,7 @@ import { EventKeys } from "@/constants/eventKeys";
 import { openerService } from "@/services/opener.service";
 import { ZenmarkEditorComponent } from "@/plugins/features/providers/provide-zenmark-editor/zenmark-editor-component";
 import { createPlugin } from "xbook/common/createPlugin";
+import { t } from "@/i18n/utils";
 
 
 export default createPlugin({
@@ -26,7 +27,7 @@ export default createPlugin({
     });
     xbook.eventBus.on(EventKeys.FileSaved, () => {
       xbook.notificationService.success({
-        title: "文件保存成功",
+        title: t("zenmark.fileSaved"),
         duration: 1000,
       });
     });

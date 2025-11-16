@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 import { AIService } from "@/services/ai-service";
 import { useEffect, useRef, useState } from "react";
 import { useStickyAutoScroll } from "@/hooks/use-sticky-autoscroll";
@@ -13,6 +14,7 @@ import { Message, Resume, AppProps } from "@/types/resume";
 import { isEqual } from 'lodash';
 
 export function AIResumeChat({ saveData, loadData }: AppProps) {
+  const { t } = useTranslation();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [apiKey, setApiKey] = useState("");
@@ -35,8 +37,8 @@ export function AIResumeChat({ saveData, loadData }: AppProps) {
       } catch (error) {
         console.error("Error loading data:", error);
         toast({
-          title: "加载失败",
-          description: "无法加载保存的数据",
+          title: t("resume.loadFailed"),
+          description: t("resume.loadFailedDesc"),
           variant: "destructive",
         });
       }
@@ -72,8 +74,8 @@ export function AIResumeChat({ saveData, loadData }: AppProps) {
   const handleSend = async () => {
     if (!apiKey) {
       toast({
-        title: "错误",
-        description: "请输入OpenAI API密钥",
+        title: t("resume.error"),
+        description: t("resume.enterApiKey"),
         variant: "destructive",
       });
       return;
@@ -81,8 +83,8 @@ export function AIResumeChat({ saveData, loadData }: AppProps) {
 
     if (!input.trim()) {
       toast({
-        title: "错误",
-        description: "请输入内容",
+        title: t("resume.error"),
+        description: t("resume.enterContent"),
         variant: "destructive",
       });
       return;

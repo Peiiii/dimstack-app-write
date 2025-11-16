@@ -9,6 +9,7 @@ import { AiOutlineDelete, AiOutlineInfoCircle } from "react-icons/ai";
 import { HiOutlineExternalLink } from "react-icons/hi";
 import { createPlugin } from "xbook/common/createPlugin";
 import TreeView from "./treeView";
+import { t } from "@/i18n/utils";
 
 export const folderTreeService = createPlugin({
   addComponents() {
@@ -23,13 +24,13 @@ export const folderTreeService = createPlugin({
       ...(xbook.registry.get("space.actions") || []),
       {
         id: "space.delete",
-        title: "删除此空间",
+        title: t("space.deleteSpace"),
         icon: <AiOutlineDelete />,
         events: ["Click"],
       },
       {
         id: "space.info",
-        title: "查看信息",
+        title: t("space.viewInfo"),
         icon: <AiOutlineInfoCircle />,
         events: ["Click"],
       },

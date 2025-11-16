@@ -1,6 +1,7 @@
 import { openerService } from "@/services/opener.service";
 import { AppAIResume } from "./app";
 import { createPlugin } from "xbook/common/createPlugin";
+import { t } from "@/i18n/utils";
 
 export const provideAppAIResume = createPlugin({
   initilize(xbook) {
@@ -15,7 +16,7 @@ export const provideAppAIResume = createPlugin({
         };
         xbook.layoutService.pageBox.addPage({
           id: `ai-resume:${uri}`,
-          title: `AI简历助手:${getFileName(uri)}`,
+          title: `${t("apps.aiResume")}:${getFileName(uri)}`,
           viewData: {
             type: "ai-resume",
             props: { uri },

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { createCustomReactBean } from "rx-bean";
 import { Subject, distinctUntilChanged, map, skip } from "rxjs";
 import xbook from "xbook/index";
+import { t } from "@/i18n/utils";
 
 export interface AuthRecord extends AuthInfo {
   id: string;
@@ -117,7 +118,7 @@ export class AuthService {
       (p) => p.platform === platform
     );
     if (!authProvider) {
-      xbook.notificationService.error("不支持的平台:" + platform);
+      xbook.notificationService.error(t("auth.unsupportedPlatform", { platform }));
       return;
     }
     await authProvider.authenticate({ username, repo, needConfirm });

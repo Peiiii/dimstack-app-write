@@ -1,0 +1,194 @@
+{
+  "common": {
+    "settings": "Settings",
+    "theme": "Theme",
+    "language": "Language",
+    "clear": "Clear",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "success": "Success",
+    "error": "Error",
+    "loading": "Loading...",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "create": "Create",
+    "search": "Search",
+    "refresh": "Refresh",
+    "authorize": "Authorize",
+    "login": "Login",
+    "file": "File",
+    "content": "Content",
+    "name": "Name",
+    "description": "Description",
+    "close": "Close",
+    "ok": "OK",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "settings": {
+    "title": "Settings",
+    "quickSettings": "Quick Settings",
+    "switchToDarkMode": "Switch to Dark Mode",
+    "switchToLightMode": "Switch to Light Mode",
+    "localCache": "Local Cache",
+    "clearLocalCache": "Clear all local data",
+    "clearCacheTitle": "Clear Local Cache",
+    "clearCacheDescription": "Are you sure you want to clear the local cache?",
+    "cacheCleared": "Local cache cleared",
+    "clearCacheFailed": "Failed to clear cache, please try again later",
+    "language": "Language",
+    "switchLanguage": "Switch Language",
+    "chinese": "中文",
+    "english": "English"
+  },
+  "space": {
+    "addWorkspace": "Add Workspace",
+    "selectRepository": "Select Repository",
+    "needAuthorization": "Authorization Required",
+    "goAuthorize": "Authorize",
+    "searchRepository": "Search repository...",
+    "loading": "Loading",
+    "noRepository": "No repositories",
+    "notFound": "Not found",
+    "localStart": "Start Local",
+    "noLoginRequired": "No login required",
+    "workspaceAdded": "Workspace added successfully",
+    "addFailed": "Failed to add, please try again",
+    "localSpaceCreated": "Local space created, you can select files on the left to start editing",
+    "createLocalSpaceFailed": "Failed to create local space, please try again",
+    "unauthorized": "Platform {{platform}} is not authorized or authorization has expired, please",
+    "clickToAuthorize": "click here to authorize",
+    "deleteSpace": "Delete this space",
+    "viewInfo": "View Info",
+    "loginTo": "Login to {{platform}}"
+  },
+  "file": {
+    "saveSuccess": "Save successful",
+    "loadingEditor": "Loading editor...",
+    "unsaved": "Unsaved",
+    "nameExists": "Name already exists"
+  },
+  "introduction": {
+    "title": "Introduction",
+    "welcome": "Welcome to GitNote",
+    "subtitle": "Manage your notes the Git way",
+    "gitIntegration": "Git Integration",
+    "gitIntegrationDesc": "Connect directly to GitHub/Gitee repositories and store your notes in your code repository",
+    "markdownEditor": "Markdown Editor",
+    "markdownEditorDesc": "WYSIWYG Markdown editor with support for math formulas and code highlighting",
+    "convenientAccess": "Convenient Access",
+    "convenientAccessDesc": "Access your notes from anywhere via browser, no local installation required",
+    "secure": "Secure & Controllable",
+    "secureDesc": "Your notes are completely stored in your Git repository, no need to worry about data security",
+    "getStarted": "Get Started"
+  },
+  "zenNotes": {
+    "createNewNote": "Create New Note",
+    "confirmCreateNew": "Are you sure you want to create a new note? The current note will be saved.",
+    "historyNotes": "History Notes",
+    "placeholder": "Record your inner feelings...",
+    "wordCount": "Word count: {{count}}"
+  },
+  "mindFlow": {
+    "loadingFailed": "Loading Failed",
+    "loadDataFailed": "Unable to load saved data",
+    "error": "Error",
+    "selectNodeAndApiKey": "Please select a node and enter API key",
+    "generateFailed": "Generation Failed",
+    "cannotGenerate": "Unable to generate new ideas, please try again",
+    "enterContent": "Please enter content",
+    "createCenterTheme": "Create Center Theme",
+    "enterMainContent": "Enter main content...",
+    "create": "Create",
+    "selectedNode": "Selected node: {{content}}",
+    "addNodeContent": "Manually add node content...",
+    "addNode": "Add Node",
+    "deepAnalysis": "Deep Analysis",
+    "lateralThinking": "Lateral Thinking",
+    "abstractSummary": "Abstract Summary",
+    "confirmDelete": "Are you sure you want to delete this node? Related connections will also be deleted."
+  },
+  "auth": {
+    "unsupportedPlatform": "Unsupported platform: {{platform}}",
+    "redirecting": "Redirecting",
+    "confirmRedirect": "Are you sure you want to redirect to {{platform}} login page?"
+  },
+  "share": {
+    "title": "Share",
+    "linkCopied": "Link copied to clipboard"
+  },
+  "zenmark": {
+    "loading": "Loading...",
+    "fileSaved": "File saved successfully"
+  },
+  "tree": {
+    "refresh": "Refresh",
+    "rename": "Rename",
+    "delete": "Delete",
+    "newFile": "New File",
+    "newFolder": "New Folder",
+    "newMarkdown": "New Markdown Document",
+    "copyUri": "Copy URI",
+    "uriCopied": "File URI copied",
+    "confirmDeleteFile": "Are you sure you want to delete this file?",
+    "deleteFolderHint": "After deleting all files in the folder, the folder will be automatically deleted",
+    "renameFolderNotSupported": "Renaming folders is not currently supported",
+    "notFound": "Not found",
+    "directory": "Directory"
+  },
+  "apps": {
+    "zenNotes": "Zen Notes",
+    "streamingNote": "Streaming Note",
+    "mindFlow": "Mind Flow",
+    "community": "Community",
+    "aiStoryCards": "AI Story Cards",
+    "aiResume": "AI Resume Assistant",
+    "aiQuotes": "AI Quotes"
+  },
+  "story": {
+    "loadDataFailed": "Failed to Load Data",
+    "loadDataFailedDesc": "Unable to load saved data, please check your storage settings.",
+    "error": "Error",
+    "enterApiKey": "Please enter OpenAI API key",
+    "enterContent": "Please enter content",
+    "generateFailed": "Generation Failed",
+    "generateFailedDesc": "Unable to generate AI response, please check your API key and network connection.",
+    "selectDirection": "Please select a direction"
+  },
+  "community": {
+    "loadFailed": "Load Failed",
+    "loadFailedDesc": "Unable to load community data",
+    "error": "Error",
+    "enterContent": "Please enter content",
+    "user": "User",
+    "publishSuccess": "Published Successfully",
+    "publishSuccessDesc": "Post has been published to the community",
+    "publishNewPost": "Publish New Post",
+    "shareYourThoughts": "Share your thoughts...",
+    "writeSomething": "Write something...",
+    "publish": "Publish"
+  },
+  "resume": {
+    "loadFailed": "Load Failed",
+    "loadFailedDesc": "Unable to load saved data",
+    "error": "Error",
+    "enterApiKey": "Please enter OpenAI API key",
+    "enterContent": "Please enter content"
+  },
+  "quotes": {
+    "loadFailed": "Load Failed",
+    "loadFailedDesc": "Unable to load saved data",
+    "error": "Error",
+    "enterApiKey": "Please enter OpenAI API key"
+  },
+  "thoughts": {
+    "placeholder": "Record your thoughts...",
+    "confirmDelete": "Are you sure you want to delete this record?",
+    "delete": "Delete",
+    "noRecords": "No records yet",
+    "startWriting": "Start writing your first thought..."
+  }
+}
+
