@@ -16,6 +16,7 @@ export default createPlugin({
         xbook.layoutService.pageBox.addPage({
           id: uri,
           title: uri,
+          status: "loading",
           viewData: {
             type: "zenmark-editor",
             props: {
@@ -23,6 +24,7 @@ export default createPlugin({
             },
           },
         });
+        xbook.eventBus.emit(EventKeys.FileLoading, { uri });
       },
     });
     xbook.eventBus.on(EventKeys.FileSaved, () => {
@@ -40,6 +42,13 @@ export default createPlugin({
     });
 
     xbook.eventBus.on(EventKeys.FileClean, ({ uri }) => {
+      xbook.layoutService.pageBox.updatePage({
+        id: uri,
+        status: undefined,
+      });
+    });
+
+    xbook.eventBus.on(EventKeys.FileLoaded, ({ uri }) => {
       xbook.layoutService.pageBox.updatePage({
         id: uri,
         status: undefined,

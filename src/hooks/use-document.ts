@@ -45,12 +45,14 @@ export function useDocument(uri: string, opts?: UseDocumentOptions) {
           setSavedContent(c);
           dirtyRef.current = false;
           setLoading(false);
+          xbook.eventBus.emit(EventKeys.FileLoaded, { uri });
         }
       })
       .catch((e) => {
         if (!cancelled) {
           setError(String((e as any)?.message || e));
           setLoading(false);
+          xbook.eventBus.emit(EventKeys.FileLoaded, { uri });
         }
       });
     return () => {

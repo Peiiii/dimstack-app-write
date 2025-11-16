@@ -5,7 +5,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/toolkit/utils/shadcn-utils";
-import { Box, HStack, Icon } from "@chakra-ui/react";
+import { Box, HStack, Icon, Spinner } from "@chakra-ui/react";
 import { FC, forwardRef, MouseEventHandler, useMemo, useState } from "react";
 import { AiOutlineClose, AiOutlineMore } from "react-icons/ai";
 import { PageDescriptor } from "xbook/ui/page-box/controller";
@@ -78,6 +78,16 @@ export const Tab: FC<TabProps> = ({
         alignItems="center"
         gap="4px"
       >
+        {status === "loading" && (
+          <Spinner
+            size="xs"
+            flexShrink={0}
+            speed="0.8s"
+            thickness="2px"
+            color="currentColor"
+            title="加载中"
+          />
+        )}
         {status === "unsaved" && (
           <Box
             w="8px"

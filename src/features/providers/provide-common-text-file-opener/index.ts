@@ -2,6 +2,7 @@ import { openerService } from "@/services/opener.service";
 import { TextFileView } from "@/features/providers/provide-common-text-file-opener/components/text-file-view";
 import { COMMON_TEXT_FILE_EXTENSIONS } from "@/features/providers/provide-common-text-file-opener/constants";
 import { createPlugin } from "xbook/common/createPlugin";
+import { EventKeys } from "@/constants/eventKeys";
 
 export default createPlugin({
   addComponents(xbook) {
@@ -31,6 +32,7 @@ export default createPlugin({
         xbook.layoutService.pageBox.addPage({
           id: uri,
           title: uri,
+          status: "loading",
           viewData: {
             type: viewType,
             props: {
@@ -38,7 +40,15 @@ export default createPlugin({
             },
           },
         });
+        xbook.eventBus.emit(EventKeys.FileLoading, { uri });
       },
+    });
+    
+    xbook.eventBus.on(EventKeys.FileLoaded, ({ uri }) => {
+      xbook.layoutService.pageBox.updatePage({
+        id: uri,
+        status: undefined,
+      });
     });
     // Hide editor switching for new users; keep a single default editor
     // xbook.componentService.register("vsc-open-preview", VscOpenPreview);

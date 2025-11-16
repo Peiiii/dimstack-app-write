@@ -21,6 +21,8 @@ export const EventKeys = {
   FileSaved: typedKey<void>("FileSaved"),
   FileDirty: typedKey<{ uri: string }>("FileDirty"),
   FileClean: typedKey<{ uri: string }>("FileClean"),
+  FileLoading: typedKey<{ uri: string }>("FileLoading"),
+  FileLoaded: typedKey<{ uri: string }>("FileLoaded"),
   ReadMeFileInitialized: typedKey<{
     spaceId: string
   }>("ReadMeFileInitialized"),

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 // Lazy-load Monaco editor to avoid pulling it into the main chunk immediately
 const LazyCustomMonacoEditor = React.lazy(() =>
   import("@/components/custom-monaco-editor").then((m) => ({
@@ -11,6 +11,7 @@ import { useResource } from "@/hooks/use-resource";
 import { Uri } from "@/toolkit/vscode/uri";
 import xbook from "xbook/index";
 import { useTranslation } from "react-i18next";
+import { EventKeys } from "@/constants/eventKeys";
 
 // 30+ languages supported by Monaco Editor
 const LanguageMap = {
@@ -71,12 +72,18 @@ export const TextFileView: React.FC<{
 }> = ({ uri }) => {
   const { t } = useTranslation();
   uri = uri.replace("::", ":/xxx.com");
-  const [{ data }] = useResource(() =>
+  const [{ data, loading }] = useResource(() =>
     xbook.fs
       .readFile(Uri.parse(uri))
       .then((content) => new TextDecoder().decode(content))
   );
   const suffix = uri.split(".").pop();
+  
+  useEffect(() => {
+    if (!loading && data !== undefined) {
+      xbook.eventBus.emit(EventKeys.FileLoaded, { uri });
+    }
+  }, [loading, data, uri]);
   const htmlContentRef = React.useRef<string | null>(data || null);
   const onSave = (content: string) => {
     xbook.fs
