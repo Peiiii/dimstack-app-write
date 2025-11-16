@@ -1,6 +1,6 @@
 import { openerService } from "@/services/opener.service";
 import { TextFileView } from "@/features/providers/provide-common-text-file-opener/components/text-file-view";
-import { COMMON_TEXT_FILE_EXTENSIONS } from "@/features/providers/provide-common-text-file-opener/constants";
+import { COMMON_TEXT_FILE_EXTENSIONS, COMMON_TEXT_FILE_NAMES } from "@/features/providers/provide-common-text-file-opener/constants";
 import { createPlugin } from "xbook/common/createPlugin";
 import { EventKeys } from "@/constants/eventKeys";
 
@@ -15,7 +15,10 @@ export default createPlugin({
       // Slightly higher than other markdown editor openers (-100),
       // but lower than app-specific openers (usually 100)
       priority: -10,
-      match: COMMON_TEXT_FILE_EXTENSIONS.map((ext) => `.${ext}`),
+      match: [
+        ...COMMON_TEXT_FILE_EXTENSIONS.map((ext) => `.${ext}`),
+        ...COMMON_TEXT_FILE_NAMES,
+      ],
       init: (uri: string) => {
         const isMarkdown =
           uri.endsWith(".md") || uri.endsWith(".markdown") || uri.endsWith(".MD");

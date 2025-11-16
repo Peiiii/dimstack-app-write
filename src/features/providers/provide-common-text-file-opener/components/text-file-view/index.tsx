@@ -57,6 +57,11 @@ const LanguageMap: Record<string, string> = {
   scala: "scala",
   perl: "perl",
   coffee: "coffeescript",
+  // Additional text file types (fallback to plaintext or closest language)
+  toml: "plaintext", // TOML not directly supported, use plaintext
+  csv: "plaintext", // CSV not directly supported, use plaintext
+  properties: "plaintext", // Properties file, use plaintext
+  log: "plaintext", // Log file, use plaintext
 };
 
 
