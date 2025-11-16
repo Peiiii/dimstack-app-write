@@ -4,6 +4,7 @@ export type SpaceDef = {
   platform: string;
   owner: string;
   repo: string;
+  readonly?: boolean;
   auth?: {
     access_token: string;
     refresh_token: string;

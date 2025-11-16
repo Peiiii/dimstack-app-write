@@ -65,6 +65,13 @@
     "loginTo": "登录 {{platform}}",
     "spaceAdded": "成功添加空间",
     "spaceExists": "空间已存在",
+    "addReadOnlySpace": "添加只读空间",
+    "addReadOnlySpaceDesc": "输入 GitHub/Gitee 仓库链接",
+    "enterRepoUrl": "输入仓库链接...",
+    "invalidRepoUrl": "无效的仓库链接，请检查格式",
+    "readOnlySpaceAdded": "只读空间添加成功",
+    "readOnlySpaceAddFailed": "添加只读空间失败",
+    "readonly": "只读",
     "guideAddSpaceTitle": "开始使用：添加工作空间",
     "guideAddSpaceDesc": "点击左侧加号，连接 GitHub / Gitee，并将你的仓库打开为空间。"
   },

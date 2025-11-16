@@ -223,6 +223,7 @@ export class SpaceService implements ISpaceService {
       platform: string;
       owner: string;
       repo: string;
+      readonly?: boolean;
     },
     options?: {
       focus?: boolean;
@@ -230,7 +231,7 @@ export class SpaceService implements ISpaceService {
       silent?: boolean;
     }
   ): SpaceDef => {
-    const { platform, owner, repo } = spaceInfo;
+    const { platform, owner, repo, readonly } = spaceInfo;
     const spaceStore = this.spaceStore;
     const id = spaceHelper.generateSpaceId(platform, owner, repo);
     const { focus, silent } = options || {};
@@ -246,7 +247,7 @@ export class SpaceService implements ISpaceService {
     if (focus) {
       this.focusSpace(id);
     }
-    return { platform, owner, repo, id };
+    return { platform, owner, repo, id, readonly };
   };
 
   focusSpace = (spaceId: string) => {

@@ -65,6 +65,13 @@
     "loginTo": "Login to {{platform}}",
     "spaceAdded": "Space added successfully",
     "spaceExists": "Space already exists",
+    "addReadOnlySpace": "Add Read-Only Space",
+    "addReadOnlySpaceDesc": "Enter GitHub/Gitee repository URL",
+    "enterRepoUrl": "Enter repository URL...",
+    "invalidRepoUrl": "Invalid repository URL, please check the format",
+    "readOnlySpaceAdded": "Read-only space added successfully",
+    "readOnlySpaceAddFailed": "Failed to add read-only space",
+    "readonly": "Read-Only",
     "guideAddSpaceTitle": "Get Started: Add a Workspace",
     "guideAddSpaceDesc": "Click the plus icon on the left to connect GitHub / Gitee and open your repository as a space."
   },

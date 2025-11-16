@@ -69,7 +69,7 @@ export function Combobox(props: {
               )}
             >
               {selectedItem?.label || placeholder}{" "}
-              {/* 显示当前用户名或者占位符 */}
+              {/* 显示当前用户名或者占位符，SpaceTag 已包含 readonly 标记 */}
             </span>
           </div>
 

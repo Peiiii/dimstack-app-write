@@ -23,9 +23,10 @@ export interface ISpaceService {
   };
   updateSpace(space: SpaceDef): void;
   addSpace(
-    spaceInfo: { platform: string; owner: string; repo: string },
+    spaceInfo: { platform: string; owner: string; repo: string; readonly?: boolean },
     options?: {
       focus?: boolean;
+      silent?: boolean;
     }
   ): SpaceDef;
   focusSpace(spaceId: string): void;

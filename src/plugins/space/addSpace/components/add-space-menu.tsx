@@ -18,7 +18,8 @@ import { authService } from "@/services/auth.service";
 import { spaceService } from "@/services/space.service";
 import { createGiteeClient } from "libs/gitee-api";
 import { createGithubClient } from "libs/github-api";
-import { ChevronDown, ChevronRight, GitBranch, Github, Loader2, Sparkles, ArrowRight } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { ChevronDown, ChevronRight, GitBranch, Github, Loader2, Sparkles, ArrowRight, Link as LinkIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { forkJoin, from, map, of } from "rxjs";
 import xbook from "xbook";
@@ -85,6 +86,11 @@ export const AddSpaceMenu = ({ children }: AddSpaceMenuProps) => {
     // Gitee repos state
     const [giteeRepos, setGiteeRepos] = useState<{ value: string; label: string; owner: string }[]>([]);
     const [giteeLoading, setGiteeLoading] = useState(false);
+
+    // Read-only space state
+    const [readOnlyExpanded, setReadOnlyExpanded] = useState(false);
+    const [repoUrl, setRepoUrl] = useState("");
+    const [readOnlyLoading, setReadOnlyLoading] = useState(false);
 
     // Load GitHub repos when expanded
     useEffect(() => {
@@ -223,6 +229,78 @@ export const AddSpaceMenu = ({ children }: AddSpaceMenuProps) => {
             }
         } catch {
             xbook.notificationService.error(t("space.createLocalSpaceFailed"));
+        }
+    };
+
+    const handleReadOnlyToggle = (event: React.MouseEvent) => {
+        event.preventDefault();
+        setReadOnlyExpanded(!readOnlyExpanded);
+    };
+
+    const handleAddReadOnlySpace = async () => {
+        if (!repoUrl.trim()) {
+            return;
+        }
+
+        setReadOnlyLoading(true);
+        try {
+            let urlToParse = repoUrl.trim();
+            
+            if (!urlToParse.startsWith("http://") && !urlToParse.startsWith("https://")) {
+                urlToParse = `https://${urlToParse}`;
+            }
+            
+            const parsed = spaceService.parseRepoUrl(urlToParse);
+            
+            if (!parsed.platform || !parsed.owner || !parsed.repo) {
+                xbook.notificationService.error(t("space.invalidRepoUrl"));
+                setReadOnlyLoading(false);
+                return;
+            }
+
+            const existing = spaceService.getSpaceByInfo({
+                platform: parsed.platform,
+                owner: parsed.owner,
+                repo: parsed.repo,
+            });
+
+            if (existing) {
+                xbook.notificationService.info(t("space.spaceExists"));
+                spaceService.focusSpace(existing.id);
+                setReadOnlyLoading(false);
+                setRepoUrl("");
+                setReadOnlyExpanded(false);
+                return;
+            }
+
+            spaceService.addSpace(
+                {
+                    platform: parsed.platform,
+                    owner: parsed.owner,
+                    repo: parsed.repo,
+                    readonly: true,
+                },
+                {
+                    focus: true,
+                    silent: true,
+                }
+            );
+
+            xbook.notificationService.success(t("space.readOnlySpaceAdded"));
+            setRepoUrl("");
+            setReadOnlyExpanded(false);
+        } catch (error) {
+            console.error("Failed to add read-only space:", error);
+            xbook.notificationService.error(t("space.readOnlySpaceAddFailed"));
+        } finally {
+            setReadOnlyLoading(false);
+        }
+    };
+
+    const handleRepoUrlKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            handleAddReadOnlySpace();
         }
     };
 
@@ -386,6 +464,61 @@ export const AddSpaceMenu = ({ children }: AddSpaceMenuProps) => {
                                     )}
                                 </CommandList>
                             </Command>
+                        </div>
+                    )}
+                </div>
+
+                <DropdownMenuSeparator className="my-1" />
+
+                {/* Read-Only Space Section */}
+                <div className="space-y-1">
+                    <DropdownMenuItem
+                        onClick={handleReadOnlyToggle}
+                        className="px-2.5 py-2 cursor-pointer group focus:bg-accent/50"
+                        onSelect={(event) => event.preventDefault()}
+                    >
+                        <div className="flex items-center gap-3 w-full">
+                            <div className="flex-shrink-0 w-7 h-7 rounded-md flex items-center justify-center group-hover:bg-muted/60 transition-colors">
+                                <LinkIcon className="h-3.5 w-3.5" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <div className="text-sm font-medium leading-tight">{t("space.addReadOnlySpace")}</div>
+                                <div className="text-[11px] text-muted-foreground leading-tight mt-0.5">
+                                    {t("space.addReadOnlySpaceDesc")}
+                                </div>
+                            </div>
+                            {readOnlyExpanded ? (
+                                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
+                            ) : (
+                                <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
+                            )}
+                        </div>
+                    </DropdownMenuItem>
+
+                    {readOnlyExpanded && (
+                        <div className="ml-6 mr-1 mb-1 rounded-md bg-muted/50 p-2 space-y-2">
+                            <Input
+                                value={repoUrl}
+                                onChange={(e) => setRepoUrl(e.target.value)}
+                                onKeyDown={handleRepoUrlKeyDown}
+                                placeholder={t("space.enterRepoUrl")}
+                                className="h-8 text-sm"
+                                disabled={readOnlyLoading}
+                            />
+                            <button
+                                onClick={handleAddReadOnlySpace}
+                                disabled={readOnlyLoading || !repoUrl.trim()}
+                                className="w-full h-8 text-xs bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                            >
+                                {readOnlyLoading ? (
+                                    <>
+                                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                        {t("space.loading")}
+                                    </>
+                                ) : (
+                                    t("space.addReadOnlySpace")
+                                )}
+                            </button>
                         </div>
                     )}
                 </div>
