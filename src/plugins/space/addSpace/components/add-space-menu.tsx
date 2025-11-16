@@ -392,4 +392,3 @@ export const AddSpaceMenu = ({ children }: AddSpaceMenuProps) => {
         </DropdownMenu>
     );
 };
-

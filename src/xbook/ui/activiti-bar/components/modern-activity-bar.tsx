@@ -11,6 +11,7 @@ import { DragSortItem } from "xbook/ui/components/DragSort";
 import { componentService, eventBus } from "xbook/services";
 import { EventKeys } from "@/constants/eventKeys";
 import { IActivityItem } from "../types";
+import * as React from "react";
 
 interface ModernActivityBarProps {
   activities: IActivityItem[];
@@ -130,6 +131,9 @@ function SidebarItem({
             ),
           !isExpanded && "justify-center"
         )}
+        // Prevent focus on pointer click so Tooltip won't open by focus.
+        // Keyboard users (Tab) still focus normally.
+        onMouseDown={(e) => e.preventDefault()}
         onClick={onClick}
       >
         <IconComponent
@@ -148,10 +152,8 @@ function SidebarItem({
     </div>
   );
 
-  return isExpanded ? (
-    content
-  ) : (
-    <Tooltip>
+  return isExpanded ? content : (
+    <Tooltip disableHoverableContent>
       <TooltipTrigger asChild>{content}</TooltipTrigger>
       <TooltipContent
         side="right"
@@ -163,6 +165,8 @@ function SidebarItem({
     </Tooltip>
   );
 }
+
+// end
 
 function ActivityItem({
   activity,
