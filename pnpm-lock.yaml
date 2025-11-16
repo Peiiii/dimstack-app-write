@@ -210,8 +210,8 @@ importers:
         specifier: ^1.22.22
         version: 1.22.22
       zenmark-editor:
-        specifier: ^0.1.5
-        version: 0.1.5(ycsfakrqmzm4xcobutjudtepnq)
+        specifier: ^0.1.7
+        version: 0.1.7(ycsfakrqmzm4xcobutjudtepnq)
     devDependencies:
       '@types/jest':
         specifier: ^29.5.14
@@ -6053,8 +6053,8 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  zenmark-editor@0.1.5:
-    resolution: {integrity: sha512-n32FRiCyO/HjuXHvyUKUp5xHSnPhICZErZbapahq9Vgqx3TBMBIN2L2M+Di3oTJCqEX84wXf1/wEvQAmeRi4yA==}
+  zenmark-editor@0.1.7:
+    resolution: {integrity: sha512-CGiB2OmMS+uSWW8Z62tRpVnHAN74auLS3CwPsnEow7nU9E0xphLnWTa5W5bR88vyDh8jQrA4pl7FCVKM5Dgmsg==}
     peerDependencies:
       '@benrbray/prosemirror-math': ^0.2.2
       '@emotion/css': ^11.13.0
@@ -13135,7 +13135,7 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zenmark-editor@0.1.5(ycsfakrqmzm4xcobutjudtepnq):
+  zenmark-editor@0.1.7(ycsfakrqmzm4xcobutjudtepnq):
     dependencies:
       '@benrbray/prosemirror-math': 0.2.2(katex@0.13.24)(prosemirror-commands@1.7.1)(prosemirror-gapcursor@1.3.2)(prosemirror-history@1.4.1)(prosemirror-inputrules@1.5.0)(prosemirror-keymap@1.2.3)(prosemirror-model@1.25.3)(prosemirror-state@1.4.3)(prosemirror-transform@1.10.4)(prosemirror-view@1.40.1)
       '@emotion/css': 11.13.5
