@@ -191,6 +191,11 @@
     "delete": "Delete",
     "noRecords": "No records yet",
     "startWriting": "Start writing your first thought..."
+  },
+  "meta": {
+    "title": "GitNote - Git-based Intelligent Note Collaboration Platform",
+    "description": "GitNote is a Git-based intelligent note platform that supports Markdown editing, version control, and multi-user collaboration. Seamlessly integrates with GitHub/Gitee to make knowledge management easier.",
+    "keywords": "Git notes,Markdown editor,knowledge management,team collaboration,version control,open source notes,smart writing,document management"
   }
 }
 

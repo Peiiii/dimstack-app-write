@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/logo.png" />
@@ -23,6 +23,59 @@
     <meta name="twitter:title" content="GitNote - 基于 Git 的智能笔记协作平台" />
     <meta name="twitter:description" content="GitNote 是一个基于 Git 的智能笔记平台，支持 Markdown 编辑、版本控制、多人协作。无缝对接 GitHub/Gitee，让知识管理更简单。" />
     <meta name="twitter:image" content="/logo.png" />
+
+    <script>
+      (function() {
+        const getInitialLanguage = () => {
+          try {
+            const stored = localStorage.getItem('i18nextLng');
+            if (stored && (stored === 'zh' || stored === 'en')) {
+              return stored;
+            }
+          } catch (e) {
+            // localStorage not available
+          }
+          
+          const browserLang = navigator.language || navigator.userLanguage || '';
+          if (browserLang.startsWith('zh')) {
+            return 'zh';
+          }
+          return 'en';
+        };
+
+        const translations = {
+          zh: {
+            title: 'GitNote - 基于 Git 的智能笔记协作平台',
+            description: 'GitNote 是一个基于 Git 的智能笔记平台，支持 Markdown 编辑、版本控制、多人协作。无缝对接 GitHub/Gitee，让知识管理更简单。',
+            keywords: 'Git笔记,Markdown编辑器,知识管理,团队协作,版本控制,开源笔记,智能写作,文档管理'
+          },
+          en: {
+            title: 'GitNote - Git-based Intelligent Note Collaboration Platform',
+            description: 'GitNote is a Git-based intelligent note platform that supports Markdown editing, version control, and multi-user collaboration. Seamlessly integrates with GitHub/Gitee to make knowledge management easier.',
+            keywords: 'Git notes,Markdown editor,knowledge management,team collaboration,version control,open source notes,smart writing,document management'
+          }
+        };
+
+        const lang = getInitialLanguage();
+        const t = translations[lang];
+        const htmlLang = lang === 'zh' ? 'zh-CN' : 'en';
+
+        document.documentElement.setAttribute('lang', htmlLang);
+        document.title = t.title;
+
+        const updateMeta = (selector, attr, value) => {
+          const el = document.querySelector(selector);
+          if (el) el.setAttribute(attr, value);
+        };
+
+        updateMeta('meta[name="description"]', 'content', t.description);
+        updateMeta('meta[name="keywords"]', 'content', t.keywords);
+        updateMeta('meta[property="og:title"]', 'content', t.title);
+        updateMeta('meta[property="og:description"]', 'content', t.description);
+        updateMeta('meta[name="twitter:title"]', 'content', t.title);
+        updateMeta('meta[name="twitter:description"]', 'content', t.description);
+      })();
+    </script>
 
     <script>
       if (navigator.serviceWorker != null) {

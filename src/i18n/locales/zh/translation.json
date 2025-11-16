@@ -191,6 +191,11 @@
     "delete": "删除",
     "noRecords": "还没有任何记录",
     "startWriting": "开始写下你的第一个想法吧..."
+  },
+  "meta": {
+    "title": "GitNote - 基于 Git 的智能笔记协作平台",
+    "description": "GitNote 是一个基于 Git 的智能笔记平台，支持 Markdown 编辑、版本控制、多人协作。无缝对接 GitHub/Gitee，让知识管理更简单。",
+    "keywords": "Git笔记,Markdown编辑器,知识管理,团队协作,版本控制,开源笔记,智能写作,文档管理"
   }
 }
 
