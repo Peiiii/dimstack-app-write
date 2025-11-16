@@ -77,7 +77,7 @@ export function Combobox(props: {
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50 text-gray-500 dark:text-gray-300" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[220px] p-0 dark:bg-gray-800 dark:border-gray-700">
+      <PopoverContent className="w-[300px] p-0 dark:bg-gray-800 dark:border-gray-700">
         <Command
           defaultValue={value}
           filter={(value, search) => {
