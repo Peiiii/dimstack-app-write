@@ -4,7 +4,7 @@ import {
   TreeEventKeys,
   TreeServicePoints,
 } from "@/plugins/space/folderTreeService/tokens";
-import { AiFillCopy } from "react-icons/ai";
+import { Copy } from "lucide-react";
 import xbook from "xbook/index";
 import { t } from "@/i18n/utils";
 
@@ -22,7 +22,7 @@ export default createFolderTreePlugin({
         group: "more",
       },
     ]);
-    viewSystem.renderer.register("AiFillCopy", AiFillCopy);
+    viewSystem.renderer.register("AiFillCopy", Copy);
     eventBus.on(TreeEventKeys.CopyFilePath, ({ node }) => {
       const uri = spaceHelper.getUri(space.id, node.id === "root" ? "" : node.id);
       navigator.clipboard.writeText(uri.toString());

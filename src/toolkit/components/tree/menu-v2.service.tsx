@@ -10,7 +10,7 @@ import { Renderer } from "@/toolkit/factories/renderer";
 import { TreeDataNode } from "@/toolkit/factories/treeDataStore";
 import { parseWhenClause } from "@/toolkit/utils/when-clause";
 import { Flex } from "@chakra-ui/react";
-import { AiOutlineMore, AiOutlinePlus } from "react-icons/ai";
+import { MoreHorizontal, Plus } from "lucide-react";
 
 export type NodeMenuItemData = IEnhancedMenuItemData & {
   id: string;
@@ -25,8 +25,8 @@ export const prepareMenuService = (options: {
   renderer: Renderer;
 }) => {
   const { eventBus, renderer } = options;
-  renderer.register("AiOutlineMore", AiOutlineMore);
-  renderer.register("AiOutlinePlus", AiOutlinePlus);
+  renderer.register("AiOutlineMore", MoreHorizontal);
+  renderer.register("AiOutlinePlus", Plus);
   const menuService = new EnhancedMenuManager<NodeMenuItemData>({
     id: "root",
     data: {

@@ -1,35 +1,31 @@
 import { FolderTreeNode } from "@/plugins/space/folderTreeService/types";
 import { createTreeHelper } from "@/toolkit/components/tree/treePlugins";
 import {
-  AiFillDelete,
-  AiFillEdit,
-  AiFillFileAdd,
-  AiFillFileMarkdown,
-  AiFillFolderAdd,
-  AiOutlineFileAdd,
-  AiOutlineFileMarkdown,
-  AiOutlineFolderAdd,
-  AiOutlineLink,
-  AiOutlinePlus,
-  AiOutlineReload,
-  AiOutlineFileText,
-  AiFillFileText,
-} from "react-icons/ai";
+  FilePlus,
+  FolderPlus,
+  FileText,
+  Pencil,
+  Trash2,
+  Copy,
+  RefreshCw,
+  Plus,
+  Link,
+} from "lucide-react";
 
 export default createTreeHelper<FolderTreeNode>().createPlugin({
   activate({ viewSystem: { renderer } }) {
-    renderer.register("AiOutlineLink", AiOutlineLink);
-    renderer.register("AiOutlineFolderAdd", AiOutlineFolderAdd);
-    renderer.register("AiOutlineFileAdd", AiOutlineFileAdd);
-    renderer.register("AiOutlinePlus", AiOutlinePlus);
-    renderer.register("AiFillFolderAdd", AiFillFolderAdd);
-    renderer.register("AiFillFileAdd", AiFillFileAdd);
-    renderer.register("AiFillEdit", AiFillEdit);
-    renderer.register("AiFillDelete", AiFillDelete);
-    renderer.register("AiOutlineFileMarkdown", AiOutlineFileMarkdown);
-    renderer.register("AiFillFileMarkdown", AiFillFileMarkdown);
-    renderer.register("AiOutlineReload", AiOutlineReload);
-    renderer.register("AiOutlineFileText", AiOutlineFileText);
-    renderer.register("AiFillFileText", AiFillFileText);
+    renderer.register("AiOutlineLink", Link);
+    renderer.register("AiOutlineFolderAdd", FolderPlus);
+    renderer.register("AiOutlineFileAdd", FilePlus);
+    renderer.register("AiOutlinePlus", Plus);
+    renderer.register("AiFillFolderAdd", FolderPlus);
+    renderer.register("AiFillFileAdd", FilePlus);
+    renderer.register("AiFillEdit", Pencil);
+    renderer.register("AiFillDelete", Trash2);
+    renderer.register("AiOutlineFileMarkdown", FileText);
+    renderer.register("AiFillFileMarkdown", FileText);
+    renderer.register("AiOutlineReload", RefreshCw);
+    renderer.register("AiOutlineFileText", FileText);
+    renderer.register("AiFillFileText", FileText);
   },
 });

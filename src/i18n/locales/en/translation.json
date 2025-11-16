@@ -64,7 +64,9 @@
     "viewInfo": "View Info",
     "loginTo": "Login to {{platform}}",
     "spaceAdded": "Space added successfully",
-    "spaceExists": "Space already exists"
+    "spaceExists": "Space already exists",
+    "guideAddSpaceTitle": "Get Started: Add a Workspace",
+    "guideAddSpaceDesc": "Click the plus icon on the left to connect GitHub / Gitee and open your repository as a space."
   },
   "file": {
     "saveSuccess": "Save successful",
@@ -129,9 +131,9 @@
     "refresh": "Refresh",
     "rename": "Rename",
     "delete": "Delete",
-    "newFile": "New File",
-    "newFolder": "New Folder",
-    "newMarkdown": "New Markdown Document",
+    "newFile": "File",
+    "newFolder": "Folder",
+    "newMarkdown": "Markdown",
     "copyUri": "Copy URI",
     "uriCopied": "File URI copied",
     "confirmDeleteFile": "Are you sure you want to delete this file?",
@@ -198,4 +200,3 @@
     "keywords": "Git notes,Markdown editor,knowledge management,team collaboration,version control,open source notes,smart writing,document management"
   }
 }
-

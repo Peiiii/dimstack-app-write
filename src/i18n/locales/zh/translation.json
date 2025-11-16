@@ -64,7 +64,9 @@
     "viewInfo": "查看信息",
     "loginTo": "登录 {{platform}}",
     "spaceAdded": "成功添加空间",
-    "spaceExists": "空间已存在"
+    "spaceExists": "空间已存在",
+    "guideAddSpaceTitle": "开始使用：添加工作空间",
+    "guideAddSpaceDesc": "点击左侧加号，连接 GitHub / Gitee，并将你的仓库打开为空间。"
   },
   "file": {
     "saveSuccess": "保存成功",
@@ -129,9 +131,9 @@
     "refresh": "刷新",
     "rename": "重命名",
     "delete": "删除",
-    "newFile": "新建文件",
-    "newFolder": "新建文件夹",
-    "newMarkdown": "新建 Markdown 文档",
+    "newFile": "文件",
+    "newFolder": "文件夹",
+    "newMarkdown": "Markdown",
     "copyUri": "复制 URI",
     "uriCopied": "已复制文件 URI",
     "confirmDeleteFile": "你确定要删除该文件吗？",
@@ -198,4 +200,3 @@
     "keywords": "Git笔记,Markdown编辑器,知识管理,团队协作,版本控制,开源笔记,智能写作,文档管理"
   }
 }
-

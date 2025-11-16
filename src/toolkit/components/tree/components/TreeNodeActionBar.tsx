@@ -63,16 +63,16 @@ export const MenuItemView: FC<{
         isValid && event && eventBus.emit(event, { ...nodeContext, event: e });
       }}
     >
-      <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col gap-1 min-w-0">
+        <div className="flex items-center gap-2 min-w-0">
           {menuItem.data.icon &&
             renderer.render({
               type: menuItem.data.icon,
             })}
-          {menuItem.data.label}
+          <span className="truncate">{menuItem.data.label}</span>
         </div>
         {!isValid && message && (
-          <span className="text-xs text-muted-foreground">{message}</span>
+          <span className="text-xs text-muted-foreground truncate">{message}</span>
         )}
       </div>
     </DropdownMenuItem>
@@ -103,7 +103,7 @@ export const TreeNodeActionEntry: FC<{
             : menuTree.data.label}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
+      <DropdownMenuContent className="w-[200px] max-w-[200px]">
         {menuTree.children?.map((child) => {
           return <MenuItemView key={child.id} menuItem={child} />;
         })}
