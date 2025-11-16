@@ -1,6 +1,7 @@
 // Import curated Monaco API + selected language contributions
 import { monaco } from "@/monaco/customMonaco";
 import React from "react";
+import { useColorMode } from "@chakra-ui/react";
 
 type KeyBinding = {
   key: number;
@@ -18,18 +19,22 @@ type Props = {
 };
 
 export const CustomMonacoEditor = (props: Props) => {
-  const { theme = "vs-dark", options: monacoOptions, onMount } = props;
+  const { colorMode } = useColorMode();
+  const { theme: propTheme, options: monacoOptions, onMount } = props;
   const editorRef = React.useRef<monaco.editor.IStandaloneCodeEditor | null>(
     null
   );
   const containerRef = React.useRef<HTMLDivElement | null>(null);
+  
   React.useEffect(() => {
     if (!containerRef.current) return;
 
+    const currentTheme = propTheme || (colorMode === "dark" ? "vs-dark" : "vs");
+    
     editorRef.current = monaco.editor.create(containerRef.current, {
       value: props.value,
       language: props.language,
-      theme,
+      theme: currentTheme,
       ...monacoOptions,
     });
 
@@ -55,7 +60,7 @@ export const CustomMonacoEditor = (props: Props) => {
       changeModelContentSubscription.dispose();
       editorRef.current?.dispose();
     };
-  }, []); // Empty dependency array means this effect runs once on mount and clean up on unmount
+  }, [props.language]); // Recreate editor only when language changes
 
   React.useEffect(() => {
     if (editorRef.current) {
@@ -70,6 +75,13 @@ export const CustomMonacoEditor = (props: Props) => {
       }
     }
   }, [props.value]); // This effect runs whenever props.value changes
+
+  React.useEffect(() => {
+    if (editorRef.current && !propTheme) {
+      const newTheme = colorMode === "dark" ? "vs-dark" : "vs";
+      monaco.editor.setTheme(newTheme);
+    }
+  }, [colorMode, propTheme]);
 
   return <div ref={containerRef} style={{ height: "100%" }} />;
 };

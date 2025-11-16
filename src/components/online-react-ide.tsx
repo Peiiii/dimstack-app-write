@@ -156,7 +156,6 @@ export default function App() {
                 <React.Suspense fallback={<div>{t("file.loadingEditor")}</div>}>
                   <LazyCustomMonacoEditor
                     language="javascript"
-                    theme="vs-dark"
                     value={code}
                     onChange={handleEditorChange}
                     options={{
