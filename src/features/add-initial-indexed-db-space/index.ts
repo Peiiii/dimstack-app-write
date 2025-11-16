@@ -3,7 +3,8 @@ import { spaceService } from "@/services/space.service";
 import { spaceHelper } from "@/helpers/space.helper";
 import { createPlugin } from "xbook/common/createPlugin";
 import { CacheController } from "xbook/ui/services/cache-controller";
-import readMeContent from "./readme.md?raw";
+import readMeContentZh from "./readme.md?raw";
+import readMeContentEn from "./readme.en.md?raw";
 
 const cache = CacheController.create({
   scope: "spaceStateCache",
@@ -18,6 +19,28 @@ const getDefaultSpaceState = (): ISpaceState => {
   return {
     isIndexedDbReadMeFileInitialized: false,
   };
+};
+
+const getCurrentLanguage = (): string => {
+  try {
+    const stored = localStorage.getItem("i18nextLng");
+    if (stored && (stored === "zh" || stored === "en")) {
+      return stored;
+    }
+  } catch {
+    // localStorage not available
+  }
+  
+  const browserLang = navigator.language || "";
+  if (browserLang.startsWith("zh")) {
+    return "zh";
+  }
+  return "en";
+};
+
+const getReadMeContent = (): string => {
+  const lang = getCurrentLanguage();
+  return lang === "en" ? readMeContentEn : readMeContentZh;
 };
 
 export const pluginAddInitialIndexedDbSpace = createPlugin({
@@ -39,8 +62,7 @@ export const pluginAddInitialIndexedDbSpace = createPlugin({
         const { isIndexedDbReadMeFileInitialized } = state;
         
         if (!isIndexedDbReadMeFileInitialized) {
-          // const content = `# Welcome to your new IndexedDB space`;
-          const content = readMeContent;
+          const content = getReadMeContent();
           const path = "/README.md";
           let fileExists;
           try {
