@@ -2,12 +2,10 @@ import { pluginCore } from "@/plugins/core";
 import features from "@/features";
 import migrations from "@/plugins/migrations";
 import authService from "@/plugins/services/auth";
-import commonServiceProviders from "@/plugins/services/common-service-providers";
 import { addGiteeSpace } from "@/plugins/space/addSpace";
 import displaySpaces from "@/plugins/space/displaySpaces";
 import { folderTreeService } from "@/plugins/space/folderTreeService";
 import { AddFileSystemProviderForEachSpace } from "@/plugins/space/provideFileSystems";
-import { spaceServiceModule } from "@/plugins/space/spaceService";
 import checkUrlParamAndQuickOpen from "@/plugins/utilities/checkUrlParamAndQuickOpen";
 import clearLocalCache from "@/plugins/utilities/clearLocalCache";
 import theme from "@/plugins/utilities/theme";
@@ -26,7 +24,6 @@ xbook.pluginService.use([
   pluginCore,
   // asyncPluginService,
   authService,
-  spaceServiceModule,
   platformsPlugin,
   displaySpaces,
   // listenGiteeLoginCallback,
@@ -34,7 +31,6 @@ xbook.pluginService.use([
   /** basic */
   folderTreeService,
   AddFileSystemProviderForEachSpace,
-  commonServiceProviders,
 
   /** features */
   features,
