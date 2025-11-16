@@ -228,7 +228,7 @@ export const Tree = <
       >
         <div
           className={classNames(
-            "w-full py-1 px-2 cursor-pointer hover:bg-gray-200 flex justify-between"
+            "w-full py-1 px-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 flex justify-between"
           )}
         >
           {t("tree.directory")}
