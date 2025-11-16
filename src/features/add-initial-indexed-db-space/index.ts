@@ -5,6 +5,8 @@ import { createPlugin } from "xbook/common/createPlugin";
 import { CacheController } from "xbook/ui/services/cache-controller";
 import readMeContentZh from "./readme.md?raw";
 import readMeContentEn from "./readme.en.md?raw";
+import connectGitContentZh from "./connect-git.md?raw";
+import connectGitContentEn from "./connect-git.en.md?raw";
 
 const cache = CacheController.create({
   scope: "spaceStateCache",
@@ -43,6 +45,11 @@ const getReadMeContent = (): string => {
   return lang === "en" ? readMeContentEn : readMeContentZh;
 };
 
+const getConnectGitContent = (): string => {
+  const lang = getCurrentLanguage();
+  return lang === "en" ? connectGitContentEn : connectGitContentZh;
+};
+
 export const pluginAddInitialIndexedDbSpace = createPlugin({
   initilize(xbook) {
     // Use singleton spaceService directly
@@ -62,22 +69,32 @@ export const pluginAddInitialIndexedDbSpace = createPlugin({
         const { isIndexedDbReadMeFileInitialized } = state;
         
         if (!isIndexedDbReadMeFileInitialized) {
-          const content = getReadMeContent();
-          const path = "/README.md";
-          let fileExists;
-          try {
-            await xbook.fs.readFile(spaceHelper.getUri(space.id, path));
-            fileExists = true;
-          } catch (error) {
-            fileExists = false;
-          }
-          if (!fileExists) {
-            const uint = new TextEncoder().encode(content);
-            await xbook.fs.writeFile(spaceHelper.getUri(space.id, path), uint, {
-              overwrite: true,
-              create: true,
-            });
-          }
+          const readMeContent = getReadMeContent();
+          const connectGitContent = getConnectGitContent();
+          
+          const createFileIfNotExists = async (path: string, content: string) => {
+            let fileExists;
+            try {
+              await xbook.fs.readFile(spaceHelper.getUri(space.id, path));
+              fileExists = true;
+            } catch {
+              fileExists = false;
+            }
+            if (!fileExists) {
+              const uint = new TextEncoder().encode(content);
+              await xbook.fs.writeFile(spaceHelper.getUri(space.id, path), uint, {
+                overwrite: true,
+                create: true,
+              });
+            }
+          };
+          
+          const lang = getCurrentLanguage();
+          const connectGitFileName = lang === "en" ? "/Connect-Git-Repository.md" : "/连接-Git-仓库.md";
+          
+          await createFileIfNotExists("/README.md", readMeContent);
+          await createFileIfNotExists(connectGitFileName, connectGitContent);
+          
           cache.set(space.id, {
             ...cache.get(space.id, getDefaultSpaceState()),
             isIndexedDbReadMeFileInitialized: true,
