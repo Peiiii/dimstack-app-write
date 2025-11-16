@@ -4,7 +4,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/toolkit/utils/shadcn-utils";
 import QuickSettingsMenu from "./quick-settings-menu";
 import { useColorMode } from "@chakra-ui/react";
@@ -28,7 +28,7 @@ export default function SettingsShortcut({ shortcut, isExpanded }: SettingsShort
   const displayName = name || t("common.settings");
   const IconComponent = componentService.useComponent(icon);
 
-  const trigger = (
+  const buttonContent = (
     <div className="flex justify-center">
       <button
         className={cn(
@@ -60,29 +60,29 @@ export default function SettingsShortcut({ shortcut, isExpanded }: SettingsShort
     </div>
   );
 
-  const content = (
+  const trigger = isExpanded ? (
+    buttonContent
+  ) : (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        {buttonContent}
+      </TooltipTrigger>
+      <TooltipContent
+        side="right"
+        sideOffset={10}
+        className="text-xs px-2.5 py-1.5 bg-popover/95 text-popover-foreground rounded-md"
+      >
+        {displayName}
+      </TooltipContent>
+    </Tooltip>
+  );
+
+  return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
       <DropdownMenuContent align="end" side="right" sideOffset={10} className="min-w-56">
         <QuickSettingsMenu />
       </DropdownMenuContent>
     </DropdownMenu>
-  );
-
-  return isExpanded ? (
-    content
-  ) : (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>{content}</TooltipTrigger>
-        <TooltipContent
-          side="right"
-          sideOffset={10}
-          className="text-xs px-2.5 py-1.5 bg-popover/95 text-popover-foreground rounded-md"
-        >
-          {displayName}
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
   );
 }
