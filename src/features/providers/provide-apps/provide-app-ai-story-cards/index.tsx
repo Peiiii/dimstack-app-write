@@ -1,5 +1,5 @@
 import { openerService } from "@/services/opener.service";
-import { AppAIStoryCards } from "@/plugins/features/providers/provide-apps/provide-app-ai-story-cards/app";
+import { AppAIStoryCards } from "@/features/providers/provide-apps/provide-app-ai-story-cards/app";
 import { createPlugin } from "xbook/common/createPlugin";
 import { t } from "@/i18n/utils";
 

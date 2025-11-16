@@ -1,6 +1,6 @@
 import { EventKeys } from "@/constants/eventKeys";
 import { openerService } from "@/services/opener.service";
-import { ZenmarkEditorComponent } from "@/plugins/features/providers/provide-zenmark-editor/zenmark-editor-component";
+import { ZenmarkEditorComponent } from "@/features/providers/provide-zenmark-editor/zenmark-editor-component";
 import { createPlugin } from "xbook/common/createPlugin";
 import { t } from "@/i18n/utils";
 

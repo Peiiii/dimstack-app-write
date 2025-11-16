@@ -1,6 +1,6 @@
-import { provideApps } from "@/plugins/features/providers/provide-apps";
-import provideCommonTextFileOpener from "@/plugins/features/providers/provide-common-text-file-opener";
-import provideZenmarkEditor from "@/plugins/features/providers/provide-zenmark-editor";
+import { provideApps } from "@/features/providers/provide-apps";
+import provideCommonTextFileOpener from "@/features/providers/provide-common-text-file-opener";
+import provideZenmarkEditor from "@/features/providers/provide-zenmark-editor";
 import { createPlugin } from "xbook/common/createPlugin";
 
 export const pluginForProviders = createPlugin({

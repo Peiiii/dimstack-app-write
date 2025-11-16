@@ -1,5 +1,5 @@
 import { pluginCore } from "@/plugins/core";
-import features from "@/plugins/features";
+import features from "@/features";
 import migrations from "@/plugins/migrations";
 import authService from "@/plugins/services/auth";
 import commonServiceProviders from "@/plugins/services/common-service-providers";

@@ -1,6 +1,6 @@
 import { openerService } from "@/services/opener.service";
-import { TextFileView } from "@/plugins/features/providers/provide-common-text-file-opener/components/text-file-view";
-import { COMMON_TEXT_FILE_EXTENSIONS } from "@/plugins/features/providers/provide-common-text-file-opener/constants";
+import { TextFileView } from "@/features/providers/provide-common-text-file-opener/components/text-file-view";
+import { COMMON_TEXT_FILE_EXTENSIONS } from "@/features/providers/provide-common-text-file-opener/constants";
 import { createPlugin } from "xbook/common/createPlugin";
 
 export default createPlugin({
