@@ -137,6 +137,7 @@ export const AddSpaceMenu = ({ children }: AddSpaceMenuProps) => {
                 },
                 {
                     focus: true,
+                    silent: true,
                 }
             );
             xbook.notificationService.success(t("space.workspaceAdded"));

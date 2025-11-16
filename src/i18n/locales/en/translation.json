@@ -62,7 +62,9 @@
     "clickToAuthorize": "click here to authorize",
     "deleteSpace": "Delete this space",
     "viewInfo": "View Info",
-    "loginTo": "Login to {{platform}}"
+    "loginTo": "Login to {{platform}}",
+    "spaceAdded": "Space added successfully",
+    "spaceExists": "Space already exists"
   },
   "file": {
     "saveSuccess": "Save successful",

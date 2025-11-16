@@ -32,7 +32,7 @@ export function ModernActivityBar({
   onMoveActivity,
 }: ModernActivityBarProps) {
   return (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={100}>
       <div
         className={cn(
           "h-full bg-background flex flex-col transition-all duration-300 ease-in-out",

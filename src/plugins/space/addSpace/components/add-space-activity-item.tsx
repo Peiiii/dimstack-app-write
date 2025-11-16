@@ -45,7 +45,7 @@ export const AddSpaceActivityItem = ({ activity, isExpanded }: AddSpaceActivityI
   return isExpanded ? (
     content
   ) : (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={100}>
       <Tooltip>
         <TooltipTrigger asChild>{content}</TooltipTrigger>
         <TooltipContent
