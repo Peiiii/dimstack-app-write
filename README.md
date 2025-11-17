@@ -26,6 +26,11 @@ GitNote is a Git-based note-taking platform that makes knowledge management simp
 - Customizable workspace for your workflow
 - Professional development environment
 
+### 🔍 Full-Text Search
+- Powerful full-text search across all your notes and files
+- Fast and accurate search results
+- Search within code files and markdown documents
+
 ## Quick Start
 
 ```shell
