@@ -15,7 +15,7 @@ export class ArchiveSource {
     const token = authService.getAnyAuthInfo(platform, owner)?.accessToken;
     const url = `https://api.github.com/repos/${owner}/${repo}/zipball`;
     const res = await axios.get(url, {
-      responseType: "arraybuffer",
+      responseType: "arrayBuffer",
       headers: token ? { Authorization: `Bearer ${token}` } : undefined,
     });
     return res.data as ArrayBuffer;
@@ -32,4 +32,3 @@ export class ArchiveSource {
     }
   }
 }
-

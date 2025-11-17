@@ -219,8 +219,8 @@ importers:
         specifier: ^1.22.22
         version: 1.22.22
       zenmark-editor:
-        specifier: ^0.1.8
-        version: 0.1.8(ycsfakrqmzm4xcobutjudtepnq)
+        specifier: ^0.1.19
+        version: 0.1.19(be67a75b681f1a1f714d2d072ba79a8c)
     devDependencies:
       '@types/jest':
         specifier: ^29.5.14
@@ -6101,8 +6101,8 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  zenmark-editor@0.1.8:
-    resolution: {integrity: sha512-ercmBHirRT2bWGnON6CYGj1snzC7CaD+Rl7KD0UkW/6LSnjO9XXCXAsLvXKXjE0Y3PDCWIqJYFuz1GTt2AqwEw==}
+  zenmark-editor@0.1.19:
+    resolution: {integrity: sha512-66PWc5mlKLG6U/xzV/Lxva15OZda9h2QBm48XE1xLDH8oYeJAZ4fNieD+qgXR+2spjZ0hRAjUkkCTA9J+9lAuw==}
     peerDependencies:
       '@benrbray/prosemirror-math': ^0.2.2
       '@emotion/css': ^11.13.0
@@ -6110,38 +6110,40 @@ packages:
       '@radix-ui/react-popover': ^1.1.1
       '@radix-ui/react-select': ^2.1.1
       '@radix-ui/react-tooltip': ^1.1.2
-      '@tiptap/core': ^2.0.0-beta.209
-      '@tiptap/extension-character-count': ^2.0.0-beta.209
-      '@tiptap/extension-code': ^2.0.0-beta.209
-      '@tiptap/extension-code-block-lowlight': ^2.0.0-beta.209
-      '@tiptap/extension-collaboration': ^2.0.0-beta.209
-      '@tiptap/extension-collaboration-cursor': ^2.0.0-beta.209
-      '@tiptap/extension-document': ^2.0.0-beta.209
-      '@tiptap/extension-dropcursor': ^2.0.0-beta.209
-      '@tiptap/extension-focus': ^2.1.8
-      '@tiptap/extension-gapcursor': ^2.0.3
-      '@tiptap/extension-highlight': ^2.0.0-beta.209
-      '@tiptap/extension-horizontal-rule': ^2.1.7
-      '@tiptap/extension-image': ^2.0.0-beta.209
-      '@tiptap/extension-link': ^2.0.0-beta.209
-      '@tiptap/extension-list-keymap': ^2.1.8
-      '@tiptap/extension-paragraph': ^2.0.0-beta.209
-      '@tiptap/extension-placeholder': ^2.0.0-beta.209
-      '@tiptap/extension-subscript': ^2.1.8
-      '@tiptap/extension-superscript': ^2.1.8
-      '@tiptap/extension-table': ^2.0.4
-      '@tiptap/extension-table-cell': ^2.0.4
-      '@tiptap/extension-table-header': ^2.0.4
-      '@tiptap/extension-table-row': ^2.0.4
-      '@tiptap/extension-task-item': ^2.0.0-beta.209
-      '@tiptap/extension-task-list': ^2.0.0-beta.209
-      '@tiptap/extension-text': ^2.0.0-beta.209
-      '@tiptap/extension-text-align': ^2.0.0-beta.209
-      '@tiptap/extension-typography': ^2.0.0-beta.209
-      '@tiptap/pm': ^2.0.3
-      '@tiptap/react': ^2.0.0-beta.209
-      '@tiptap/starter-kit': ^2.0.0-beta.209
-      '@tiptap/suggestion': ^2.0.0-beta.209
+      '@tiptap/core': ^3.0.0
+      '@tiptap/extension-bubble-menu': ^3.0.0
+      '@tiptap/extension-character-count': ^3.0.0
+      '@tiptap/extension-code': ^3.0.0
+      '@tiptap/extension-code-block-lowlight': ^3.0.0
+      '@tiptap/extension-collaboration': ^3.0.0
+      '@tiptap/extension-collaboration-cursor': ^3.0.0
+      '@tiptap/extension-document': ^3.0.0
+      '@tiptap/extension-dropcursor': ^3.0.0
+      '@tiptap/extension-floating-menu': ^3.0.0
+      '@tiptap/extension-focus': ^3.0.0
+      '@tiptap/extension-gapcursor': ^3.0.0
+      '@tiptap/extension-highlight': ^3.0.0
+      '@tiptap/extension-horizontal-rule': ^3.0.0
+      '@tiptap/extension-image': ^3.0.0
+      '@tiptap/extension-link': ^3.0.0
+      '@tiptap/extension-list-keymap': ^3.0.0
+      '@tiptap/extension-paragraph': ^3.0.0
+      '@tiptap/extension-placeholder': ^3.0.0
+      '@tiptap/extension-subscript': ^3.0.0
+      '@tiptap/extension-superscript': ^3.0.0
+      '@tiptap/extension-table': ^3.0.0
+      '@tiptap/extension-table-cell': ^3.0.0
+      '@tiptap/extension-table-header': ^3.0.0
+      '@tiptap/extension-table-row': ^3.0.0
+      '@tiptap/extension-task-item': ^3.0.0
+      '@tiptap/extension-task-list': ^3.0.0
+      '@tiptap/extension-text': ^3.0.0
+      '@tiptap/extension-text-align': ^3.0.0
+      '@tiptap/extension-typography': ^3.0.0
+      '@tiptap/pm': ^3.0.0
+      '@tiptap/react': ^3.0.0
+      '@tiptap/starter-kit': ^3.0.0
+      '@tiptap/suggestion': ^3.0.0
       class-variance-authority: ^0.7.0
       classnames: ^2.5.1
       clsx: ^2.1.1
@@ -6156,16 +6158,6 @@ packages:
       markdown-it-texmath: ^1.0.0
       nanoid: ^4.0.2
       pinyin: ^4.0.0-alpha.0
-      prosemirror-commands: ^1.5.0
-      prosemirror-dropcursor: ^1.6.1
-      prosemirror-gapcursor: ^1.3.1
-      prosemirror-history: ^1.3.0
-      prosemirror-keymap: ^1.2.0
-      prosemirror-model: ^1.18.3
-      prosemirror-schema-list: ^1.2.2
-      prosemirror-state: ^1.4.2
-      prosemirror-transform: ^1.7.0
-      prosemirror-view: ^1.29.1
       react: ^18.2.0
       react-dom: ^18.2.0
       react-icons: ^4.7.1
@@ -8032,7 +8024,7 @@ snapshots:
       fast-deep-equal: 3.1.3
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      use-sync-external-store: 1.5.0(react@18.3.1)
+      use-sync-external-store: 1.6.0(react@18.3.1)
 
   '@tiptap/starter-kit@2.26.1':
     dependencies:
@@ -13214,7 +13206,7 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zenmark-editor@0.1.8(ycsfakrqmzm4xcobutjudtepnq):
+  zenmark-editor@0.1.19(be67a75b681f1a1f714d2d072ba79a8c):
     dependencies:
       '@benrbray/prosemirror-math': 0.2.2(katex@0.13.24)(prosemirror-commands@1.7.1)(prosemirror-gapcursor@1.3.2)(prosemirror-history@1.4.1)(prosemirror-inputrules@1.5.0)(prosemirror-keymap@1.2.3)(prosemirror-model@1.25.3)(prosemirror-state@1.4.3)(prosemirror-transform@1.10.4)(prosemirror-view@1.40.1)
       '@emotion/css': 11.13.5
@@ -13223,6 +13215,7 @@ snapshots:
       '@radix-ui/react-select': 2.2.5(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-tooltip': 1.2.7(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tiptap/core': 2.26.1(@tiptap/pm@2.26.1)
+      '@tiptap/extension-bubble-menu': 2.26.1(@tiptap/core@2.26.1(@tiptap/pm@2.26.1))(@tiptap/pm@2.26.1)
       '@tiptap/extension-character-count': 2.26.1(@tiptap/core@2.26.1(@tiptap/pm@2.26.1))(@tiptap/pm@2.26.1)
       '@tiptap/extension-code': 2.26.1(@tiptap/core@2.26.1(@tiptap/pm@2.26.1))
       '@tiptap/extension-code-block-lowlight': 2.26.1(@tiptap/core@2.26.1(@tiptap/pm@2.26.1))(@tiptap/extension-code-block@2.26.1(@tiptap/core@2.26.1(@tiptap/pm@2.26.1))(@tiptap/pm@2.26.1))(@tiptap/pm@2.26.1)(highlight.js@11.11.1)(lowlight@2.9.0)
@@ -13230,6 +13223,7 @@ snapshots:
       '@tiptap/extension-collaboration-cursor': 2.26.1(@tiptap/core@2.26.1(@tiptap/pm@2.26.1))(y-prosemirror@1.3.7(prosemirror-model@1.25.3)(prosemirror-state@1.4.3)(prosemirror-view@1.40.1)(y-protocols@1.0.6(yjs@13.6.27))(yjs@13.6.27))
       '@tiptap/extension-document': 2.26.1(@tiptap/core@2.26.1(@tiptap/pm@2.26.1))
       '@tiptap/extension-dropcursor': 2.26.1(@tiptap/core@2.26.1(@tiptap/pm@2.26.1))(@tiptap/pm@2.26.1)
+      '@tiptap/extension-floating-menu': 2.26.1(@tiptap/core@2.26.1(@tiptap/pm@2.26.1))(@tiptap/pm@2.26.1)
       '@tiptap/extension-focus': 2.26.1(@tiptap/core@2.26.1(@tiptap/pm@2.26.1))(@tiptap/pm@2.26.1)
       '@tiptap/extension-gapcursor': 2.26.1(@tiptap/core@2.26.1(@tiptap/pm@2.26.1))(@tiptap/pm@2.26.1)
       '@tiptap/extension-highlight': 2.26.1(@tiptap/core@2.26.1(@tiptap/pm@2.26.1))
@@ -13269,18 +13263,6 @@ snapshots:
       markdown-it-texmath: 1.0.0
       nanoid: 5.1.5
       pinyin: 4.0.0(segmentit@2.0.3)
-      prosemirror-commands: 1.7.1
-      prosemirror-dropcursor: 1.8.2
-      prosemirror-gapcursor: 1.3.2
-      prosemirror-history: 1.4.1
-      prosemirror-inputrules: 1.5.0
-      prosemirror-keymap: 1.2.3
-      prosemirror-markdown: 1.13.2
-      prosemirror-model: 1.25.3
-      prosemirror-schema-list: 1.5.1
-      prosemirror-state: 1.4.3
-      prosemirror-transform: 1.10.4
-      prosemirror-view: 1.40.1
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       react-icons: 4.12.0(react@18.3.1)
