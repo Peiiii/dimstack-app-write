@@ -1,0 +1,84 @@
+---
+alwaysApply: true
+---
+
+# Component Import Rules
+
+## 组件目录结构规则
+
+### 禁止在组件目录下创建 index.ts
+- **严格禁止**：在 `src/**/components/` 目录下创建 `index.ts` 文件
+- **原因**：避免不必要的抽象层，保持组件导入的明确性和可追踪性
+- **例外**：只有 `src/common/components/modal/index.ts` 是历史遗留，新组件不应效仿
+
+### 组件文件组织
+- 每个组件使用独立的 `.tsx` 文件
+- 文件名使用 kebab-case 命名：`my-component.tsx`
+- 组件目录结构应保持扁平，避免过深的嵌套
+
+## 导入路径规则
+
+### 优先使用 @ 别名导入
+- **首选**：使用 `@/*` 路径别名进行绝对路径导入
+- **格式**：`import { Component } from '@/common/components/ui/component'`
+- **好处**：路径清晰、易于重构、避免相对路径的复杂性
+
+### 禁止使用相对路径导入组件
+- **禁止**：`import { Component } from '../components/ui/component'`
+- **禁止**：`import { Component } from './component'`
+- **要求**：所有组件导入必须使用 `@/*` 绝对路径
+
+### 导入示例
+
+#### ✅ 正确方式
+```typescript
+// 从 UI 组件库导入
+import { Button } from '@/common/components/ui/button';
+import { Card, CardContent } from '@/common/components/ui/card';
+import { Input } from '@/common/components/ui/input';
+
+// 从自定义组件导入
+import { SpaceAwareChat } from '@/common/features/space-aware-chat';
+import { BreakpointProvider } from '@/common/components/breakpoint-provider';
+```
+
+#### ❌ 错误方式
+```typescript
+// 相对路径导入
+import { Button } from '../ui/button';
+import { Card } from './card';
+import { Component } from '../../components/component';
+
+// 使用 index.ts 导入
+import { Component } from '@/components'; // 如果存在 index.ts
+```
+
+## 重构指导
+
+### 现有相对路径导入的修复
+如果发现相对路径导入，应立即重构为绝对路径：
+
+```typescript
+// 重构前
+import { AIChatMessage } from '../types';
+
+// 重构后
+import { AIChatMessage } from '@/common/features/space-aware-chat/types';
+```
+
+### 组件导出方式
+- 直接在需要的地方导入组件文件
+- 避免创建中间层的 index.ts 文件
+- 保持导入路径的明确性和可读性
+
+## 验证规则
+
+### 代码审查检查点
+1. 确保没有新的 `index.ts` 文件在组件目录中创建
+2. 验证所有组件导入都使用 `@/*` 绝对路径
+3. 检查是否有相对路径导入需要重构
+
+### 自动化检查
+- 使用 ESLint 规则检测相对路径导入
+- 在 CI/CD 流程中验证导入路径规范
+- 定期扫描代码库确保规则遵循

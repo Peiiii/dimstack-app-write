@@ -1,0 +1,828 @@
+---
+alwaysApply: true
+---
+
+
+# 文件组织规则
+
+## 核心设计理念
+
+### 递归Feature树结构
+- **功能优先**: 按业务功能分组，而非技术类型
+- **递归组织**: 每个feature内部都可以有`features/`目录，形成无限嵌套的树结构
+- **关注点分离**: 每个feature都有明确的职责边界
+- **模块化**: 支持独立开发、测试和部署
+
+### 暴露方式规则
+- **普通业务子feature**: 通过`index.tsx`暴露**一个组合了所有功能的Feature组件**
+- **系统级feature**: 涉及activitybar/router等核心功能的，通过`extensions/`暴露
+- **顶级feature**: 通过`extensions/`暴露给系统
+
+### 子Feature导出规范
+- **严格限制**: 子feature的`index.tsx`只能导出Feature组件，不能导出内部组件、hooks、services
+- **原因**: 保持模块边界清晰，避免不必要的重新导出，维护导入路径的明确性
+- **正确做法**: 只导出`FeatureNameFeature`组件，该组件内部组合了所有功能
+- **错误做法**: 重新导出内部组件、hooks、services，或创建中间层抽象
+
+### 禁止使用index文件的目录规则
+- **严格禁止**: 在`components/`、`hooks/`、`services/`等业务目录下创建`index.ts`或`index.tsx`文件
+- **原因**: 避免不必要的抽象层，保持组件导入的明确性和可追踪性
+- **例外**: 只有`src/common/components/modal/index.ts`是历史遗留，新组件不应效仿
+- **正确做法**: 直接在需要的地方导入具体文件，如`import { Button } from '@/common/components/ui/button'`
+- **错误做法**: 创建`src/common/components/ui/index.ts`来重新导出所有组件
+
+## 核心目录结构（示意）
+
+```
+src/
+├── assets/                              # 静态资源
+├── common/                              # 通用功能
+│   ├── components/                      # 全局可复用组件
+│   │   ├── ui/                         # UI基础组件
+│   │   ├── layout/                     # 布局组件
+│   │   └── business/                   # 业务通用组件
+│   ├── features/                       # 通用功能域
+│   │   ├── [feature]/
+│   │   │   ├── components/             # 功能组件
+│   │   │   ├── extensions/             # 功能扩展
+│   │   │   └── pages/                  # 页面组件
+│   │   └── ...
+│   ├── hooks/                          # 通用hooks
+│   ├── lib/                            # 通用核心库与工具
+│   └── types/                          # 通用类型定义
+├── core/                               # 应用核心
+│   ├── config/                         # 配置
+│   ├── hooks/                          # 应用级hooks
+│   ├── resources/                      # 资源定义
+│   ├── services/                       # 服务与状态管理
+│   ├── stores/                         # 状态存储
+│   ├── styles/                         # 样式
+│   └── utils/                          # 工具函数
+├── desktop/                            # 桌面端
+│   └── features/                       # 桌面端功能
+│       ├── [feature]/                  # 顶级feature
+│       │   ├── components/             # feature内部可复用组件
+│       │   ├── pages/                  # feature页面
+│       │   ├── features/               # 子features (递归结构)
+│       │   │   ├── [subfeature]/      # 子feature
+│       │   │   │   ├── components/    # 子feature组件
+│       │   │   │   ├── hooks/         # 子feature hooks
+│       │   │   │   ├── services/      # 子feature服务
+│       │   │   │   └── index.tsx      # 子feature暴露入口
+│       │   │   └── ...
+│       │   ├── hooks/                  # feature级hooks
+│       │   ├── services/               # feature级服务
+│       │   ├── extensions/             # feature扩展点
+│       │   └── index.tsx               # feature暴露入口
+│       └── ...
+└── mobile/                             # 移动端
+    └── features/                       # 移动端功能
+        ├── [feature]/                  # 顶级feature
+        │   ├── components/             # feature内部可复用组件
+        │   ├── pages/                  # feature页面
+        │   ├── features/               # 子features (递归结构)
+        │   │   ├── [subfeature]/      # 子feature
+        │   │   │   ├── components/    # 子feature组件
+        │   │   │   ├── hooks/         # 子feature hooks
+        │   │   │   ├── services/      # 子feature服务
+        │   │   │   └── index.tsx      # 子feature暴露入口
+        │   │   └── ...
+        │   ├── hooks/                  # feature级hooks
+        │   ├── services/               # feature级服务
+        │   ├── extensions/             # feature扩展点
+        │   └── index.tsx               # feature暴露入口
+        └── ...
+```
+
+## 递归Feature结构示例
+
+### 电商系统示例
+```
+src/desktop/features/ecommerce/
+├── components/                          # ecommerce feature内部可复用组件
+├── pages/                              # ecommerce feature页面
+├── features/                           # 子features
+│   ├── product-catalog/                # 产品目录子feature
+│   │   ├── components/
+│   │   │   ├── product-card.tsx
+│   │   │   ├── product-grid.tsx
+│   │   │   └── product-filter.tsx
+│   │   ├── hooks/
+│   │   │   └── use-product-search.ts
+│   │   ├── services/
+│   │   │   └── product.service.ts
+│   │   └── index.tsx                   # 暴露入口
+│   ├── shopping-cart/                  # 购物车子feature
+│   │   ├── components/
+│   │   │   ├── cart-item.tsx
+│   │   │   └── cart-summary.tsx
+│   │   ├── hooks/
+│   │   │   └── use-cart.ts
+│   │   ├── services/
+│   │   │   └── cart.service.ts
+│   │   └── index.tsx                   # 暴露入口
+│   └── order-management/               # 订单管理子feature
+│       ├── components/
+│       │   ├── order-list.tsx
+│       │   └── order-detail.tsx
+│       ├── hooks/
+│       │   └── use-orders.ts
+│       ├── services/
+│       │   └── order.service.ts
+│       └── index.tsx                   # 暴露入口
+├── hooks/                              # ecommerce feature级hooks
+├── services/                           # ecommerce feature级服务
+├── extensions/                         # ecommerce feature扩展点
+│   └── ecommerce-extension.tsx
+└── index.tsx                           # ecommerce feature暴露入口
+```
+
+## 暴露方式详解
+
+### 1. 顶级Feature暴露 (extensions方式)
+```typescript
+// src/desktop/features/ecommerce/extensions/ecommerce-extension.tsx
+import { ProductCatalogFeature } from '@/desktop/features/ecommerce/features/product-catalog';
+import { ShoppingCartFeature } from '@/desktop/features/ecommerce/features/shopping-cart';
+import { OrderManagementFeature } from '@/desktop/features/ecommerce/features/order-management';
+
+export const EcommerceExtension = () => {
+  return {
+    name: 'ecommerce',
+    routes: [
+      { path: '/shop', component: ShopPage },
+      { path: '/shop/:categoryId', component: CategoryPage }
+    ],
+    navigation: {
+      activityBar: { icon: 'shopping-bag', label: 'Shop' }
+    },
+    features: {
+      productCatalog: ProductCatalogFeature,
+      shoppingCart: ShoppingCartFeature,
+      orderManagement: OrderManagementFeature
+    }
+  };
+};
+```
+
+### 2. 业务子Feature暴露 (index.tsx方式)
+```typescript
+// src/desktop/features/ecommerce/features/product-catalog/index.tsx
+// ❌ 错误：不要重新导出内部组件、hooks、services
+// export { ProductCard } from './components/product-card';
+// export { useProductSearch } from './hooks/use-product-search';
+
+// ✅ 正确：只导出Feature组件
+export const ProductCatalogFeature = () => {
+  return (
+    <div className="product-catalog-feature">
+      <ProductFilter />
+      <ProductGrid />
+    </div>
+  );
+};
+```
+
+### 3. 系统集成方式
+```typescript
+// 在系统层面注册feature
+import { EcommerceExtension } from '@/desktop/features/ecommerce/extensions/ecommerce-extension';
+
+const systemExtensions = [
+  EcommerceExtension(),
+  // 其他feature扩展...
+];
+
+// 在feature内部使用子feature
+// ✅ 正确：直接导入需要的组件
+import { ProductCard } from '@/desktop/features/ecommerce/features/product-catalog/components/product-card';
+import { useProductSearch } from '@/desktop/features/ecommerce/features/product-catalog/hooks/use-product-search';
+import { ShoppingCart } from '@/desktop/features/ecommerce/features/shopping-cart/components/shopping-cart';
+import { OrderList } from '@/desktop/features/ecommerce/features/order-management/components/order-list';
+
+// ❌ 错误：从子feature的index.tsx导入内部组件
+// import { ProductCard, useProductSearch } from '@/desktop/features/ecommerce/features/product-catalog';
+```
+
+## 复用性层次结构
+
+### 全局复用 → `src/common/components/`
+- **UI组件**: Button, Modal, Input等基础组件
+- **布局组件**: Layout, Container, Grid等结构组件
+- **业务组件**: 跨多个feature的通用业务组件
+
+### Feature内复用 → `src/desktop/features/[feature]/components/`
+- **业务组件**: 在feature内多个子feature间复用的组件
+- **布局组件**: feature特定的布局组件
+
+### 子Feature内复用 → `src/desktop/features/[feature]/features/[subfeature]/components/`
+- **专用组件**: 仅在特定子feature内复用的组件
+- **业务逻辑组件**: 子feature特定的业务组件
+
+## 分类规则详解
+
+### `src/common/components/`
+- **UI组件** (`ui/`): 纯展示组件，无业务逻辑
+- **业务组件** (`business/`): 跨feature的通用业务组件
+- **布局组件** (`layout/`): 通用布局结构组件
+
+### `src/common/features/[feature]/`
+- **components/**: 通用功能组件
+- **extensions/**: 通用功能扩展
+- **pages/**: 通用功能页面
+
+### `src/common/lib/`
+- **核心库**: 核心功能库
+- **第三方集成**: 外部库封装
+- **工具库**: 工具函数集合
+
+### `src/core/`
+- **应用核心**: 配置、服务、状态管理、hooks
+- **业务逻辑**: 应用级业务逻辑
+
+### `src/desktop/features/[feature]/` 和 `src/mobile/features/[feature]/`
+- **components/**: feature内部可复用组件
+- **extensions/**: feature扩展点
+- **hooks/**: feature级hooks
+- **services/**: feature级服务
+- **pages/**: feature页面
+- **features/**: 子features (递归结构)
+
+## 命名规范
+
+### 目录和文件命名
+- **目录**: kebab-case (如: `product-catalog/`)
+- **文件**: kebab-case (如: `product-card.tsx`)
+- **组件文件**: PascalCase组件名 + kebab-case文件名 (如: `ProductCard` 组件放在 `product-card.tsx`)
+
+### 特殊文件命名
+- **服务文件**: 以 `.service.ts` 结尾 (如: `product.service.ts`)
+- **Hook文件**: 以 `use-` 开头 (如: `use-product-search.ts`)
+- **类型文件**: 以 `.types.ts` 结尾 (如: `product.types.ts`)
+- **扩展文件**: 以 `-extension.tsx` 结尾 (如: `ecommerce-extension.tsx`)
+
+## 导入规范
+
+### 绝对路径导入
+- **统一使用**: `@/xxx` 格式的绝对路径导入
+- **路径别名**: `@/` 指向 `src/` 目录
+- **避免相对路径**: 不使用 `../../` 等相对路径导入
+
+### 导入示例
+```typescript
+// ✅ 正确方式
+import { Button } from '@/common/components/ui/button';
+import { useProductSearch } from '@/desktop/features/ecommerce/features/product-catalog';
+import { ProductCard } from '@/desktop/features/ecommerce/features/product-catalog';
+import { useAgentChat } from '@/core/hooks/use-agent-chat';
+
+// ❌ 错误方式
+import { Button } from '../../../components/ui/button';
+import { ProductCard } from './components/product-card';
+```
+
+### 避免index文件重新导出
+```typescript
+// ❌ 错误：创建index文件重新导出
+// src/common/components/ui/index.ts
+export { Button } from './button';
+export { Input } from './input';
+export { Modal } from './modal';
+
+// ❌ 错误：从index文件导入
+import { Button, Input, Modal } from '@/common/components/ui';
+
+// ✅ 正确：直接从具体文件导入
+import { Button } from '@/common/components/ui/button';
+import { Input } from '@/common/components/ui/input';
+import { Modal } from '@/common/components/ui/modal';
+```
+
+## 最佳实践
+
+### 1. Feature拆分原则
+- **单一职责**: 每个feature只负责一个业务领域
+- **高内聚**: feature内部组件紧密相关
+- **低耦合**: feature之间依赖最小化
+
+### 2. 组件组织原则
+- **按功能分组**: 相关组件放在同一目录
+- **按复用性分层**: 全局、feature级、子feature级
+- **清晰的依赖关系**: 避免循环依赖
+
+### 3. 扩展点设计
+- **统一接口**: 所有扩展遵循相同的接口规范
+- **插件化**: 支持动态加载和卸载
+- **类型安全**: 提供完整的TypeScript类型定义
+
+### 4. 测试策略
+- **独立测试**: 每个feature可以独立测试
+- **集成测试**: 测试feature间的协作
+- **Mock策略**: 合理使用mock避免测试依赖
+
+### 5. 代码质量检查点
+- **避免index文件滥用**: 不在业务目录下创建不必要的index文件
+- **导入路径明确性**: 所有导入都应该指向具体的文件，而不是抽象的index
+- **依赖关系清晰**: 通过明确的导入路径，保持代码的可读性和可维护性
+- **重构友好性**: 避免通过index文件隐藏真实的依赖关系
+- **子Feature导出规范**: 子feature的index.tsx只能导出Feature组件，不能重新导出内部内容
+
+### 6. 子Feature导出规范检查清单
+- [ ] 子feature的index.tsx只导出Feature组件
+- [ ] 没有重新导出内部组件、hooks、services
+- [ ] 没有创建中间层抽象
+- [ ] 导入路径直接指向具体文件
+- [ ] 保持了模块边界清晰
+
+## 迁移指导
+
+### 现有项目重构步骤
+1. **分析现有结构**: 识别功能边界和依赖关系
+2. **设计Feature树**: 规划递归feature结构
+3. **逐步迁移**: 按feature逐步重构，保持向后兼容
+4. **更新导入**: 统一使用绝对路径导入
+5. **验证功能**: 确保重构后功能正常
+
+### 重构现有index文件的步骤
+1. **识别违规文件**: 查找在`components/`、`hooks/`、`services/`等目录下的index文件
+2. **分析使用情况**: 检查哪些地方从这些index文件导入
+3. **逐步替换**: 将导入语句改为直接导入具体文件
+4. **删除index文件**: 确认所有导入都已更新后，删除不必要的index文件
+5. **验证功能**: 确保重构后功能正常
+
+### 重构子Feature导出规范的步骤
+1. **识别违规导出**: 检查子feature的index.tsx是否重新导出了内部组件、hooks、services
+2. **清理违规导出**: 删除所有重新导出的内容，只保留Feature组件
+3. **更新导入路径**: 将所有从子feature index.tsx导入的语句改为直接导入具体文件
+4. **验证功能**: 确保重构后功能正常，没有导入错误
+
+#### 重构示例
+
+##### 重构业务目录下的index文件
+```typescript
+// 重构前：使用index文件
+// src/common/components/action-menu/index.ts
+export { ActionMenu } from "./action-menu";
+export { ActionMenuItem } from "./action-menu-item";
+
+// 使用方
+import { ActionMenu, ActionMenuItem } from '@/common/components/action-menu';
+
+// 重构后：直接导入具体文件
+// 删除 src/common/components/action-menu/index.ts
+
+// 使用方改为
+import { ActionMenu } from '@/common/components/action-menu/action-menu';
+import { ActionMenuItem } from '@/common/components/action-menu/action-menu-item';
+```
+
+##### 重构子Feature导出规范
+```typescript
+// 重构前：违规重新导出内部内容
+// src/desktop/features/chat/features/channel-management/index.tsx
+export { ChannelList } from './components/channel-list';
+export { ChannelItem } from './components/channel-item';
+export { channelToolsManager } from './services/channel-tools-manager';
+
+// 使用方
+import { ChannelList, ChannelItem } from '@/desktop/features/chat/features/channel-management';
+
+// 重构后：只导出Feature组件
+// src/desktop/features/chat/features/channel-management/index.tsx
+export const ChannelManagementFeature = () => {
+  return (
+    <div className="channel-management-feature">
+      <ChannelList />
+    </div>
+  );
+};
+
+// 使用方改为直接导入
+import { ChannelList } from '@/desktop/features/chat/features/channel-management/components/channel-list';
+import { ChannelItem } from '@/desktop/features/chat/features/channel-management/components/channel-item';
+```
+
+### 新项目开发建议
+1. **先设计后开发**: 先规划feature结构再开始编码
+2. **遵循规范**: 严格按照命名和导入规范
+3. **持续重构**: 随着项目发展持续优化结构
+4. **文档维护**: 及时更新架构文档
+
+---
+
+*本规范适用于大型React项目，支持无限扩展的递归feature结构，提供清晰的模块化边界和灵活的扩展能力。*
+
+
+*本规范适用于大型React项目，支持无限扩展的递归feature结构，提供清晰的模块化边界和灵活的扩展能力。*
+
+# 文件组织规则
+
+## 核心设计理念
+
+### 递归Feature树结构
+- **功能优先**: 按业务功能分组，而非技术类型
+- **递归组织**: 每个feature内部都可以有`features/`目录，形成无限嵌套的树结构
+- **关注点分离**: 每个feature都有明确的职责边界
+- **模块化**: 支持独立开发、测试和部署
+
+### 暴露方式规则
+- **普通业务子feature**: 通过`index.tsx`暴露**一个组合了所有功能的Feature组件**
+- **系统级feature**: 涉及activitybar/router等核心功能的，通过`extensions/`暴露
+- **顶级feature**: 通过`extensions/`暴露给系统
+
+### 子Feature导出规范
+- **严格限制**: 子feature的`index.tsx`只能导出Feature组件，不能导出内部组件、hooks、services
+- **原因**: 保持模块边界清晰，避免不必要的重新导出，维护导入路径的明确性
+- **正确做法**: 只导出`FeatureNameFeature`组件，该组件内部组合了所有功能
+- **错误做法**: 重新导出内部组件、hooks、services，或创建中间层抽象
+
+### 禁止使用index文件的目录规则
+- **严格禁止**: 在`components/`、`hooks/`、`services/`等业务目录下创建`index.ts`或`index.tsx`文件
+- **原因**: 避免不必要的抽象层，保持组件导入的明确性和可追踪性
+- **例外**: 只有`src/common/components/modal/index.ts`是历史遗留，新组件不应效仿
+- **正确做法**: 直接在需要的地方导入具体文件，如`import { Button } from '@/common/components/ui/button'`
+- **错误做法**: 创建`src/common/components/ui/index.ts`来重新导出所有组件
+
+## 核心目录结构（示意）
+
+```
+src/
+├── assets/                              # 静态资源
+├── common/                              # 通用功能
+│   ├── components/                      # 全局可复用组件
+│   │   ├── ui/                         # UI基础组件
+│   │   ├── layout/                     # 布局组件
+│   │   └── business/                   # 业务通用组件
+│   ├── features/                       # 通用功能域
+│   │   ├── [feature]/
+│   │   │   ├── components/             # 功能组件
+│   │   │   ├── extensions/             # 功能扩展
+│   │   │   └── pages/                  # 页面组件
+│   │   └── ...
+│   ├── hooks/                          # 通用hooks
+│   ├── lib/                            # 通用核心库与工具
+│   └── types/                          # 通用类型定义
+├── core/                               # 应用核心
+│   ├── config/                         # 配置
+│   ├── hooks/                          # 应用级hooks
+│   ├── resources/                      # 资源定义
+│   ├── services/                       # 服务与状态管理
+│   ├── stores/                         # 状态存储
+│   ├── styles/                         # 样式
+│   └── utils/                          # 工具函数
+├── desktop/                            # 桌面端
+│   └── features/                       # 桌面端功能
+│       ├── [feature]/                  # 顶级feature
+│       │   ├── components/             # feature内部可复用组件
+│       │   ├── pages/                  # feature页面
+│       │   ├── features/               # 子features (递归结构)
+│       │   │   ├── [subfeature]/      # 子feature
+│       │   │   │   ├── components/    # 子feature组件
+│       │   │   │   ├── hooks/         # 子feature hooks
+│       │   │   │   ├── services/      # 子feature服务
+│       │   │   │   └── index.tsx      # 子feature暴露入口
+│       │   │   └── ...
+│       │   ├── hooks/                  # feature级hooks
+│       │   ├── services/               # feature级服务
+│       │   ├── extensions/             # feature扩展点
+│       │   └── index.tsx               # feature暴露入口
+│       └── ...
+└── mobile/                             # 移动端
+    └── features/                       # 移动端功能
+        ├── [feature]/                  # 顶级feature
+        │   ├── components/             # feature内部可复用组件
+        │   ├── pages/                  # feature页面
+        │   ├── features/               # 子features (递归结构)
+        │   │   ├── [subfeature]/      # 子feature
+        │   │   │   ├── components/    # 子feature组件
+        │   │   │   ├── hooks/         # 子feature hooks
+        │   │   │   ├── services/      # 子feature服务
+        │   │   │   └── index.tsx      # 子feature暴露入口
+        │   │   └── ...
+        │   ├── hooks/                  # feature级hooks
+        │   ├── services/               # feature级服务
+        │   ├── extensions/             # feature扩展点
+        │   └── index.tsx               # feature暴露入口
+        └── ...
+```
+
+## 递归Feature结构示例
+
+### 电商系统示例
+```
+src/desktop/features/ecommerce/
+├── components/                          # ecommerce feature内部可复用组件
+├── pages/                              # ecommerce feature页面
+├── features/                           # 子features
+│   ├── product-catalog/                # 产品目录子feature
+│   │   ├── components/
+│   │   │   ├── product-card.tsx
+│   │   │   ├── product-grid.tsx
+│   │   │   └── product-filter.tsx
+│   │   ├── hooks/
+│   │   │   └── use-product-search.ts
+│   │   ├── services/
+│   │   │   └── product.service.ts
+│   │   └── index.tsx                   # 暴露入口
+│   ├── shopping-cart/                  # 购物车子feature
+│   │   ├── components/
+│   │   │   ├── cart-item.tsx
+│   │   │   └── cart-summary.tsx
+│   │   ├── hooks/
+│   │   │   └── use-cart.ts
+│   │   ├── services/
+│   │   │   └── cart.service.ts
+│   │   └── index.tsx                   # 暴露入口
+│   └── order-management/               # 订单管理子feature
+│       ├── components/
+│       │   ├── order-list.tsx
+│       │   └── order-detail.tsx
+│       ├── hooks/
+│       │   └── use-orders.ts
+│       ├── services/
+│       │   └── order.service.ts
+│       └── index.tsx                   # 暴露入口
+├── hooks/                              # ecommerce feature级hooks
+├── services/                           # ecommerce feature级服务
+├── extensions/                         # ecommerce feature扩展点
+│   └── ecommerce-extension.tsx
+└── index.tsx                           # ecommerce feature暴露入口
+```
+
+## 暴露方式详解
+
+### 1. 顶级Feature暴露 (extensions方式)
+```typescript
+// src/desktop/features/ecommerce/extensions/ecommerce-extension.tsx
+import { ProductCatalogFeature } from '@/desktop/features/ecommerce/features/product-catalog';
+import { ShoppingCartFeature } from '@/desktop/features/ecommerce/features/shopping-cart';
+import { OrderManagementFeature } from '@/desktop/features/ecommerce/features/order-management';
+
+export const EcommerceExtension = () => {
+  return {
+    name: 'ecommerce',
+    routes: [
+      { path: '/shop', component: ShopPage },
+      { path: '/shop/:categoryId', component: CategoryPage }
+    ],
+    navigation: {
+      activityBar: { icon: 'shopping-bag', label: 'Shop' }
+    },
+    features: {
+      productCatalog: ProductCatalogFeature,
+      shoppingCart: ShoppingCartFeature,
+      orderManagement: OrderManagementFeature
+    }
+  };
+};
+```
+
+### 2. 业务子Feature暴露 (index.tsx方式)
+```typescript
+// src/desktop/features/ecommerce/features/product-catalog/index.tsx
+// ❌ 错误：不要重新导出内部组件、hooks、services
+// export { ProductCard } from './components/product-card';
+// export { useProductSearch } from './hooks/use-product-search';
+
+// ✅ 正确：只导出Feature组件
+export const ProductCatalogFeature = () => {
+  return (
+    <div className="product-catalog-feature">
+      <ProductFilter />
+      <ProductGrid />
+    </div>
+  );
+};
+```
+
+### 3. 系统集成方式
+```typescript
+// 在系统层面注册feature
+import { EcommerceExtension } from '@/desktop/features/ecommerce/extensions/ecommerce-extension';
+
+const systemExtensions = [
+  EcommerceExtension(),
+  // 其他feature扩展...
+];
+
+// 在feature内部使用子feature
+// ✅ 正确：直接导入需要的组件
+import { ProductCard } from '@/desktop/features/ecommerce/features/product-catalog/components/product-card';
+import { useProductSearch } from '@/desktop/features/ecommerce/features/product-catalog/hooks/use-product-search';
+import { ShoppingCart } from '@/desktop/features/ecommerce/features/shopping-cart/components/shopping-cart';
+import { OrderList } from '@/desktop/features/ecommerce/features/order-management/components/order-list';
+
+// ❌ 错误：从子feature的index.tsx导入内部组件
+// import { ProductCard, useProductSearch } from '@/desktop/features/ecommerce/features/product-catalog';
+```
+
+## 复用性层次结构
+
+### 全局复用 → `src/common/components/`
+- **UI组件**: Button, Modal, Input等基础组件
+- **布局组件**: Layout, Container, Grid等结构组件
+- **业务组件**: 跨多个feature的通用业务组件
+
+### Feature内复用 → `src/desktop/features/[feature]/components/`
+- **业务组件**: 在feature内多个子feature间复用的组件
+- **布局组件**: feature特定的布局组件
+
+### 子Feature内复用 → `src/desktop/features/[feature]/features/[subfeature]/components/`
+- **专用组件**: 仅在特定子feature内复用的组件
+- **业务逻辑组件**: 子feature特定的业务组件
+
+## 分类规则详解
+
+### `src/common/components/`
+- **UI组件** (`ui/`): 纯展示组件，无业务逻辑
+- **业务组件** (`business/`): 跨feature的通用业务组件
+- **布局组件** (`layout/`): 通用布局结构组件
+
+### `src/common/features/[feature]/`
+- **components/**: 通用功能组件
+- **extensions/**: 通用功能扩展
+- **pages/**: 通用功能页面
+
+### `src/common/lib/`
+- **核心库**: 核心功能库
+- **第三方集成**: 外部库封装
+- **工具库**: 工具函数集合
+
+### `src/core/`
+- **应用核心**: 配置、服务、状态管理、hooks
+- **业务逻辑**: 应用级业务逻辑
+
+### `src/desktop/features/[feature]/` 和 `src/mobile/features/[feature]/`
+- **components/**: feature内部可复用组件
+- **extensions/**: feature扩展点
+- **hooks/**: feature级hooks
+- **services/**: feature级服务
+- **pages/**: feature页面
+- **features/**: 子features (递归结构)
+
+## 命名规范
+
+### 目录和文件命名
+- **目录**: kebab-case (如: `product-catalog/`)
+- **文件**: kebab-case (如: `product-card.tsx`)
+- **组件文件**: PascalCase组件名 + kebab-case文件名 (如: `ProductCard` 组件放在 `product-card.tsx`)
+
+### 特殊文件命名
+- **服务文件**: 以 `.service.ts` 结尾 (如: `product.service.ts`)
+- **Hook文件**: 以 `use-` 开头 (如: `use-product-search.ts`)
+- **类型文件**: 以 `.types.ts` 结尾 (如: `product.types.ts`)
+- **扩展文件**: 以 `-extension.tsx` 结尾 (如: `ecommerce-extension.tsx`)
+
+## 导入规范
+
+### 绝对路径导入
+- **统一使用**: `@/xxx` 格式的绝对路径导入
+- **路径别名**: `@/` 指向 `src/` 目录
+- **避免相对路径**: 不使用 `../../` 等相对路径导入
+
+### 导入示例
+```typescript
+// ✅ 正确方式
+import { Button } from '@/common/components/ui/button';
+import { useProductSearch } from '@/desktop/features/ecommerce/features/product-catalog';
+import { ProductCard } from '@/desktop/features/ecommerce/features/product-catalog';
+import { useAgentChat } from '@/core/hooks/use-agent-chat';
+
+// ❌ 错误方式
+import { Button } from '../../../components/ui/button';
+import { ProductCard } from './components/product-card';
+```
+
+### 避免index文件重新导出
+```typescript
+// ❌ 错误：创建index文件重新导出
+// src/common/components/ui/index.ts
+export { Button } from './button';
+export { Input } from './input';
+export { Modal } from './modal';
+
+// ❌ 错误：从index文件导入
+import { Button, Input, Modal } from '@/common/components/ui';
+
+// ✅ 正确：直接从具体文件导入
+import { Button } from '@/common/components/ui/button';
+import { Input } from '@/common/components/ui/input';
+import { Modal } from '@/common/components/ui/modal';
+```
+
+## 最佳实践
+
+### 1. Feature拆分原则
+- **单一职责**: 每个feature只负责一个业务领域
+- **高内聚**: feature内部组件紧密相关
+- **低耦合**: feature之间依赖最小化
+
+### 2. 组件组织原则
+- **按功能分组**: 相关组件放在同一目录
+- **按复用性分层**: 全局、feature级、子feature级
+- **清晰的依赖关系**: 避免循环依赖
+
+### 3. 扩展点设计
+- **统一接口**: 所有扩展遵循相同的接口规范
+- **插件化**: 支持动态加载和卸载
+- **类型安全**: 提供完整的TypeScript类型定义
+
+### 4. 测试策略
+- **独立测试**: 每个feature可以独立测试
+- **集成测试**: 测试feature间的协作
+- **Mock策略**: 合理使用mock避免测试依赖
+
+### 5. 代码质量检查点
+- **避免index文件滥用**: 不在业务目录下创建不必要的index文件
+- **导入路径明确性**: 所有导入都应该指向具体的文件，而不是抽象的index
+- **依赖关系清晰**: 通过明确的导入路径，保持代码的可读性和可维护性
+- **重构友好性**: 避免通过index文件隐藏真实的依赖关系
+- **子Feature导出规范**: 子feature的index.tsx只能导出Feature组件，不能重新导出内部内容
+
+### 6. 子Feature导出规范检查清单
+- [ ] 子feature的index.tsx只导出Feature组件
+- [ ] 没有重新导出内部组件、hooks、services
+- [ ] 没有创建中间层抽象
+- [ ] 导入路径直接指向具体文件
+- [ ] 保持了模块边界清晰
+
+## 迁移指导
+
+### 现有项目重构步骤
+1. **分析现有结构**: 识别功能边界和依赖关系
+2. **设计Feature树**: 规划递归feature结构
+3. **逐步迁移**: 按feature逐步重构，保持向后兼容
+4. **更新导入**: 统一使用绝对路径导入
+5. **验证功能**: 确保重构后功能正常
+
+### 重构现有index文件的步骤
+1. **识别违规文件**: 查找在`components/`、`hooks/`、`services/`等目录下的index文件
+2. **分析使用情况**: 检查哪些地方从这些index文件导入
+3. **逐步替换**: 将导入语句改为直接导入具体文件
+4. **删除index文件**: 确认所有导入都已更新后，删除不必要的index文件
+5. **验证功能**: 确保重构后功能正常
+
+### 重构子Feature导出规范的步骤
+1. **识别违规导出**: 检查子feature的index.tsx是否重新导出了内部组件、hooks、services
+2. **清理违规导出**: 删除所有重新导出的内容，只保留Feature组件
+3. **更新导入路径**: 将所有从子feature index.tsx导入的语句改为直接导入具体文件
+4. **验证功能**: 确保重构后功能正常，没有导入错误
+
+#### 重构示例
+
+##### 重构业务目录下的index文件
+```typescript
+// 重构前：使用index文件
+// src/common/components/action-menu/index.ts
+export { ActionMenu } from "./action-menu";
+export { ActionMenuItem } from "./action-menu-item";
+
+// 使用方
+import { ActionMenu, ActionMenuItem } from '@/common/components/action-menu';
+
+// 重构后：直接导入具体文件
+// 删除 src/common/components/action-menu/index.ts
+
+// 使用方改为
+import { ActionMenu } from '@/common/components/action-menu/action-menu';
+import { ActionMenuItem } from '@/common/components/action-menu/action-menu-item';
+```
+
+##### 重构子Feature导出规范
+```typescript
+// 重构前：违规重新导出内部内容
+// src/desktop/features/chat/features/channel-management/index.tsx
+export { ChannelList } from './components/channel-list';
+export { ChannelItem } from './components/channel-item';
+export { channelToolsManager } from './services/channel-tools-manager';
+
+// 使用方
+import { ChannelList, ChannelItem } from '@/desktop/features/chat/features/channel-management';
+
+// 重构后：只导出Feature组件
+// src/desktop/features/chat/features/channel-management/index.tsx
+export const ChannelManagementFeature = () => {
+  return (
+    <div className="channel-management-feature">
+      <ChannelList />
+    </div>
+  );
+};
+
+// 使用方改为直接导入
+import { ChannelList } from '@/desktop/features/chat/features/channel-management/components/channel-list';
+import { ChannelItem } from '@/desktop/features/chat/features/channel-management/components/channel-item';
+```
+
+### 新项目开发建议
+1. **先设计后开发**: 先规划feature结构再开始编码
+2. **遵循规范**: 严格按照命名和导入规范
+3. **持续重构**: 随着项目发展持续优化结构
+4. **文档维护**: 及时更新架构文档
+
+---
+
+*本规范适用于大型React项目，支持无限扩展的递归feature结构，提供清晰的模块化边界和灵活的扩展能力。*
+
+
+*本规范适用于大型React项目，支持无限扩展的递归feature结构，提供清晰的模块化边界和灵活的扩展能力。*

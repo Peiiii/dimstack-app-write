@@ -1,0 +1,181 @@
+# EchoNote Design System & Color Guidelines
+
+## Core Design Principles
+
+### 1. **Semantic Color System**
+Always use Tailwind CSS semantic color variables instead of hardcoded colors for better maintainability and consistency.
+
+### 2. **Visual Hierarchy Through Colors**
+Use color depth to create clear visual separation between different functional areas:
+- **Deepest**: Important navigation areas (use `bg-accent` sparingly)
+- **Medium**: Content containers and sidebars (use `bg-card`)
+- **Brightest**: Main content areas (use `bg-background`)
+
+### 3. **Container vs State Colors**
+- **Containers** should use base background colors (`bg-card`, `bg-background`)
+- **States** should use semantic colors (`bg-accent` for active, `bg-muted` for hover)
+- Never make entire containers `accent` - reserve accent for highlighting specific states
+
+## Color System Architecture
+
+### **Primary Colors (Light Mode)**
+```css
+--background: oklch(1 0 0);           /* Main content - brightest */
+--card: oklch(0.99 0 0);              /* Sidebars and containers */
+--muted: oklch(0.98 0 0);             /* Secondary areas */
+--accent: oklch(0.96 0 0);            /* Active states and highlights */
+```
+
+### **Primary Colors (Dark Mode)**
+```css
+--background: oklch(0.10 0 0);        /* Main content - brightest */
+--card: oklch(0.15 0 0);              /* Sidebars and containers */
+--muted: oklch(0.18 0 0);             /* Secondary areas */
+--accent: oklch(0.18 0 0);            /* Active states and highlights */
+```
+
+## 4-Column Layout Color Mapping
+
+### **Left to Right Color Progression**
+```
+Activity Bar:     bg-card      (Medium depth - navigation container)
+Channel List:     bg-card      (Medium depth - content container)  
+Timeline:         bg-background (Brightest - main content area)
+AI Assistant:     bg-card      (Medium depth - auxiliary container)
+```
+
+### **Implementation Rules**
+1. **Activity Bar**: Use `bg-card` as container, `bg-accent` only for active items
+2. **Channel List**: Use `bg-card` for consistent sidebar appearance
+3. **Timeline**: Use `bg-background` to emphasize main content
+4. **AI Assistant**: Use `bg-card` to match other sidebars
+
+## Component Color Guidelines
+
+### **Navigation Components**
+```tsx
+// ✅ Correct: Container uses base color, active state uses accent
+<div className="bg-card">
+  <div className={isActive ? "bg-accent" : "hover:bg-muted"}>
+    Navigation Item
+  </div>
+</div>
+
+// ❌ Wrong: Entire container uses accent
+<div className="bg-accent">
+  <div>Navigation Item</div>
+</div>
+```
+
+### **Content Containers**
+```tsx
+// ✅ Correct: Main content uses brightest background
+<div className="bg-background">
+  <div className="bg-card">Content Card</div>
+</div>
+
+// ✅ Correct: Sidebars use medium depth
+<div className="bg-card border-r border-border">
+  Sidebar Content
+</div>
+```
+
+### **Interactive Elements**
+```tsx
+// ✅ Correct: States use semantic colors
+<Button className="bg-primary text-primary-foreground">
+  Primary Action
+</Button>
+
+<Button className="bg-accent text-accent-foreground">
+  Active State
+</Button>
+
+<Button className="bg-muted text-muted-foreground">
+  Secondary Action
+</Button>
+```
+
+## Border and Separation
+
+### **Border Colors**
+- **Primary borders**: `border-border`
+- **Subtle borders**: `border-border/60` (60% opacity)
+- **Muted borders**: `border-border/40` (40% opacity)
+
+### **Visual Separation**
+```tsx
+// Between major sections
+<div className="border-r border-border">
+
+// Between content items  
+<div className="border-t border-border/60">
+
+// Subtle dividers
+<div className="border-t border-border/40">
+```
+
+## Hover and Focus States
+
+### **Hover Colors**
+```tsx
+// Container hover
+<div className="hover:bg-muted">
+
+// Interactive element hover
+<button className="hover:bg-accent">
+
+// Text hover
+<span className="hover:text-accent-foreground">
+```
+
+### **Focus States**
+```tsx
+// Use ring color for focus
+<button className="focus:ring-2 focus:ring-ring focus:ring-offset-2">
+```
+
+## Accessibility and Contrast
+
+### **Text Colors**
+- **Primary text**: `text-foreground`
+- **Secondary text**: `text-muted-foreground`
+- **Accent text**: `text-accent-foreground`
+- **Card text**: `text-card-foreground`
+
+### **Contrast Ratios**
+- Ensure all text meets WCAG AA contrast requirements
+- Use semantic colors that automatically provide good contrast
+- Test both light and dark themes
+
+## Implementation Checklist
+
+### **Before Using Colors**
+- [ ] Is this a container or a state?
+- [ ] Does it need to be highlighted or subtle?
+- [ ] Is it consistent with similar components?
+- [ ] Does it follow the visual hierarchy?
+
+### **Color Selection Priority**
+1. **Container backgrounds**: `bg-background`, `bg-card`, `bg-muted`
+2. **Interactive states**: `bg-accent`, `bg-primary`, `bg-secondary`
+3. **Text colors**: Use corresponding `-foreground` variables
+4. **Borders**: Use `border-border` with opacity variations
+
+## Maintenance and Updates
+
+### **Adding New Colors**
+1. Define in `src/index.css` using OKLCH color space
+2. Add both light and dark mode variants
+3. Use semantic naming (e.g., `--success`, `--warning`)
+4. Update this document with usage guidelines
+
+### **Refactoring Existing Colors**
+1. Replace hardcoded colors with semantic variables
+2. Maintain visual hierarchy
+3. Test in both themes
+4. Update component documentation
+
+---
+
+**Remember**: The goal is to create a consistent, maintainable, and accessible color system that guides users through the interface while maintaining visual harmony.

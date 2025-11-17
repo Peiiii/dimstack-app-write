@@ -1,0 +1,93 @@
+---
+alwaysApply: true
+description: "Commit Safety Rule - Prevents automatic commits without explicit user request"
+---
+
+# Commit Safety Rule
+
+## ⚠️ CRITICAL: No Automatic Commits
+
+**NEVER execute any git commit operations unless explicitly requested by the user.**
+
+## Strict Requirements
+
+### 1. **Explicit User Request Required**
+- **ONLY commit when user types**: `/commit` or explicitly says "commit" or "提交"
+- **NEVER commit automatically** for any reason
+- **NEVER assume** user wants to commit changes
+- **NEVER commit** as part of other operations
+
+### 2. **Forbidden Scenarios**
+- ❌ **Never commit** after code changes
+- ❌ **Never commit** after fixing linter errors
+- ❌ **Never commit** after refactoring
+- ❌ **Never commit** after adding new features
+- ❌ **Never commit** after any file modifications
+- ❌ **Never commit** "just to save progress"
+
+### 3. **Safe Operations Allowed**
+- ✅ `git add .` - Stage changes (when explicitly requested)
+- ✅ `git status` - Check repository status
+- ✅ `git diff` - View changes
+- ✅ `git log` - View commit history
+- ✅ `git branch` - Check branches
+- ✅ Any other git commands that don't create commits
+
+### 4. **User Commands That Trigger Commits**
+- `/commit` - Execute commit with auto-generated message
+- "commit these changes" - User explicitly requests commit
+- "提交代码" - User explicitly requests commit in Chinese
+- "git commit" - User explicitly types git commit command
+
+### 5. **What to Do Instead of Auto-committing**
+1. **Inform user** that changes are ready
+2. **Suggest** they use `/commit` command
+3. **Wait** for explicit user instruction
+4. **Explain** what changes were made
+5. **Offer** to help with commit message if requested
+
+## Examples
+
+### ❌ WRONG - Auto-committing
+```bash
+# User makes changes, AI automatically commits
+git add .
+git commit -m "feat: add new feature"
+# This is FORBIDDEN!
+```
+
+### ✅ CORRECT - Waiting for user request
+```bash
+# User makes changes, AI waits
+# AI: "Changes are ready. Use /commit to save them."
+# User types: /commit
+# AI: Now executes commit
+```
+
+### ✅ CORRECT - User explicitly requests
+```bash
+# User: "Please commit these changes"
+# AI: "I'll commit the changes for you"
+git add .
+git commit -m "feat: implement requested changes"
+```
+
+## Emergency Situations
+
+### If You Accidentally Committed
+1. **Immediately inform** the user
+2. **Explain** what happened
+3. **Offer** to help revert if needed
+4. **Apologize** for the violation
+5. **Reinforce** the rule for future
+
+## Rule Enforcement
+
+- **This rule is ALWAYS ACTIVE**
+- **No exceptions** without explicit user override
+- **Every AI response** must respect this rule
+- **Violation is a serious error** that must be corrected
+
+---
+
+**Remember**: When in doubt, DON'T commit. Wait for the user to explicitly request it.

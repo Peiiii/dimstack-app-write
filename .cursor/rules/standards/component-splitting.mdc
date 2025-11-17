@@ -1,0 +1,56 @@
+---
+alwaysApply: true
+---
+
+# Component Splitting Rules
+
+## Split When:
+- **>200 lines** or **>2 responsibilities**
+- **Repeated patterns** that can be extracted
+- **High complexity** affecting readability
+
+## Don't Split When:
+- **<100 lines** and **single responsibility**
+- **Tightly coupled** logic
+- **No reuse** potential
+
+## Splitting Strategy:
+
+### 1. **Current File** - Private, simple components
+```tsx
+function SubComponent() { ... }
+export function MainComponent() { ... }
+```
+
+### 2. **Independent File** - Reusable components
+```tsx
+// components/ui/button.tsx
+export function Button() { ... }
+```
+
+### 3. **Directory** - Complex modules
+```
+component-name/
+├── index.tsx          # Main component (entry point)
+├── types.ts           # Types
+├── hooks/             # Custom hooks
+└── components/        # Sub-components
+```
+
+## Upgrade to Directory When:
+- Multiple related components
+- Independent types/utils
+- Complex functionality
+- Need for testing structure
+
+## Directory Structure Rules:
+- **Main component**: Always use `index.tsx` as the entry point
+- **No duplicate files**: Never have both `component-name.tsx` and `component-name/index.tsx`
+- **Clean imports**: Import from directory path, not specific file
+- **Consistent naming**: Directory name should match the main component name
+
+## Migration Process:
+1. Create directory structure with `index.tsx`
+2. Move main component logic to `index.tsx`
+3. Delete the original `.tsx` file
+4. Update all imports to use directory path

@@ -1,0 +1,139 @@
+---
+alwaysApply: true
+description: Bus Architecture Principle - Eliminate Props Drilling
+---
+
+# Bus Architecture Principle - Eliminate Props Drilling
+
+## Core Philosophy: "Bus Direct Connection"
+
+Like the internet, we should use a "bus" architecture to eliminate props drilling and speed up information flow. Components should connect directly to the bus (stores/events) rather than passing data through multiple layers.
+
+## Architecture Hierarchy
+
+### 1. **Store State Management** (Primary)
+- Use stores for **persistent state** that needs to be shared across components
+- Use stores for **UI state** that affects multiple components
+- Use stores for **business logic state** that needs to be consistent
+
+**Examples:**
+- User authentication state
+- Current channel selection
+- UI sidebar states (open/closed)
+- Theme preferences
+- Data loading states
+
+### 2. **RxEvent Bus** (Secondary)
+- Use events for **one-time actions** and **cross-component communication**
+- Use events for **loose coupling** between distant components
+- Use events for **temporary state** that doesn't need persistence
+
+**Examples:**
+- Opening modals/dialogs
+- Triggering API calls
+- Cross-feature communication
+- User actions that need immediate response
+
+### 3. **Props** (Last Resort)
+- **ONLY** use props for **pure, reusable components**
+- **ONLY** use props when the component is **intentionally designed for reusability**
+- **ONLY** use props for **configuration** that doesn't change often
+
+**Examples:**
+- UI components (Button, Input, Modal)
+- Layout components (Container, Grid)
+- Pure presentation components
+
+## Implementation Rules
+
+### ✅ DO: Use Store for Shared State
+```typescript
+// ✅ Good: Direct store access
+const { currentChannelId, setCurrentChannel } = useNotesViewStore();
+const { isAIAssistantOpen, openAIAssistant } = useUIStateStore();
+```
+
+### ✅ DO: Use Events for Actions
+```typescript
+// ✅ Good: Event bus for actions
+rxEventBusService.requestOpenAIAssistant$.emit({ channelId });
+rxEventBusService.requestOpenSettings$.emit();
+```
+
+### ❌ AVOID: Props Drilling
+```typescript
+// ❌ Bad: Props drilling through multiple layers
+<Parent onAction={handleAction}>
+  <Child onAction={onAction}>
+    <GrandChild onAction={onAction}>
+      <GreatGrandChild onAction={onAction} />
+    </GrandChild>
+  </Child>
+</Parent>
+```
+
+### ✅ DO: Props for Pure Components
+```typescript
+// ✅ Good: Props for reusable pure components
+<Button onClick={handleClick} variant="primary" size="lg">
+  Click me
+</Button>
+
+<Modal isOpen={isOpen} onClose={onClose}>
+  Content
+</Modal>
+```
+
+## Migration Strategy
+
+### Phase 1: Identify Props Drilling
+1. Look for props passed through 3+ component layers
+2. Look for props that are just "passing through" without modification
+3. Look for props that represent shared state
+
+### Phase 2: Convert to Store
+1. Move shared state to appropriate store
+2. Update components to use store directly
+3. Remove intermediate prop passing
+
+### Phase 3: Convert to Events
+1. Convert action props to event emissions
+2. Update target components to listen to events
+3. Remove action prop chains
+
+### Phase 4: Clean Up
+1. Remove unused prop interfaces
+2. Simplify component signatures
+3. Update tests
+
+## Benefits
+
+- **Faster Development**: No need to trace prop chains
+- **Better Performance**: Direct access, no unnecessary re-renders
+- **Easier Maintenance**: Changes in one place affect all consumers
+- **Cleaner Code**: Components focus on their own logic
+- **Better Testing**: Test components in isolation with mocked stores/events
+
+## Store Organization
+
+### UI State Store
+- Sidebar states (open/closed)
+- Modal states
+- Loading states
+- View preferences
+
+### Business State Store
+- Current selections
+- User data
+- Application state
+- Cache data
+
+### Event Bus
+- User actions
+- Cross-component communication
+- Temporary notifications
+- One-time operations
+
+---
+
+**Remember**: The goal is to make components as independent as possible while maintaining clear data flow. When in doubt, prefer store over events, and events over props.

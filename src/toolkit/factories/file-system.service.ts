@@ -15,6 +15,7 @@ interface FileSystemProviderEntry {
   authority?: string;
   provider: FileSystemProvider;
   disposable: Disposable;
+  onChangeUnsub?: Disposable;
 }
 
 export class FileSystemService {
@@ -46,6 +47,20 @@ export class FileSystemService {
       disposable,
     };
 
+    // Bridge provider change events into the global file-system event bus
+    try {
+      if ((provider as any).onDidChangeFile) {
+        entry.onChangeUnsub = (provider as any).onDidChangeFile((changes) => {
+          if (Array.isArray(changes) && changes.length) {
+            this.onDidChangeFileEmitter.fire(changes);
+          }
+        });
+      }
+    } catch (e) {
+      // Silently ignore providers without event support
+      console.warn(`[fs] failed to bridge onDidChangeFile for provider '${id}':`, e);
+    }
+
     if (this.providers.some((entry) => entry.id === id)) {
       if (options.overwrite) {
         this.unregisterProvider(id);
@@ -64,7 +79,12 @@ export class FileSystemService {
     const index = this.providers.findIndex((entry) => entry.id === id);
     if (index !== -1) {
       const entry = this.providers.splice(index, 1)[0];
-      entry.disposable.dispose();
+      try {
+        entry.onChangeUnsub?.dispose();
+      } catch {}
+      try {
+        entry.disposable.dispose();
+      } catch {}
     }
   }
 

@@ -1,0 +1,150 @@
+---
+alwaysApply: false
+---
+
+# Multi-Solution Comparison & Recommendation System
+
+## Overview
+This rule provides a structured approach to analyze multiple technical solutions and determine the optimal recommendation. Use this when the user requests multiple solutions or when comparing different approaches.
+
+## Process Flow
+
+### 1. **Solution Analysis Phase**
+- Identify the core problem/requirement
+- Generate 2-4 distinct solution approaches
+- Analyze each solution systematically
+
+### 2. **Evaluation Framework**
+For each solution, evaluate:
+- **Technical Feasibility** (1-5 scale)
+- **Maintainability** (1-5 scale)  
+- **Performance Impact** (1-5 scale)
+- **Development Time** (1-5 scale)
+- **Reusability** (1-5 scale)
+- **Risk Level** (Low/Medium/High)
+
+### 3. **Solution Presentation Format**
+
+#### Solution A: [Name]
+**Approach:** Brief description
+**Pros:**
+- Point 1
+- Point 2
+- Point 3
+
+**Cons:**
+- Point 1
+- Point 2
+
+**Technical Details:**
+- Implementation approach
+- Key technologies/components
+- Estimated effort
+
+**Risk Assessment:** [Low/Medium/High]
+
+---
+
+#### Solution B: [Name]
+[Same format as above]
+
+---
+
+### 4. **Recommendation Matrix**
+
+| Solution | Feasibility | Maintainability | Performance | Dev Time | Reusability | Risk | **Total Score** |
+|----------|-------------|------------------|-------------|----------|-------------|------|-----------------|
+| Solution A | X/5 | X/5 | X/5 | X/5 | X/5 | Low | **XX/25** |
+| Solution B | X/5 | X/5 | X/5 | X/5 | X/5 | Medium | **XX/25** |
+
+### 5. **Final Recommendation**
+**🏆 Recommended Solution:** [Solution Name]
+
+**Why This Solution:**
+- Primary reason
+- Secondary reason
+- Long-term benefits
+
+**Implementation Priority:** [High/Medium/Low]
+**Estimated Timeline:** [Time estimate]
+**Next Steps:** [Immediate actions]
+
+## Usage Examples
+
+### Example 1: Component Architecture
+**Problem:** Need to create a reusable button component system
+
+**Solutions:**
+1. **Atomic Design Pattern** - Create base button + variants
+2. **Compound Component Pattern** - Button + Button.Icon + Button.Text
+3. **Render Props Pattern** - Flexible but complex
+4. **HOC Pattern** - Higher-order component wrapper
+
+### Example 2: State Management
+**Problem:** Choose state management for a React app
+
+**Solutions:**
+1. **useState + useContext** - Simple, built-in
+2. **Zustand** - Lightweight, simple API
+3. **Redux Toolkit** - Powerful, established
+4. **Jotai** - Atomic, React-focused
+
+## Response Template
+
+```
+## 🔍 Problem Analysis
+[Brief problem description]
+
+## 🚀 Solution Comparison
+
+### Solution A: [Name]
+**Approach:** [Description]
+**Pros:** [List]
+**Cons:** [List]
+**Technical Details:** [Implementation details]
+**Risk Assessment:** [Low/Medium/High]
+
+### Solution B: [Name]
+[Same format]
+
+### Solution C: [Name]
+[Same format]
+
+## 📊 Evaluation Matrix
+
+| Solution | Feasibility | Maintainability | Performance | Dev Time | Reusability | Risk | **Total Score** |
+|----------|-------------|------------------|-------------|----------|-------------|------|-----------------|
+| Solution A | X/5 | X/5 | X/5 | X/5 | X/5 | Low | **XX/25** |
+| Solution B | X/5 | X/5 | X/5 | X/5 | X/5 | Medium | **XX/25** |
+| Solution C | X/5 | X/5 | X/5 | X/5 | X/5 | High | **XX/25** |
+
+## 🏆 Final Recommendation
+
+**Recommended Solution:** [Solution Name]
+
+**Why This Solution:**
+- [Primary reason]
+- [Secondary reason]
+- [Long-term benefits]
+
+**Implementation Priority:** [High/Medium/Low]
+**Estimated Timeline:** [Time estimate]
+**Next Steps:** [Immediate actions]
+```
+
+## Key Principles
+
+1. **Always provide 2-4 solutions** - Don't overwhelm with too many options
+2. **Use consistent evaluation criteria** - Apply the same framework to all solutions
+3. **Quantify when possible** - Use 1-5 scales and risk levels
+4. **Consider long-term implications** - Think beyond immediate implementation
+5. **Provide clear next steps** - Give actionable guidance after recommendation
+6. **Balance technical and business factors** - Consider both technical merit and practical constraints
+
+## When to Use
+
+- **Architecture decisions** - Component structure, state management, data flow
+- **Technology selection** - Libraries, frameworks, tools
+- **Implementation approaches** - Different ways to solve the same problem
+- **Refactoring strategies** - Multiple paths to improve existing code
+- **Performance optimization** - Different approaches to improve speed/efficiency

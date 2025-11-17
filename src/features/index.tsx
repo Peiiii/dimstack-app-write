@@ -2,6 +2,7 @@ import { pluginAddInitialIndexedDbSpace } from "@/features/add-initial-indexed-d
 import { bindSpaceWithRoute } from "@/features/bind-space-with-route";
 import { pluginForProviders } from "@/features/providers";
 import { ShowCurrentSpacePagesOnly } from "@/features/show-current-space-pages-only";
+import { featureSearch } from "@/features/search";
 import { createPlugin } from "xbook/common/createPlugin";
 
 export default createPlugin({
@@ -10,6 +11,7 @@ export default createPlugin({
       pluginForProviders,
       bindSpaceWithRoute,
       ShowCurrentSpacePagesOnly,
+      featureSearch,
       pluginAddInitialIndexedDbSpace,
     ]);
   },

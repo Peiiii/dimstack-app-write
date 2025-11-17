@@ -205,5 +205,29 @@
     "title": "GitNote - 基于 Git 的智能笔记协作平台",
     "description": "GitNote 是一个基于 Git 的智能笔记平台，支持 Markdown 编辑、版本控制、多人协作。无缝对接 GitHub/Gitee，让知识管理更简单。",
     "keywords": "Git笔记,Markdown编辑器,知识管理,团队协作,版本控制,开源笔记,智能写作,文档管理"
+  },
+  "search": {
+    "placeholder": "搜索文件或内容…",
+    "selectSpaceFirst": "先选择空间",
+    "searching": "搜索中…",
+    "results": "个结果",
+    "noSpace": "请先选择一个空间",
+    "noQuery": "输入关键词搜索文件或内容",
+    "noQueryDesc": "支持文件名和内容搜索",
+    "noResults": "未找到匹配结果",
+    "noResultsDesc": "尝试使用其他关键词或重建索引",
+    "reindex": "重建索引",
+    "indexing": "正在索引",
+    "indexStale": "索引可能已过期，点击接受当前基线",
+    "indexNormal": "索引状态正常",
+    "navigation": "导航",
+    "open": "打开",
+    "close": "关闭",
+    "openSearch": "打开搜索",
+    "openFile": "打开 {{path}}",
+    "noFocusedSpaceToIndex": "没有聚焦的空间可索引",
+    "noFocusedSpaceToSearch": "没有聚焦的空间可搜索",
+    "indexedSuccess": "已索引 {{indexed}}，已移除 {{removed}}",
+    "foundHits": "找到 {{total}} 个匹配 '{{query}}' 的结果"
   }
 }

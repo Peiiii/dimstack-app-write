@@ -205,5 +205,29 @@
     "title": "GitNote - Git-based Intelligent Note Collaboration Platform",
     "description": "GitNote is a Git-based intelligent note platform that supports Markdown editing, version control, and multi-user collaboration. Seamlessly integrates with GitHub/Gitee to make knowledge management easier.",
     "keywords": "Git notes,Markdown editor,knowledge management,team collaboration,version control,open source notes,smart writing,document management"
+  },
+  "search": {
+    "placeholder": "Search files or content…",
+    "selectSpaceFirst": "Select a space first",
+    "searching": "Searching…",
+    "results": "results",
+    "noSpace": "Please select a space first",
+    "noQuery": "Enter keywords to search files or content",
+    "noQueryDesc": "Supports filename and content search",
+    "noResults": "No matching results found",
+    "noResultsDesc": "Try using different keywords or rebuild index",
+    "reindex": "Rebuild Index",
+    "indexing": "Indexing",
+    "indexStale": "Index may be outdated, click to accept current baseline",
+    "indexNormal": "Index status normal",
+    "navigation": "Navigate",
+    "open": "Open",
+    "close": "Close",
+    "openSearch": "Open Search",
+    "openFile": "Open {{path}}",
+    "noFocusedSpaceToIndex": "No focused space to index",
+    "noFocusedSpaceToSearch": "No focused space to search",
+    "indexedSuccess": "Indexed {{indexed}}, removed {{removed}}",
+    "foundHits": "Found {{total}} hits for '{{query}}'"
   }
 }

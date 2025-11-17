@@ -1,0 +1,99 @@
+---
+alwaysApply: true
+description: Code organization standards for lib/ vs features/ directories
+---
+
+# Code Organization Standards: lib/ vs features/ Directory Structure
+
+## Core Rule
+
+**`lib/`**: Technical universality + Framework universality  
+**`features/`**: Business specificity + Functional completeness
+
+## Quick Decision Tree
+
+Ask these two questions:
+1. **Can this be used in other projects directly?**
+2. **Does it require business logic modifications?**
+
+**Answers:**
+- ✅ **Yes + No** → `lib/`
+- ✅ **Yes + Yes** → `features/`
+- ❌ **No** → `features/`
+
+## lib/ Criteria
+
+- [ ] **Technically universal**: Works in any React project
+- [ ] **Framework universal**: Works with same tech stack
+- [ ] **No business dependencies**: No domain-specific logic
+- [ ] **Independently extractable**: Can become npm package
+- [ ] **Single responsibility**: Technical concerns only
+- [ ] **No business fields**: No domain-specific data structures
+
+## features/ Criteria
+
+- [ ] **Business specific**: Contains domain logic
+- [ ] **Functionally complete**: Implements business features
+- [ ] **Business rules**: Contains domain constraints
+- [ ] **Domain models**: Contains business data structures
+- [ ] **Business context**: Depends on specific business context
+- [ ] **Business fields**: Contains domain-specific fields
+
+## Examples
+
+### ✅ lib/ Components
+```typescript
+// Pure technical components
+<Button variant="primary">Click</Button>
+<ContentCard content="text" variant="success" />
+<DisplayToolPanel invocation={invocation}>Content</DisplayToolPanel>
+
+// Technical utilities
+export const formatDate = (date: Date) => date.toISOString()
+export const debounce = (fn: Function, delay: number) => { ... }
+```
+
+### ✅ features/ Components
+```typescript
+// Business domain components
+<NoteContent 
+  content={note.content}
+  metadata={{ noteId, timestamp, contentLength }}
+/>
+
+// Business feature implementations
+<CreateNoteToolRenderer 
+  invocation={invocation}
+  channelId={channelId}
+/>
+
+// Business utilities
+export const validateNoteContent = (content: string) => { ... }
+```
+
+## Directory Structure
+
+```
+src/common/
+├── lib/                    # Technical universality
+│   ├── ui/                 # Base UI components
+│   ├── agent-tools-ui/     # Framework-specific UI
+│   ├── editor/             # Technical domain
+│   └── utils/              # Technical utilities
+└── features/               # Business specificity
+    ├── notes/              # Business domain
+    ├── ai-assistant/       # Business feature
+    └── agent-tools/        # Business components
+```
+
+## Naming Conventions
+
+- **lib/**: Technology-oriented (`agent-tools-ui`, `editor`, `auth-utils`)
+- **features/**: Business-oriented (`notes`, `ai-assistant`, `user-management`)
+
+## Key Principles
+
+1. **Avoid over-abstraction**: Don't force abstraction just to fit in `lib/`
+2. **Maintain clear boundaries**: `lib/` components shouldn't depend on `features/`
+3. **Consider future extraction**: `lib/` components should be independently extractable
+4. **Document thoroughly**: Each `lib/` component needs clear usage documentation
