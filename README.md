@@ -4,6 +4,9 @@
 
 GitNote is a Git-based note-taking platform that makes knowledge management simple and efficient.
 
+## Demo
+Try it online: https://write.dimstack.com/
+
 ## Core Features
 
 ### ✍️ Typora & Notion-like Editing Experience
@@ -39,9 +42,6 @@ pnpm dev
 ```
 
 Visit http://localhost:5173/
-
-## Demo
-Try it online: https://write.dimstack.com/
 
 ## Use Cases
 

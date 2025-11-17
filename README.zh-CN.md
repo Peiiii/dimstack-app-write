@@ -4,6 +4,9 @@
 
 GitNote 是一个基于 Git 的笔记平台，让知识管理更简单高效。
 
+## Demo
+在线体验: https://write.dimstack.com/
+
 ## 核心特性
 
 ### ✍️ Typora & Notion 风格的编辑体验
@@ -39,9 +42,6 @@ pnpm dev
 ```
 
 访问 http://localhost:5173/
-
-## Demo
-在线体验: https://write.dimstack.com/
 
 ## 使用场景
 
