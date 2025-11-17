@@ -1,35 +1,43 @@
 # GitNote
 
-> 用 Git 的方式，管理你的知识
+> Manage your knowledge the Git way
 
-GitNote 是一个基于 Git 的笔记平台，让知识管理更简单高效。
+GitNote is a Git-based note-taking platform that makes knowledge management simple and efficient.
 
-## 核心特性
+## Core Features
 
-### 🔄 Git 集成
-- 无缝对接 GitHub/Gitee 仓库
+### ✍️ Typora & Notion-like Editing Experience
+- WYSIWYG Markdown editor with live preview
+- Slash commands for quick formatting
+- Support for mathematical formulas, charts, and code highlighting
+- Intuitive and elegant writing experience
 
-### ✍️ 专业编辑
-- 所见即所得的 Markdown 编辑器
-- 支持数学公式、图表、代码高亮
-- 简洁优雅的写作体验
+### 🔄 Direct Git Repository Connection
+- Direct connection to GitHub/Gitee repositories
+- No intermediate storage, work directly with your repos
 
-### 🔌 拓展性强
+### 📂 Enhanced Repository Reader
+- Open and view code files with syntax highlighting
+- Better repository browsing experience than traditional Git clients
+- Navigate your codebase with ease
 
-- 基于插件架构，支持自定义插件
+### 🎨 VS Code-like Interface
+- Familiar sidebar, editor, and panel layout
+- Customizable workspace for your workflow
+- Professional development environment
 
-## 快速开始
+## Quick Start
 
 ```shell
 pnpm i
 pnpm dev
 ```
 
-访问 http://localhost:5173/
+Visit http://localhost:5173/
 
 ## Demo
-在线体验: https://write.dimstack.com/
+Try it online: https://write.dimstack.com/
 
-## 使用场景
+## Use Cases
 
-- 👨‍💻 开发者：像管理代码一样管理笔记，让知识管理更简单高效。
+- 👨‍💻 Developers: Manage notes like code, making knowledge management simple and efficient.
