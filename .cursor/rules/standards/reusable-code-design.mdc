@@ -1,0 +1,68 @@
+# 可复用代码设计规范
+
+## 1. 函数参数设计规范
+
+### 优先使用对象参数风格
+- **推荐**: 使用对象参数 `{ option1, option2 }` 而非多个位置参数
+- **优势**: 参数顺序无关、可读性强、易于扩展、向后兼容
+
+### 设计原则
+```typescript
+// ✅ 推荐：对象参数风格
+function scrollToBottom(options: { smooth?: boolean; duration?: number } = {}) {
+    const { smooth = false, duration = 300 } = options;
+    // 实现逻辑
+}
+
+// 调用方式
+scrollToBottom()                           // 使用默认值
+scrollToBottom({ smooth: true })           // 部分参数
+scrollToBottom({ smooth: true, duration: 500 }) // 完整参数
+```
+
+### 参数接口设计
+```typescript
+interface ScrollOptions {
+    smooth?: boolean;      // 是否平滑滚动
+    duration?: number;     // 滚动持续时间
+}
+
+function scrollToBottom(options: ScrollOptions = {}) {
+    const { smooth = false, duration = 300 } = options;
+    // 实现逻辑
+}
+```
+
+### 向后兼容性
+- 新参数必须有默认值
+- 旧代码调用方式保持不变
+- 支持渐进式功能增强
+
+### 实际应用示例
+```typescript
+// Hook中的使用
+export const useChatScroll = (deps: unknown[] = [], options: { smoothScroll?: boolean } = {}) => {
+    const handleScrollToBottom = () => {
+        scrollToBottom({ smooth: options.smoothScroll });
+    };
+    return { handleScrollToBottom };
+};
+
+// 组件中的调用
+const { handleScrollToBottom } = useChatScroll(
+    [currentChannelId, messages.length], 
+    { smoothScroll: true }
+);
+```
+
+## 检查清单
+函数参数设计检查：
+- [ ] 是否使用了对象参数风格？
+- [ ] 参数接口是否清晰定义？
+- [ ] 是否提供了合理的默认值？
+- [ ] 是否保持了向后兼容性？
+
+---
+alwaysApply: true
+description: 可复用代码设计规范，包括函数参数设计、组件设计等最佳实践
+---

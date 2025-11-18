@@ -1,0 +1,88 @@
+---
+alwaysApply: true
+description: "Never add comments unless explicitly requested by user"
+---
+
+# No Comments Rule
+
+## ⚠️ CRITICAL: Never Add Comments
+
+**NEVER add comments to code unless the user explicitly requests it.**
+
+## Strict Requirements
+
+### 1. **No Automatic Comments**
+- **NEVER add comments** automatically for any reason
+- **NEVER add comments** to explain code logic
+- **NEVER add comments** to document functions or components
+- **NEVER add comments** to improve code readability
+- **NEVER add comments** as part of refactoring or optimization
+
+### 2. **Only Add Comments When**
+- User explicitly says "add comments" or "添加注释"
+- User specifically requests documentation
+- User asks for code explanation in comments
+- User uses commands like `/comment` or `/document`
+
+### 3. **What Counts as Comments**
+- `// Single line comments`
+- `/* Multi-line comments */`
+- `/** JSDoc comments */`
+- `# Shell comments`
+- `<!-- HTML comments -->`
+- `/* CSS comments */`
+- Any text meant to explain code without affecting functionality
+
+### 4. **Code Quality Without Comments**
+- Write self-documenting code with clear variable names
+- Use descriptive function and component names
+- Structure code logically and clearly
+- Use TypeScript types for better code understanding
+- Follow established naming conventions
+
+### 5. **Examples**
+
+#### ❌ WRONG - Adding comments automatically
+```typescript
+// This function calculates the total price
+function calculateTotal(price: number, tax: number): number {
+  // Add tax to the base price
+  return price + tax;
+}
+```
+
+#### ✅ CORRECT - No comments unless requested
+```typescript
+function calculateTotal(price: number, tax: number): number {
+  return price + tax;
+}
+```
+
+#### ✅ CORRECT - Only when user requests
+```typescript
+// User requested: "add comments to explain this function"
+function calculateTotal(price: number, tax: number): number {
+  // Calculate the total price including tax
+  return price + tax;
+}
+```
+
+## Rule Enforcement
+
+- **This rule is ALWAYS ACTIVE**
+- **No exceptions** without explicit user override
+- **Every code change** must respect this rule
+- **Violation is a serious error** that must be corrected
+
+## User Override Commands
+
+When user explicitly requests comments:
+- "add comments" or "添加注释"
+- "document this code"
+- "explain in comments"
+- "add JSDoc comments"
+- Any explicit comment request
+
+---
+
+**Remember**: Clean, self-documenting code is better than commented code. Only add comments when the user specifically asks for them.

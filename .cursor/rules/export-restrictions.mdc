@@ -1,0 +1,121 @@
+---
+alwaysApply: true
+description: "Export restrictions and API design principles"
+---
+
+# Export Restrictions - Avoid Unnecessary API Exposure
+
+## Core Principle: Only Export What's Actually Used
+
+**NEVER export anything that is not used by external consumers.** This prevents API bloat, reduces maintenance burden, and keeps interfaces clean.
+
+## Export Decision Rules
+
+### ✅ **DO Export When:**
+- **External Usage Confirmed**: Component/service is imported and used by other modules
+- **Public API**: Intentionally designed for external consumption
+- **Reusable Utilities**: Generic functions that multiple modules need
+- **Type Definitions**: Types that external consumers need for type safety
+
+### ❌ **DON'T Export When:**
+- **Internal Implementation**: Only used within the same module/feature
+- **Single Use**: Only used in one place
+- **Implementation Details**: Internal helpers, utilities, or intermediate functions
+- **Unused Code**: No external references found
+
+## Implementation Guidelines
+
+### 1. **Index Files (.tsx/.ts)**
+```typescript
+// ❌ BAD: Exporting everything
+export { InternalHelper } from './internal-helper';
+export { UnusedUtility } from './unused-utility';
+export { PublicAPI } from './public-api';
+
+// ✅ GOOD: Only export what's actually used
+export { PublicAPI } from './public-api';
+// InternalHelper and UnusedUtility are not exported
+```
+
+### 2. **Service Classes**
+```typescript
+// ❌ BAD: Exporting internal methods
+export class MyService {
+  public processData() { /* used externally */ }
+  public internalHelper() { /* only used internally */ }
+  public debugMethod() { /* never used */ }
+}
+
+// ✅ GOOD: Only export public API
+export class MyService {
+  public processData() { /* used externally */ }
+  private internalHelper() { /* only used internally */ }
+  // debugMethod removed or made private
+}
+```
+
+### 3. **Component Exports**
+```typescript
+// ❌ BAD: Exporting internal components
+export { MainComponent } from './main-component';
+export { InternalSubComponent } from './internal-sub-component';
+export { UnusedHelper } from './unused-helper';
+
+// ✅ GOOD: Only export public components
+export { MainComponent } from './main-component';
+// InternalSubComponent and UnusedHelper are not exported
+```
+
+## Verification Process
+
+### Before Adding Exports:
+1. **Search Usage**: Use `grep` or IDE search to find actual usage
+2. **Check Imports**: Verify the item is imported elsewhere
+3. **Review Dependencies**: Ensure it's not just internal to the module
+4. **Document Purpose**: If exporting, document why it's part of the public API
+
+### Regular Cleanup:
+1. **Audit Exports**: Periodically review what's exported vs. what's used
+2. **Remove Unused**: Delete exports that have no external references
+3. **Refactor Internals**: Move unused exports to internal modules
+4. **Update Documentation**: Keep API documentation current
+
+## Examples from Codebase
+
+### Context Feature Exports
+```typescript
+// ✅ GOOD: Only exports what's actually used externally
+export { contextDataCache } from './services/context-data-cache';        // Used by ai-conversation-chat.tsx
+export { channelContextManager } from './services/channel-context-manager'; // Used by ai-agent-factory.ts
+export { sessionContextManager } from './services/session-context-manager'; // Used by ai-agent-factory.ts
+export { ConversationContextControl } from './components/conversation-context-control'; // Used by mobile/desktop
+```
+
+### Avoid Over-Exporting
+```typescript
+// ❌ BAD: Don't export internal utilities unless needed
+export { useContextStatusStore } from './stores/context-status.store'; // Only used internally
+export { ChannelContextSnapshot } from './services/context-data-cache'; // Type only used internally
+
+// ✅ GOOD: Only export what external consumers need
+// useContextStatusStore and ChannelContextSnapshot are not exported
+```
+
+## Benefits
+
+- **Cleaner APIs**: Easier to understand and use
+- **Reduced Coupling**: Less dependencies between modules
+- **Better Maintainability**: Fewer breaking changes when refactoring
+- **Improved Performance**: Smaller bundle sizes
+- **Clear Boundaries**: Obvious separation between public and private APIs
+
+## Enforcement
+
+- **Code Reviews**: Always check if new exports are actually needed
+- **Linting Rules**: Use tools to detect unused exports
+- **Documentation**: Document the public API clearly
+- **Regular Audits**: Periodically review and clean up exports
+
+---
+
+**Remember**: A good API is one that exports only what's necessary. When in doubt, don't export it.

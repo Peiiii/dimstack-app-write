@@ -1,0 +1,293 @@
+---
+alwaysApply: true
+description: "Component Architecture Principles - Separation of concerns and clean architecture"
+---
+
+# 组件架构原则
+
+## 核心原则：关注点分离
+
+### 🎯 **纯展示组件（Pure Presentation Components）**
+
+纯展示组件必须保持无状态，不应该直接引用任何 store 或全局状态。
+
+#### ✅ **正确做法**
+```tsx
+// ✅ 纯展示组件：通过 props 接收所有数据
+interface CollapsibleSidebarProps {
+  collapsed?: boolean;
+  onCollapseChange?: (collapsed: boolean) => void;
+  children: ReactNode;
+}
+
+export const CollapsibleSidebar = ({ 
+  collapsed, 
+  onCollapseChange, 
+  children 
+}: CollapsibleSidebarProps) => {
+  // 只处理 UI 逻辑，不引用任何 store
+  const [internalState, setInternalState] = useState(false);
+  const isCollapsed = collapsed ?? internalState;
+  
+  return (
+    <div className={isCollapsed ? "collapsed" : "expanded"}>
+      {children}
+    </div>
+  );
+};
+```
+
+#### ❌ **错误做法**
+```tsx
+// ❌ 纯展示组件直接引用 store
+import { useViewStateStore } from "@/core/stores/view-state.store";
+
+export const CollapsibleSidebar = ({ children }: Props) => {
+  // 违反原则：纯展示组件不应该知道 store 的存在
+  const { isCollapsed, toggleSidebar } = useViewStateStore();
+  
+  return <div>{children}</div>;
+};
+```
+
+### 🔄 **容器组件（Container Components）**
+
+容器组件负责连接 store 和纯展示组件，处理业务逻辑和状态管理。
+
+#### ✅ **正确做法**
+```tsx
+// ✅ 容器组件：连接 store 和纯展示组件
+export const LeftSidebar = ({ children }: Props) => {
+  const { isCollapsed, setCollapsed } = useViewStateStore();
+  
+  const handleCollapseChange = (collapsed: boolean) => {
+    setCollapsed(collapsed);
+  };
+
+  return (
+    <CollapsibleSidebar
+      collapsed={isCollapsed}
+      onCollapseChange={handleCollapseChange}
+    >
+      {children}
+    </CollapsibleSidebar>
+  );
+};
+```
+
+## 组件分层架构
+
+### 第一层：UI 组件 (Pure Presentation)
+- **职责**：纯 UI 渲染，样式控制
+- **特征**：无业务逻辑，通过 props 接收数据
+- **位置**：`@/common/components/ui/`
+- **示例**：Button, Input, Modal, Card
+
+```tsx
+// ✅ UI 组件示例
+export const Button = ({ 
+  variant, 
+  size, 
+  onClick, 
+  children 
+}: ButtonProps) => (
+  <button 
+    className={buttonVariants({ variant, size })}
+    onClick={onClick}
+  >
+    {children}
+  </button>
+);
+```
+
+### 第二层：业务组件 (Business Components)  
+- **职责**：特定业务逻辑的展示
+- **特征**：可能包含轻量业务逻辑，但不直接访问全局状态
+- **位置**：`@/common/components/`
+- **示例**：CollapsibleSidebar, MessageTimeline, ChannelItem
+
+```tsx
+// ✅ 业务组件示例
+export const CollapsibleSidebar = ({ 
+  collapsed, 
+  onCollapseChange 
+}: Props) => {
+  // 内部状态管理，但不访问全局 store
+  const [internalState, setInternalState] = useState(false);
+  
+  return <div>{/* UI 逻辑 */}</div>;
+};
+```
+
+### 第三层：容器组件 (Container Components)
+- **职责**：连接 store，处理数据获取和状态管理
+- **特征**：访问全局状态，协调多个组件
+- **位置**：`@/desktop/features/[feature]/components/`
+- **示例**：LeftSidebar, ChatLayout, MessageContainer
+
+```tsx
+// ✅ 容器组件示例
+export const LeftSidebar = ({ children }: Props) => {
+  const { isCollapsed, setCollapsed } = useViewStateStore();
+  const { channels } = useChatDataStore();
+  
+  return (
+    <CollapsibleSidebar 
+      collapsed={isCollapsed}
+      onCollapseChange={setCollapsed}
+    >
+      {children}
+    </CollapsibleSidebar>
+  );
+};
+```
+
+### 第四层：页面组件 (Page Components)
+- **职责**：页面级别的布局和数据编排
+- **特征**：组合多个容器组件，处理路由
+- **位置**：`@/desktop/features/[feature]/pages/`
+- **示例**：ChatPage, SettingsPage, DashboardPage
+
+```tsx
+// ✅ 页面组件示例
+export const ChatPage = () => {
+  return (
+    <ChatLayout
+      sidebar={<LeftSidebar><ChannelList /></LeftSidebar>}
+      content={<ChatContent />}
+      rightSidebar={<ThreadSidebar />}
+    />
+  );
+};
+```
+
+## 数据流向原则
+
+### 📥 **向下传递数据（Props Down）**
+```tsx
+// Store → Container → Business Component → UI Component
+Store (useViewStateStore)
+  ↓ props
+Container (LeftSidebar) 
+  ↓ props
+Business Component (CollapsibleSidebar)
+  ↓ props  
+UI Component (Button)
+```
+
+### 📤 **向上传递事件（Events Up）**
+```tsx
+// UI Component → Business Component → Container → Store
+UI Component (onClick)
+  ↑ event
+Business Component (onCollapseChange)
+  ↑ event
+Container (handleCollapseChange)
+  ↑ store action
+Store (setCollapsed)
+```
+
+## Store 使用规则
+
+### ✅ **允许使用 Store 的组件**
+1. **容器组件**：直接连接 store 和展示组件
+2. **页面组件**：页面级别的状态管理
+3. **业务钩子**：custom hooks 可以封装 store 逻辑
+
+### ❌ **禁止使用 Store 的组件**
+1. **UI 组件**：`@/common/components/ui/` 下的所有组件
+2. **纯展示组件**：只负责渲染的业务组件
+3. **第三方组件封装**：对外部库的简单封装
+
+### 🔧 **Store 使用示例**
+
+#### ✅ **正确：在容器组件中使用**
+```tsx
+// src/desktop/features/chat/components/sidebar/left-sidebar.tsx
+export const LeftSidebar = () => {
+  const { isCollapsed, setCollapsed } = useViewStateStore(); // ✅ 容器组件可以使用
+  
+  return (
+    <CollapsibleSidebar 
+      collapsed={isCollapsed}
+      onCollapseChange={setCollapsed}
+    />
+  );
+};
+```
+
+#### ❌ **错误：在纯展示组件中使用**
+```tsx
+// src/common/components/collapsible-sidebar/collapsible-sidebar.tsx
+export const CollapsibleSidebar = () => {
+  const { isCollapsed } = useViewStateStore(); // ❌ 纯展示组件不能使用 store
+  
+  return <div />;
+};
+```
+
+#### ✅ **正确：通过自定义 Hook 封装**
+```tsx
+// src/desktop/features/chat/hooks/use-sidebar-state.ts
+export const useSidebarState = () => {
+  const { isCollapsed, setCollapsed } = useViewStateStore();
+  
+  return {
+    isCollapsed,
+    toggleSidebar: () => setCollapsed(!isCollapsed),
+    collapseSidebar: () => setCollapsed(true),
+    expandSidebar: () => setCollapsed(false),
+  };
+};
+```
+
+## 组件测试策略
+
+### UI 组件测试
+- **工具**：@testing-library/react
+- **重点**：Props 渲染、交互事件、样式状态
+- **Mock**：不需要 mock store
+
+### 业务组件测试  
+- **工具**：@testing-library/react + jest
+- **重点**：业务逻辑、状态变化、回调触发
+- **Mock**：Mock 外部依赖，不 mock store
+
+### 容器组件测试
+- **工具**：@testing-library/react + MSW
+- **重点**：Store 集成、数据流、用户交互
+- **Mock**：Mock store 或使用真实 store
+
+## 重构指导
+
+### 识别需要重构的组件
+1. **混合职责**：同时处理 UI 和状态管理
+2. **直接访问 Store**：纯展示组件引用 store
+3. **复杂依赖**：组件依赖过多外部状态
+
+### 重构步骤
+1. **分析职责**：识别 UI 逻辑和业务逻辑
+2. **提取状态**：将 store 逻辑移到容器组件
+3. **定义接口**：明确 props 和回调接口
+4. **逐步迁移**：保持向后兼容性
+5. **更新测试**：调整测试策略
+
+## 最佳实践检查清单
+
+### 新组件开发
+- [ ] 明确组件职责和分层
+- [ ] UI 组件不引用任何 store
+- [ ] 容器组件负责状态管理
+- [ ] Props 接口设计合理
+- [ ] 事件回调命名清晰
+
+### 代码审查要点
+- [ ] 组件分层是否清晰
+- [ ] Store 使用是否合规
+- [ ] Props 设计是否合理
+- [ ] 是否违反单一职责原则
+- [ ] 测试策略是否适当
+
+---
+
+**记住**：好的组件架构是可测试、可复用、可维护的。遵循这些原则可以让代码更加清晰和健壮。

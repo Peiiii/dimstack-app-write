@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <script>self["MonacoEnvironment"] = (function (paths) {
+          return {
+            globalAPI: false,
+            getWorkerUrl : function (moduleId, label) {
+              var result =  paths[label];
+              if (/^((http:)|(https:)|(file:)|(\/\/))/.test(result)) {
+                var currentUrl = String(window.location);
+                var currentOrigin = currentUrl.substr(0, currentUrl.length - window.location.hash.length - window.location.search.length - window.location.pathname.length);
+                if (result.substring(0, currentOrigin.length) !== currentOrigin) {
+                  var js = '/*' + label + '*/importScripts("' + result + '");';
+                  var blob = new Blob([js], { type: 'application/javascript' });
+                  return URL.createObjectURL(blob);
+                }
+              }
+              return result;
+            }
+          };
+        })({
+  "editorWorkerService": "/monacoeditorwork/editor.worker.bundle.js",
+  "css": "/monacoeditorwork/css.worker.bundle.js",
+  "html": "/monacoeditorwork/html.worker.bundle.js",
+  "json": "/monacoeditorwork/json.worker.bundle.js",
+  "typescript": "/monacoeditorwork/ts.worker.bundle.js",
+  "javascript": "/monacoeditorwork/ts.worker.bundle.js",
+  "less": "/monacoeditorwork/css.worker.bundle.js",
+  "scss": "/monacoeditorwork/css.worker.bundle.js",
+  "handlebars": "/monacoeditorwork/html.worker.bundle.js",
+  "razor": "/monacoeditorwork/html.worker.bundle.js"
+});</script>
+
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="shortcut icon" type="image/png" href="/logo.png" />
+    <link rel="apple-touch-icon" type="image/png" href="/logo.png" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f1f1f1" />
+    <title>GitNote - 基于 Git 的智能笔记协作平台</title>
+    <meta name="description" content="GitNote 是一个基于 Git 的智能笔记平台，支持 Markdown 编辑、版本控制、多人协作。无缝对接 GitHub/Gitee，让知识管理更简单。" />
+    <meta name="keywords" content="Git笔记,Markdown编辑器,知识管理,团队协作,版本控制,开源笔记,智能写作,文档管理" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="GitNote - 基于 Git 的智能笔记协作平台" />
+    <meta property="og:description" content="GitNote 是一个基于 Git 的智能笔记平台，支持 Markdown 编辑、版本控制、多人协作。无缝对接 GitHub/Gitee，让知识管理更简单。" />
+    <meta property="og:image" content="/logo.png" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="GitNote - 基于 Git 的智能笔记协作平台" />
+    <meta name="twitter:description" content="GitNote 是一个基于 Git 的智能笔记平台，支持 Markdown 编辑、版本控制、多人协作。无缝对接 GitHub/Gitee，让知识管理更简单。" />
+    <meta name="twitter:image" content="/logo.png" />
+
+    <script>
+      (function() {
+        const getInitialLanguage = () => {
+          try {
+            const stored = localStorage.getItem('i18nextLng');
+            if (stored && (stored === 'zh' || stored === 'en')) {
+              return stored;
+            }
+          } catch (e) {
+            // localStorage not available
+          }
+          
+          const browserLang = navigator.language || navigator.userLanguage || '';
+          if (browserLang.startsWith('zh')) {
+            return 'zh';
+          }
+          return 'en';
+        };
+
+        const translations = {
+          zh: {
+            title: 'GitNote - 基于 Git 的智能笔记协作平台',
+            description: 'GitNote 是一个基于 Git 的智能笔记平台，支持 Markdown 编辑、版本控制、多人协作。无缝对接 GitHub/Gitee，让知识管理更简单。',
+            keywords: 'Git笔记,Markdown编辑器,知识管理,团队协作,版本控制,开源笔记,智能写作,文档管理'
+          },
+          en: {
+            title: 'GitNote - Git-based Intelligent Note Collaboration Platform',
+            description: 'GitNote is a Git-based intelligent note platform that supports Markdown editing, version control, and multi-user collaboration. Seamlessly integrates with GitHub/Gitee to make knowledge management easier.',
+            keywords: 'Git notes,Markdown editor,knowledge management,team collaboration,version control,open source notes,smart writing,document management'
+          }
+        };
+
+        const lang = getInitialLanguage();
+        const t = translations[lang];
+        const htmlLang = lang === 'zh' ? 'zh-CN' : 'en';
+
+        document.documentElement.setAttribute('lang', htmlLang);
+        document.title = t.title;
+
+        const updateMeta = (selector, attr, value) => {
+          const el = document.querySelector(selector);
+          if (el) el.setAttribute(attr, value);
+        };
+
+        updateMeta('meta[name="description"]', 'content', t.description);
+        updateMeta('meta[name="keywords"]', 'content', t.keywords);
+        updateMeta('meta[property="og:title"]', 'content', t.title);
+        updateMeta('meta[property="og:description"]', 'content', t.description);
+        updateMeta('meta[name="twitter:title"]', 'content', t.title);
+        updateMeta('meta[name="twitter:description"]', 'content', t.description);
+      })();
+    </script>
+
+    <script>
+      if (navigator.serviceWorker != null) {
+        navigator.serviceWorker.register("sw.js").then(function (registration) {
+          console.log("Registered events at scope: ", registration.scope);
+        });
+      }
+    </script>
+    <script type="systemjs-importmap">
+      {
+        "imports": {
+          "react": "app:react",
+          "react-dom": "app:react-dom"
+        }
+      }
+    </script>
+    <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+  <script>
+    // VConsole will be exported to `window.VConsole` by default.
+    var vConsole = new window.VConsole();
+  </script> -->
+
+    <!-- <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script> -->
+    <script type="module" crossorigin src="/assets/app-2362ef1d.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/monaco-45e206c0.js">
+    <link rel="modulepreload" crossorigin href="/assets/chakra-ui-74c9882f.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-0a655799.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-utils-3d009c58.js">
+    <link rel="modulepreload" crossorigin href="/assets/common-utils-73865164.js">
+    <link rel="stylesheet" href="/assets/monaco-c3815ff7.css">
+    <link rel="stylesheet" href="/assets/index-8f3fb2e0.css">
+  </head>
+
+  <body>
+    <div id="root"></div>
+    
+    <!-- Cloudflare Web Analytics -->
+    <script
+      defer
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon='{"token": "a18a917576fb44fa897cab5b97d74ecd"}'
+    ></script>
+    <!-- End Cloudflare Web Analytics -->
+  </body>
+</html>

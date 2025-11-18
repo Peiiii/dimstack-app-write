@@ -1,0 +1,7 @@
+---
+alwaysApply: true
+---
+<user-reminder>
+除非用户明确要求，**永远**不要在代码中添加注释
+Unless the user explicitly requests it, **NEVER** add comments to the code.
+</user-reminder>
