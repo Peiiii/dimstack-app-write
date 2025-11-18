@@ -14,7 +14,8 @@
     "git:update": "git add . && git commit -m \" update somthing \" &&  git push",
     "deploy": "yarn build && yarn oss:upload",
     "update": "yarn deploy && yarn git:update",
-    "oss:upload": "ossutil cp -r -u dist/ oss://write-dimstack-com/ -c ./.ossutilconfig.local"
+    "oss:upload": "ossutil cp -r -u dist/ oss://write-dimstack-com/ -c ./.ossutilconfig.local",
+    "deploy:pages": "pnpm run build && gh-pages -d dist -b deploy"
   },
   "dependencies": {
     "@babel/standalone": "^7.26.2",
