@@ -22,7 +22,8 @@
 ```bash
 cd browser-extension/gitary-companion
 pnpm install      # 或 npm install / yarn
-pnpm run build
+pnpm run build    # 仅构建到 extension-dist/
+pnpm run pack     # 构建并在当前目录生成 gitary-companion.zip
 ```
 
 构建完成后，会在 `extension-dist/` 目录生成：
@@ -36,6 +37,21 @@ pnpm run build
 2. 打开右上角「开发者模式」。
 3. 点击「加载已解压的扩展程序」。
 4. 选择 `browser-extension/gitary-companion/extension-dist` 目录。
+
+## 一键打包上传用 ZIP（建议）
+
+在项目根目录执行：
+
+```bash
+pnpm run ext:gitary:pack
+```
+
+它会完成：
+
+- 构建扩展到 `browser-extension/gitary-companion/extension-dist`
+- 在 `browser-extension/gitary-companion/` 下生成 `gitary-companion.zip`
+
+在 Chrome Web Store 后台上传这个 `gitary-companion.zip` 即可。
 
 ## Chrome Web Store 上架建议文案
 

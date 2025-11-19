@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "rm -rf extension-dist && tsc && cp manifest.json extension-dist/manifest.json && if [ -d icons ]; then mkdir -p extension-dist/icons && cp icons/* extension-dist/icons/; fi",
-    "build:watch": "tsc -w"
+    "build": "rm -rf extension-dist && tsc && cp manifest.json extension-dist/manifest.json && if [ -d icons ]; then mkdir -p extension-dist/icons && cp icons/* extension-dist/icons/; fi && if [ -d _locales ]; then cp -R _locales extension-dist/; fi",
+    "build:watch": "tsc -w",
+    "pack": "pnpm run build && cd extension-dist && zip -r ../gitary-companion.zip ."
   },
   "devDependencies": {
     "typescript": "^5.6.3"

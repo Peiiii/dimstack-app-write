@@ -68,12 +68,9 @@ interface ChromeRuntime {
 }
 
 interface ChromeI18n {
+  getMessage(name: string): string;
   getUILanguage(): string;
 }
-
-declare const navigator: {
-  language: string;
-} | undefined;
 
 interface ChromeNotificationsCreateOptions {
   type: "basic" | "image" | "list" | "progress";
@@ -99,4 +96,3 @@ interface Chrome {
 }
 
 declare const chrome: Chrome;
-

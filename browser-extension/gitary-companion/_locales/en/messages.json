@@ -1,0 +1,21 @@
+{
+  "appName": {
+    "message": "Gitary Companion"
+  },
+  "appShortName": {
+    "message": "Gitary"
+  },
+  "appDescription": {
+    "message": "Open GitHub repositories in Gitary with one click, and enjoy a better code reading and note-taking experience."
+  },
+  "actionTitle": {
+    "message": "Open in Gitary"
+  },
+  "contextMenuTitle": {
+    "message": "Open this repository in Gitary"
+  },
+  "notARepository": {
+    "message": "Gitary Companion can only be used on GitHub repository pages."
+  }
+}
+

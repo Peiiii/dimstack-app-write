@@ -1,9 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Gitary Companion",
-  "short_name": "Gitary",
+  "name": "__MSG_appName__",
+  "short_name": "__MSG_appShortName__",
   "version": "0.1.0",
-  "description": "Open GitHub repositories in Gitary with one click, providing enhanced code reading and note-taking experience.",
+  "default_locale": "en",
+  "description": "__MSG_appDescription__",
   "author": "Gitary",
   "homepage_url": "https://gitary.app",
   "icons": {
@@ -22,7 +23,7 @@
     "https://github.com/*"
   ],
   "action": {
-    "default_title": "Open in Gitary",
+    "default_title": "__MSG_actionTitle__",
     "default_icon": {
       "16": "icons/icon16.png",
       "32": "icons/icon32.png"

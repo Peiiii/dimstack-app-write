@@ -12,6 +12,7 @@ dist
 dist-ssr
 extension-dist
 browser-extension/gitary-companion/extension-dist
+browser-extension/gitary-companion/gitary-companion.zip
 *.local
 
 # Editor directories and files
