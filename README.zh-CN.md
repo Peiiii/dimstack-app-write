@@ -1,5 +1,7 @@
 # Gitary
 
+[English](README.md) | [中文](README.zh-CN.md)
+
 > 用 Git 的方式，管理你的知识
 
 Gitary 是一个基于 Git 的笔记平台，让知识管理更简单高效。

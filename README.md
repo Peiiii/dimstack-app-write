@@ -1,12 +1,14 @@
 # Gitary
 
+[English](README.md) | [中文](README.zh-CN.md)
+
 > Manage your knowledge the Git way
 
 Gitary is a Git-based note-taking platform that makes knowledge management simple and efficient.
 
 ## Demo
 
-[Try it online](https://gitary.app/)/
+[Try it online](https://gitary.app/)
 
 ## Core Features
 
