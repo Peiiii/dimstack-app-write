@@ -18,6 +18,7 @@ import { authService } from "@/services/auth.service";
 import { spaceService } from "@/services/space.service";
 import { createGiteeClient } from "libs/gitee-api";
 import { createGithubClient } from "libs/github-api";
+import { createGitcodeClient } from "libs/gitcode-api/gitcode-client";
 import { Input } from "@/components/ui/input";
 import { ChevronDown, ChevronRight, GitBranch, Github, Loader2, Sparkles, ArrowRight, Link as LinkIcon } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -61,6 +62,18 @@ const getPlatformRepos = (platform: string) => {
         return forkJoin(requests).pipe(
             map((results) => results.flat().slice(0, targetCount))
         );
+    } else if (platform.toLowerCase() === "gitcode") {
+        const client = createGitcodeClient({
+            getAccessToken: () => accessToken,
+        });
+        const requests = Array.from({ length: pagesNeeded }, (_, i) =>
+            from(client.Repo.getList({ page: i + 1, per_page: perPage })).pipe(
+                map((res) => res.data)
+            )
+        );
+        return forkJoin(requests).pipe(
+            map((results) => results.flat().slice(0, targetCount))
+        );
     }
     return of([]);
 };
@@ -71,13 +84,16 @@ export const AddSpaceMenu = ({ children }: AddSpaceMenuProps) => {
     const { authProviders } = authService.useAuthProviders();
     const githubAuthorized = !!authService.getAnyAuthInfo("github")?.accessToken;
     const giteeAuthorized = !!authService.getAnyAuthInfo("gitee")?.accessToken;
+    const gitcodeAuthorized = !!authService.getAnyAuthInfo("gitcode")?.accessToken;
     
     const githubProvider = authProviders.find((p) => p.platform === "github");
     const giteeProvider = authProviders.find((p) => p.platform === "gitee");
+    const gitcodeProvider = authProviders.find((p) => p.platform === "gitcode");
 
     // Expanded state
     const [githubExpanded, setGithubExpanded] = useState(false);
     const [giteeExpanded, setGiteeExpanded] = useState(false);
+    const [gitcodeExpanded, setGitcodeExpanded] = useState(false);
 
     // GitHub repos state
     const [githubRepos, setGithubRepos] = useState<{ value: string; label: string; owner: string }[]>([]);
@@ -86,6 +102,10 @@ export const AddSpaceMenu = ({ children }: AddSpaceMenuProps) => {
     // Gitee repos state
     const [giteeRepos, setGiteeRepos] = useState<{ value: string; label: string; owner: string }[]>([]);
     const [giteeLoading, setGiteeLoading] = useState(false);
+
+    // GitCode repos state
+    const [gitcodeRepos, setGitcodeRepos] = useState<{ value: string; label: string; owner: string }[]>([]);
+    const [gitcodeLoading, setGitcodeLoading] = useState(false);
 
     // Read-only space state
     const [readOnlyExpanded, setReadOnlyExpanded] = useState(false);
@@ -152,6 +172,36 @@ export const AddSpaceMenu = ({ children }: AddSpaceMenuProps) => {
         }
     }, [giteeAuthorized, giteeExpanded, giteeRepos.length]);
 
+    // Load GitCode repos when expanded
+    useEffect(() => {
+        if (gitcodeAuthorized && gitcodeExpanded && gitcodeRepos.length === 0) {
+            setGitcodeLoading(true);
+            const subscription = getPlatformRepos("gitcode").subscribe({
+                next: (data) => {
+                    setGitcodeLoading(false);
+                    if (data && data.length > 0) {
+                        setGitcodeRepos(
+                            data.map((d) => ({
+                                value: d.name,
+                                label: d.name,
+                                owner: d.owner?.login || d.owner?.name || "",
+                            }))
+                        );
+                    } else {
+                        setGitcodeRepos([]);
+                    }
+                },
+                error: (error) => {
+                    console.error("Failed to load GitCode repos:", error);
+                    setGitcodeLoading(false);
+                    setGitcodeRepos([]);
+                }
+            });
+
+            return () => subscription.unsubscribe();
+        }
+    }, [gitcodeAuthorized, gitcodeExpanded, gitcodeRepos.length]);
+
     const handleCreateSpace = async (platform: string, repo: string, owner: string) => {
         try {
             spaceService.addSpace(
@@ -202,6 +252,23 @@ export const AddSpaceMenu = ({ children }: AddSpaceMenuProps) => {
             setGiteeExpanded(!giteeExpanded);
         } else {
             handleGiteeAuth();
+        }
+    };
+
+    const handleGitcodeAuth = async () => {
+        if (gitcodeProvider) {
+            await gitcodeProvider.authenticate({
+                needConfirm: true,
+            } as any);
+        }
+    };
+
+    const handleGitcodeToggle = (event: React.MouseEvent) => {
+        event.preventDefault();
+        if (gitcodeAuthorized) {
+            setGitcodeExpanded(!gitcodeExpanded);
+        } else {
+            handleGitcodeAuth();
         }
     };
 
@@ -458,6 +525,81 @@ export const AddSpaceMenu = ({ children }: AddSpaceMenuProps) => {
                                         )}
                                     </CommandGroup>
                                     {!giteeLoading && giteeRepos.length > 0 && (
+                                        <CommandEmpty className="py-4 text-center text-xs text-muted-foreground">
+                                            {t("space.notFound")}
+                                        </CommandEmpty>
+                                    )}
+                                </CommandList>
+                            </Command>
+                        </div>
+                    )}
+                </div>
+
+                {/* GitCode Section */}
+                <div className="space-y-1">
+                    <DropdownMenuItem
+                        onClick={handleGitcodeToggle}
+                        className="px-2.5 py-2 cursor-pointer group focus:bg-accent/50"
+                        onSelect={(event) => event.preventDefault()}
+                    >
+                        <div className="flex items-center gap-3 w-full">
+                            <div className="flex-shrink-0 w-7 h-7 rounded-md flex items-center justify-center group-hover:bg-muted/60 transition-colors">
+                                <GitBranch className="h-3.5 w-3.5" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <div className="text-sm font-medium leading-tight">GitCode</div>
+                                <div className="text-[11px] text-muted-foreground leading-tight mt-0.5">
+                                    {gitcodeAuthorized ? t("space.selectRepository") : t("space.needAuthorization")}
+                                </div>
+                            </div>
+                            {gitcodeAuthorized ? (
+                                gitcodeLoading ? (
+                                    <Loader2 className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0 animate-spin" />
+                                ) : gitcodeExpanded ? (
+                                    <ChevronDown className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
+                                ) : (
+                                    <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/60 shrink-0" />
+                                )
+                            ) : (
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
+                                    <span>{t("space.goAuthorize")}</span>
+                                    <ArrowRight className="h-3 w-3" />
+                                </div>
+                            )}
+                        </div>
+                    </DropdownMenuItem>
+
+                    {gitcodeAuthorized && gitcodeExpanded && (
+                        <div className="ml-6 mr-1 mb-1 rounded-md bg-muted/50 p-2">
+                            <Command className="bg-transparent">
+                                <CommandInput
+                                    placeholder={t("space.searchRepository")}
+                                    className="h-8 text-sm border-0 focus:ring-0 bg-transparent"
+                                />
+                                <CommandList className="max-h-[240px]">
+                                    <CommandGroup className="p-0">
+                                        {gitcodeLoading ? (
+                                            <div className="py-4 text-center text-xs flex items-center justify-center gap-2 text-muted-foreground">
+                                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                                {t("space.loading")}
+                                            </div>
+                                        ) : gitcodeRepos.length === 0 ? (
+                                            <div className="py-4 text-center text-xs text-muted-foreground">
+                                                {t("space.noRepository")}
+                                            </div>
+                                        ) : (
+                                            gitcodeRepos.map((repo) => (
+                                                <CommandItem
+                                                    key={repo.value}
+                                                    onSelect={() => handleCreateSpace("gitcode", repo.value, repo.owner)}
+                                                    className="cursor-pointer px-2 py-1.5 rounded-sm text-sm"
+                                                >
+                                                    {repo.label}
+                                                </CommandItem>
+                                            ))
+                                        )}
+                                    </CommandGroup>
+                                    {!gitcodeLoading && gitcodeRepos.length > 0 && (
                                         <CommandEmpty className="py-4 text-center text-xs text-muted-foreground">
                                             {t("space.notFound")}
                                         </CommandEmpty>

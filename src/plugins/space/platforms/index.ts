@@ -3,11 +3,12 @@ import { IndexedDBFileSystemProvider } from "@/services/indexed-db-file-system.p
 import { spacePlatformRegistry } from "@/services/space-platform.registry";
 import { createGiteeClient } from "libs/gitee-api";
 import { createGithubClient } from "libs/github-api";
+import { createGitcodeClient } from "libs/gitcode-api/gitcode-client";
 import { createPlugin } from "xbook/common/createPlugin";
 
 export const platformsPlugin = createPlugin({
   initilize() {
-    // 注册Gitee
+    // 注册 Gitee
     spacePlatformRegistry.register({
       id: "gitee",
       name: "Gitee",
@@ -20,7 +21,7 @@ export const platformsPlugin = createPlugin({
         ),
     });
 
-    // 注册GitHub
+    // 注册 GitHub
     spacePlatformRegistry.register({
       id: "github",
       name: "GitHub",
@@ -33,7 +34,20 @@ export const platformsPlugin = createPlugin({
         ),
     });
 
-    // 注册IndexedDB
+    // 注册 GitCode（gitcode.com）
+    spacePlatformRegistry.register({
+      id: "gitcode",
+      name: "GitCode",
+      hostname: "gitcode.com",
+      getProvider: ({ accessToken, owner, repo }) =>
+        new GitRepoFileSystemProvider(
+          createGitcodeClient({ getAccessToken: () => accessToken }),
+          owner,
+          repo
+        ),
+    });
+
+    // 注册 IndexedDB
     spacePlatformRegistry.register({
       id: "idb",
       name: "IndexDB",
