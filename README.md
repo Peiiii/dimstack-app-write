@@ -5,7 +5,7 @@
 Gitary is a Git-based note-taking platform that makes knowledge management simple and efficient.
 
 ## Demo
-Try it online: https://gitary.app/
+[Try it online](https://gitary.app/)
 
 ## Core Features
 

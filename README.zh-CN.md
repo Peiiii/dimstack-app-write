@@ -5,7 +5,7 @@
 Gitary 是一个基于 Git 的笔记平台，让知识管理更简单高效。
 
 ## Demo
-在线体验: https://gitary.app/
+[在线体验](https://gitary.app/)
 
 ## 核心特性
 
