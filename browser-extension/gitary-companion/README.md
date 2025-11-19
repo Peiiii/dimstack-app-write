@@ -1,6 +1,6 @@
 # Gitary Companion 浏览器扩展
 
-在浏览器中一键将 GitHub 仓库打开到 Gitary（当前为 `write.dimstack.com`）。
+在浏览器中一键将 GitHub 仓库打开到 Gitary（`gitary.app`）。
 
 ## 功能
 
@@ -73,17 +73,21 @@ pnpm run build
 
 ## 调整 Gitary 地址
 
-当前扩展假设线上地址为：
+当前扩展默认跳转到：
 
 ```ts
 // src/config.ts
-export const APP_BASE_URL = "https://write.dimstack.com";
+export const DEFAULT_APP_BASE_URL = "https://gitary.app";
 ```
 
-- 如果你在本地开发 Gitary，可改为：
+扩展支持多个域名，当前配置包括：
+- `https://gitary.app`（默认）
+- `https://write.dimstack.com`
+
+如果你在本地开发 Gitary，可以修改 `DEFAULT_APP_BASE_URL` 为：
 
 ```ts
-export const APP_BASE_URL = "http://localhost:5173";
+export const DEFAULT_APP_BASE_URL = "http://localhost:5173";
 ```
 
 修改后重新执行：

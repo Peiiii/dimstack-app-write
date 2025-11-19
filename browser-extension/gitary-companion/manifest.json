@@ -3,9 +3,9 @@
   "name": "Gitary Companion",
   "short_name": "Gitary",
   "version": "0.1.0",
-  "description": "在浏览器中一键将代码仓库打开到 Gitary，并提供更多辅助功能。",
+  "description": "Open GitHub repositories in Gitary with one click, providing enhanced code reading and note-taking experience.",
   "author": "Gitary",
-  "homepage_url": "https://write.dimstack.com",
+  "homepage_url": "https://gitary.app",
   "icons": {
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",
@@ -15,7 +15,8 @@
   "permissions": [
     "tabs",
     "activeTab",
-    "contextMenus"
+    "contextMenus",
+    "notifications"
   ],
   "host_permissions": [
     "https://github.com/*"

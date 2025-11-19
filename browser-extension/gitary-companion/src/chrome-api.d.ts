@@ -67,11 +67,35 @@ interface ChromeRuntime {
   onInstalled: ChromeRuntimeOnInstalledEvent;
 }
 
+interface ChromeI18n {
+  getUILanguage(): string;
+}
+
+declare const navigator: {
+  language: string;
+} | undefined;
+
+interface ChromeNotificationsCreateOptions {
+  type: "basic" | "image" | "list" | "progress";
+  iconUrl?: string;
+  title: string;
+  message: string;
+}
+
+interface ChromeNotifications {
+  create(
+    options: ChromeNotificationsCreateOptions,
+    callback?: (notificationId: string) => void
+  ): void;
+}
+
 interface Chrome {
   tabs: ChromeTabs;
   action: ChromeAction;
   contextMenus: ChromeContextMenus;
   runtime: ChromeRuntime;
+  notifications: ChromeNotifications;
+  i18n: ChromeI18n;
 }
 
 declare const chrome: Chrome;
