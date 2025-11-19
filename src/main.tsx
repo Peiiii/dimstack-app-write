@@ -43,7 +43,6 @@ xbook.pluginService.use([
 
   checkUrlParamAndQuickOpen,
   addGiteeSpace,
-  // introduction,
   // Migration20240518,
   migrations,
 ]);

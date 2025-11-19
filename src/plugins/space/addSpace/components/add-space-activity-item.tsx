@@ -1,12 +1,8 @@
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { cn } from "@/toolkit/utils/shadcn-utils";
 import { componentService } from "xbook/services";
 import { IActivityItem } from "xbook/ui/activiti-bar/types";
 import { AddSpaceMenu } from "./add-space-menu";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { cn } from "@/toolkit/utils/shadcn-utils";
 
 interface AddSpaceActivityItemProps {
   activity: IActivityItem;
@@ -27,13 +23,9 @@ export const AddSpaceActivityItem = ({
         isExpanded ? "px-3 py-1.5 w-full" : "p-1.5 aspect-square",
         isExpanded ? "rounded-sm" : "rounded-md",
         "hover:bg-accent/80 hover:text-accent-foreground",
-        // When dropdown is open, Radix sets data-state=open on the trigger.
-        // Disable pointer events to avoid hover/focus races with tooltip while menu is open.
         "data-[state=open]:pointer-events-none",
         !isExpanded && "justify-center"
       )}
-      // Prevent focus on mouse click to avoid Tooltip opening by focus.
-      // Keeps keyboard accessibility intact.
       onMouseDown={(e) => e.preventDefault()}
     >
       <IconComponent
@@ -54,7 +46,9 @@ export const AddSpaceActivityItem = ({
   if (isExpanded) {
     return (
       <div className="flex justify-center">
-        <AddSpaceMenu>{ButtonEl}</AddSpaceMenu>
+        <AddSpaceMenu>
+          <div className="flex justify-center w-full">{ButtonEl}</div>
+        </AddSpaceMenu>
       </div>
     );
   }
@@ -63,7 +57,9 @@ export const AddSpaceActivityItem = ({
     <div className="flex justify-center">
       <Tooltip disableHoverableContent>
         <AddSpaceMenu>
-          <TooltipTrigger asChild>{ButtonEl}</TooltipTrigger>
+          <TooltipTrigger asChild>
+            <div className="flex justify-center">{ButtonEl}</div>
+          </TooltipTrigger>
         </AddSpaceMenu>
         <TooltipContent
           side="right"

@@ -1,21 +1,23 @@
 import { cn } from "@/toolkit/utils/shadcn-utils";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DragSortItem } from "xbook/ui/components/DragSort";
 import { componentService, eventBus } from "xbook/services";
 import { EventKeys } from "@/constants/eventKeys";
 import { IActivityItem } from "../types";
+import { BaseActivityItem } from "./base-activity-item";
 import * as React from "react";
+
+interface IShortcutItem {
+  id: string;
+  name: string;
+  icon: string;
+}
 
 interface ModernActivityBarProps {
   activities: IActivityItem[];
-  shortcuts: any[];
+  shortcuts: IShortcutItem[];
   isExpanded: boolean;
   activeId: string;
   onToggleExpand: () => void;
@@ -116,53 +118,14 @@ function SidebarItem({
     icon || "AiOutlineQuestionCircle"
   );
 
-  const content = (
-    <div className="flex justify-center">
-      <button
-        className={cn(
-          "flex items-center transition-all duration-300 ease-in-out",
-          isExpanded ? "px-3 py-1.5 w-full" : "p-1.5 aspect-square",
-          isExpanded ? "rounded-sm" : "rounded-md",
-          "hover:bg-accent/80 hover:text-accent-foreground",
-          isActive &&
-            cn(
-              "bg-accent/60 text-accent-foreground",
-              !isExpanded && "shadow-sm ring-2 ring-accent/20"
-            ),
-          !isExpanded && "justify-center"
-        )}
-        // Prevent focus on pointer click so Tooltip won't open by focus.
-        // Keyboard users (Tab) still focus normally.
-        onMouseDown={(e) => e.preventDefault()}
-        onClick={onClick}
-      >
-        <IconComponent
-          className={cn(
-            "flex-shrink-0 transition-all duration-300 ease-in-out",
-            isExpanded ? "h-5 w-5" : "h-[22px] w-[22px]",
-            "hover:scale-105"
-          )}
-        />
-        {isExpanded && (
-          <span className="ml-2.5 text-sm truncate text-muted-foreground animate-in fade-in-0 slide-in-from-left-2 duration-300">
-            {name}
-          </span>
-        )}
-      </button>
-    </div>
-  );
-
-  return isExpanded ? content : (
-    <Tooltip disableHoverableContent>
-      <TooltipTrigger asChild>{content}</TooltipTrigger>
-      <TooltipContent
-        side="right"
-        sideOffset={10}
-        className="text-xs px-2.5 py-1.5 bg-popover/95 text-popover-foreground rounded-md"
-      >
-        {name}
-      </TooltipContent>
-    </Tooltip>
+  return (
+    <BaseActivityItem
+      activity={{ id: "", name, icon } as IActivityItem}
+      isExpanded={isExpanded}
+      isActive={isActive}
+      onClick={onClick}
+      icon={<IconComponent className="w-full h-full" />}
+    />
   );
 }
 

@@ -228,10 +228,12 @@ export const Tree = <
       >
         <div
           className={classNames(
-            "w-full py-1 px-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 flex justify-between"
+            "w-full py-1 px-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 flex justify-between items-center"
           )}
         >
-          {t("tree.directory")}
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium">{t("tree.directory")}</span>
+          </div>
           <div className="h-full flex items-center hover-show">
             {renderer.render({
               type: "tree-node-action-bar",

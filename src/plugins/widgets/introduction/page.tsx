@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { GitaryBrand } from "@/components/gitary-brand";
 import xbook from "xbook";
 import { EventKeys } from "@/constants/eventKeys";
 import { useTranslation } from "react-i18next";
@@ -9,7 +10,10 @@ export const IntroductionPage = () => {
   return (
     <div className="p-6 max-w-[1400px] mx-auto">
       <div className="space-y-8">
-        <div className="space-y-2 text-center">
+        <div className="space-y-4 text-center">
+          <div className="flex justify-center">
+            <GitaryBrand showLogo={true} showName={true} size="lg" />
+          </div>
           <h1 className="text-4xl font-bold tracking-tight">{t("introduction.welcome")}</h1>
           <p className="text-xl text-muted-foreground">
             {t("introduction.subtitle")}

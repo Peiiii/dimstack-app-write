@@ -3,11 +3,13 @@ import { bindSpaceWithRoute } from "@/features/bind-space-with-route";
 import { pluginForProviders } from "@/features/providers";
 import { ShowCurrentSpacePagesOnly } from "@/features/show-current-space-pages-only";
 import { featureSearch } from "@/features/search";
+import { gitaryBrandActivity } from "@/features/gitary-brand-activity";
 import { createPlugin } from "xbook/common/createPlugin";
 
 export default createPlugin({
   initilize(xbook) {
     xbook.pluginService.use([
+      gitaryBrandActivity,
       pluginForProviders,
       bindSpaceWithRoute,
       ShowCurrentSpacePagesOnly,
