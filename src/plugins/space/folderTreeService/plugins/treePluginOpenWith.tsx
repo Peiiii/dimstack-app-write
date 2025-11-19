@@ -13,7 +13,7 @@ export default createFolderTreePlugin({
   activate({ viewSystem, eventBus, serviceBus }) {
     const treeService = serviceBus.createProxy(TreeServicePoints.TreeService);
     const space = treeService.getSpace();
-    const { unsubscribes } = this.options;
+    const unsubscribes = this.options.unsubscribes || (this.options.unsubscribes = []);
     const registeredIds = new Set<string>();
 
     const registerOpenerMenu = (opener: {
@@ -60,7 +60,8 @@ export default createFolderTreePlugin({
     unsubscribes.push(offSubscribe);
   },
   deactivate() {
-    for (const off of this.options.unsubscribes) {
+    const unsubscribes = this.options.unsubscribes || [];
+    for (const off of unsubscribes) {
       off();
     }
     this.options.unsubscribes = [];
