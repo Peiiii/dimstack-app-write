@@ -6,6 +6,10 @@
 
 Bring Notion-style powerful editing experience to your Git repositories. Your notes, your data, your control.
 
+## 🌐 Try Online
+
+**[Try Gitary Online →](https://gitary.app/)**
+
 ## 🎯 Why Gitary?
 
 **Notion-like Experience + Git's Data Ownership = Perfect Knowledge Management**
@@ -78,10 +82,6 @@ pnpm dev
 
 Visit http://localhost:5173/
 
-## 🌐 Try Online
-
-[Try Gitary Online](https://gitary.app/)
-
 ## 📖 Documentation
 
 For more information, visit our [documentation](https://gitary.app/).
@@ -92,7 +92,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📄 License
 
-[Add your license here]
+This project is licensed under the [MIT License](LICENSE).
 
 ---
 

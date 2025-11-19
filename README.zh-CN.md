@@ -7,6 +7,10 @@
 
 将 Notion 风格的强大编辑体验带到你的 Git 仓库中。你的笔记，你的数据，你的控制权。
 
+## 🌐 在线体验
+
+**[在线体验 Gitary →](https://gitary.app/)**
+
 ## 🎯 为什么选择 Gitary？
 
 **类 Notion 体验 + Git 的数据所有权 = 完美的知识管理方案**
@@ -79,10 +83,6 @@ pnpm dev
 
 访问 http://localhost:5173/
 
-## 🌐 在线体验
-
-[在线体验 Gitary](https://gitary.app/)
-
 ## 📖 文档
 
 更多信息，请访问我们的[文档](https://gitary.app/)。
@@ -93,7 +93,7 @@ pnpm dev
 
 ## 📄 许可证
 
-[添加你的许可证信息]
+本项目采用 [MIT 许可证](LICENSE)。
 
 ---
 
