@@ -9,6 +9,11 @@
     "background_color": "#f8f8f8",
     "icons": [
       {
+        "src": "logo.svg",
+        "sizes": "any",
+        "type": "image/svg+xml"
+      },
+      {
         "src": "write-192x192.png",
         "sizes": "192x192",
         "type": "image/png"

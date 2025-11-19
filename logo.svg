@@ -1,0 +1,42 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Softer, warmer gradient for Left -->
+    <linearGradient id="gradLeft" x1="20" y1="20" x2="64" y2="100" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A5B4FC"/>
+      <stop offset="1" stop-color="#6366F1"/>
+    </linearGradient>
+    
+    <!-- Softer, warmer gradient for Right -->
+    <linearGradient id="gradRight" x1="64" y1="20" x2="108" y2="100" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D8B4FE"/>
+      <stop offset="1" stop-color="#9333EA"/>
+    </linearGradient>
+    
+    <!-- Soft Ambient Shadow -->
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="5" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#softShadow)">
+    <!-- Soft/Rounded Geometric Cat -->
+    
+    <!-- Left Side -->
+    <!-- Using curves (Q) and rounded corners to create a friendly, chubby silhouette -->
+    <!-- Start center top -> Left Ear -> Left Cheek -> Chin Center -->
+    <path d="M64 45 Q48 45 40 25 Q35 15 28 25 Q15 45 18 70 Q22 105 64 115 V45 Z" fill="url(#gradLeft)"/>
+    
+    <!-- Right Side -->
+    <!-- Mirror of left side -->
+    <path d="M64 45 Q80 45 88 25 Q93 15 100 25 Q113 45 110 70 Q106 105 64 115 V45 Z" fill="url(#gradRight)"/>
+
+    <!-- Top "Bridge" Highlight - softly connects the ears -->
+    <path d="M64 45 Q48 45 40 25 L88 25 Q80 45 64 45 Z" fill="white" fill-opacity="0.2"/>
+    
+    <!-- Friendly Face Details (Optional, minimalist) -->
+    <!-- Just a subtle nose/mouth hint using negative space or shadow -->
+    <!-- Keeping it abstract for now as requested "geometric" -->
+    
+  </g>
+</svg>
+
