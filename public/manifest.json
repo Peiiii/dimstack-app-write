@@ -14,23 +14,23 @@
         "type": "image/svg+xml"
       },
       {
-        "src": "gitary-192x192.png",
+        "src": "logo-192x192.png",
         "sizes": "192x192",
         "type": "image/png"
       },
       {
-        "src": "gitary-192x192.png",
+        "src": "logo-192x192.png",
         "sizes": "192x192",
         "type": "image/png",
         "purpose": "maskable"
       },
       {
-        "src": "gitary-512x512.png",
+        "src": "logo-512x512.png",
         "sizes": "512x512",
         "type": "image/png"
       },
       {
-        "src": "gitary-512x512.png",
+        "src": "logo-512x512.png",
         "sizes": "512x512",
         "type": "image/png",
         "purpose": "maskable"
