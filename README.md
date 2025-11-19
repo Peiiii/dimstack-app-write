@@ -1,11 +1,11 @@
-# GitNote
+# Gitary
 
 > Manage your knowledge the Git way
 
-GitNote is a Git-based note-taking platform that makes knowledge management simple and efficient.
+Gitary is a Git-based note-taking platform that makes knowledge management simple and efficient.
 
 ## Demo
-Try it online: https://write.dimstack.com/
+Try it online: https://gitary.app/
 
 ## Core Features
 

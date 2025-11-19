@@ -1,11 +1,11 @@
-# GitNote
+# Gitary
 
 > 用 Git 的方式，管理你的知识
 
-GitNote 是一个基于 Git 的笔记平台，让知识管理更简单高效。
+Gitary 是一个基于 Git 的笔记平台，让知识管理更简单高效。
 
 ## Demo
-在线体验: https://write.dimstack.com/
+在线体验: https://gitary.app/
 
 ## 核心特性
 

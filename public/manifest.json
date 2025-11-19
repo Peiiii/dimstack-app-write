@@ -1,6 +1,6 @@
 {
-    "name": "GitNote",
-    "short_name": "GitNote",
+    "name": "Gitary",
+    "short_name": "Gitary",
     "description": "基于 Git 的智能笔记协作平台",
     "display": "standalone",
     "start_url": "/",

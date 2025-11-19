@@ -83,7 +83,7 @@
   },
   "introduction": {
     "title": "Introduction",
-    "welcome": "Welcome to GitNote",
+    "welcome": "Welcome to Gitary",
     "subtitle": "Manage your notes the Git way",
     "gitIntegration": "Git Integration",
     "gitIntegrationDesc": "Connect directly to GitHub/Gitee repositories and store your notes in your code repository",
@@ -202,8 +202,8 @@
     "startWriting": "Start writing your first thought..."
   },
   "meta": {
-    "title": "GitNote - Git-based Intelligent Note Collaboration Platform",
-    "description": "GitNote is a Git-based intelligent note platform that supports Markdown editing, version control, and multi-user collaboration. Seamlessly integrates with GitHub/Gitee to make knowledge management easier.",
+    "title": "Gitary - Git-based Intelligent Note Collaboration Platform",
+    "description": "Gitary is a Git-based intelligent note platform that supports Markdown editing, version control, and multi-user collaboration. Seamlessly integrates with GitHub/Gitee to make knowledge management easier.",
     "keywords": "Git notes,Markdown editor,knowledge management,team collaboration,version control,open source notes,smart writing,document management"
   },
   "search": {

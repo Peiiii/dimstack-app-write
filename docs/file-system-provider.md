@@ -1,6 +1,6 @@
 # FileSystemProvider 集成指南
 
-本文档介绍如何在 GitNote 中实现和集成自定义的文件系统提供者。
+本文档介绍如何在 Gitary 中实现和集成自定义的文件系统提供者。
 
 ## 目录
 
@@ -12,11 +12,11 @@
 
 ## 基本概念
 
-GitNote 使用 FileSystemProvider 接口来抽象不同的文件系统操作。每个文件系统提供者都需要实现这个接口来支持基本的文件操作。
+Gitary 使用 FileSystemProvider 接口来抽象不同的文件系统操作。每个文件系统提供者都需要实现这个接口来支持基本的文件操作。
 
 ### URI 格式
 
-GitNote 使用统一的 URI 格式来访问文件：
+Gitary 使用统一的 URI 格式来访问文件：
 
 ```typescript
 space://${spaceId}/${path}
@@ -226,4 +226,4 @@ const normalized = uri.with({ path: normalizePath(uri.path) });
 ## 参考资料
 
 - [VSCode FileSystem API](https://code.visualstudio.com/api/references/vscode-api#FileSystem)
-- [GitNote 源码](https://github.com/yourusername/gitnote) 
+- [Gitary 源码](https://github.com/yourusername/gitary) 
