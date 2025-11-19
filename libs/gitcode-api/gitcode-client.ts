@@ -76,11 +76,13 @@ export const getGitcodeAccessToken = async ({
 }): Promise<GithubAuthInfo> => {
   // Per docs:
   // POST https://gitcode.com/oauth/token?grant_type=authorization_code&code={code}&client_id={client_id}&client_secret={client_secret}
-  const url = `${OAUTH_BASE_URL}/token?grant_type=authorization_code&code=${encodeURIComponent(
+  const proxyUrl = `${OAUTH_BASE_URL}/token?grant_type=authorization_code&code=${encodeURIComponent(
     code
-  )}&client_id=${encodeURIComponent(clientId)}&client_secret=${encodeURIComponent(
-    clientSecret
-  )}`;
+  )}&client_id=${encodeURIComponent(
+    clientId
+  )}&client_secret=${encodeURIComponent(clientSecret)}`;
+  // Reuse the same CORS proxy pattern as GitHub
+  const url = `https://proxy.agentverse.cc/?${proxyUrl}`;
   const res = await axios.post(url);
   return res.data;
 };
@@ -99,9 +101,10 @@ export const refreshGitcodeAccessToken = async ({
 }> => {
   // Per docs:
   // POST https://gitcode.com/oauth/token?grant_type=refresh_token&refresh_token={refresh_token}
-  const url = `${OAUTH_BASE_URL}/token?grant_type=refresh_token&refresh_token=${encodeURIComponent(
+  const proxyUrl = `${OAUTH_BASE_URL}/token?grant_type=refresh_token&refresh_token=${encodeURIComponent(
     refreshToken
   )}`;
+  const url = `https://proxy.agentverse.cc/?${proxyUrl}`;
   const res = await axios.post(url);
   return res.data;
 };
