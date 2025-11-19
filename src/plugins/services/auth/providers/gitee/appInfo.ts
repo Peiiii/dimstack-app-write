@@ -1,5 +1,7 @@
+import { getOAuthConfigKey } from '@/core/utils/domain-config';
+
 type AppInfo = { clientId: string; clientSecret: string; redirectUri: string };
-let appInfo: AppInfo;
+
 const oauthApps: Record<string, AppInfo> = {
   localhost: {
     clientId:
@@ -20,7 +22,14 @@ const oauthApps: Record<string, AppInfo> = {
       "e9d3ac7adbf20644f335257353e1798d709062b85b73896a4d4f762b7ee92e40",
     clientSecret:
       "c4bb089c4585b53ae68150b847a99ef3445de57c060082256c296b725df46de1",
-    redirectUri: "https://write.dimstack.com?platform=gitee",
+    redirectUri: "https://write.dimstack.com/?platform=gitee",
+  },
+  GitaryApp: {
+    clientId:
+      "9bdeb8edca91d4fdf2293aa0853b0ef8968cb4b730ca3411623be9e70c829ce4",
+    clientSecret:
+      "655be51197357be09f7d408489604f0b2fc091d814bd5145f082c3fac993b770",
+    redirectUri: "https://gitary.app/?platform=gitee",
   },
   localhost5173: {
     clientId:
@@ -31,9 +40,7 @@ const oauthApps: Record<string, AppInfo> = {
   },
 };
 
-if (import.meta.env.PROD) {
-  appInfo = oauthApps.writeDimstack;
-} else {
-  appInfo = oauthApps.localhost5173;
-}
+const configKey = getOAuthConfigKey();
+const appInfo = oauthApps[configKey] || oauthApps.writeDimstack;
+
 export { appInfo };

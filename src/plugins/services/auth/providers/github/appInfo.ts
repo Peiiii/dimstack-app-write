@@ -1,3 +1,5 @@
+import { getOAuthConfigKey } from '@/core/utils/domain-config';
+
 type AppInfo = {
   clientId: string;
   clientSecret: string;
@@ -5,7 +7,7 @@ type AppInfo = {
   appId?: number;
   privateKey?: string;
 };
-let appInfo: AppInfo;
+
 const oauthApps: Record<string, AppInfo> = {
   localhost: {
     clientId:
@@ -21,25 +23,16 @@ const oauthApps: Record<string, AppInfo> = {
       "5700145980a135586925608a325dba18c7b2459ef75203a9ff0768737ae83252",
     redirectUri: "https://apps.eiooie.com/gitee_login/index.html",
   },
-  // writeDimstack: {
-  //   appId:394730,
-  //   privateKey: "SHA256:rGoqlxkc4jjLueh399vzrmAVbbbLHx9QsKqCC7NhqSQ=",
-  //   clientId: "Iv1.5e87359846424cbf",
-  //   clientSecret: "9cdd82864b981f1443cdff296394d525c5d19b27",
-  //   redirectUri: "https://write.dimstack.com?platform=github",
-  // },
   WriteDimstackCom: {
     clientId: "Ov23lifrUzI6VGkwpGWd",
     clientSecret: "91701fd46c951ef707084f6142e5a11ddb55f744",
     redirectUri: "https://write.dimstack.com/?platform=github",
   },
-  // localhost5173: {
-  //   clientId: "Iv23liYn2lMgMlkaiHmC",
-  //   clientSecret: "8e1f33bf7ea870b9a65b5668b2c0717cdd4e6961",
-  //   redirectUri: "http://localhost:5173/?platform=github",
-  //   appId: 901385,
-  //   privateKey: "SHA256:teY/ilyFltKzOiqXhi2ove1s1mFVIZ9B1W54oPcRPVc=",
-  // },
+  GitaryApp: {
+    clientId: "Ov23li7gtCm6evUeqZ4d",
+    clientSecret: "c1b0b88727cb4f4c279d9bc6b82552f8ba760155",
+    redirectUri: "https://gitary.app/?platform=github",
+  },
   Localhost5173: {
     clientId: "Ov23li1cdcxP0rM2KVLq",
     clientSecret: "34f80b513b96b5371682c6131e160eb41fc3e70f",
@@ -47,9 +40,7 @@ const oauthApps: Record<string, AppInfo> = {
   },
 };
 
-if (import.meta.env.PROD) {
-  appInfo = oauthApps.WriteDimstackCom;
-} else {
-  appInfo = oauthApps.Localhost5173;
-}
+const configKey = getOAuthConfigKey();
+const appInfo = oauthApps[configKey] || oauthApps.WriteDimstackCom;
+
 export { appInfo };

@@ -1,4 +1,4 @@
-import { APP_BASE_URL } from "./config.js";
+import { DEFAULT_APP_BASE_URL } from "./config.js";
 import type { RepoLocation } from "./github.js";
 import { buildRepoRootUrl } from "./github.js";
 
@@ -9,5 +9,5 @@ import { buildRepoRootUrl } from "./github.js";
 export function buildGitaryOpenUrl(repo: RepoLocation): string {
   const repoUrl = buildRepoRootUrl(repo);
   const encoded = encodeURIComponent(repoUrl);
-  return `${APP_BASE_URL}/?openRepo=${encoded}`;
+  return `${DEFAULT_APP_BASE_URL}/?openRepo=${encoded}`;
 }
