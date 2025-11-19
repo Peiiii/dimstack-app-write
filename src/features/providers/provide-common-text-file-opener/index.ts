@@ -12,32 +12,25 @@ export default createPlugin({
   },
   initilize(xbook) {
     openerService.register({
-      // Slightly higher than other markdown editor openers (-100),
-      // but lower than app-specific openers (usually 100)
-      priority: -10,
+      id: "text-file-view",
+      label: "Monaco Editor",
+      icon: "AiOutlineCodeEditor",
+      showInTreeMenu: true,
+      // Lower than markdown editor openers so .md defaults to Zenmark,
+      // but still higher than many generic fallbacks.
+      priority: -20,
       match: [
         ...COMMON_TEXT_FILE_EXTENSIONS.map((ext) => `.${ext}`),
         ...COMMON_TEXT_FILE_NAMES,
       ],
       init: (uri: string) => {
-        const isMarkdown =
-          uri.endsWith(".md") || uri.endsWith(".markdown") || uri.endsWith(".MD");
-
-        // Force a single editor: always use zenmark for markdown; otherwise fall back to plain text view
-        const registry = xbook.componentService.getComponents()?.componentRegistry || {};
-        const hasZenmark = !!registry["zenmark-editor"];
-        const viewType = isMarkdown
-          ? hasZenmark
-            ? "zenmark-editor"
-            : "text-file-view"
-          : "text-file-view";
-
+        const pageId = `text-file-view:${uri}`;
         xbook.layoutService.pageBox.addPage({
-          id: uri,
+          id: pageId,
           title: uri,
           status: "loading",
           viewData: {
-            type: viewType,
+            type: "text-file-view",
             props: {
               uri,
             },
@@ -46,12 +39,24 @@ export default createPlugin({
         xbook.eventBus.emit(EventKeys.FileLoading, { uri });
       },
     });
-    
+
+    const updatePagesStatusByUri = (
+      uri: string,
+      status: "deleted" | "loading" | "unsaved" | undefined
+    ) => {
+      const pageList = xbook.layoutService.pageBox.getPageList?.() || [];
+      pageList
+        .filter((page) => (page.viewData as any)?.props?.uri === uri)
+        .forEach((page) => {
+          xbook.layoutService.pageBox.updatePage({
+            id: page.id,
+            status,
+          });
+        });
+    };
+
     xbook.eventBus.on(EventKeys.FileLoaded, ({ uri }) => {
-      xbook.layoutService.pageBox.updatePage({
-        id: uri,
-        status: undefined,
-      });
+      updatePagesStatusByUri(uri, undefined);
     });
     // Hide editor switching for new users; keep a single default editor
     // xbook.componentService.register("vsc-open-preview", VscOpenPreview);

@@ -8,6 +8,8 @@ export const provideMindFlow = createPlugin({
     xbook.componentService.register("mind-flow", AppMindFlow);
     // Use singleton openerService
     openerService.register({
+      id: "mind-flow",
+      label: t("apps.mindFlow"),
       match: [".mindflow.json"],
       priority: 100,
       init: (uri) => {

@@ -24,6 +24,8 @@ export const provideReactIDE = createPlugin({
     xbook.componentService.register(config.appName, OnlineReactIde);
     // Use singleton openerService
     openerService.register({
+      id: config.appName,
+      label: config.title,
       match: [config.suffix],
       priority: 100,
       init: (uri) => {

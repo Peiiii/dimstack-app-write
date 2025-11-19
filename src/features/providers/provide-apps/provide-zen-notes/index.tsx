@@ -8,6 +8,8 @@ export const provideZenNotes = createPlugin({
     xbook.componentService.register("zen-notes", AppZenNotes);
     // Use singleton openerService
     openerService.register({
+      id: "zen-notes",
+      label: t("apps.zenNotes"),
       match: [".zennotes.json"],
       priority: 100,
       init: (uri) => {

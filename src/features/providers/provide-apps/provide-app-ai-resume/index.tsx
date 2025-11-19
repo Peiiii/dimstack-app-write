@@ -8,6 +8,8 @@ export const provideAppAIResume = createPlugin({
     xbook.componentService.register("ai-resume", AppAIResume);
     // Use singleton openerService
     openerService.register({
+      id: "ai-resume",
+      label: t("apps.aiResume"),
       match: [".airesume.json"],
       priority: 100,
       init: (uri) => {

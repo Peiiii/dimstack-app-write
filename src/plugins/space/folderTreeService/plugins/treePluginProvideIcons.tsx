@@ -4,6 +4,7 @@ import {
   FilePlus,
   FolderPlus,
   FileText,
+  FileCode,
   Pencil,
   Trash2,
   Copy,
@@ -22,8 +23,11 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
     renderer.register("AiFillFileAdd", FilePlus);
     renderer.register("AiFillEdit", Pencil);
     renderer.register("AiFillDelete", Trash2);
+    // Markdown file icon (used for markdown-related openers)
     renderer.register("AiOutlineFileMarkdown", FileText);
     renderer.register("AiFillFileMarkdown", FileText);
+    // Dedicated icon id for Monaco/code editor openers
+    renderer.register("AiOutlineCodeEditor", FileCode);
     renderer.register("AiOutlineReload", RefreshCw);
     renderer.register("AiOutlineFileText", FileText);
     renderer.register("AiFillFileText", FileText);

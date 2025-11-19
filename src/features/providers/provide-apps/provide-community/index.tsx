@@ -9,6 +9,8 @@ export const provideCommunity = createPlugin({
     xbook.componentService.register("community", AppCommunity);
     // Use singleton openerService
     openerService.register({
+      id: "community",
+      label: t("apps.community"),
       match: [".community.json"],
       priority: 100,
       init: async (uri) => {

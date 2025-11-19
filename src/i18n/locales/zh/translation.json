@@ -147,7 +147,8 @@
     "deleteFolderHint": "删除文件夹中全部文件后，文件夹会自动删除",
     "renameFolderNotSupported": "暂不支持重命名文件夹",
     "notFound": "未找到",
-    "directory": "目录"
+    "directory": "目录",
+    "openWith": "使用 {{name}} 打开"
   },
   "apps": {
     "zenNotes": "禅意笔记",

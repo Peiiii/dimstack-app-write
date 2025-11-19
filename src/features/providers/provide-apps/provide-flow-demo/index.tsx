@@ -7,6 +7,8 @@ export const provideFlowDemo = createPlugin({
     xbook.componentService.register("flow-demo", AppFlowDemo);
     // Use singleton openerService
     openerService.register({
+      id: "flow-demo",
+      label: "Flow Demo",
       match: [".flowdemo.json"],
       priority: 100,
       init: (uri) => {

@@ -147,7 +147,8 @@
     "deleteFolderHint": "After deleting all files in the folder, the folder will be automatically deleted",
     "renameFolderNotSupported": "Renaming folders is not currently supported",
     "notFound": "Not found",
-    "directory": "Directory"
+    "directory": "Directory",
+    "openWith": "Open with {{name}}"
   },
   "apps": {
     "zenNotes": "Zen Notes",

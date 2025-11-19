@@ -103,7 +103,7 @@ export const TreeNodeActionEntry: FC<{
             : menuTree.data.label}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-[200px] max-w-[200px]">
+      <DropdownMenuContent className="w-auto min-w-[180px] max-w-[320px]">
         {menuTree.children?.map((child) => {
           return <MenuItemView key={child.id} menuItem={child} />;
         })}

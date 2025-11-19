@@ -8,6 +8,8 @@ export const provideAppAIQuotes = createPlugin({
     xbook.componentService.register("ai-quotes", AppAIQuotes);
     // Use singleton openerService
     openerService.register({
+      id: "ai-quotes",
+      label: t("apps.aiQuotes"),
       match: [".aiquotes.json"],
       priority: 100,
       init: (uri) => {

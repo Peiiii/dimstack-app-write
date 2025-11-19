@@ -8,13 +8,20 @@ import { t } from "@/i18n/utils";
 export default createPlugin({
   async initilize(xbook) {
     // Use local zenmark-editor; no SystemJS runtime required
-    xbook.componentService.register("zenmark-editor", ZenmarkEditorComponent);
-    openerService.register({
-      priority: -100,
+	    xbook.componentService.register("zenmark-editor", ZenmarkEditorComponent);
+	    openerService.register({
+	      id: "zenmark-editor",
+	      label: t("apps.zenNotes"),
+	      // Use markdown-style file icon for ZenNotes markdown editor
+	      icon: "AiOutlineFileMarkdown",
+	      showInTreeMenu: true,
+      // Higher than generic text viewer so markdown defaults to Zenmark.
+      priority: -10,
       match: [".md", ".markdown", ".MD"],
       init: (uri: string) => {
+        const pageId = `zenmark-editor:${uri}`;
         xbook.layoutService.pageBox.addPage({
-          id: uri,
+          id: pageId,
           title: uri,
           status: "loading",
           viewData: {
@@ -27,6 +34,24 @@ export default createPlugin({
         xbook.eventBus.emit(EventKeys.FileLoading, { uri });
       },
     });
+
+    const updatePagesStatusByUri = (
+      uri: string,
+      status: "deleted" | "loading" | "unsaved" | undefined
+    ) => {
+      const pageList = xbook.layoutService.pageBox.getPageList?.() || [];
+      pageList
+        .filter(
+          (page) => (page.viewData as any)?.props?.uri === uri
+        )
+        .forEach((page) => {
+          xbook.layoutService.pageBox.updatePage({
+            id: page.id,
+            status,
+          });
+        });
+    };
+
     xbook.eventBus.on(EventKeys.FileSaved, () => {
       xbook.notificationService.success({
         title: t("zenmark.fileSaved"),
@@ -35,24 +60,15 @@ export default createPlugin({
     });
 
     xbook.eventBus.on(EventKeys.FileDirty, ({ uri }) => {
-      xbook.layoutService.pageBox.updatePage({
-        id: uri,
-        status: "unsaved",
-      });
+      updatePagesStatusByUri(uri, "unsaved");
     });
 
     xbook.eventBus.on(EventKeys.FileClean, ({ uri }) => {
-      xbook.layoutService.pageBox.updatePage({
-        id: uri,
-        status: undefined,
-      });
+      updatePagesStatusByUri(uri, undefined);
     });
 
     xbook.eventBus.on(EventKeys.FileLoaded, ({ uri }) => {
-      xbook.layoutService.pageBox.updatePage({
-        id: uri,
-        status: undefined,
-      });
+      updatePagesStatusByUri(uri, undefined);
     });
 
     // xbook.layoutService.activityBar.addActivity({

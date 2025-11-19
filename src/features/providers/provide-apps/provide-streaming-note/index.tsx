@@ -8,6 +8,8 @@ export const provideStreamingNote = createPlugin({
     xbook.componentService.register("streaming-note", AppStreamingNote);
     // Use singleton openerService
     openerService.register({
+      id: "streaming-note",
+      label: t("apps.streamingNote"),
       match: [".streaming.json"],
       priority: 100,
       init: (uri) => {

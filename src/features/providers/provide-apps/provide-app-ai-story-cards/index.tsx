@@ -20,6 +20,8 @@ export const provideAppAIStoryCards = createPlugin({
     xbook.componentService.register("ai-story-cards", AppAIStoryCards);
     // Use singleton openerService
     openerService.register({
+      id: "ai-story-cards",
+      label: t("apps.aiStoryCards"),
       match: [".aicard.json"],
       priority: 100,
       init: (uri) => {
