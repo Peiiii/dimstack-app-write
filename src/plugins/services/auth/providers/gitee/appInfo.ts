@@ -41,6 +41,7 @@ const oauthApps: Record<string, AppInfo> = {
 };
 
 const configKey = getOAuthConfigKey();
-const appInfo = oauthApps[configKey] || oauthApps.writeDimstack;
+// Prefer the config derived from current domain; fall back to the new primary domain.
+const appInfo = oauthApps[configKey] || oauthApps.GitaryApp;
 
 export { appInfo };

@@ -19,8 +19,9 @@ export function getOAuthConfigKey(): string {
   if (domain === 'write.dimstack.com' || domain === 'www.write.dimstack.com') {
     return 'WriteDimstackCom';
   }
-  
-  return 'WriteDimstackCom';
+
+  // Default to the new primary domain config
+  return 'GitaryApp';
 }
 
 export function isProductionDomain(): boolean {
@@ -33,7 +34,8 @@ export function isProductionDomain(): boolean {
 
 export function getBaseUrl(): string {
   if (typeof window === 'undefined') {
-    return 'https://write.dimstack.com';
+    // Default to the new primary domain when window is not available
+    return 'https://gitary.app';
   }
   
   const protocol = window.location.protocol;
@@ -42,4 +44,3 @@ export function getBaseUrl(): string {
   
   return `${protocol}//${hostname}${port}`;
 }
-
