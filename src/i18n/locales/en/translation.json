@@ -203,9 +203,9 @@
     "startWriting": "Start writing your first thought..."
   },
   "meta": {
-    "title": "Gitary - Git-based Intelligent Note Collaboration Platform",
-    "description": "Gitary is a Git-based intelligent note platform that supports Markdown editing, version control, and multi-user collaboration. Seamlessly integrates with GitHub/Gitee to make knowledge management easier.",
-    "keywords": "Git notes,Markdown editor,knowledge management,team collaboration,version control,open source notes,smart writing,document management"
+    "title": "Gitary - Notion-like experience for your Git repositories",
+    "description": "Bring Notion-style powerful editing experience to your Git repositories. Support GitHub, Gitee, GitCode. Zero intermediate storage, complete data ownership. Notion-like experience + Git's data control = perfect knowledge management.",
+    "keywords": "Notion-like,Notion alternative,Notion-style,Git notes,GitHub notes,Gitee notes,GitCode notes,Markdown editor,knowledge management,version control,open source notes,data ownership,Git knowledge base"
   },
   "search": {
     "placeholder": "Search files or content…",

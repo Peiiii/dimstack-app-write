@@ -2,6 +2,22 @@
   "name": "gitary-app",
   "private": true,
   "version": "0.0.0",
+  "description": "Notion-like experience for your Git repositories - Bring Notion-style powerful editing experience to your GitHub/Gitee/GitCode repositories",
+  "keywords": [
+    "notion-like",
+    "notion-style",
+    "notion-alternative",
+    "git",
+    "github",
+    "gitee",
+    "gitcode",
+    "markdown",
+    "editor",
+    "knowledge-management",
+    "version-control",
+    "note-taking",
+    "git-repository"
+  ],
   "type": "module",
   "scripts": {
     "test": "jest",

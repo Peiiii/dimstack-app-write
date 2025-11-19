@@ -1,7 +1,7 @@
 {
     "name": "Gitary",
     "short_name": "Gitary",
-    "description": "基于 Git 的智能笔记协作平台",
+    "description": "Notion-like experience for your Git repositories - 类 Notion 体验，运行在你的 Git 仓库上",
     "display": "standalone",
     "start_url": "/",
     "scope": "/",
