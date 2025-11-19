@@ -1,0 +1,12 @@
+{
+  "name": "gitary-companion-extension",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "rm -rf extension-dist && tsc && cp manifest.json extension-dist/manifest.json",
+    "build:watch": "tsc -w"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}

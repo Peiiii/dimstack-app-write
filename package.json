@@ -15,7 +15,9 @@
     "deploy": "yarn build && yarn oss:upload",
     "update": "yarn deploy && yarn git:update",
     "oss:upload": "ossutil cp -r -u dist/ oss://write-dimstack-com/ -c ./.ossutilconfig.local",
-    "deploy:pages": "pnpm run build && gh-pages -d dist -b deploy"
+    "deploy:pages": "pnpm run build && gh-pages -d dist -b deploy",
+    "ext:gitary:build": "pnpm -C browser-extension/gitary-companion run build",
+    "ext:gitary:watch": "pnpm -C browser-extension/gitary-companion run build:watch"
   },
   "dependencies": {
     "@babel/standalone": "^7.26.2",
