@@ -22,7 +22,7 @@ export default function GithubShortcut({
   const content = (
     <div className="flex justify-center">
       <a
-        href="https://github.com/Peiiii/dimstack-app-write"
+        href="https://github.com/Peiiii/gitary"
         target="_blank"
         rel="noopener noreferrer"
         className={cn(
@@ -64,4 +64,3 @@ export default function GithubShortcut({
     </Tooltip>
   );
 }
-
