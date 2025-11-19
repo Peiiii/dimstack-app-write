@@ -37,7 +37,7 @@ export function BaseActivityItem({
   disableTooltip = false,
   asChild = false,
 }: BaseActivityItemProps) {
-  const button = (
+  const buttonElement = (
     <button
       className={cn(
         "flex items-center transition-all duration-300 ease-in-out",
@@ -77,9 +77,11 @@ export function BaseActivityItem({
         >
           {activity.name}
         </span>
-      )}
-    </button>
-  );
+        )}
+      </button>
+    );
+
+  const button = buttonElement;
 
   const content = asChild ? button : (
     <div className="flex justify-center">{button}</div>

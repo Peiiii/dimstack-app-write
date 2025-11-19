@@ -5,7 +5,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { cn } from "@/toolkit/utils/shadcn-utils";
+import { BaseActivityItem } from "xbook/ui/activiti-bar/components/base-activity-item";
 import QuickSettingsMenu from "./quick-settings-menu";
 import { useColorMode } from "@chakra-ui/react";
 import { useEffect } from "react";
@@ -40,42 +40,22 @@ export default function SettingsShortcut({ shortcut, isExpanded }: SettingsShort
   const displayName = name || t("common.settings");
   const IconComponent = componentService.useComponent(icon);
 
-  const ButtonEl = (
-    <button
-      className={cn(
-        "flex items-center transition-all duration-300 ease-in-out",
-        isExpanded ? "px-3 py-1.5 w-full" : "p-1.5 aspect-square",
-        isExpanded ? "rounded-sm" : "rounded-md",
-        "hover:bg-accent/80 hover:text-accent-foreground",
-        // When dropdown is open, Radix sets data-state=open on the trigger.
-        // Disable pointer events to avoid hover/focus races with tooltip while menu is open.
-        "data-[state=open]:pointer-events-none",
-        !isExpanded && "justify-center"
-      )}
-      // Prevent focus on mouse click to avoid Tooltip opening by focus.
-      // Keeps keyboard accessibility intact.
-      onMouseDown={(e) => e.preventDefault()}
-    >
-      <IconComponent
-        className={cn(
-          "flex-shrink-0 transition-all duration-300 ease-in-out",
-          isExpanded ? "h-5 w-5" : "h-[22px] w-[22px]",
-          "hover:scale-105"
-        )}
-      />
-      {isExpanded && (
-        <span className="ml-2.5 text-sm truncate text-muted-foreground animate-in fade-in-0 slide-in-from-left-2 duration-300">
-          {displayName}
-        </span>
-      )}
-    </button>
+  const baseItem = (
+    <BaseActivityItem
+      activity={{ id: shortcut.id, name: displayName, icon } as any}
+      isExpanded={isExpanded}
+      icon={<IconComponent className="w-full h-full" />}
+      className="data-[state=open]:pointer-events-none"
+      disableTooltip={!isExpanded}
+      asChild={true}
+    />
   );
 
   if (isExpanded) {
     return (
       <div className="flex justify-center">
         <SettingsMenu>
-          <div className="flex justify-center w-full">{ButtonEl}</div>
+          <div className="flex justify-center w-full">{baseItem}</div>
         </SettingsMenu>
       </div>
     );
@@ -86,7 +66,7 @@ export default function SettingsShortcut({ shortcut, isExpanded }: SettingsShort
       <Tooltip disableHoverableContent>
         <SettingsMenu>
           <TooltipTrigger asChild>
-            <div className="flex justify-center">{ButtonEl}</div>
+            <div className="flex justify-center">{baseItem}</div>
           </TooltipTrigger>
         </SettingsMenu>
         <TooltipContent

@@ -22,9 +22,8 @@ export const createStatusBar = () =>
             className="status-bar"
             borderTop="1px solid"
             borderColor="gray.200"
-            _dark={{ borderColor: "gray.700" }}
             bg="gray.50"
-            _dark={{ bg: "gray.900" }}
+            _dark={{ borderColor: "gray.700", bg: "gray.900" }}
           >
             <Flex
               h="100%"
