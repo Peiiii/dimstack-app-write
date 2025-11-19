@@ -48,8 +48,8 @@ export const getGitcodeLoginUrl = ({
   // GET https://gitcode.com/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code&scope={scope}
   const authorizeUrl = `${OAUTH_BASE_URL}/authorize`;
   const scope = encodeURIComponent(
-    // request broad access similar to Gitee/GitHub usage in the app
-    "all_user all_repository"
+    // include read_projects to satisfy GitCode repo APIs
+    "all_user all_repository read_projects"
   );
   const state = encodeURIComponent(JSON.stringify({ platform: "gitcode" }));
   return `${authorizeUrl}?client_id=${clientId}&redirect_uri=${encodeURIComponent(
