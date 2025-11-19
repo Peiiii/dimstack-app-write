@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Website Icons</title>
+    <style>
+        body { font-family: system-ui, sans-serif; padding: 2rem; max-width: 800px; margin: 0 auto; background: #f9fafb; }
+        .card { background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        h1 { margin-top: 0; color: #1f2937; }
+        p { color: #4b5563; }
+        .preview { margin: 2rem 0; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+        .icon-container { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+        .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        button {
+            background: #4f46e5; color: white; border: none; padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+        }
+        button.secondary { background: #e5e7eb; color: #374151; }
+        button.secondary:hover { background: #d1d5db; }
+        button:hover { background: #4338ca; }
+        canvas { border: 1px solid #e5e7eb; border-radius: 20%; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>网站图标生成器</h1>
+        <p>此工具用于生成网站所需的 PNG 图标 (Favicon, PWA icons)。</p>
+        
+        <div class="preview" id="previewArea">
+            <!-- Canvases will be injected here -->
+        </div>
+
+        <div class="btn-group">
+            <button onclick="downloadAll()">下载所有图标 (带延迟)</button>
+            <button class="secondary" onclick="downloadSingle('logo.png')">下载 logo.png (192x192)</button>
+            <button class="secondary" onclick="downloadSingle('write-192x192.png')">下载 write-192x192.png</button>
+            <button class="secondary" onclick="downloadSingle('write-512x512.png')">下载 write-512x512.png</button>
+        </div>
+        <p style="font-size: 0.875rem; margin-top: 1rem; color: #6b7280;">注意：浏览器可能会阻止同时下载多个文件。如果"下载所有"不工作，请分别点击下载。</p>
+        <p style="font-size: 0.875rem; margin-top: 0.5rem; color: #6b7280;">下载后请保存到 <code>public/</code> 目录，覆盖同名文件。</p>
+    </div>
+
+    <!-- Hidden SVG Source -->
+    <div style="display: none;">
+        <svg id="sourceSvg" width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="gradLeft" x1="20" y1="20" x2="64" y2="100" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#A5B4FC"/>
+                <stop offset="1" stop-color="#6366F1"/>
+                </linearGradient>
+                
+                <linearGradient id="gradRight" x1="64" y1="20" x2="108" y2="100" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#D8B4FE"/>
+                <stop offset="1" stop-color="#9333EA"/>
+                </linearGradient>
+                
+                <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="6" stdDeviation="5" flood-opacity="0.12"/>
+                </filter>
+            </defs>
+            <g filter="url(#softShadow)">
+                <path d="M64 45 Q48 45 40 25 Q35 15 28 25 Q15 45 18 70 Q22 105 64 115 V45 Z" fill="url(#gradLeft)"/>
+                <path d="M64 45 Q80 45 88 25 Q93 15 100 25 Q113 45 110 70 Q106 105 64 115 V45 Z" fill="url(#gradRight)"/>
+                <path d="M64 45 Q48 45 40 25 L88 25 Q80 45 64 45 Z" fill="white" fill-opacity="0.2"/>
+            </g>
+        </svg>
+    </div>
+
+    <script>
+        // Config for site icons
+        const iconConfig = [
+            { name: 'logo.png', size: 192 }, // Base favicon/logo
+            { name: 'write-192x192.png', size: 192 }, // PWA
+            { name: 'write-512x512.png', size: 512 }  // PWA
+        ];
+
+        const svg = document.getElementById('sourceSvg');
+        const svgData = new XMLSerializer().serializeToString(svg);
+        const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+        const url = URL.createObjectURL(svgBlob);
+
+        const img = new Image();
+        img.onload = () => {
+            iconConfig.forEach(config => {
+                const container = document.createElement('div');
+                container.className = 'icon-container';
+                
+                const canvas = document.createElement('canvas');
+                canvas.width = config.size;
+                canvas.height = config.size;
+                canvas.dataset.filename = config.name; // Store filename for downloader
+                
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, config.size, config.size);
+                
+                const label = document.createElement('span');
+                label.textContent = `${config.name} (${config.size}x${config.size})`;
+                
+                container.appendChild(canvas);
+                container.appendChild(label);
+                document.getElementById('previewArea').appendChild(container);
+            });
+        };
+        img.src = url;
+
+        function downloadSingle(filename) {
+            const canvas = document.querySelector(`canvas[data-filename="${filename}"]`);
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }
+        }
+
+        function downloadAll() {
+            iconConfig.forEach((config, index) => {
+                setTimeout(() => {
+                    downloadSingle(config.name);
+                }, index * 500);
+            });
+        }
+    </script>
+</body>
+</html>
