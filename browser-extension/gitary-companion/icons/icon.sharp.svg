@@ -1,0 +1,42 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Vibrant Purple-Blue Gradient for Left Facet -->
+    <linearGradient id="gradLeft" x1="20" y1="20" x2="64" y2="100" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#818CF8"/>
+      <stop offset="1" stop-color="#4F46E5"/>
+    </linearGradient>
+    
+    <!-- Deep Purple Gradient for Right Facet -->
+    <linearGradient id="gradRight" x1="64" y1="20" x2="108" y2="100" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#C084FC"/>
+      <stop offset="1" stop-color="#7E22CE"/>
+    </linearGradient>
+    
+    <!-- Soft Shadow -->
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#softShadow)">
+    <!-- Geometric Cat Head Construction -->
+    <!-- Coordinates optimized for a slimmer, more elegant profile -->
+    
+    <!-- Left Facet -->
+    <!-- Points: CenterTop(64,42) -> LeftEarTip(32,16) -> LeftCheek(22,50) -> Chin(64,108) -->
+    <path d="M64 42 L32 16 L22 50 L64 108 V42 Z" fill="url(#gradLeft)"/>
+    
+    <!-- Right Facet -->
+    <!-- Points: CenterTop(64,42) -> RightEarTip(96,16) -> RightCheek(106,50) -> Chin(64,108) -->
+    <path d="M64 42 L96 16 L106 50 L64 108 V42 Z" fill="url(#gradRight)"/>
+
+    <!-- Center Top "Diamond" / Forehead Fold -->
+    <!-- This triangle connects the ears and creates the folded paper look -->
+    <!-- It's slightly brighter to imply a top-down light source -->
+    <path d="M64 42 L32 16 L64 26 L96 16 Z" fill="white" fill-opacity="0.15"/>
+    
+    <!-- Inner "W" Highlight/Detail to imply the face structure -->
+    <!-- Subtle highlight line along the center fold -->
+    <path d="M64 42 V108" stroke="black" stroke-opacity="0.1" stroke-width="1"/>
+  </g>
+</svg>

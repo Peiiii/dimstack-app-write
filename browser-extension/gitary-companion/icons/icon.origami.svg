@@ -1,0 +1,29 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradLeft" x1="0" y1="0" x2="64" y2="128" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#818cf8"/>
+      <stop offset="1" stop-color="#6366f1"/>
+    </linearGradient>
+    <linearGradient id="gradRight" x1="64" y1="0" x2="128" y2="128" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a855f7"/>
+      <stop offset="1" stop-color="#7e22ce"/>
+    </linearGradient>
+    <filter id="shadow" x="0" y="0" width="128" height="128" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- Main Shape Group with Drop Shadow -->
+  <g filter="url(#shadow)">
+    <!-- Left Side (Left Ear + Face) -->
+    <path d="M64 35 L34 15 L24 45 L24 85 L64 105 V35 Z" fill="url(#gradLeft)"/>
+    
+    <!-- Right Side (Right Ear + Face) -->
+    <!-- Starts from center, goes to right ear, down to chin -->
+    <path d="M64 35 L94 15 L104 45 L104 85 L64 105 V35 Z" fill="url(#gradRight)"/>
+
+    <!-- Top "Fold" or Forehead connecting ears to center, creating depth -->
+    <!-- A small triangle at the top center to bridge the ears, making it look like a folded ribbon -->
+    <path d="M64 35 L34 15 L94 15 Z" fill="white" fill-opacity="0.1"/>
+  </g>
+</svg>

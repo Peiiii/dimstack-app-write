@@ -1,8 +1,11 @@
 {
   "manifest_version": 3,
   "name": "Gitary Companion",
+  "short_name": "Gitary",
   "version": "0.1.0",
   "description": "在浏览器中一键将代码仓库打开到 Gitary，并提供更多辅助功能。",
+  "author": "Gitary",
+  "homepage_url": "https://write.dimstack.com",
   "icons": {
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",
