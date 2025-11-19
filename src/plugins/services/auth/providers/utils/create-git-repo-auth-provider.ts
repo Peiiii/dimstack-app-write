@@ -9,6 +9,20 @@ export interface IUser {
   username: string;
 }
 
+const normalizeCreatedAt = (raw: unknown): number => {
+  const nowSeconds = Math.ceil(Date.now() / 1000);
+  if (typeof raw === "number" && Number.isFinite(raw)) {
+    return raw;
+  }
+  if (typeof raw === "string" && raw) {
+    const ms = Date.parse(raw);
+    if (!Number.isNaN(ms)) {
+      return Math.ceil(ms / 1000);
+    }
+  }
+  return nowSeconds;
+};
+
 const extractPlatformFromState = (rawState: unknown): string | undefined => {
   if (typeof rawState !== "string" || !rawState) return undefined;
   try {
@@ -87,7 +101,7 @@ export const createOAuthCallbackTask = ({
               refreshToken: auth.refresh_token,
               expirationTime: auth.expires_in,
               refreshTokenExpirationTime: auth.refresh_token_expires_in,
-              createdAt: auth.created_at || Math.ceil(Date.now() / 1000),
+              createdAt: normalizeCreatedAt(auth.created_at),
               scope: auth.scope,
               tokenType: auth.token_type,
             });
@@ -144,7 +158,7 @@ export const createGitRepoAuthProvider = ({
         refreshToken: auth.refresh_token,
         expirationTime: auth.expires_in,
         refreshTokenExpirationTime: auth.refresh_token_expires_in,
-        createdAt: auth.created_at,
+        createdAt: normalizeCreatedAt(auth.created_at),
         scope: auth.scope,
         tokenType: auth.token_type,
       });
