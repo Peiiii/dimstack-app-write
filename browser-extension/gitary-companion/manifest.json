@@ -19,9 +19,6 @@
     "contextMenus",
     "notifications"
   ],
-  "host_permissions": [
-    "https://github.com/*"
-  ],
   "action": {
     "default_title": "__MSG_actionTitle__",
     "default_icon": {
