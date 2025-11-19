@@ -15,7 +15,6 @@
     "message": "在 Gitary 中打开此仓库"
   },
   "notARepository": {
-    "message": "Gitary Companion 只能在 GitHub 仓库页面使用。"
+    "message": "Gitary Companion 只能在 GitHub / Gitee / GitCode 仓库页面使用。"
   }
 }
-

@@ -15,7 +15,6 @@
     "message": "Open this repository in Gitary"
   },
   "notARepository": {
-    "message": "Gitary Companion can only be used on GitHub repository pages."
+    "message": "Gitary Companion can only be used on GitHub, Gitee, or GitCode repository pages."
   }
 }
-

@@ -1,4 +1,4 @@
-export type SupportedPlatform = "github";
+export type SupportedPlatform = "github" | "gitee" | "gitcode";
 
 export interface RepoLocation {
   platform: SupportedPlatform;
@@ -7,14 +7,28 @@ export interface RepoLocation {
 }
 
 /**
- * 从 GitHub 页面或链接 URL 中提取仓库信息。
- * 只接受形如 https://github.com/{owner}/{repo}[/*] 的地址。
+ * 从支持的平台页面或链接 URL 中提取仓库信息。
+ * 支持形如：
+ * - https://github.com/{owner}/{repo}[/*]
+ * - https://gitee.com/{owner}/{repo}[/*]
+ * - https://gitcode.com/{owner}/{repo}[/*]
  */
 export function extractGithubRepoFromUrl(rawUrl: string): RepoLocation | null {
   try {
     const url = new URL(rawUrl);
-    if (url.hostname !== "github.com") {
-      return null;
+    let platform: SupportedPlatform;
+    switch (url.hostname) {
+      case "github.com":
+        platform = "github";
+        break;
+      case "gitee.com":
+        platform = "gitee";
+        break;
+      case "gitcode.com":
+        platform = "gitcode";
+        break;
+      default:
+        return null;
     }
 
     const segments = url.pathname.split("/").filter(Boolean);
@@ -27,11 +41,7 @@ export function extractGithubRepoFromUrl(rawUrl: string): RepoLocation | null {
       return null;
     }
 
-    return {
-      platform: "github",
-      owner,
-      repo,
-    };
+    return { platform, owner, repo };
   } catch {
     return null;
   }
@@ -44,9 +54,12 @@ export function buildRepoRootUrl(repo: RepoLocation): string {
   switch (repo.platform) {
     case "github":
       return `https://github.com/${repo.owner}/${repo.repo}`;
+    case "gitee":
+      return `https://gitee.com/${repo.owner}/${repo.repo}`;
+    case "gitcode":
+      return `https://gitcode.com/${repo.owner}/${repo.repo}`;
     default:
       // 目前不会触发，预留扩展点
       return "";
   }
 }
-

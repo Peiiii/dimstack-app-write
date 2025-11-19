@@ -17,7 +17,7 @@ function openRepoInGitaryFromUrl(rawUrl: string): void {
     const title = getMessage("appName", "Gitary Companion");
     const message = getMessage(
       "notARepository",
-      "Gitary Companion can only be used on GitHub repository pages."
+      "Gitary Companion can only be used on GitHub / Gitee / GitCode repository pages."
     );
     void chrome.notifications.create({
       type: "basic",
@@ -53,7 +53,11 @@ chrome.runtime.onInstalled.addListener(() => {
     id: ExtensionAction.OpenInGitary,
     title,
     contexts: ["page", "link"],
-    documentUrlPatterns: ["https://github.com/*"],
+    documentUrlPatterns: [
+      "https://github.com/*",
+      "https://gitee.com/*",
+      "https://gitcode.com/*",
+    ],
   });
 });
 
