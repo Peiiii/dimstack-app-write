@@ -51,9 +51,10 @@ export const getGitcodeLoginUrl = ({
     // request broad access similar to Gitee/GitHub usage in the app
     "all_user all_repository"
   );
+  const state = encodeURIComponent(JSON.stringify({ platform: "gitcode" }));
   return `${authorizeUrl}?client_id=${clientId}&redirect_uri=${encodeURIComponent(
     redirectUri
-  )}&response_type=code&scope=${scope}`;
+  )}&response_type=code&scope=${scope}&state=${state}`;
 };
 
 const prepareParams = (params: Record<string, any>) => {

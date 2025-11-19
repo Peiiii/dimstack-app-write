@@ -113,8 +113,17 @@ import axios from "redaxios";
 //   }) => Promise<ApiResponse<any>>;
 // }
 
-export const getGithubLoginUrl = ({ redirectUri, clientId }) => {
-  return `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&apiresponse_type=code&scope=user%20repo`;
+export const getGithubLoginUrl = ({
+  redirectUri,
+  clientId,
+}: {
+  redirectUri: string;
+  clientId: string;
+}) => {
+  const state = encodeURIComponent(JSON.stringify({ platform: "github" }));
+  return `https://github.com/login/oauth/authorize?client_id=${clientId}` +
+    `&redirect_uri=${redirectUri}` +
+    `&apiresponse_type=code&scope=user%20repo&state=${state}`;
 };
 
 const prepareParams = (params: Record<string, any>) => {

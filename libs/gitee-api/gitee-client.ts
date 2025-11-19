@@ -39,8 +39,17 @@ export interface IGiteeUser {
 const API_BASE_URL = "https://gitee.com/api/v5";
 const AUTHORIZE_URL = "https://gitee.com/oauth/token";
 
-export const getGiteeLoginUrl = ({ redirectUri, clientId }) => {
-  return `https://gitee.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=user_info%20projects`;
+export const getGiteeLoginUrl = ({
+  redirectUri,
+  clientId,
+}: {
+  redirectUri: string;
+  clientId: string;
+}) => {
+  const state = encodeURIComponent(JSON.stringify({ platform: "gitee" }));
+  return `https://gitee.com/oauth/authorize?client_id=${clientId}` +
+    `&redirect_uri=${redirectUri}` +
+    `&response_type=code&scope=user_info%20projects&state=${state}`;
 };
 
 const prepareParams = (params: Record<string, any>) => {

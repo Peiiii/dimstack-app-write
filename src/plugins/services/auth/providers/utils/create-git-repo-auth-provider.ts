@@ -8,6 +8,25 @@ import xbook from "xbook/index";
 export interface IUser {
   username: string;
 }
+
+const extractPlatformFromState = (rawState: unknown): string | undefined => {
+  if (typeof rawState !== "string" || !rawState) return undefined;
+  try {
+    const parsed: unknown = JSON.parse(rawState);
+    if (
+      parsed &&
+      typeof parsed === "object" &&
+      "platform" in parsed &&
+      typeof (parsed as { platform?: unknown }).platform === "string"
+    ) {
+      return (parsed as { platform: string }).platform;
+    }
+  } catch {
+    // state 不是 JSON 时忽略，保持向后兼容
+  }
+  return undefined;
+};
+
 export const createOAuthCallbackTask = ({
   platform,
   createToken,
@@ -35,8 +54,15 @@ export const createOAuthCallbackTask = ({
       const { platform, username } = taskData;
       const code = history.location.query["code"];
       const codePlatform = history.location.query["platform"];
-      // const repo = localStorage.getItem("authRepo");
-      if (code && platform === codePlatform) {
+      const rawState = history.location.query["state"];
+
+      // Some providers may encode platform into `state` as JSON, e.g. { "platform": "gitcode", ... }.
+      const statePlatform = extractPlatformFromState(rawState);
+
+      const isTargetPlatform =
+        platform === codePlatform || platform === statePlatform;
+
+      if (code && isTargetPlatform) {
         createToken({
           clientId,
           clientSecret,
@@ -67,12 +93,11 @@ export const createOAuthCallbackTask = ({
             });
           }
         });
-        const newQuery = { ...history.location.query };
-        delete newQuery["code"];
         history.push(
           updateSearchParams(location.href, {
             code: null,
             platform: null,
+            state: null,
           })
         );
       }
