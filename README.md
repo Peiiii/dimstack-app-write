@@ -21,8 +21,9 @@ Gitary is a Git-based note-taking platform that makes knowledge management simpl
 
 ### 🔄 Direct Git Repository Connection
 
-- Direct connection to GitHub/Gitee repositories
+- Direct connection to **GitHub**, **Gitee**, and **GitCode** repositories
 - No intermediate storage, work directly with your repos
+- Support for multiple Git hosting platforms
 
 ### 📂 Enhanced Repository Reader
 
