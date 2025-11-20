@@ -7,6 +7,8 @@ import readMeContentZh from "./readme.md?raw";
 import readMeContentEn from "./readme.en.md?raw";
 import connectGitContentZh from "./connect-git.md?raw";
 import connectGitContentEn from "./connect-git.en.md?raw";
+import excalidrawExampleZh from "./excalidraw-example-zh.json?raw";
+import excalidrawExampleEn from "./excalidraw-example-en.json?raw";
 
 const cache = CacheController.create({
   scope: "spaceStateCache",
@@ -50,6 +52,11 @@ const getConnectGitContent = (): string => {
   return lang === "en" ? connectGitContentEn : connectGitContentZh;
 };
 
+const getExcalidrawExampleContent = (): string => {
+  const lang = getCurrentLanguage();
+  return lang === "zh" ? excalidrawExampleZh : excalidrawExampleEn;
+};
+
 export const pluginAddInitialIndexedDbSpace = createPlugin({
   initilize(xbook) {
     // Use singleton spaceService directly
@@ -91,9 +98,12 @@ export const pluginAddInitialIndexedDbSpace = createPlugin({
           
           const lang = getCurrentLanguage();
           const connectGitFileName = lang === "en" ? "/Connect-Git-Repository.md" : "/连接-Git-仓库.md";
+          const excalidrawExampleFileName = lang === "zh" ? "/Excalidraw-示例.excalidraw.json" : "/Excalidraw-Example.excalidraw.json";
+          const excalidrawExampleContent = getExcalidrawExampleContent();
           
           await createFileIfNotExists("/README.md", readMeContent);
           await createFileIfNotExists(connectGitFileName, connectGitContent);
+          await createFileIfNotExists(excalidrawExampleFileName, excalidrawExampleContent);
           
           cache.set(space.id, {
             ...cache.get(space.id, getDefaultSpaceState()),

@@ -53,6 +53,14 @@ Bring Notion-style powerful editing experience to your Git repositories. Your no
 - Fast and accurate search results
 - Search within code files and Markdown documents
 
+### 🎨 Excalidraw Drawing Support
+
+- Built-in **Excalidraw** whiteboard for creating diagrams and sketches
+- Draw flowcharts, architecture diagrams, wireframes, and more
+- All drawings saved directly to your Git repository
+- Professional drawing tools with shapes, arrows, and text
+- Perfect for technical documentation and visual note-taking
+
 ## 🆚 Gitary vs Notion
 
 | Feature | Notion | Gitary |

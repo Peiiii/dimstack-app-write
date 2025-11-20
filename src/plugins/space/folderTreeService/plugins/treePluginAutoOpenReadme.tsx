@@ -18,15 +18,41 @@ export default createTreeHelper<FolderTreeNode>().createPlugin({
   }) {
     const treeService = serviceBus.createProxy(TreeServicePoints.TreeService);
     eventBus.on(TreeEventKeys.TreeOpened, () => {
-      // 自动打开README.md，如果存在的话
       const rootNode = dataStore.getData();
-      const readme = rootNode.children?.find(
+      if (!rootNode || !rootNode.children) {
+        return;
+      }
+      
+      const getCurrentLanguage = (): string => {
+        try {
+          const stored = localStorage.getItem("i18nextLng");
+          if (stored && (stored === "zh" || stored === "en")) {
+            return stored;
+          }
+        } catch {
+          // localStorage not available
+        }
+        
+        const browserLang = navigator.language || "";
+        if (browserLang.startsWith("zh")) {
+          return "zh";
+        }
+        return "en";
+      };
+      
+      const lang = getCurrentLanguage();
+      const excalidrawFileName = lang === "zh" 
+        ? "Excalidraw-示例.excalidraw.json" 
+        : "Excalidraw-Example.excalidraw.json";
+      
+      const excalidrawNode = rootNode.children.find(
         (child) =>
-          child.name.toUpperCase() === "README.MD" &&
+          child.name === excalidrawFileName &&
           child.type === TreeNodeTypeEnum.File
       );
-      if (readme) {
-        treeService.openNode(readme.id);
+      
+      if (excalidrawNode) {
+        treeService.openNode(excalidrawNode.id);
       }
     });
   },
