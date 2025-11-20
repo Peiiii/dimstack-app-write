@@ -2,9 +2,9 @@
 
 [English](README.md) | [中文](README.zh-CN.md)
 
-> **Notion-like experience for your Git repositories**
+> **Notion-like editing + Excalidraw drawing for your Git repositories**
 
-Bring Notion-style powerful editing experience to your Git repositories. Your notes, your data, your control.
+Bring Notion-style powerful editing experience and Excalidraw drawing capabilities to your Git repositories. Your notes, your data, your control.
 
 ## 🌐 Try Online
 
@@ -116,4 +116,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-**Gitary** - Notion-like experience for your Git repositories. Your notes, your data, your control.
+**Gitary** - Notion-like editing + Excalidraw drawing for your Git repositories. Your notes, your data, your control.

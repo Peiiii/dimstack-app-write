@@ -2,10 +2,10 @@
 
 [English](README.md) | [中文](README.zh-CN.md)
 
-> **类 Notion 体验，运行在你的 Git 仓库上**  
-> **为你的 Git 仓库带来 Notion 风格的强大编辑体验**
+> **类 Notion 编辑 + Excalidraw 画图，运行在你的 Git 仓库上**  
+> **为你的 Git 仓库带来 Notion 风格的强大编辑体验和 Excalidraw 画图能力**
 
-将 Notion 风格的强大编辑体验带到你的 Git 仓库中。你的笔记，你的数据，你的控制权。
+将 Notion 风格的强大编辑体验和 Excalidraw 画图能力带到你的 Git 仓库中。你的笔记，你的数据，你的控制权。
 
 ## 🌐 在线体验
 
@@ -117,4 +117,4 @@ pnpm dev
 
 ---
 
-**Gitary** - 类 Notion 体验，运行在你的 Git 仓库上。你的笔记，你的数据，你的控制权。
+**Gitary** - 类 Notion 编辑 + Excalidraw 画图，运行在你的 Git 仓库上。你的笔记，你的数据，你的控制权。

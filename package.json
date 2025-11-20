@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "license": "MIT",
-  "description": "Notion-like experience for your Git repositories - Bring Notion-style powerful editing experience to your GitHub/Gitee/GitCode repositories",
+  "description": "Notion-like editing + Excalidraw drawing for your Git repositories - Bring Notion-style powerful editing experience and Excalidraw drawing capabilities to your GitHub/Gitee/GitCode repositories",
   "keywords": [
     "notion-like",
     "notion-style",
