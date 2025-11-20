@@ -13,9 +13,14 @@ import "reactflow/dist/style.css";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 
+interface FlowDemoPersistedData {
+  nodes?: Node[];
+  edges?: Edge[];
+}
+
 interface FlowDemoProps {
-  saveData: (data: any) => Promise<void>;
-  loadData: () => Promise<any>;
+  saveData: (data: { nodes: Node[]; edges: Edge[] }) => Promise<void>;
+  loadData: () => Promise<FlowDemoPersistedData | null>;
 }
 
 const initialNodes: Node[] = [
@@ -60,7 +65,7 @@ export function FlowDemoCanvas({ saveData, loadData }: FlowDemoProps) {
       }
     };
     loadSavedData();
-  }, []);
+  }, [loadData, setNodes, setEdges]);
 
   useEffect(() => {
     const autoSave = async () => {

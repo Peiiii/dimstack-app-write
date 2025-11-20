@@ -6,6 +6,7 @@ import { provideZenNotes } from "./provide-zen-notes";
 import { provideCommunity } from "./provide-community";
 import { provideMindFlow } from "./provide-mind-flow";
 import { provideFlowDemo } from "./provide-flow-demo";
+import { provideExcalidraw } from "./provide-excalidraw";
 import { createPlugin } from "xbook/common/createPlugin";
 
 export const provideApps = createPlugin({
@@ -19,6 +20,7 @@ export const provideApps = createPlugin({
       provideCommunity,
       provideMindFlow,
       provideFlowDemo,
+      provideExcalidraw,
     ]);
   },
 });

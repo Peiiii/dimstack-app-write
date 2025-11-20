@@ -12,17 +12,9 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { AIService } from "../services/ai-service";
 
-interface SaveDataFunction {
-  (data: any): Promise<void>;
-}
-
-interface LoadDataFunction {
-  (): Promise<any>;
-}
-
 interface AppProps {
-  saveData: SaveDataFunction;
-  loadData: LoadDataFunction;
+  saveData: (data: { quotes: Quote[] }) => Promise<void>;
+  loadData: () => Promise<{ quotes?: Quote[] } | null>;
 }
 
 interface Quote {
@@ -36,11 +28,10 @@ interface Quote {
 export function AIQuoteCards({ saveData, loadData }: AppProps) {
   const { t } = useTranslation();
   const [quotes, setQuotes] = useState<Quote[]>([]);
-  const [apiKey, setApiKey] = useState("");
   const [category, setCategory] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
-  const aiService = new AIService(apiKey, "gpt-4-turbo-preview");
+  const aiService = new AIService("gpt-4o-mini");
 
   useEffect(() => {
     const loadSavedData = async () => {
@@ -48,7 +39,6 @@ export function AIQuoteCards({ saveData, loadData }: AppProps) {
         const savedData = await loadData();
         if (savedData) {
           setQuotes(savedData.quotes || []);
-          setApiKey(savedData.apiKey || "");
         }
       } catch (error) {
         console.error("Error loading data:", error);
@@ -60,30 +50,21 @@ export function AIQuoteCards({ saveData, loadData }: AppProps) {
       }
     };
     loadSavedData();
-  }, []);
+  }, [loadData, t, toast]);
 
   useEffect(() => {
     const autoSave = async () => {
       try {
-        await saveData({ quotes, apiKey });
+        await saveData({ quotes });
       } catch (error) {
         console.error("Auto save failed:", error);
       }
     };
     const timeoutId = setTimeout(autoSave, 1000);
     return () => clearTimeout(timeoutId);
-  }, [quotes, apiKey, saveData]);
+  }, [quotes, saveData]);
 
   const generateQuote = async () => {
-    if (!apiKey) {
-      toast({
-        title: t("quotes.error"),
-        description: t("quotes.enterApiKey"),
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsGenerating(true);
 
     try {
@@ -157,12 +138,6 @@ export function AIQuoteCards({ saveData, loadData }: AppProps) {
             <CardDescription>生成富有哲理的名言</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Input
-              type="password"
-              placeholder="输入OpenAI API密钥"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-            />
             <Input
               placeholder="输入主题或类别（可选）"
               value={category}

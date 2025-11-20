@@ -28,6 +28,6 @@ export interface Message {
 }
 
 export interface AppProps {
-  saveData: (data: { messages: Message[]; apiKey: string }) => Promise<void>;
-  loadData: () => Promise<{ messages: Message[]; apiKey: string } | null>;
-} 
+  saveData: (data: { messages: Message[] }) => Promise<void>;
+  loadData: () => Promise<{ messages: Message[] } | null>;
+}

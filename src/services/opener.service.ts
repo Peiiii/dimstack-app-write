@@ -3,7 +3,37 @@ import { spaceHelper } from "@/helpers/space.helper";
 import { device } from "xbook/common/device";
 import xbook from "xbook/index";
 
-type FileOpenerOptions = {
+export type FileTemplateInitialContent =
+  | string
+  | Uint8Array
+  | (() => string | Uint8Array | Promise<string | Uint8Array>);
+
+export type FileTemplate = {
+  /**
+   * Unique id of this template under a given opener.
+   */
+  id: string;
+  /**
+   * Label used in UI menus, e.g. "New Excalidraw canvas".
+   */
+  label: string;
+  /**
+   * Default file name when creating this template.
+   * Users can still rename before creation.
+   */
+  defaultFileName: string;
+  /**
+   * Optional initial file content.
+   * If omitted, an empty file will be created.
+   */
+  initialContent?: FileTemplateInitialContent;
+  /**
+   * Optional icon id for menus.
+   */
+  icon?: string;
+};
+
+export type FileOpenerOptions = {
   /**
    * Unique id of this opener. Used for "Open With XXX" style actions.
    * Convention: reuse the component/view id when possible, e.g. "zenmark-editor".
@@ -22,6 +52,11 @@ type FileOpenerOptions = {
    * in file tree/context menus.
    */
   showInTreeMenu?: boolean;
+  /**
+   * Optional file templates which can be used to create new files
+   * from the folder tree "add" menu.
+   */
+  templates?: FileTemplate[];
   match: string[] | RegExp[] | ((s: string) => boolean);
   priority?: number;
   init(uri: string): void;

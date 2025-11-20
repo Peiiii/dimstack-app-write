@@ -28,9 +28,13 @@ interface Post {
   createdAt: string;
 }
 
+interface CommunityPersistedData {
+  posts: Post[];
+}
+
 interface CommunityProps {
-  saveData?: (data: any) => Promise<void>;
-  loadData?: () => Promise<any>;
+  saveData?: (data: CommunityPersistedData) => Promise<void>;
+  loadData?: () => Promise<CommunityPersistedData | null>;
 }
 
 export function Community({ saveData, loadData }: CommunityProps) {
@@ -38,11 +42,6 @@ export function Community({ saveData, loadData }: CommunityProps) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [newPost, setNewPost] = useState("");
   const { toast } = useToast();
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDarkMode);
-  }, [isDarkMode]);
 
   useEffect(() => {
     const loadSavedData = async () => {
@@ -61,7 +60,7 @@ export function Community({ saveData, loadData }: CommunityProps) {
       }
     };
     loadSavedData();
-  }, []);
+  }, [loadData, t, toast]);
 
   // 自动保存
   useEffect(() => {

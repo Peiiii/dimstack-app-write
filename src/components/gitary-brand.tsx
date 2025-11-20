@@ -1,5 +1,4 @@
-import { Box, Flex, Image, Text } from "@chakra-ui/react";
-import { useTranslation } from "react-i18next";
+import { Flex, Image, Text } from "@chakra-ui/react";
 
 export const GitaryBrand = ({ 
   showLogo = true, 
@@ -10,7 +9,6 @@ export const GitaryBrand = ({
   showName?: boolean;
   size?: "sm" | "md" | "lg";
 }) => {
-  const { t } = useTranslation();
   const sizeMap = {
     sm: { logo: "16px", fontSize: "xs" },
     md: { logo: "24px", fontSize: "sm" },
@@ -43,4 +41,3 @@ export const GitaryBrand = ({
     </Flex>
   );
 };
-

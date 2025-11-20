@@ -33,7 +33,7 @@ export function StreamOfThoughtsComponent({
   const [thoughts, setThoughts] = useState<Thought[]>([]);
   const [newThought, setNewThought] = useState("");
   const [selectedMood, setSelectedMood] = useState("😊");
-  const [editingThought, setEditingThought] = useState<number | null>(null);
+  const [_editingThought, _setEditingThought] = useState<number | null>(null);
   const [showMoodPicker, setShowMoodPicker] = useState(false);
 
   useEffect(() => {

@@ -17,14 +17,13 @@ export function AIResumeChat({ saveData, loadData }: AppProps) {
   const { t } = useTranslation();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
-  const [apiKey, setApiKey] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedResume, setSelectedResume] = useState<Resume | null>(null);
   const { toast } = useToast();
   const { containerRef, notifyNewItem, scrollToBottom, setIsSticky } =
     useStickyAutoScroll({ threshold: 80 });
-  const aiService = new AIService(apiKey, "gpt-4-turbo-preview");
-  const prevDataRef = useRef({ messages, apiKey });
+  const aiService = new AIService("gpt-4o-mini");
+  const prevDataRef = useRef({ messages });
 
   useEffect(() => {
     const loadSavedData = async () => {
@@ -32,7 +31,6 @@ export function AIResumeChat({ saveData, loadData }: AppProps) {
         const savedData = await loadData();
         if (savedData) {
           setMessages(savedData.messages || []);
-          setApiKey(savedData.apiKey || "");
         }
       } catch (error) {
         console.error("Error loading data:", error);
@@ -44,10 +42,10 @@ export function AIResumeChat({ saveData, loadData }: AppProps) {
       }
     };
     loadSavedData();
-  }, []);
+  }, [loadData, t, toast]);
 
   useEffect(() => {
-    const currentData = { messages, apiKey };
+    const currentData = { messages };
     
     if (isEqual(currentData, prevDataRef.current)) {
       return;
@@ -64,7 +62,7 @@ export function AIResumeChat({ saveData, loadData }: AppProps) {
     
     const timeoutId = setTimeout(autoSave, 1000);
     return () => clearTimeout(timeoutId);
-  }, [messages, apiKey, saveData]);
+  }, [messages, saveData]);
 
   // Auto scroll on new messages when sticky
   useEffect(() => {
@@ -72,15 +70,6 @@ export function AIResumeChat({ saveData, loadData }: AppProps) {
   }, [messages, notifyNewItem]);
 
   const handleSend = async () => {
-    if (!apiKey) {
-      toast({
-        title: t("resume.error"),
-        description: t("resume.enterApiKey"),
-        variant: "destructive",
-      });
-      return;
-    }
-
     if (!input.trim()) {
       toast({
         title: t("resume.error"),
@@ -214,15 +203,6 @@ ${messages.map((m) => `${m.type}: ${m.content}`).join("\n")}
           <CardHeader>
             <CardTitle>AI简历助手</CardTitle>
           </CardHeader>
-          <CardContent>
-            <Input
-              type="password"
-              placeholder="输入OpenAI API密钥"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              className="mb-4"
-            />
-          </CardContent>
         </Card>
 
         <div

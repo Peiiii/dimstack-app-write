@@ -8,13 +8,13 @@ import { t } from "@/i18n/utils";
 export default createPlugin({
   async initilize(xbook) {
     // Use local zenmark-editor; no SystemJS runtime required
-	    xbook.componentService.register("zenmark-editor", ZenmarkEditorComponent);
-	    openerService.register({
-	      id: "zenmark-editor",
-	      label: t("apps.zenNotes"),
-	      // Use markdown-style file icon for ZenNotes markdown editor
-	      icon: "AiOutlineFileMarkdown",
-	      showInTreeMenu: true,
+    xbook.componentService.register("zenmark-editor", ZenmarkEditorComponent);
+    openerService.register({
+      id: "zenmark-editor",
+      label: t("apps.zenNotes"),
+      // Use markdown-style file icon for ZenNotes markdown editor
+      icon: "AiOutlineFileMarkdown",
+      showInTreeMenu: true,
       // Higher than generic text viewer so markdown defaults to Zenmark.
       priority: -10,
       match: [".md", ".markdown", ".MD"],

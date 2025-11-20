@@ -1,37 +1,31 @@
-export class AIService {
-  private apiKey: string;
-  private model: string;
-  private baseUrl = "https://api.openai.com/v1/chat/completions";
+import { aiGateway } from "@/services/ai-gateway";
 
-  constructor(apiKey: string, model: string = "gpt-3.5-turbo") {
-    this.apiKey = apiKey;
+export class AIService {
+  private model: string;
+
+  /**
+   * Legacy wrapper around the new AIGatewayService.
+   * Kept for existing components (AI Resume, AI Quotes, etc).
+   */
+  constructor(model: string = "gpt-4o-mini") {
     this.model = model;
   }
 
   private async callAPI(
-    messages: Array<{ role: string; content: string }>,
+    messages: Array<{ role: "system" | "user" | "assistant"; content: string }>,
     responseFormat?: { type: string }
   ) {
-    const response = await fetch(this.baseUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${this.apiKey}`,
-      },
-      body: JSON.stringify({
-        model: this.model,
-        messages,
-        temperature: 0.7,
-        response_format: responseFormat,
-      }),
+    const res = await aiGateway.chat({
+      model: this.model,
+      messages,
+      // responseFormat is not wired yet; kept for compatibility.
     });
 
-    if (!response.ok) {
-      throw new Error("API 调用失败");
+    const msg = res.messages[0];
+    if (!msg) {
+      throw new Error("AI 网关未返回任何消息");
     }
-
-    const data = await response.json();
-    return data.choices[0].message.content;
+    return msg.content;
   }
 
   async generateText(prompt: string) {

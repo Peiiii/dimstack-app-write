@@ -18,23 +18,14 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Eye, EyeOff } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useStickyAutoScroll } from "@/hooks/use-sticky-autoscroll";
 import { AIService } from "../services/ai-service";
 import { useTranslation } from "react-i18next";
 
-interface SaveDataFunction {
-  (data: any): Promise<void>;
-}
-
-interface LoadDataFunction {
-  (): Promise<any>;
-}
-
 interface AppProps {
-  saveData: SaveDataFunction;
-  loadData: LoadDataFunction;
+  saveData: (data: { conversation: ConversationItem[]; selectedModel: string }) => Promise<void>;
+  loadData: () => Promise<{ conversation?: ConversationItem[]; selectedModel?: string } | null>;
 }
 
 interface ConversationItem {
@@ -53,17 +44,15 @@ const AI_MODELS = [
 export default function Component({ saveData, loadData }: AppProps) {
   const { t } = useTranslation();
   const [input, setInput] = useState("");
-  const [apiKey, setApiKey] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [conversation, setConversation] = useState<ConversationItem[]>([]);
   const [selectedDirection, setSelectedDirection] = useState(null);
   const [furtherDescription, setFurtherDescription] = useState("");
   const { toast } = useToast();
-  const [selectedModel, setSelectedModel] = useState<string>("gpt4o-mini");
-  const [showApiKey, setShowApiKey] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<string>("gpt-4o-mini");
   const aiService = useMemo(
-    () => new AIService(apiKey, selectedModel),
-    [apiKey, selectedModel]
+    () => new AIService(selectedModel),
+    [selectedModel]
   );
   const { containerRef, notifyNewItem, scrollToBottom, setIsSticky } =
     useStickyAutoScroll({ threshold: 80 });
@@ -74,8 +63,7 @@ export default function Component({ saveData, loadData }: AppProps) {
         const savedData = await loadData();
         if (savedData) {
           setConversation(savedData.conversation || []);
-          setApiKey(savedData.apiKey || "");
-          setSelectedModel(savedData.selectedModel || "gpt4o-mini");
+          setSelectedModel(savedData.selectedModel || "gpt-4o-mini");
         }
       } catch (error) {
         console.error("Error loading data:", error);
@@ -87,13 +75,13 @@ export default function Component({ saveData, loadData }: AppProps) {
       }
     };
     loadSavedData();
-  }, []);
+  }, [loadData, t, toast]);
 
   // 添加自动保存功能
   useEffect(() => {
     const autoSave = async () => {
       try {
-        await saveData({ conversation, apiKey, selectedModel });
+        await saveData({ conversation, selectedModel });
         console.log('Auto saved successfully');
       } catch (error) {
         console.error('Auto save failed:', error);
@@ -103,18 +91,9 @@ export default function Component({ saveData, loadData }: AppProps) {
     // 使用防抖来避免频繁保存
     const timeoutId = setTimeout(autoSave, 1000);
     return () => clearTimeout(timeoutId);
-  }, [conversation, apiKey, selectedModel, saveData]);
+  }, [conversation, selectedModel, saveData]);
 
   const generateCards = async () => {
-    if (!apiKey) {
-      toast({
-        title: t("story.error"),
-        description: t("story.enterApiKey"),
-        variant: "destructive",
-      });
-      return;
-    }
-
     if (!input.trim()) {
       toast({
         title: t("story.error"),
@@ -364,26 +343,7 @@ export default function Component({ saveData, loadData }: AppProps) {
       <div className="relative bottom-0 left-0 right-0 bg-white border-t shadow-lg p-4">
         <div className="max-w-3xl mx-auto space-y-3">
           <div className="flex space-x-2">
-            <div className="relative flex-1">
-              <Input
-                type={showApiKey ? "text" : "password"}
-                placeholder="输入OpenAI API密钥"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-              />
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute right-2 top-1/2 -translate-y-1/2"
-                onClick={() => setShowApiKey(!showApiKey)}
-              >
-                {showApiKey ? (
-                  <EyeOff className="h-4 w-4" />
-                ) : (
-                  <Eye className="h-4 w-4" />
-                )}
-              </Button>
-            </div>
+            <div className="flex-1" />
             <Select value={selectedModel} onValueChange={setSelectedModel}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="选择模型" />

@@ -41,12 +41,12 @@ export default function App() {
   );
 }
 `);
-  const [compiledCode, setCompiledCode] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [compiledCode] = useState("");
+  const [error] = useState<string | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [activeTab, setActiveTab] = useState("editor");
 
-  const compileCode = (sourceCode: string) => {
+  const compileCode = (_sourceCode: string) => {
     // try {
     //   const output = Babel.transform(sourceCode, {
     //     presets: ["react"],
@@ -118,7 +118,7 @@ export default function App() {
 
   useEffect(() => {
     compileCode(code);
-  }, []);
+  }, [code]);
 
   useEffect(() => {
     if (activeTab === "preview" && !error) {

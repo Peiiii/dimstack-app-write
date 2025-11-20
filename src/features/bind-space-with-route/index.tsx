@@ -3,13 +3,10 @@ import { spaceService } from "@/services/space.service";
 import { createObservableFromExternalStore } from "@/toolkit/utils/rx-utils";
 import { BehaviorSubject } from "rxjs";
 import { createPlugin } from "xbook/common/createPlugin";
-import { createHashHistory } from "history";
-
-const history = createHashHistory();
 
 const parseSpaceInfoFromRoute = () => {
   const hash = window.location.hash;
-  const match = hash.match(/\/https:\/\/([^\.]+)\.com\/([^\/]+)\/([^\/]+)/);
+  const match = hash.match(/\/https:\/\/([^.]+)\.com\/([^/]+)\/([^/]+)/);
   if (!match) return null;
   const [, platform, owner, repo] = match;
   return { platform, owner, repo };

@@ -157,7 +157,21 @@
     "community": "Community",
     "aiStoryCards": "AI Story Cards",
     "aiResume": "AI Resume Assistant",
-    "aiQuotes": "AI Quotes"
+    "aiQuotes": "AI Quotes",
+    "excalidraw": "Excalidraw Canvas"
+  },
+  "excalidraw": {
+    "title": "Excalidraw Canvas (with AI)",
+    "loading": "Loading Excalidraw canvas...",
+    "enterApiKey": "Please enter OpenAI API key",
+    "promptPlaceholder": "Describe the diagram you want, e.g. a three-tier web system with frontend, backend and database",
+    "generate": "Generate with AI",
+    "generating": "Generating...",
+    "newFile": "New Excalidraw canvas",
+    "error": "Error",
+    "enterPromptError": "Please enter a description for the diagram first.",
+    "generateFailed": "Generation failed",
+    "generateFailedDesc": "Unable to generate diagram, please check API key and network connection."
   },
   "story": {
     "loadDataFailed": "Failed to Load Data",

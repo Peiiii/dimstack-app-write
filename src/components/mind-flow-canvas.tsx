@@ -34,11 +34,14 @@ interface MindFlowNode extends Node {
 }
 
 interface MindFlowProps {
-  saveData: (data: any) => Promise<void>;
-  loadData: () => Promise<any>;
+  saveData: (data: { nodes: MindFlowNode[]; edges: Edge[]; apiKey?: string }) => Promise<void>;
+  loadData: () => Promise<{ nodes?: MindFlowNode[]; edges?: Edge[]; apiKey?: string }>;
 }
 
-const createNodeTypes = (handleEditNode: Function, handleDeleteNode: Function) => ({
+type EditNodeHandler = (node: MindFlowNode) => void;
+type DeleteNodeHandler = (nodeId: string) => void;
+
+const createNodeTypes = (handleEditNode: EditNodeHandler, handleDeleteNode: DeleteNodeHandler) => ({
   default: ({ data, id }: { data: { content: string; isRoot?: boolean }, id: string }) => (
     <div 
       className={`group px-4 py-2 rounded-lg shadow-md border relative ${
@@ -98,7 +101,7 @@ export function MindFlowCanvas({ saveData, loadData }: MindFlowProps) {
   const [apiKey, setApiKey] = useState("");
   const [isExpanding, setIsExpanding] = useState(false);
   const { toast } = useToast();
-  const aiService = new AIService(apiKey);
+  const aiService = new AIService("gpt-4o-mini");
   const [newNodeContent, setNewNodeContent] = useState("");
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingContent, setEditingContent] = useState("");
@@ -129,15 +132,14 @@ export function MindFlowCanvas({ saveData, loadData }: MindFlowProps) {
       }
     };
     loadSavedData();
-  }, [loadData]);
+  }, [loadData, t, toast]);
 
   useEffect(() => {
     const autoSave = async () => {
       try {
         await saveData({ 
           nodes, 
-          edges,
-          apiKey 
+          edges
         });
         console.log('Auto saved successfully');
       } catch (error) {
