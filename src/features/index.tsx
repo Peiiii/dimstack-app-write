@@ -4,7 +4,7 @@ import { pluginForProviders } from "@/features/providers";
 import { ShowCurrentSpacePagesOnly } from "@/features/show-current-space-pages-only";
 import { featureSearch } from "@/features/search";
 import { gitaryBrandActivity } from "@/features/gitary-brand-activity";
-import { featureAIAssistant } from "@/features/ai-assistant";
+// import { featureAIAssistant } from "@/features/ai-assistant";
 import { createPlugin } from "xbook/common/createPlugin";
 
 export default createPlugin({
@@ -15,7 +15,7 @@ export default createPlugin({
       bindSpaceWithRoute,
       ShowCurrentSpacePagesOnly,
       featureSearch,
-      featureAIAssistant,
+      // featureAIAssistant,
       pluginAddInitialIndexedDbSpace,
     ]);
   },
