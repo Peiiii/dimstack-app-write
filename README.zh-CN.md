@@ -11,6 +11,18 @@
 
 **[在线体验 Gitary →](https://gitary.app/)**
 
+## 📸 截图展示
+
+<div align="center">
+  <img src="images/screenshots/gitary-screenshot-welcome-excalidraw.png" alt="Gitary Excalidraw 欢迎界面" width="800"/>
+  <p><em>Excalidraw 画图支持 - 创建精美的图表和草图</em></p>
+</div>
+
+<div align="center">
+  <img src="images/screenshots/gitary-screenshot-welcome-markdown.png" alt="Gitary Markdown 欢迎界面" width="800"/>
+  <p><em>类 Notion 的 Markdown 编辑器，支持实时预览</em></p>
+</div>
+
 ## 🎯 为什么选择 Gitary？
 
 **类 Notion 体验 + Git 的数据所有权 = 完美的知识管理方案**

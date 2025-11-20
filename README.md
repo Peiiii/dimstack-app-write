@@ -10,6 +10,18 @@ Bring Notion-style powerful editing experience to your Git repositories. Your no
 
 **[Try Gitary Online →](https://gitary.app/)**
 
+## 📸 Screenshots
+
+<div align="center">
+  <img src="images/screenshots/gitary-screenshot-welcome-excalidraw.png" alt="Gitary Excalidraw Welcome" width="800"/>
+  <p><em>Excalidraw drawing support - Create beautiful diagrams and sketches</em></p>
+</div>
+
+<div align="center">
+  <img src="images/screenshots/gitary-screenshot-welcome-markdown.png" alt="Gitary Markdown Welcome" width="800"/>
+  <p><em>Notion-like Markdown editor with live preview</em></p>
+</div>
+
 ## 🎯 Why Gitary?
 
 **Notion-like Experience + Git's Data Ownership = Perfect Knowledge Management**
