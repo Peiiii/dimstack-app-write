@@ -191,5 +191,84 @@ Block formula:
 $$
 \sum_{i=1}^{n} a_i^2
 $$
+
+- **Mermaid Diagrams**
+
+  - Our editor supports Mermaid diagrams, allowing you to create flowcharts, sequence diagrams, Gantt charts, and many other diagram types.
+
+  - Flowchart example:
+
+    ```mermaid
+    flowchart TD
+        A[Start] --> B{Decision}
+        B -->|Yes| C[Action 1]
+        B -->|No| D[Action 2]
+        C --> E[End]
+        D --> E
+    ```
+
+  - Sequence diagram example:
+
+    ```mermaid
+    sequenceDiagram
+        participant User
+        participant Frontend
+        participant Backend
+        participant Database
+        
+        User->>Frontend: Send Request
+        Frontend->>Backend: Process Request
+        Backend->>Database: Query Data
+        Database-->>Backend: Return Results
+        Backend-->>Frontend: Return Data
+        Frontend-->>User: Display Results
+    ```
+
+  - Gantt chart example:
+
+    ```mermaid
+    gantt
+        title Project Development Plan
+        dateFormat YYYY-MM-DD
+        section Design Phase
+        Requirements Analysis :done, des1, 2024-01-01, 2024-01-05
+        Prototype Design :active, des2, 2024-01-06, 2024-01-10
+        section Development Phase
+        Frontend Development :dev1, 2024-01-11, 2024-01-20
+        Backend Development :dev2, 2024-01-11, 2024-01-20
+        section Testing Phase
+        Functional Testing :test1, 2024-01-21, 2024-01-25
+    ```
+
+  - Class diagram example:
+
+    ```mermaid
+    classDiagram
+        class User {
+            +String name
+            +String email
+            +login()
+            +logout()
+        }
+        class Article {
+            +String title
+            +String content
+            +publish()
+            +edit()
+        }
+        User "1" --> "*" Article : creates
+    ```
+
+  - State diagram example:
+
+    ```mermaid
+    stateDiagram-v2
+        [*] --> Pending
+        Pending --> InProgress: Start Processing
+        InProgress --> Completed: Complete Task
+        InProgress --> Pending: Pause
+        Completed --> [*]
+    ```
+
 ---
 

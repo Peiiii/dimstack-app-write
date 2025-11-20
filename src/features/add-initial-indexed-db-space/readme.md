@@ -191,4 +191,83 @@
 $$
 \sum_{i=1}^{n} a_i^2
 $$
+
+- **Mermaid 图表 (Mermaid Diagrams)**
+
+  - 我们的编辑器支持 Mermaid 图表，可以绘制流程图、序列图、甘特图等多种图表类型。
+
+  - 流程图示例：
+
+    ```mermaid
+    flowchart TD
+        A[开始] --> B{判断条件}
+        B -->|是| C[执行操作1]
+        B -->|否| D[执行操作2]
+        C --> E[结束]
+        D --> E
+    ```
+
+  - 序列图示例：
+
+    ```mermaid
+    sequenceDiagram
+        participant 用户
+        participant 前端
+        participant 后端
+        participant 数据库
+        
+        用户->>前端: 发送请求
+        前端->>后端: 处理请求
+        后端->>数据库: 查询数据
+        数据库-->>后端: 返回结果
+        后端-->>前端: 返回数据
+        前端-->>用户: 显示结果
+    ```
+
+  - 甘特图示例：
+
+    ```mermaid
+    gantt
+        title 项目开发计划
+        dateFormat YYYY-MM-DD
+        section 设计阶段
+        需求分析 :done, des1, 2024-01-01, 2024-01-05
+        原型设计 :active, des2, 2024-01-06, 2024-01-10
+        section 开发阶段
+        前端开发 :dev1, 2024-01-11, 2024-01-20
+        后端开发 :dev2, 2024-01-11, 2024-01-20
+        section 测试阶段
+        功能测试 :test1, 2024-01-21, 2024-01-25
+    ```
+
+  - 类图示例：
+
+    ```mermaid
+    classDiagram
+        class 用户 {
+            +String 姓名
+            +String 邮箱
+            +登录()
+            +登出()
+        }
+        class 文章 {
+            +String 标题
+            +String 内容
+            +发布()
+            +编辑()
+        }
+        用户 "1" --> "*" 文章 : 创建
+    ```
+
+  - 状态图示例：
+
+    ```mermaid
+    stateDiagram-v2
+        [*] --> 待处理
+        待处理 --> 进行中: 开始处理
+        进行中 --> 已完成: 完成任务
+        进行中 --> 待处理: 暂停
+        已完成 --> [*]
+    ```
+
 ---
