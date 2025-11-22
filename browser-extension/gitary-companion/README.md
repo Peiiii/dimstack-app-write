@@ -13,20 +13,9 @@ Open GitHub, Gitee, and GitCode repositories in Gitary (`gitary.app`) with one c
 
 ## Installation
 
-### From GitHub Releases
+**[Install Gitary Companion from Chrome Web Store →](https://chromewebstore.google.com/detail/gitary-companion/halhhaelcfghngkpkikcnlcjbmlkgjed)**
 
-Download the latest release from [GitHub Releases](https://github.com/Peiiii/gitary/releases):
-
-1. Download `gitary-companion.zip` from the latest release
-2. Extract the ZIP file
-3. Open `chrome://extensions/` in Chrome
-4. Enable "Developer mode" in the top right
-5. Click "Load unpacked"
-6. Select the extracted directory
-
-### From Chrome Web Store
-
-Coming soon! The extension will be available on Chrome Web Store.
+Simply click "Add to Chrome" to install the extension directly.
 
 ## Directory Structure
 

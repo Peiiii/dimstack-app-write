@@ -13,20 +13,9 @@
 
 ## 安装
 
-### 从 GitHub Releases 安装
+**[从 Chrome Web Store 安装 Gitary Companion →](https://chromewebstore.google.com/detail/gitary-companion/halhhaelcfghngkpkikcnlcjbmlkgjed)**
 
-从 [GitHub Releases](https://github.com/Peiiii/gitary/releases) 下载最新版本：
-
-1. 从最新版本中下载 `gitary-companion.zip`
-2. 解压 ZIP 文件
-3. 在 Chrome 中打开 `chrome://extensions/`
-4. 打开右上角「开发者模式」
-5. 点击「加载已解压的扩展程序」
-6. 选择解压后的目录
-
-### 从 Chrome Web Store 安装
-
-即将推出！扩展将在 Chrome Web Store 上架。
+直接点击「添加至 Chrome」即可一键安装扩展。
 
 ## 目录结构
 

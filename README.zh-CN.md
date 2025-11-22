@@ -15,7 +15,7 @@
 
 **Gitary Companion** - 一键在 Gitary 中打开 GitHub、Gitee、GitCode 仓库！
 
-- **[从 GitHub Releases 安装 →](https://github.com/Peiiii/gitary/releases)**
+- **[从 Chrome Web Store 安装 →](https://chromewebstore.google.com/detail/gitary-companion/halhhaelcfghngkpkikcnlcjbmlkgjed)**
 - 在仓库页面（GitHub/Gitee/GitCode）点击扩展图标，即可在 Gitary 中打开对应仓库
 - 在仓库页面或链接上右键，选择「在 Gitary 中打开此仓库」
 - 支持 **GitHub**、**Gitee** 和 **GitCode** 平台

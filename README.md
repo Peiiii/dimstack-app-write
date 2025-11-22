@@ -14,7 +14,7 @@ Bring Notion-style powerful editing experience and Excalidraw drawing capabiliti
 
 **Gitary Companion** - Open GitHub, Gitee, and GitCode repositories in Gitary with one click!
 
-- **[Install from GitHub Releases →](https://github.com/Peiiii/gitary/releases)**
+- **[Install from Chrome Web Store →](https://chromewebstore.google.com/detail/gitary-companion/halhhaelcfghngkpkikcnlcjbmlkgjed)**
 - Click the extension icon on a repository page (GitHub/Gitee/GitCode) to open it in Gitary
 - Right-click on repository pages or links and select "Open in Gitary"
 - Supports **GitHub**, **Gitee**, and **GitCode** platforms
