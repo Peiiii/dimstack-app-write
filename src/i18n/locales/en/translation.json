@@ -160,18 +160,30 @@
     "aiQuotes": "AI Quotes",
     "excalidraw": "Excalidraw Canvas"
   },
+  "globalChat": {
+    "welcomeTitle": "How can I help you today?",
+    "welcomeDesc": "I'm your global AI assistant. Whether it's coding questions, creative writing, or casual chat, I'm here to help.",
+    "placeholder": "Type a message...",
+    "disclaimer": "AI can make mistakes. Check important info."
+  },
   "excalidraw": {
     "title": "Excalidraw Canvas (with AI)",
     "loading": "Loading Excalidraw canvas...",
     "enterApiKey": "Please enter OpenAI API key",
-    "promptPlaceholder": "Describe the diagram you want, e.g. a three-tier web system with frontend, backend and database",
+    "promptPlaceholder": "Describe diagram content...",
     "generate": "Generate with AI",
     "generating": "Generating...",
     "newFile": "New Excalidraw canvas",
     "error": "Error",
     "enterPromptError": "Please enter a description for the diagram first.",
     "generateFailed": "Generation failed",
-    "generateFailedDesc": "Unable to generate diagram, please check API key and network connection."
+    "generateFailedDesc": "Unable to generate diagram, please check API key and network connection.",
+    "welcomeTitle": "Start Your AI Drawing Journey",
+    "welcomeDesc": "Describe the flowchart or architecture diagram you want in natural language, and AI will generate it for you",
+    "example1": "A three-tier web system with frontend, backend, and database",
+    "example2": "User registration flow: input info → validate → create account → send confirmation email",
+    "canvasRequired": "Please open this assistant in the Excalidraw canvas to write generated diagrams to the current canvas.",
+    "aiAssistant": "AI Drawing Assistant"
   },
   "story": {
     "loadDataFailed": "Failed to Load Data",

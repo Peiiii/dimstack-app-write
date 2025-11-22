@@ -142,22 +142,10 @@ export class OpenAICompatibleProvider implements AIProvider {
   }
 }
 
-const defaultReferer = () => {
-  if (
-    typeof window !== "undefined" &&
-    window.location &&
-    window.location.origin
-  ) {
-    return window.location.origin;
-  }
-  return undefined;
-};
-
 interface ProviderConfig {
   baseUrl: string;
   apiKey?: string;
   defaultModel: string;
-  headersFactory?: () => Record<string, string>;
 }
 
 export const PROVIDER_CONFIGS: Record<AIProviderName, ProviderConfig> = {
@@ -175,15 +163,6 @@ export const PROVIDER_CONFIGS: Record<AIProviderName, ProviderConfig> = {
     baseUrl: "https://openrouter.ai/api/v1",
     apiKey: import.meta.env.VITE_OPENROUTER_API_KEY,
     defaultModel: "gpt-4o-mini",
-    headersFactory: () => {
-      const headers: Record<string, string> = {};
-      const referer =
-        import.meta.env.VITE_OPENROUTER_REFERRER || defaultReferer();
-      const title = import.meta.env.VITE_OPENROUTER_TITLE;
-      if (referer) headers["HTTP-Referer"] = referer;
-      if (title) headers["X-Title"] = title;
-      return headers;
-    },
   },
   deepseek: {
     baseUrl: "https://api.deepseek.com/v1",

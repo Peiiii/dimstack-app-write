@@ -132,7 +132,7 @@ export class ExcalidrawAIService {
 
     try {
       const response = await aiGateway.chat({
-        model: "gpt-4o-mini",
+        model: "openrouter/openai/gpt-4o-mini",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
@@ -141,15 +141,32 @@ export class ExcalidrawAIService {
 
       const content = response.messages[0]?.content || "";
       
+      if (!content.trim()) {
+        throw new Error("AI 返回的内容为空");
+      }
+      
       let jsonStr = content.trim();
       
       if (jsonStr.startsWith("```json")) {
-        jsonStr = jsonStr.replace(/```json\n?/g, "").replace(/\n?```/g, "");
+        jsonStr = jsonStr.replace(/^```json\s*/m, "").replace(/\s*```$/m, "");
       } else if (jsonStr.startsWith("```")) {
-        jsonStr = jsonStr.replace(/```\n?/g, "").replace(/\n?```/g, "");
+        jsonStr = jsonStr.replace(/^```\s*/m, "").replace(/\s*```$/m, "");
       }
 
-      const elements = JSON.parse(jsonStr) as ExcalidrawElement[];
+      jsonStr = jsonStr.trim();
+      
+      if (!jsonStr) {
+        throw new Error("AI 返回的内容格式不正确");
+      }
+
+      let elements: ExcalidrawElement[];
+      try {
+        elements = JSON.parse(jsonStr) as ExcalidrawElement[];
+      } catch (parseError) {
+        console.error("JSON 解析错误:", parseError);
+        console.error("原始内容:", jsonStr);
+        throw new Error(`AI 返回的内容不是有效的 JSON 格式: ${parseError instanceof Error ? parseError.message : "未知错误"}`);
+      }
 
       if (!Array.isArray(elements)) {
         throw new Error("AI 返回的不是数组格式");

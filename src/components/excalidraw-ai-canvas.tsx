@@ -6,11 +6,11 @@ import type {
   ExcalidrawImperativeAPI,
 } from "@excalidraw/excalidraw/types";
 import "@excalidraw/excalidraw/index.css";
-import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ExcalidrawAISidebar } from "@/components/excalidraw-ai-sidebar";
 import { useToast } from "@/hooks/use-toast";
+import { useGlobalSidecar } from "@/features/global-sidecar-providers";
 import { excalidrawAIService } from "@/services/ai/excalidraw-ai.service";
+import { ExcalidrawAIIcon } from "@/components/icons/ai-assistant-icon";
 
 type ExcalidrawElement = NonNullable<
   ExcalidrawInitialDataState["elements"]
@@ -81,8 +81,8 @@ export function ExcalidrawAICanvas({
     ExcalidrawInitialDataState | null
   >(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAISidebarOpen, setIsAISidebarOpen] = useState(false);
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
+  const { openPane, open: globalAiOpen, activePaneId } = useGlobalSidecar();
 
   // Keep latest saveData in a ref so callbacks stay stable
   useEffect(() => {
@@ -273,6 +273,16 @@ export function ExcalidrawAICanvas({
     [scheduleSave, toast]
   );
 
+  const isExcalidrawPaneActive =
+    globalAiOpen && activePaneId === "excalidraw-agent";
+
+  const openExcalidrawAssistant = useCallback(() => {
+    openPane("excalidraw-agent", {
+      chatHistory,
+      onGenerate: handleAIGenerate,
+    });
+  }, [chatHistory, handleAIGenerate, openPane]);
+
   if (isLoading) {
     return (
       <div className="h-full w-full flex items-center justify-center text-sm text-muted-foreground">
@@ -295,29 +305,17 @@ export function ExcalidrawAICanvas({
               aiEnabled={false}
             />
           </div>
-          {/* {!isAISidebarOpen && (
-            <div className="absolute top-4 right-4 z-10">
-              <Button
-                onClick={() => setIsAISidebarOpen(true)}
-                className="bg-gradient-to-br from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white shadow-lg"
-                size="lg"
-              >
-                <Sparkles className="h-5 w-5 mr-2" />
-                {t("excalidraw.aiAssistant") || "AI 绘图助手"}
-              </Button>
-            </div>
-          )} */}
-        </div>
-        {isAISidebarOpen && (
-          <div className="w-96 border-l border-border bg-background flex-shrink-0 overflow-hidden flex flex-col">
-            <ExcalidrawAISidebar
-              chatHistory={chatHistory}
-              onChatHistoryChange={setChatHistory}
-              onGenerate={handleAIGenerate}
-              onClose={() => setIsAISidebarOpen(false)}
-            />
+          <div className="absolute top-1/2 -translate-y-1/2 right-4 z-10">
+            <Button
+              onClick={openExcalidrawAssistant}
+              size="icon"
+              className="h-11 w-11 rounded-full bg-background/90 backdrop-blur-sm border border-border/40 text-foreground hover:bg-background shadow-lg"
+              title={t("excalidraw.aiAssistant") || "AI 绘图助手"}
+            >
+              <ExcalidrawAIIcon className="h-5 w-5" />
+            </Button>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

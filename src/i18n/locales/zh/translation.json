@@ -160,18 +160,30 @@
     "aiQuotes": "AI名言",
     "excalidraw": "Excalidraw 画板"
   },
+  "globalChat": {
+    "welcomeTitle": "我能为您做些什么？",
+    "welcomeDesc": "我是你的全局 AI 助手。无论是代码问题、创意写作还是日常闲聊，我都乐意效劳。",
+    "placeholder": "输入消息...",
+    "disclaimer": "AI 可能会出错，请核对重要信息。"
+  },
   "excalidraw": {
     "title": "Excalidraw 画板（支持 AI）",
     "loading": "正在加载画板...",
     "enterApiKey": "请输入 OpenAI API 密钥",
-    "promptPlaceholder": "用自然语言描述你想要的流程图/架构图，例如：一个包含前端、后端和数据库的三层 Web 系统",
+    "promptPlaceholder": "描述图表内容...",
     "generate": "AI 生成图",
     "generating": "生成中...",
     "newFile": "新建 Excalidraw 画板",
     "error": "错误",
     "enterPromptError": "请先输入你想要生成的图的描述。",
     "generateFailed": "生成失败",
-    "generateFailedDesc": "无法生成图形，请检查 API 密钥和网络连接。"
+    "generateFailedDesc": "无法生成图形，请检查 API 密钥和网络连接。",
+    "welcomeTitle": "开始你的 AI 绘图之旅",
+    "welcomeDesc": "用自然语言描述你想要的流程图或架构图，AI 会帮你自动生成",
+    "example1": "一个包含前端、后端和数据库的三层 Web 系统",
+    "example2": "用户注册流程：输入信息 → 验证 → 创建账户 → 发送确认邮件",
+    "canvasRequired": "请在 Excalidraw 画布中打开并使用该助手，以便把生成的图形写入当前画布。",
+    "aiAssistant": "AI 绘图助手"
   },
   "story": {
     "loadDataFailed": "加载数据失败",

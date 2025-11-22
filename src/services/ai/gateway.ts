@@ -70,12 +70,10 @@ export class AIGatewayService {
     const apiKey = this.serviceOptions?.apiKey || config.apiKey;
     const defaultModel = this.serviceOptions?.model || config.defaultModel;
 
-    const headers = config.headersFactory?.();
     return new OpenAICompatibleProvider(providerName, {
       baseUrl,
       apiKey,
       defaultModel,
-      headers: headers && Object.keys(headers).length ? headers : undefined,
     });
   }
 

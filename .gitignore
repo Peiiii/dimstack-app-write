@@ -26,3 +26,4 @@ browser-extension/gitary-companion/gitary-companion.zip
 *.sln
 *.sw?
 tmp
+.env
