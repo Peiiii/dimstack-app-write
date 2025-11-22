@@ -10,6 +10,16 @@ Bring Notion-style powerful editing experience and Excalidraw drawing capabiliti
 
 **[Try Gitary Online →](https://gitary.app/)**
 
+## 🔌 Browser Extension
+
+**Gitary Companion** - Open GitHub repositories in Gitary with one click!
+
+- **[Install from GitHub Releases →](https://github.com/Peiiii/gitary/releases)**
+- Click the extension icon on a GitHub repository page to open it in Gitary
+- Right-click on GitHub pages or repository links and select "Open in Gitary"
+
+For more details, see the [Gitary Companion README](browser-extension/gitary-companion/README.md).
+
 ## 📸 Screenshots
 
 <div align="center">

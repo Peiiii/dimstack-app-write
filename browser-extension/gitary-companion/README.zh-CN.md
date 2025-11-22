@@ -9,6 +9,23 @@
 - 在 GitHub 仓库页面点击扩展图标，即可在 Gitary 中打开对应仓库。
 - 在 GitHub 页面或仓库链接上右键，选择「在 Gitary 中打开此仓库」。
 
+## 安装
+
+### 从 GitHub Releases 安装
+
+从 [GitHub Releases](https://github.com/Peiiii/gitary/releases) 下载最新版本：
+
+1. 从最新版本中下载 `gitary-companion.zip`
+2. 解压 ZIP 文件
+3. 在 Chrome 中打开 `chrome://extensions/`
+4. 打开右上角「开发者模式」
+5. 点击「加载已解压的扩展程序」
+6. 选择解压后的目录
+
+### 从 Chrome Web Store 安装
+
+即将推出！扩展将在 Chrome Web Store 上架。
+
 ## 目录结构
 
 - `manifest.json`：Chrome 扩展清单（MV3）。

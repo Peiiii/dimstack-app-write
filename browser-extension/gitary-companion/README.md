@@ -9,6 +9,23 @@ Open GitHub repositories in Gitary (`gitary.app`) with one click in your browser
 - Click the extension icon on a GitHub repository page to open it in Gitary.
 - Right-click on GitHub pages or repository links and select "Open in Gitary".
 
+## Installation
+
+### From GitHub Releases
+
+Download the latest release from [GitHub Releases](https://github.com/Peiiii/gitary/releases):
+
+1. Download `gitary-companion.zip` from the latest release
+2. Extract the ZIP file
+3. Open `chrome://extensions/` in Chrome
+4. Enable "Developer mode" in the top right
+5. Click "Load unpacked"
+6. Select the extracted directory
+
+### From Chrome Web Store
+
+Coming soon! The extension will be available on Chrome Web Store.
+
 ## Directory Structure
 
 - `manifest.json`: Chrome extension manifest (MV3).

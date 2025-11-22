@@ -11,6 +11,16 @@
 
 **[在线体验 Gitary →](https://gitary.app/)**
 
+## 🔌 浏览器扩展
+
+**Gitary Companion** - 一键在 Gitary 中打开 GitHub 仓库！
+
+- **[从 GitHub Releases 安装 →](https://github.com/Peiiii/gitary/releases)**
+- 在 GitHub 仓库页面点击扩展图标，即可在 Gitary 中打开对应仓库
+- 在 GitHub 页面或仓库链接上右键，选择「在 Gitary 中打开此仓库」
+
+更多详情，请查看 [Gitary Companion 说明文档](browser-extension/gitary-companion/README.zh-CN.md)。
+
 ## 📸 截图展示
 
 <div align="center">
