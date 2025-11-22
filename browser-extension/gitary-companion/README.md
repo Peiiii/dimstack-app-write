@@ -9,6 +9,7 @@ Open GitHub, Gitee, and GitCode repositories in Gitary (`gitary.app`) with one c
 - Click the extension icon on a repository page (GitHub/Gitee/GitCode) to open it in Gitary.
 - Right-click on repository pages or links and select "Open in Gitary".
 - Supports **GitHub**, **Gitee**, and **GitCode** platforms.
+- Enjoy **Notion-like editing** and **Excalidraw drawing** capabilities in Gitary for enhanced note-taking and diagram creation.
 
 ## Installation
 
@@ -78,7 +79,7 @@ Upload this `gitary-companion.zip` to Chrome Web Store.
 - Extension Name:
   - Gitary Companion
 - Short Description (max 132 characters):
-  - Open GitHub/Gitee/GitCode repositories in Gitary with one click, enjoy enhanced code reading and note-taking experience.
+  - Open GitHub/Gitee/GitCode repos in Gitary: Notion-like editing + Excalidraw drawing for code & notes.
 - Detailed Description (multi-paragraph):
 
 > Gitary Companion lets you quickly open GitHub, Gitee, and GitCode repositories in Gitary for a more professional code reading and knowledge management experience.  
@@ -87,6 +88,8 @@ Upload this `gitary-companion.zip` to Chrome Web Store.
 > - One-click jump: Click the extension icon on a repository page (GitHub/Gitee/GitCode) to open it in Gitary.  
 > - Right-click open: Right-click on repository pages or links and select "Open in Gitary".  
 > - Multi-platform support: Supports GitHub, Gitee, and GitCode platforms.  
+> - Notion-like editing: Enjoy powerful WYSIWYG Markdown editing with live preview, slash commands, and rich formatting.  
+> - Excalidraw drawing: Create beautiful diagrams, flowcharts, and sketches directly in your Git repositories.  
 > - Auto repository detection: Intelligently parses repository URLs, only works on supported pages.  
 >  
 > Permission Explanation:  

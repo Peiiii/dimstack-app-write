@@ -9,6 +9,7 @@
 - 在仓库页面（GitHub/Gitee/GitCode）点击扩展图标，即可在 Gitary 中打开对应仓库。
 - 在仓库页面或链接上右键，选择「在 Gitary 中打开此仓库」。
 - 支持 **GitHub**、**Gitee** 和 **GitCode** 平台。
+- 在 Gitary 中享受**类 Notion 编辑**和**Excalidraw 画图**能力，提升笔记和图表创作体验。
 
 ## 安装
 
@@ -78,7 +79,7 @@ pnpm run ext:gitary:pack
 - 扩展名称（Name）：
   - Gitary Companion
 - 简短描述（Short description，最多 132 字符）：
-  - 在浏览器中一键将 GitHub/Gitee/GitCode 仓库打开到 Gitary，享受更强大的代码阅读与笔记体验。
+  - 一键在 Gitary 中打开 GitHub/Gitee/GitCode 仓库：类 Notion 编辑 + Excalidraw 画图，代码与笔记的完美结合。
 - 详细描述（Store listing description，可多段落）：
 
 > Gitary Companion 让你在浏览器中快速将 GitHub、Gitee、GitCode 仓库打开到 Gitary（原 GitNote），获得更专业的代码阅读与知识管理体验。  
@@ -87,6 +88,8 @@ pnpm run ext:gitary:pack
 > - 一键跳转：在仓库页面（GitHub/Gitee/GitCode）点击扩展图标，即可在 Gitary 中打开对应仓库。  
 > - 右键打开：在仓库页面或链接上右键，选择「在 Gitary 中打开此仓库」。  
 > - 多平台支持：支持 GitHub、Gitee 和 GitCode 平台。  
+> - 类 Notion 编辑：强大的所见即所得 Markdown 编辑器，支持实时预览、Slash 命令和丰富的格式化功能。  
+> - Excalidraw 画图：直接在 Git 仓库中创建精美的图表、流程图和草图。  
 > - 自动识别仓库：智能解析仓库地址，仅在支持的页面生效。  
 >  
 > 权限说明：  
