@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { aiGateway } from "@/services/ai/gateway";
+import { CHAT_CONFIG } from "@/services/ai/chat-config";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, ArrowUp, Copy, Check } from "lucide-react";
@@ -78,27 +79,37 @@ export const GlobalChatPanel = () => {
     ]);
     setBusy(true);
     try {
-      const res = await aiGateway.chat({
-        model: "dashscope/qwen3-max",
-        messages: [
-          {
-            role: "system",
-            content: "You are a helpful assistant embedded inside a developer workspace. Provide concise, high-signal answers. Use Markdown for code and formatting.",
-          },
-          ...base.map((m) => ({ role: m.role, content: m.content })),
-          { role: "user", content: prompt },
-        ],
-      });
-      const reply = res.messages[0]?.content ?? "抱歉，我没有生成回答。";
-      setMessages((prev) => {
-        const next = [...prev];
-        next[next.length - 1] = {
-          id: `${Date.now()}-assistant`,
-          role: "assistant",
-          content: reply,
-        };
-        return next;
-      });
+      const assistantMessageId = `${Date.now()}-assistant`;
+      let accumulatedContent = "";
+
+      await aiGateway.chatStream(
+        {
+          model: CHAT_CONFIG.defaultModel,
+          messages: [
+            {
+              role: "system",
+              content: CHAT_CONFIG.systemPrompt,
+            },
+            ...base.map((m) => ({ role: m.role, content: m.content })),
+            { role: "user", content: prompt },
+          ],
+        },
+        (chunk: string) => {
+          accumulatedContent += chunk;
+          setMessages((prev) => {
+            const next = [...prev];
+            const lastIndex = next.length - 1;
+            if (lastIndex >= 0 && next[lastIndex].role === "assistant") {
+              next[lastIndex] = {
+                id: assistantMessageId,
+                role: "assistant",
+                content: accumulatedContent,
+              };
+            }
+            return next;
+          });
+        }
+      );
     } catch (error) {
       setMessages((prev) => {
         const next = [...prev];

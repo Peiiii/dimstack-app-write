@@ -34,3 +34,8 @@ export interface AIGatewayResponse {
   messages: AIMessage[];
   toolCalls?: AIToolCall[];
 }
+
+export type StreamChunk = {
+  content: string;
+  done: boolean;
+};

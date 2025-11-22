@@ -63,6 +63,17 @@ export const AIChatSidebar = () => {
 
     setBusy(true);
 
+    const assistantMessageId = `${Date.now()}-assistant`;
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: assistantMessageId,
+        role: "assistant",
+        content: "",
+        name: undefined,
+      },
+    ]);
+
     try {
       const system: AIMessage = {
         role: "system",
@@ -79,24 +90,30 @@ export const AIChatSidebar = () => {
         },
       }));
 
-      const res = await aiGateway.chat({
-        messages: [system, ...messages, userMessage],
-        tools: toolDefs.length ? toolDefs : undefined,
-      });
+      let accumulatedContent = "";
 
-      // Naive handling: only take assistant message (ignore tool calls for now)
-      if (res.messages[0]) {
-        const m = res.messages[0];
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: `${Date.now()}-assistant`,
-            role: m.role,
-            content: m.content,
-            name: m.name,
-          },
-        ]);
-      }
+      await aiGateway.chatStream(
+        {
+          messages: [system, ...messages, userMessage],
+          tools: toolDefs.length ? toolDefs : undefined,
+        },
+        (chunk: string) => {
+          accumulatedContent += chunk;
+          setMessages((prev) => {
+            const next = [...prev];
+            const lastIndex = next.length - 1;
+            if (lastIndex >= 0 && next[lastIndex].id === assistantMessageId) {
+              next[lastIndex] = {
+                id: assistantMessageId,
+                role: "assistant",
+                content: accumulatedContent,
+                name: undefined,
+              };
+            }
+            return next;
+          });
+        }
+      );
     } catch (error) {
       console.error("AI assistant error:", error);
       toast({

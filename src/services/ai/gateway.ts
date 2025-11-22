@@ -126,6 +126,21 @@ export class AIGatewayService {
       model,
     });
   }
+
+  async chatStream(
+    req: Partial<AIGatewayRequest>,
+    onChunk: (chunk: string) => void
+  ): Promise<AIGatewayResponse> {
+    const { provider, model } = this.parseModel(req.model);
+    const targetProvider = this.getProvider(provider);
+    return targetProvider.chatStream(
+      {
+        ...req,
+        model,
+      },
+      onChunk
+    );
+  }
 }
 
 export const aiGateway = new AIGatewayService();

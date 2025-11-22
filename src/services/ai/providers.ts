@@ -7,6 +7,7 @@ import type {
   AIMessage,
   AIGatewayRequest,
   AIGatewayResponse,
+  AIRole,
 } from "./types";
 
 export type AIProviderName =
@@ -21,6 +22,10 @@ export interface AIProvider {
   readonly name: string;
   readonly defaultModel: string;
   chat(req: Partial<AIGatewayRequest>): Promise<AIGatewayResponse>;
+  chatStream(
+    req: Partial<AIGatewayRequest>,
+    onChunk: (chunk: string) => void
+  ): Promise<AIGatewayResponse>;
 }
 
 export interface OpenAICompatibleProviderOptions {
@@ -137,6 +142,94 @@ export class OpenAICompatibleProvider implements AIProvider {
         }));
       }
     }
+
+    return result;
+  }
+
+  async chatStream(
+    req: Partial<AIGatewayRequest>,
+    onChunk: (chunk: string) => void
+  ): Promise<AIGatewayResponse> {
+    const model = req.model || this.defaultModel;
+    if (!model) {
+      throw new Error(`Provider "${this.name}" 未配置模型`);
+    }
+
+    if (!this.apiKey) {
+      throw new Error(`Provider "${this.name}" 未配置 API Key`);
+    }
+
+    const stream = await this.client.chat.completions.create({
+      model,
+      messages: (req.messages || []).map((message) =>
+        this.mapMessage(message)
+      ),
+      tools: req.tools?.map((tool) => ({
+        type: tool.type,
+        function: {
+          name: tool.function.name,
+          description: tool.function.description,
+          parameters: tool.function.parameters,
+        },
+      })),
+      stream: true,
+    });
+
+    let fullContent = "";
+    let role: AIRole = "assistant";
+    let name: string | undefined;
+    const toolCalls: AIGatewayResponse["toolCalls"] = [];
+
+    for await (const chunk of stream) {
+      const delta = chunk.choices[0]?.delta;
+      if (!delta) continue;
+
+      if (delta.content) {
+        fullContent += delta.content;
+        onChunk(delta.content);
+      }
+
+      if (delta.role && (delta.role === "system" || delta.role === "user" || delta.role === "assistant" || delta.role === "tool")) {
+        role = delta.role;
+      }
+
+      if ((delta as { name?: string }).name) {
+        name = (delta as { name?: string }).name;
+      }
+
+      if (delta.tool_calls) {
+        for (const toolCall of delta.tool_calls) {
+          const index = toolCall.index ?? 0;
+          if (!toolCalls[index]) {
+            toolCalls[index] = {
+              id: toolCall.id || "",
+              type: "function",
+              function: {
+                name: "",
+                arguments: "",
+              },
+            };
+          }
+          if (toolCall.function?.name) {
+            toolCalls[index].function.name += toolCall.function.name;
+          }
+          if (toolCall.function?.arguments) {
+            toolCalls[index].function.arguments += toolCall.function.arguments;
+          }
+        }
+      }
+    }
+
+    const result: AIGatewayResponse = {
+      messages: [
+        {
+          role,
+          content: fullContent,
+          name,
+        },
+      ],
+      toolCalls: toolCalls.length > 0 ? toolCalls : undefined,
+    };
 
     return result;
   }
