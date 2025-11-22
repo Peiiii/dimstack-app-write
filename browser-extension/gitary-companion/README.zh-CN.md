@@ -2,12 +2,13 @@
 
 [English](README.md) | [中文](README.zh-CN.md)
 
-在浏览器中一键将 GitHub 仓库打开到 Gitary（`gitary.app`）。
+在浏览器中一键将 GitHub、Gitee、GitCode 仓库打开到 Gitary（`gitary.app`）。
 
 ## 功能
 
-- 在 GitHub 仓库页面点击扩展图标，即可在 Gitary 中打开对应仓库。
-- 在 GitHub 页面或仓库链接上右键，选择「在 Gitary 中打开此仓库」。
+- 在仓库页面（GitHub/Gitee/GitCode）点击扩展图标，即可在 Gitary 中打开对应仓库。
+- 在仓库页面或链接上右键，选择「在 Gitary 中打开此仓库」。
+- 支持 **GitHub**、**Gitee** 和 **GitCode** 平台。
 
 ## 安装
 
@@ -31,7 +32,7 @@
 - `manifest.json`：Chrome 扩展清单（MV3）。
 - `src/`：TypeScript 源码
   - `config.ts`：基础配置（例如 Gitary 地址）。
-  - `github.ts`：与 GitHub URL 解析相关的纯函数。
+  - `repo-parser.ts`：仓库 URL 解析相关的纯函数（支持 GitHub、Gitee、GitCode）。
   - `gitary.ts`：根据仓库信息构造 Gitary 的跳转链接。
   - `background.ts`：后台 Service Worker，注册点击事件和右键菜单。
 - `extension-dist/`：构建产物（由 `tsc` 生成 JS，并复制 `manifest.json`）。
@@ -77,15 +78,16 @@ pnpm run ext:gitary:pack
 - 扩展名称（Name）：
   - Gitary Companion
 - 简短描述（Short description，最多 132 字符）：
-  - 在浏览器中一键将 GitHub 仓库打开到 Gitary，享受更强大的代码阅读与笔记体验。
+  - 在浏览器中一键将 GitHub/Gitee/GitCode 仓库打开到 Gitary，享受更强大的代码阅读与笔记体验。
 - 详细描述（Store listing description，可多段落）：
 
-> Gitary Companion 让你在浏览器中快速将 GitHub 仓库打开到 Gitary（原 GitNote），获得更专业的代码阅读与知识管理体验。  
+> Gitary Companion 让你在浏览器中快速将 GitHub、Gitee、GitCode 仓库打开到 Gitary（原 GitNote），获得更专业的代码阅读与知识管理体验。  
 >  
 > 主要功能：  
-> - 一键跳转：在 GitHub 仓库页面点击扩展图标，即可在 Gitary 中打开对应仓库。  
-> - 右键打开：在 GitHub 页面或仓库链接上右键，选择「在 Gitary 中打开此仓库」。  
-> - 自动识别仓库：智能解析 GitHub 仓库地址，仅在支持的页面生效。  
+> - 一键跳转：在仓库页面（GitHub/Gitee/GitCode）点击扩展图标，即可在 Gitary 中打开对应仓库。  
+> - 右键打开：在仓库页面或链接上右键，选择「在 Gitary 中打开此仓库」。  
+> - 多平台支持：支持 GitHub、Gitee 和 GitCode 平台。  
+> - 自动识别仓库：智能解析仓库地址，仅在支持的页面生效。  
 >  
 > 权限说明：  
 > - tabs / activeTab：用于读取当前标签页 URL，以构造跳转到 Gitary 的链接。  

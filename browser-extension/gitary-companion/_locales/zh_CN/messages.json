@@ -6,7 +6,7 @@
     "message": "Gitary"
   },
   "appDescription": {
-    "message": "在浏览器中一键将 GitHub 仓库打开到 Gitary，享受更好的代码阅读与笔记体验。"
+    "message": "在浏览器中一键将 GitHub、Gitee、GitCode 仓库打开到 Gitary，享受更好的代码阅读与笔记体验。"
   },
   "actionTitle": {
     "message": "在 Gitary 中打开"

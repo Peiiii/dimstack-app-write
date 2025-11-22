@@ -13,7 +13,7 @@ export interface RepoLocation {
  * - https://gitee.com/{owner}/{repo}[/*]
  * - https://gitcode.com/{owner}/{repo}[/*]
  */
-export function extractGithubRepoFromUrl(rawUrl: string): RepoLocation | null {
+export function extractRepoFromUrl(rawUrl: string): RepoLocation | null {
   try {
     const url = new URL(rawUrl);
     let platform: SupportedPlatform;
@@ -48,7 +48,8 @@ export function extractGithubRepoFromUrl(rawUrl: string): RepoLocation | null {
 }
 
 /**
- * 构造平台原始仓库地址（目前仅支持 GitHub）。
+ * 构造平台原始仓库地址。
+ * 支持 GitHub、Gitee 和 GitCode。
  */
 export function buildRepoRootUrl(repo: RepoLocation): string {
   switch (repo.platform) {
@@ -59,7 +60,7 @@ export function buildRepoRootUrl(repo: RepoLocation): string {
     case "gitcode":
       return `https://gitcode.com/${repo.owner}/${repo.repo}`;
     default:
-      // 目前不会触发，预留扩展点
       return "";
   }
 }
+

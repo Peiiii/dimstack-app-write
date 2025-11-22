@@ -1,6 +1,6 @@
 import { ExtensionAction } from "./config.js";
 import { buildGitaryOpenUrl } from "./gitary.js";
-import { extractGithubRepoFromUrl } from "./github.js";
+import { extractRepoFromUrl } from "./repo-parser.js";
 
 function getMessage(key: string, fallback: string): string {
   try {
@@ -12,7 +12,7 @@ function getMessage(key: string, fallback: string): string {
 }
 
 function openRepoInGitaryFromUrl(rawUrl: string): void {
-  const repo = extractGithubRepoFromUrl(rawUrl);
+  const repo = extractRepoFromUrl(rawUrl);
   if (!repo) {
     const title = getMessage("appName", "Gitary Companion");
     const message = getMessage(

@@ -1,6 +1,6 @@
 import { DEFAULT_APP_BASE_URL } from "./config.js";
-import type { RepoLocation } from "./github.js";
-import { buildRepoRootUrl } from "./github.js";
+import type { RepoLocation } from "./repo-parser.js";
+import { buildRepoRootUrl } from "./repo-parser.js";
 
 /**
  * 根据仓库信息构造 Gitary 打开链接。
