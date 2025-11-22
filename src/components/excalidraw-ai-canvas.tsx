@@ -6,8 +6,11 @@ import type {
   ExcalidrawImperativeAPI,
 } from "@excalidraw/excalidraw/types";
 import "@excalidraw/excalidraw/index.css";
-
+import { Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ExcalidrawAISidebar } from "@/components/excalidraw-ai-sidebar";
 import { useToast } from "@/hooks/use-toast";
+import { excalidrawAIService } from "@/services/ai/excalidraw-ai.service";
 
 type ExcalidrawElement = NonNullable<
   ExcalidrawInitialDataState["elements"]
@@ -56,6 +59,13 @@ function normalizeLoadedAppState(input: unknown): StoredAppState | undefined {
   return rest as StoredAppState;
 }
 
+interface ChatMessage {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  timestamp: number;
+}
+
 export function ExcalidrawAICanvas({
   saveData,
   loadData,
@@ -71,6 +81,8 @@ export function ExcalidrawAICanvas({
     ExcalidrawInitialDataState | null
   >(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAISidebarOpen, setIsAISidebarOpen] = useState(false);
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
 
   // Keep latest saveData in a ref so callbacks stay stable
   useEffect(() => {
@@ -180,27 +192,132 @@ export function ExcalidrawAICanvas({
     [scheduleSave],
   );
 
+  const handleAIGenerate = useCallback(
+    async (prompt: string) => {
+      const userMessage: ChatMessage = {
+        id: Date.now().toString(),
+        role: "user",
+        content: prompt,
+        timestamp: Date.now(),
+      };
+
+      setChatHistory((prev) => [...prev, userMessage]);
+
+      const assistantMessageId = (Date.now() + 1).toString();
+      const assistantMessage: ChatMessage = {
+        id: assistantMessageId,
+        role: "assistant",
+        content: "",
+        timestamp: Date.now() + 1,
+      };
+
+      setChatHistory((prev) => [...prev, assistantMessage]);
+
+      try {
+        const elements = await excalidrawAIService.generateDiagram(prompt);
+
+        if (excalidrawRef.current) {
+          const currentElements = fileDataRef.current.elements || [];
+          const newElements = [...currentElements, ...elements];
+
+          excalidrawRef.current.updateScene({
+            elements: newElements,
+          });
+
+          fileDataRef.current = {
+            ...fileDataRef.current,
+            elements: newElements,
+          };
+
+          scheduleSave();
+        }
+
+        setChatHistory((prev) =>
+          prev.map((msg) =>
+            msg.id === assistantMessageId
+              ? { ...msg, content: "图表已生成！" }
+              : msg
+          )
+        );
+
+        toast({
+          title: "生成成功",
+          description: "图表已添加到画布",
+        });
+      } catch (error) {
+        console.error("Error generating diagram:", error);
+        setChatHistory((prev) =>
+          prev.map((msg) =>
+            msg.id === assistantMessageId
+              ? {
+                  ...msg,
+                  content:
+                    error instanceof Error
+                      ? error.message
+                      : "生成图表时出错，请重试",
+                }
+              : msg
+          )
+        );
+
+        toast({
+          title: "生成失败",
+          description:
+            error instanceof Error
+              ? error.message
+              : "生成图表时出错，请重试",
+          variant: "destructive",
+        });
+      }
+    },
+    [scheduleSave, toast]
+  );
+
   if (isLoading) {
     return (
-      <div className="h-screen w-full flex items-center justify-center text-sm text-muted-foreground">
+      <div className="h-full w-full flex items-center justify-center text-sm text-muted-foreground">
         {t("excalidraw.loading") || "Loading Excalidraw canvas..."}
       </div>
     );
   }
 
   return (
-    <div className="h-screen w-full flex flex-col bg-background">
-      <div className="flex-1 relative">
-        <div className="absolute inset-0">
-          <Excalidraw
-            initialData={initialData || undefined}
-            excalidrawAPI={(api) => {
-              excalidrawRef.current = api;
-            }}
-            onChange={handleExcalidrawChange}
-            aiEnabled={false}
-          />
+    <div className="h-full w-full flex flex-col bg-background overflow-hidden">
+      <div className="flex-1 relative flex min-h-0 overflow-hidden">
+        <div className="flex-1 relative min-w-0 overflow-hidden">
+          <div className="absolute inset-0">
+            <Excalidraw
+              initialData={initialData || undefined}
+              excalidrawAPI={(api) => {
+                excalidrawRef.current = api;
+              }}
+              onChange={handleExcalidrawChange}
+              aiEnabled={false}
+            />
+          </div>
+          {/* {!isAISidebarOpen && (
+            <div className="absolute top-4 right-4 z-10">
+              <Button
+                onClick={() => setIsAISidebarOpen(true)}
+                className="bg-gradient-to-br from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white shadow-lg"
+                size="lg"
+              >
+                <Sparkles className="h-5 w-5 mr-2" />
+                {t("excalidraw.aiAssistant") || "AI 绘图助手"}
+              </Button>
+            </div>
+          )} */}
         </div>
+        {isAISidebarOpen && (
+          <div className="w-96 border-l border-border bg-background flex-shrink-0 overflow-hidden flex flex-col">
+            <ExcalidrawAISidebar
+              chatHistory={chatHistory}
+              onChatHistoryChange={setChatHistory}
+              onGenerate={handleAIGenerate}
+              onClose={() => setIsAISidebarOpen(false)}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

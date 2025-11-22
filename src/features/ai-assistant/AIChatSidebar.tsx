@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { aiGateway, type AIMessage } from "@/services/ai-gateway";
-import { aiToolRegistry, type AITool } from "@/services/ai-tool-registry";
+import { aiGateway, type AIMessage } from "@/services/ai/gateway";
+import { aiToolRegistry, type AITool } from "@/services/ai/ai-tool-registry";
 import { layoutService } from "xbook/services";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";

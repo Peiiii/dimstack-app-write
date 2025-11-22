@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
-import { AIService } from "@/services/ai-service";
+import { AIService } from "@/services/ai/ai-service";
 import { useEffect, useRef, useState } from "react";
 import { useStickyAutoScroll } from "@/hooks/use-sticky-autoscroll";
 import { ResumeView } from "@/components/resume-view";

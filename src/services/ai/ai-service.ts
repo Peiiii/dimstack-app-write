@@ -1,4 +1,4 @@
-import { aiGateway } from "@/services/ai-gateway";
+import { aiGateway } from "@/services/ai/gateway";
 
 export class AIService {
   private model: string;

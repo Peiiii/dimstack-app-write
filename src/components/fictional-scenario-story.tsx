@@ -20,7 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useStickyAutoScroll } from "@/hooks/use-sticky-autoscroll";
-import { AIService } from "../services/ai-service";
+import { AIService } from "@/services/ai/ai-service";
 import { useTranslation } from "react-i18next";
 
 interface AppProps {

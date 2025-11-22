@@ -1,5 +1,5 @@
 import { useToast } from "@/hooks/use-toast";
-import { AIService } from "@/services/ai-service";
+import { AIService } from "@/services/ai/ai-service";
 import { Edit2, MoreHorizontal, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";

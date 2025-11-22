@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
-import { AIService } from "../services/ai-service";
+import { AIService } from "@/services/ai/ai-service";
 
 interface AppProps {
   saveData: (data: { quotes: Quote[] }) => Promise<void>;

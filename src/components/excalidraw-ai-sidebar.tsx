@@ -60,7 +60,7 @@ export function ExcalidrawAISidebar({
   };
 
   return (
-    <div className="flex flex-col h-full bg-gradient-to-b from-background to-background/95">
+    <div className="flex flex-col h-full bg-gradient-to-b from-background to-background/95 overflow-hidden">
       <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-purple-50/50 to-blue-50/50 dark:from-purple-950/20 dark:to-blue-950/20">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500 to-blue-600 shadow-md">
