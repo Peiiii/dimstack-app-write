@@ -11,6 +11,10 @@ import {
 import { GlobalSidecarContext } from "./global-sidecar-context";
 
 const PANEL_WIDTH = 400;
+const SIDEBAR_ANIMATION_DURATION = 200;
+const CONTENT_FADE_DURATION = 150;
+const CONTENT_DELAY_OFFSET = -50;
+
 export const GlobalSidecarProvider = ({
   children,
 }: {
@@ -22,6 +26,7 @@ export const GlobalSidecarProvider = ({
   const [open, setOpen] = useState(false);
   const [activePaneId, setActivePaneId] = useState<string | undefined>(undefined);
   const [activePaneProps, setActivePaneProps] = useState<Record<string, unknown>>({});
+  const [contentVisible, setContentVisible] = useState(false);
 
   useEffect(() => {
     return subscribeGlobalSidecarPanes((next) => {
@@ -35,6 +40,19 @@ export const GlobalSidecarProvider = ({
       }
     });
   }, [activePaneId]);
+
+  useEffect(() => {
+    if (open) {
+      setContentVisible(false);
+      const contentDisplayDelay = SIDEBAR_ANIMATION_DURATION + CONTENT_DELAY_OFFSET;
+      const timer = setTimeout(() => {
+        setContentVisible(true);
+      }, contentDisplayDelay);
+      return () => clearTimeout(timer);
+    } else {
+      setContentVisible(false);
+    }
+  }, [open]);
 
   const openPane = useCallback(
     (id: string, props?: Record<string, unknown>) => {
@@ -102,12 +120,23 @@ export const GlobalSidecarProvider = ({
           >
             <div
               className={cn(
-                "transition-[width] duration-300 ease-in-out overflow-hidden flex flex-col bg-background border-l border-border/40",
+                "transition-[width] ease-in-out overflow-hidden flex flex-col bg-background border-l border-border/40",
                 open && activePane ? "w-[--global-ai-sidebar-width]" : "w-0"
               )}
+              style={{
+                transitionDuration: `${SIDEBAR_ANIMATION_DURATION}ms`
+              }}
             >
               {open && activePane && ActiveComponent ? (
-                <>
+                <div 
+                  className={cn(
+                    "h-full flex flex-col transition-opacity",
+                    contentVisible ? "opacity-100" : "opacity-0"
+                  )}
+                  style={{
+                    transitionDuration: `${CONTENT_FADE_DURATION}ms`
+                  }}
+                >
                   <div className="flex items-center justify-between px-4 py-3 bg-background/80 backdrop-blur-md sticky top-0 z-10 border-b border-border/40">
                     <div className="flex items-center gap-2.5">
                       {activePane.icon && (
@@ -134,7 +163,7 @@ export const GlobalSidecarProvider = ({
                       closePane={closePane}
                     />
                   </div>
-                </>
+                </div>
               ) : null}
             </div>
             <div className="w-[52px] flex flex-col items-center py-6 gap-4 border-l border-border/40 bg-background/50 backdrop-blur-sm">
