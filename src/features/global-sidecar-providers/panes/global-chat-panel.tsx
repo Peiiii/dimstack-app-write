@@ -50,7 +50,7 @@ export const GlobalChatPanel = () => {
   const [busy, setBusy] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { colorMode } = useColorMode();
-  const { containerRef, notifyNewItem, scrollToBottom } = useStickyAutoScroll({ threshold: 10 });
+  const { containerRef, notifyNewItem, scrollToBottom } = useStickyAutoScroll();
 
   useEffect(() => {
     notifyNewItem();

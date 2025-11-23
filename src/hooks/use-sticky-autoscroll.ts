@@ -1,57 +1,35 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRef } from "react";
+import {
+  DEFAULT_THRESHOLD,
+  StickyAutoScroller,
+  type StickyAutoScrollOptions,
+  type StickyStateAction,
+} from "./sticky-auto-scroller";
+import { useBehaviorSubjectValue } from "./use-behavior-subject-value";
 
 /**
- * Sticky auto-scroll behavior for chat-like timelines.
- * - When user is near the bottom, stays in sticky mode and auto-scrolls on new items
- * - Scrolling up beyond threshold exits sticky mode
- * - Exposes `scrollToBottom()` for manual jumps (e.g. after user sends a message)
+ * Public hook: exposes the StickyAutoScroller class through a dumb, hook-friendly API.
+ * Contains zero state/effect logic; all side effects live in helper hooks.
  */
-export function useStickyAutoScroll(options?: { threshold?: number }) {
-  const { threshold = 64 } = options || {};
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [isSticky, setIsSticky] = useState(true);
+export function useStickyAutoScroll(options?: StickyAutoScrollOptions) {
+  const { threshold = DEFAULT_THRESHOLD } = options || {};
+  const scrollerRef = useRef<StickyAutoScroller | null>(null);
 
-  const computeIsNearBottom = useCallback(() => {
-    const el = containerRef.current;
-    if (!el) return false;
-    const distance = el.scrollHeight - el.scrollTop - el.clientHeight;
-    return distance <= threshold;
-  }, [threshold]);
+  if (!scrollerRef.current) {
+    scrollerRef.current = new StickyAutoScroller(threshold);
+  } else {
+    scrollerRef.current.setThreshold(threshold);
+  }
 
-  const onScroll = useCallback(() => {
-    // If user scrolls up far away from bottom, exit sticky
-    const nearBottom = computeIsNearBottom();
-    setIsSticky(nearBottom);
-  }, [computeIsNearBottom]);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    el.addEventListener("scroll", onScroll, { passive: true });
-    // Initialize sticky state on mount
-    setIsSticky(computeIsNearBottom());
-    return () => el.removeEventListener("scroll", onScroll);
-  }, [onScroll, computeIsNearBottom]);
-
-  const scrollToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {
-    const el = containerRef.current;
-    if (!el) return;
-    el.scrollTo({ top: el.scrollHeight, behavior });
-  }, []);
-
-  const notifyNewItem = useCallback(() => {
-    if (isSticky) {
-      // next tick for DOM update
-      requestAnimationFrame(() => scrollToBottom());
-    }
-  }, [isSticky, scrollToBottom]);
+  const scroller = scrollerRef.current;
+  const isSticky = useBehaviorSubjectValue(scroller.isSticky$);
 
   return {
-    containerRef,
+    containerRef: scroller.containerRef,
     isSticky,
-    setIsSticky,
-    scrollToBottom,
-    notifyNewItem,
+    setIsSticky: scroller.setStickyAction,
+    scrollToBottom: scroller.scrollToBottom,
+    notifyNewItem: scroller.notifyNewItem,
   } as const;
 }
-
+export type { StickyAutoScrollOptions, StickyStateAction };
