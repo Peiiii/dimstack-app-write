@@ -1,7 +1,13 @@
-import { ZenmarkEditor, KeyMod, KeyCode, matchesKeybinding } from "zenmark-editor";
 import { useDocument } from "@/hooks/use-document";
+import { css } from "@emotion/css";
 import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import {
+  KeyCode,
+  KeyMod,
+  matchesKeybinding,
+  ZenmarkEditor,
+} from "zenmark-editor";
 
 export const ZenmarkEditorComponent = (props: { uri: string }) => {
   const { t } = useTranslation();
@@ -14,11 +20,14 @@ export const ZenmarkEditorComponent = (props: { uri: string }) => {
   useEffect(() => {
     const handleDocumentKeyDown = (event: KeyboardEvent) => {
       const isSaveShortcut =
-        (event.metaKey || event.ctrlKey) && 
+        (event.metaKey || event.ctrlKey) &&
         (event.key === "s" || event.key === "S") &&
         !event.shiftKey;
-      
-      if (isSaveShortcut && editorRef.current?.contains(document.activeElement)) {
+
+      if (
+        isSaveShortcut &&
+        editorRef.current?.contains(document.activeElement)
+      ) {
         event.preventDefault();
         event.stopPropagation();
         event.stopImmediatePropagation();
@@ -58,7 +67,15 @@ export const ZenmarkEditorComponent = (props: { uri: string }) => {
   };
 
   return (
-    <div ref={editorRef} style={{ height: "100%" }}>
+    <div
+      ref={editorRef}
+      style={{ height: "100%" }}
+      className={css`
+        .editor-middle {
+          padding-top: 0 !important;
+        }
+      `}
+    >
       <ZenmarkEditor
         value={content}
         onChange={(newContent) => {
